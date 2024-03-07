@@ -7,9 +7,10 @@ import java.util.Arrays;
 @NoArgsConstructor
 public class MaskUtils {
     /**
-     * 한글 이름
-     * - 이름의 두 번째 자리
-     * - 네 자리 이상의 이름은 첫, 마지막 두자리 외
+     * korean name
+     * - second letter of name
+     * - if name includes more than four letter,
+     * - than mask all except first and last one.
      * @param name
      * @return
      */
@@ -28,9 +29,9 @@ public class MaskUtils {
     }
 
     /**
-     * 영문 이름
-     * 두 단어 이상으로 구성 : 앞 한 단어 이후
-     * 한 단어로 구성 : 마지막 한자리
+     * English name
+     * includes two more words : mask all except first word
+     * include only one word : mask last letter
      * @param name
      * @return
      */
@@ -51,9 +52,9 @@ public class MaskUtils {
     }
 
     /**
-     * 이메일 마스킹
-     * - 5글자 이상의 이메일인 경우 앞 네자리 이후 마스킹
-     * - 4글자 이하의 경우 앞 한 글자 이후 마스킹
+     * email
+     * - includes five more letters : mask after first four letters
+     * - others : mask all except first letter
      * @param email
      * @return
      */
@@ -74,8 +75,8 @@ public class MaskUtils {
     }
 
     /**
-     * 비밀번호 마스킹
-     * - 모든 글자 마스킹
+     * password
+     * - mask all
      * @param password
      * @return
      */
