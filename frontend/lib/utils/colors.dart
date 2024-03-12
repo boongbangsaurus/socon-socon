@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 /// 색상 종류를 정의하는 클래스
 /// author : 김아현
 class AppColors {
-
   // MAIN COLOR
   static const Color WHITE = Color(0xFFFFFFFF);
   static const Color BLACK = Color(0xFF222222);
@@ -21,12 +20,12 @@ class AppColors {
   static const Color GRAY100 = Color(0XFFF2F4F7);
   static const Color GRAY200 = Color(0XFFE4E7EC);
   static const Color GRAY300 = Color(0XFFD0D5DD);
-  static const Color GRAY400= Color(0XFF98A2B3);
-  static const Color GRAY500= Color(0XFF667085);
-  static const Color GRAY600= Color(0XFF475467);
-  static const Color GRAY700= Color(0XFF344054);
-  static const Color GRAY800= Color(0XFF1D2939);
-  static const Color GRAY900= Color(0XFF101828);
+  static const Color GRAY400 = Color(0XFF98A2B3);
+  static const Color GRAY500 = Color(0XFF667085);
+  static const Color GRAY600 = Color(0XFF475467);
+  static const Color GRAY700 = Color(0XFF344054);
+  static const Color GRAY800 = Color(0XFF1D2939);
+  static const Color GRAY900 = Color(0XFF101828);
 
   // YELLOW
   static const Color WARNING25 = Color(0XFFFFFCF5);
