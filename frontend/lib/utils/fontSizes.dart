@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 /// 폰트 크기를 정의하는 클래스
 /// author : 김아현
 class FontSizes {
-  static const double LOGO = 52.0;
+  static const double LOGO = 60.0;
   static const double XXXLARGE = 32.0;
   static const double XXLARGE = 28.0;
   static const double XLARGE = 24.0;
