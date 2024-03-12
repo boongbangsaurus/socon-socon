@@ -1,0 +1,26 @@
+version: '3.8'
+
+name: nginx-project
+
+services:
+  nginx:
+    container_name: nginx
+    image: kimdahui/nginx
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    volumes:
+      - ./certbot/conf:/etc/letsencrypt:ro
+      - ./certbot/www:/var/www/certbot:ro
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - socon-net
+
+networks:
+  socon-net:
+
+volumes:
+  jenkins:

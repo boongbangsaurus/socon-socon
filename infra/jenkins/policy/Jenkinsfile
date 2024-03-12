@@ -1,0 +1,21 @@
+pipeline {
+    agent any
+    environment {
+        REPO = "s10-blockchain-contract-sub2/S10P22C207"
+    }
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+        stage('Move Files') {
+            steps {
+                script {
+                    // 정적 파일을 Nginx 컨테이너에 복사
+                    sh 'docker cp policy nginx:/usr/share/nginx/html'
+                }
+            }
+        }
+    }
+}
