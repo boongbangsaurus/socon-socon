@@ -17,10 +17,10 @@ services:
       - "80:80"
       - "443:443"
     networks:
-      - jenkins_socon-net
+      - jenkins-project_socon-net
 
 networks:
-  jenkins_socon-net:
+  jenkins-project_socon-net:
     external: true
 
 volumes:
