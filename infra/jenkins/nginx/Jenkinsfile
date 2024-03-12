@@ -6,9 +6,8 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                checkout scmGit(
-                    branches: [[name: 'develop']],
-                )
+                cleanWs()
+                checkout scm
             }
         }
         stage("Build") {
