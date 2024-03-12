@@ -21,6 +21,7 @@ services:
 
 networks:
   socon-net:
+    external: true
 
 volumes:
   jenkins:
