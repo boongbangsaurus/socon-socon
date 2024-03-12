@@ -9,14 +9,6 @@ pipeline {
                 checkout scm
             }
         }
-        stage('Move Files') {
-            steps {
-                script {
-                    // 정적 파일을 Nginx 컨테이너에 복사
-                    sh 'docker cp policy nginx:/usr/share/nginx/html'
-                }
-            }
-        }
     }
     post {
         always {
