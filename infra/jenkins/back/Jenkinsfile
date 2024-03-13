@@ -29,9 +29,11 @@ pipeline {
         }
         stage('Setup Environment') {
             steps {
-                component.each { entry ->
-                    if (entry.value) {
-                        sh "chmod +x ./backend/${entry.name}/gradlew"
+                script{
+                    component.each { entry ->
+                        if (entry.value) {
+                            sh "chmod +x ./backend/${entry.name}/gradlew"
+                        }
                     }
                 }
             }
