@@ -29,9 +29,9 @@ pipeline {
         }
         stage('Setup Environment') {
             steps {
-                dir("${env.WORKSPACE}/backend"){
-                    script {
-                        sh "chmod +x ./gradlew"
+                component.each { entry ->
+                    if (entry.value) {
+                        sh "chmod +x ./backend/${entry.name}/gradlew"
                     }
                 }
             }
