@@ -13,7 +13,7 @@ pipeline {
         stage("Build") {
             steps {
                 dir("${env.WORKSPACE}/infra/nginx"){
-                    sh "docker compose build nginx"
+                    sh "docker compose -p nginx-project build nginx"
                 }
             }
         }
