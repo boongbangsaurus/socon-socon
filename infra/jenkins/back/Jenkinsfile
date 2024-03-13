@@ -32,7 +32,7 @@ pipeline {
                 script{
                     component.each { entry ->
                         if (entry.value) {
-                            sh "chmod +x ./backend/${entry.name}/gradlew"
+                            sh "chmod +x ./backend/${entry.key}/gradlew"
                         }
                     }
                 }
