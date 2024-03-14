@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:socon/utils/colors.dart';
 import 'package:socon/utils/fontSizes.dart';
 import 'package:socon/utils/responsive_utils.dart';
+import 'package:socon/widgets/buttons.dart';
 
 void main() {
   runApp(const MyApp());
@@ -55,6 +56,8 @@ class MyApp extends StatelessWidget {
                   color: AppColors.WHITE,
                 ),
               ),
+              // Button components Test: Hayoon
+              LargeButton(text: "저장", onPressed: () {})
               // Container(
               //     width: ResponsiveUtils.getHeightWithPixels(context, 200),
               //     height: ResponsiveUtils.getHeightWithPixels(context, 60),
