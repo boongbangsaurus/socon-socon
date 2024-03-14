@@ -89,37 +89,53 @@ services:
     depends_on:
       - gateway
 
-  socon-blue:
-    container_name: socon-blue
-    image: kimdahui/socon-blue
+  user:
+    container_name: user
+    image: kimdahui/user
     build:
-      context: socon
+      context: user
       dockerfile: Dockerfile
     restart: unless-stopped
     ports:
-      - "8031:8031"
+      - "8040:8040"
     networks:
       - jenkins-project_socon-net
     environment:
-      - "SPRING_PROFILES_ACTIVE=prod,blue"
+      - "SPRING_PROFILES_ACTIVE=prod"
     depends_on:
       - gateway
+#
+#  socon-blue:
+#    container_name: socon-blue
+#    image: kimdahui/socon-blue
+#    build:
+#      context: socon
+#      dockerfile: Dockerfile
+#    restart: unless-stopped
+#    ports:
+#      - "8031:8031"
+#    networks:
+#      - jenkins-project_socon-net
+#    environment:
+#      - "SPRING_PROFILES_ACTIVE=prod,blue"
+#    depends_on:
+#      - gateway
 
-  socon-green:
-    container_name: socon-green
-    image: kimdahui/socon-green
-    build:
-      context: socon
-      dockerfile: Dockerfile
-    restart: unless-stopped
-    ports:
-      - "8032:8032"
-    networks:
-      - jenkins-project_socon-net
-    environment:
-      - "SPRING_PROFILES_ACTIVE=prod,green"
-    depends_on:
-      - gateway
+#  socon-green:
+#    container_name: socon-green
+#    image: kimdahui/socon-green
+#    build:
+#      context: socon
+#      dockerfile: Dockerfile
+#    restart: unless-stopped
+#    ports:
+#      - "8032:8032"
+#    networks:
+#      - jenkins-project_socon-net
+#    environment:
+#      - "SPRING_PROFILES_ACTIVE=prod,green"
+#    depends_on:
+#      - gateway
 
 networks:
   jenkins-project_socon-net:
