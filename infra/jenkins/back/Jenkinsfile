@@ -61,7 +61,7 @@ pipeline {
             steps {
                 dir("backend"){
                     script {
-                        sh "docker-compose up -p backend-project -d"
+                        sh "docker-compose up -p backend-project -d --force-recreate"
 //                         component.each{ entry ->
 //                             if(entry.value){
 //                                 def var = entry.key
