@@ -124,6 +124,3 @@ services:
 networks:
   jenkins-project_socon-net:
     external: true
-
-volumes:
-  jenkins:

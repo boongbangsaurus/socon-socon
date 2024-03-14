@@ -27,7 +27,7 @@ pipeline {
                     sh 'cp secure-settings/back/.env .env'
                     component.each { entry ->
                         if (entry.value) {
-                            sh "cp secure-settings/back/${entry.key}/gradle.properties backend/utils/gradle.properties"
+                            sh "cp secure-settings/back/${entry.key}/gradle.properties backend/${entry.key}/gradle.properties"
                         }
                     }
                 }
@@ -50,7 +50,7 @@ pipeline {
                     script {
                         component.each { entry ->
                             if (entry.value) {
-                                sh "docker-compose -p backend-project build --no-cache ${entry.key.toLowerCase()}"
+                                sh "docker-compose -p backend-project build ${entry.key.toLowerCase()}"
                             }
                         }
                     }
