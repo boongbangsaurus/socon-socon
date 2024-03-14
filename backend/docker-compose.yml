@@ -1,0 +1,126 @@
+version: '3.3'
+
+services:
+  utils:
+    container_name: utils
+    image: kimdahui/utils
+    build:
+      context: utils
+      dockerfile: Dockerfile
+    restart: on-failure
+
+  eureka:
+    container_name: eureka
+    image: kimdahui/eureka
+    build:
+      context: eureka
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "8761:8761"
+    networks:
+      - jenkins-project_socon-net
+    environment:
+      - "SPRING_PROFILES_ACTIVE=prod"
+    depends_on:
+      - utils
+
+  gateway:
+    container_name: gateway
+    image: kimdahui/gateway
+    build:
+      context: gateway
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    networks:
+      - jenkins-project_socon-net
+    environment:
+      - "SPRING_PROFILES_ACTIVE=prod"
+    depends_on:
+      - eureka
+
+  notification:
+    container_name: notification
+    image: kimdahui/notification
+    build:
+      context: notification
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "8010:8010"
+    networks:
+      - jenkins-project_socon-net
+    environment:
+      - "SPRING_PROFILES_ACTIVE=prod"
+    depends_on:
+      - gateway
+
+  payment:
+    container_name: payment
+    image: kimdahui/payment
+    build:
+      context: payment
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "8020:8020"
+    networks:
+      - jenkins-project_socon-net
+    environment:
+      - "SPRING_PROFILES_ACTIVE=prod"
+    depends_on:
+      - gateway
+
+  socon:
+    container_name: socon
+    image: kimdahui/socon
+    build:
+      context: socon
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "8030:8030"
+    networks:
+      - jenkins-project_socon-net
+    environment:
+      - "SPRING_PROFILES_ACTIVE=prod"
+    depends_on:
+      - gateway
+
+  socon-blue:
+    container_name: socon-blue
+    image: kimdahui/socon-blue
+    build:
+      context: socon
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "8031:8031"
+    networks:
+      - jenkins-project_socon-net
+    environment:
+      - "SPRING_PROFILES_ACTIVE=prod,blue"
+    depends_on:
+      - gateway
+
+  socon-green:
+    container_name: socon-green
+    image: kimdahui/socon-green
+    build:
+      context: socon
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "8032:8032"
+    networks:
+      - jenkins-project_socon-net
+    environment:
+      - "SPRING_PROFILES_ACTIVE=prod,green"
+    depends_on:
+      - gateway
+
+networks:
+  jenkins-project_socon-net:
+    external: true
