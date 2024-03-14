@@ -34,20 +34,11 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Instagram'),
-        actions: [
-          IconButton(
-            onPressed: (){},
-            icon: Icon(Icons.add_box_outlined),
-            iconSize: 30,
-          ),
-        ],
 
-      ),
       body: [StoreLists(), Sogon(), MyStore(), CouponLists(), MyPage(),][tab_idx],
 
       bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
         showSelectedLabels: false,
         showUnselectedLabels: false,
         // selectedItemColor: Colors.red,
