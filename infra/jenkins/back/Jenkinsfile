@@ -26,8 +26,9 @@ pipeline {
                 script{
                     sh 'cp secure-settings/back/.env .env'
                     component.each { entry ->
-                    if (entry.value) {
-                        sh "cp secure-settings/back/${entry.key}/gradle.properties backend/utils/gradle.properties"
+                        if (entry.value) {
+                            sh "cp secure-settings/back/${entry.key}/gradle.properties backend/utils/gradle.properties"
+                        }
                     }
                 }
             }
