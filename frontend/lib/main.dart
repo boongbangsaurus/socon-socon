@@ -29,13 +29,13 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   var tab_idx = 0;
-
+  var is_owner = true;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
 
-      body: [StoreLists(), Sogon(), MyStore(), CouponLists(), MyPage(),][tab_idx],
+      body: [StoreLists(), Sogon(), if(is_owner) MyStore(), CouponLists(), MyPage(),][tab_idx],
 
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
@@ -51,7 +51,7 @@ class _MyAppState extends State<MyApp> {
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.place_outlined, color: Colors.black87, size: 30), label: '주변정보'),
           BottomNavigationBarItem(icon: Icon(Icons.sms_outlined, color: Colors.black87, size: 30), label: '소곤'),
-          BottomNavigationBarItem(icon: Icon(Icons.storefront, color: Colors.black87, size: 30), label: ' '),
+          if(is_owner) BottomNavigationBarItem(icon: Icon(Icons.storefront, color: Colors.black87, size: 30), label: ' '),
           BottomNavigationBarItem(icon: Icon(Icons.confirmation_num_outlined, color: Colors.black87, size: 30), label: '쿠폰북'),
           BottomNavigationBarItem(icon: Icon(Icons.person_outline_rounded, color: Colors.black87, size: 30), label: '내정보'),
           ],
