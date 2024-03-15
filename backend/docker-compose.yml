@@ -22,8 +22,6 @@ services:
       - jenkins-project_socon-net
     environment:
       - "SPRING_PROFILES_ACTIVE=prod,eureka_prod"
-    depends_on:
-      - utils
 
   gateway:
     container_name: gateway
