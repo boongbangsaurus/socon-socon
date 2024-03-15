@@ -8,6 +8,7 @@ import site.soconsocon.socon.store.domain.dto.request.*;
 import site.soconsocon.socon.store.domain.dto.response.IssueListResponse;
 import site.soconsocon.socon.store.domain.dto.response.ItemListResponse;
 import site.soconsocon.socon.store.domain.dto.response.StoreInfoResponse;
+import site.soconsocon.socon.store.domain.entity.jpa.Item;
 import site.soconsocon.socon.store.domain.entity.jpa.Store;
 import site.soconsocon.socon.store.service.IssueService;
 import site.soconsocon.socon.store.service.ItemService;
@@ -116,6 +117,18 @@ public class StoreApiController {
     ){
 
         return ResponseEntity.ok().body(MessageUtils.success(null));
+    }
+
+    // 상품 정보 상세 조회
+    @GetMapping("/stores/{store_id}/items/{item_id}")
+    public ResponseEntity getDetailItemInfo(
+        @PathVariable("store_id") Integer storeId,
+        @PathVariable("item_id") Integer itemId,
+        MemberRequest memberRequest
+    ){
+        Item item  = itemService.getDetailItemInfo(storeId, itemId, memberRequest);
+
+        return ResponseEntity.ok().body(MessageUtils.success(item));
     }
 
 
