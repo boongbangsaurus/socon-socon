@@ -59,4 +59,14 @@ public class ItemService {
             return null;
         }
     }
+
+    // 상품 정보 상세 조회
+    public Item getDetailItemInfo(Integer storeId, Integer itemId, MemberRequest memberRequest) {
+
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new RuntimeException("NOT FOUND BY ID : " + itemId));
+
+        return item;
+
+    }
 }
