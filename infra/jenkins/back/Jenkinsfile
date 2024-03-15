@@ -31,6 +31,7 @@ pipeline {
                             sh "cp secure-settings/back/${entry.key}/gradle.properties backend/${entry.key}/gradle.properties"
                         }
                         if (entry.key != "utils"){
+                            sh "mkdir -p backend/${entry.key}/src/resources"
                             // find 명령어를 사용하여 .yml 파일을 찾고, 각 파일에 대해 cp 명령어를 실행
                             sh "find secure-settings/back/${entry.key} -name '*.yml' -exec cp {} backend/${entry.key}/src/resources \\;"
                             // 동일한 디렉토리 내 모든 .yml 파일을 복사
@@ -57,7 +58,7 @@ pipeline {
                     script {
                         component.each { entry ->
                             if (entry.value) {
-                                sh "docker-compose -p backend-project build ${entry.key.toLowerCase()}"
+                                sh "docker-compose -p backend-project build --no-cache ${entry.key.toLowerCase()}"
                             }
                         }
                     }
