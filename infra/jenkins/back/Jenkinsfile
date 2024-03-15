@@ -32,13 +32,9 @@ pipeline {
                         }
                         if (entry.key != "utils"){
                             // find 명령어를 사용하여 .yml 파일을 찾고, 각 파일에 대해 cp 명령어를 실행
-                            sh """
-                            find secure-settings/back/${entry.key} -name '*.yml' -exec cp {} backend/${entry.key}/src/resources \;
-                            """
+                            sh "find secure-settings/back/${entry.key} -name '*.yml' -exec cp {} backend/${entry.key}/src/resources"
                             // 동일한 디렉토리 내 모든 .yml 파일을 복사
-                            sh """
-                            find secure-settings/back -maxdepth 1 -name '*.yml' -exec cp {} backend/${entry.key}/src/resources \;
-                            """
+                            sh "find secure-settings/back -maxdepth 1 -name '*.yml' -exec cp {} backend/${entry.key}/src/resources"
                         }
                     }
                 }
