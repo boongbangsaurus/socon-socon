@@ -4,12 +4,15 @@ package site.soconsocon.socon.store.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import site.soconsocon.socon.store.domain.dto.request.AddIssueRequest;
+import site.soconsocon.socon.store.domain.dto.request.AddMySoconRequest;
 import site.soconsocon.socon.store.domain.dto.request.MemberRequest;
 import site.soconsocon.socon.store.domain.dto.response.IssueListResponse;
 import site.soconsocon.socon.store.domain.entity.jpa.Issue;
 import site.soconsocon.socon.store.domain.entity.jpa.Item;
+import site.soconsocon.socon.store.domain.entity.jpa.MySocon;
 import site.soconsocon.socon.store.repository.IssueRepository;
 import site.soconsocon.socon.store.repository.ItemRepository;
+import site.soconsocon.socon.store.repository.MySoconRepository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -21,6 +24,7 @@ public class IssueService {
 
     private final IssueRepository issueRepository;
     private final ItemRepository itemRepository;
+    private final MySoconRepository mySoconRepository;
 
 
     // 발행 목록 조회
@@ -61,7 +65,27 @@ public class IssueService {
         issue.setStatus('A');
 
         issueRepository.save(issue);
+    }
 
+    // 소콘 발행
+    public void saveMySocon(Integer issueId, AddMySoconRequest request, MemberRequest memberRequest) {
 
+        Issue issue = issueRepository.findById(issueId).orElseThrow(() -> new RuntimeException("NOT FOUND BY ID : " + issueId));
+
+        for(int i = 0; i < request.getPurchaseQuantity(); i++){
+            MySocon socon = new MySocon();
+            socon.setPurchasedAt(LocalDateTime.now());
+            socon.setExpiredAt(LocalDateTime.now().plusDays(issue.getPeriod()));
+            socon.setUsedAt(null);
+            socon.setIsUsed(false);
+            socon.setIssue(issue);
+            socon.setMemberId(memberRequest.getMemberId());
+
+            mySoconRepository.save(socon);
+
+        }
+        issue.setIssuedQuantity(issue.getIssuedQuantity() + request.getPurchaseQuantity());
+
+        issueRepository.save(issue);
     }
 }
