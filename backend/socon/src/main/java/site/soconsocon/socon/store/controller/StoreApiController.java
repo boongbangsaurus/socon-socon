@@ -6,9 +6,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import site.soconsocon.socon.store.domain.dto.request.*;
 import site.soconsocon.socon.store.domain.dto.response.IssueListResponse;
+import site.soconsocon.socon.store.domain.dto.response.ItemListResponse;
 import site.soconsocon.socon.store.domain.dto.response.StoreInfoResponse;
 import site.soconsocon.socon.store.domain.entity.jpa.Store;
 import site.soconsocon.socon.store.service.IssueService;
+import site.soconsocon.socon.store.service.ItemService;
 import site.soconsocon.socon.store.service.StoreService;
 import site.soconsocon.utils.MessageUtils;
 
@@ -23,6 +25,7 @@ public class StoreApiController {
 
     private StoreService storeService;
     private IssueService issueService;
+    private ItemService itemService;
 
 
     // 가게 정보 등록
@@ -57,6 +60,23 @@ public class StoreApiController {
 
         Map<String, Object> response = new HashMap<>();
         response.put("store", store);
+        response.put("issues", issues);
+
+        return ResponseEntity.ok().body(MessageUtils.success(response));
+    }
+
+    // 점주 가게 상세 정보 조회
+    @GetMapping("/stores/{store_id}/manage/info")
+    public ResponseEntity getDetailStoreInfo(
+            @PathVariable("store_id") Integer storeId,
+            MemberRequest memberRequest
+    ){
+
+        List<ItemListResponse> items = itemService.getItemList(storeId, memberRequest);
+        List<IssueListResponse> issues = issueService.getIssueList(storeId);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("items", items);
         response.put("issues", issues);
 
         return ResponseEntity.ok().body(MessageUtils.success(response));
@@ -97,7 +117,6 @@ public class StoreApiController {
 
         return ResponseEntity.ok().body(MessageUtils.success(null));
     }
-
 
 
 }

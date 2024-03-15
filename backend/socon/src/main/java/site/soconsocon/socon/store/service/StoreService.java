@@ -7,6 +7,7 @@ import site.soconsocon.socon.store.domain.dto.request.AddStoreRequest;
 import site.soconsocon.socon.store.domain.dto.request.MemberRequest;
 import site.soconsocon.socon.store.domain.dto.request.UpdateClosedPlannedRequest;
 import site.soconsocon.socon.store.domain.dto.request.UpdateStoreInfoRequest;
+import site.soconsocon.socon.store.domain.dto.response.ItemListResponse;
 import site.soconsocon.socon.store.domain.dto.response.StoreInfoResponse;
 import site.soconsocon.socon.store.domain.entity.jpa.BusinessHour;
 import site.soconsocon.socon.store.domain.entity.jpa.RegistrationNumber;
@@ -121,6 +122,10 @@ public class StoreService {
                     .build();
         }
     }
+
+
+
+    // 가게 정보 수정
     public Store updateStoreInfo(Integer storeId, UpdateStoreInfoRequest request) {
 
         var store = storeRepository.findById(storeId).orElseThrow(() -> new RuntimeException("NOT FOUND BY ID : " + storeId));
