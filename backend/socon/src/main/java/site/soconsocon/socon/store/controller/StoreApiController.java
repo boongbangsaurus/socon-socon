@@ -131,5 +131,17 @@ public class StoreApiController {
         return ResponseEntity.ok().body(MessageUtils.success(item));
     }
 
+    // 상품 발행 정보 등록
+    @PostMapping("/stores/{store_id}/items/{item_id}")
+    public ResponseEntity saveIssue(
+        @PathVariable("store_id") Integer storeId,
+        @PathVariable("item_id") Integer itemId,
+        @RequestBody AddIssueRequest request,
+        MemberRequest memberRequest
+    ){
+
+        return ResponseEntity.ok().body(MessageUtils.success(null));
+    }
+
 
 }
