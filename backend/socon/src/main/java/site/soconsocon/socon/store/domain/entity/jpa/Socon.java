@@ -4,13 +4,13 @@ import java.time.LocalDateTime;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Entity(name = "MY_SOCON")
+@Entity(name = "SOCON")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @ToString
-public class MySocon {
+public class Socon {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

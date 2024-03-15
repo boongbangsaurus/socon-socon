@@ -9,12 +9,11 @@ import site.soconsocon.socon.store.domain.dto.request.MemberRequest;
 import site.soconsocon.socon.store.domain.dto.response.IssueListResponse;
 import site.soconsocon.socon.store.domain.entity.jpa.Issue;
 import site.soconsocon.socon.store.domain.entity.jpa.Item;
-import site.soconsocon.socon.store.domain.entity.jpa.MySocon;
+import site.soconsocon.socon.store.domain.entity.jpa.Socon;
 import site.soconsocon.socon.store.repository.IssueRepository;
 import site.soconsocon.socon.store.repository.ItemRepository;
-import site.soconsocon.socon.store.repository.MySoconRepository;
+import site.soconsocon.socon.store.repository.SoconRepository;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -24,7 +23,7 @@ public class IssueService {
 
     private final IssueRepository issueRepository;
     private final ItemRepository itemRepository;
-    private final MySoconRepository mySoconRepository;
+    private final SoconRepository soconRepository;
 
 
     // 발행 목록 조회
@@ -73,7 +72,7 @@ public class IssueService {
         Issue issue = issueRepository.findById(issueId).orElseThrow(() -> new RuntimeException("NOT FOUND BY ID : " + issueId));
 
         for(int i = 0; i < request.getPurchaseQuantity(); i++){
-            MySocon socon = new MySocon();
+            Socon socon = new Socon();
             socon.setPurchasedAt(LocalDateTime.now());
             socon.setExpiredAt(LocalDateTime.now().plusDays(issue.getPeriod()));
             socon.setUsedAt(null);
@@ -81,7 +80,7 @@ public class IssueService {
             socon.setIssue(issue);
             socon.setMemberId(memberRequest.getMemberId());
 
-            mySoconRepository.save(socon);
+            soconRepository.save(socon);
 
         }
         issue.setIssuedQuantity(issue.getIssuedQuantity() + request.getPurchaseQuantity());

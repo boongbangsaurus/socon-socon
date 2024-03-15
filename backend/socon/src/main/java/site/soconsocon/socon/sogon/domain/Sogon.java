@@ -2,7 +2,7 @@ package site.soconsocon.socon.sogon.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
-import site.soconsocon.socon.store.domain.entity.jpa.MySocon;
+import site.soconsocon.socon.store.domain.entity.jpa.Socon;
 
 import java.time.LocalDateTime;
 
@@ -51,5 +51,5 @@ public class Sogon {
 
     @OneToOne
     @JoinColumn(name = "my_socon_id")
-    private MySocon mySocon;
+    private Socon mySocon;
 }
