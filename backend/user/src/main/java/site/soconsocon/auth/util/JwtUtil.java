@@ -27,6 +27,9 @@ public class JwtUtil {
     @Value("${jwt.refreshExpiration}")
     private long refreshExpiration;
 
+    public static final String TOKEN_PREFIX = "Bearer ";
+    public static final String HEADER_STRING = "Authorization";
+
     private Key getSigningKey(String secretKey) {
         byte[] keyBytes = secretKey.getBytes(StandardCharsets.UTF_8);
         return Keys.hmacShaKeyFor(keyBytes);
@@ -61,10 +64,9 @@ public class JwtUtil {
         return doGenerateToken(String.valueOf(member.getId()), refreshExpiration);
     }
 
-    public String doGenerateToken(String username, List<String> roles, long expireTime) {
+    public String doGenerateToken(String username, long expireTime) {
         Claims claims = Jwts.claims();
         claims.put("username", username); //memberId
-        claims.put("roles", roles);
 
         String jwt = Jwts.builder()
                 .setClaims(claims)
@@ -79,6 +81,9 @@ public class JwtUtil {
     public Boolean validateToken(String token, Member member) {
         final String username = getUsername(token); //memberId
 
-        return (username.equals(member.getUsername()) && !isTokenExpired(token));
+        return (username.equals(member.getId()) && !isTokenExpired(token));
     }
+
+
+
 }

@@ -19,7 +19,7 @@ import java.util.List;
 @DynamicInsert
 @DynamicUpdate
 @Builder
-public class Member implements UserDetails {
+public class Member {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

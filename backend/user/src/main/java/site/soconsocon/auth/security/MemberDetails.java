@@ -21,7 +21,7 @@ public class MemberDetails implements UserDetails {
 	boolean accountNonLocked;
 	boolean credentialNonExpired;
 	boolean enabled = false;
-	List<GrantedAuthority> roles = new ArrayList<>();
+	List<GrantedAuthority> roles = new ArrayList<>(); //권한
 
 
 	public Member getMember() {
