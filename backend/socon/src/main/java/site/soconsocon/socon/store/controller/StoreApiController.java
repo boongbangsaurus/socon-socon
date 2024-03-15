@@ -4,10 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import site.soconsocon.socon.store.domain.dto.request.AddStoreRequest;
-import site.soconsocon.socon.store.domain.dto.request.MemberRequest;
-import site.soconsocon.socon.store.domain.dto.request.UpdateClosedPlannedRequest;
-import site.soconsocon.socon.store.domain.dto.request.UpdateStoreInfoRequest;
+import site.soconsocon.socon.store.domain.dto.request.*;
 import site.soconsocon.socon.store.domain.dto.response.IssueListResponse;
 import site.soconsocon.socon.store.domain.dto.response.StoreInfoResponse;
 import site.soconsocon.socon.store.domain.entity.jpa.Store;
@@ -90,6 +87,16 @@ public class StoreApiController {
         return ResponseEntity.ok().body(MessageUtils.success(store.getClosingPlanned()));
     }
 
+    // 상품 정보 등록
+    @PostMapping("/stores/{store_id}/items")
+    public ResponseEntity saveStoreItem(
+        @PathVariable("store_id") Integer storeId,
+        @RequestBody AddItemRequest request,
+        MemberRequest memberRequest
+    ){
+
+        return ResponseEntity.ok().body(MessageUtils.success(null));
+    }
 
 
 
