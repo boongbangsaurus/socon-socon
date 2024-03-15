@@ -28,6 +28,8 @@ pipeline {
                     component.each { entry ->
                         if (entry.value) {
                             sh "cp secure-settings/back/${entry.key}/gradle.properties backend/${entry.key}/gradle.properties"
+                            sh "cp secure-settings/back/${entry.key}/*.yml backend/${entry.key}/src/resources"
+                            sh "cp secure-settings/back/*.yml backend/${entry.key}/src/resources"
                         }
                     }
                 }
