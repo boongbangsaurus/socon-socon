@@ -1,7 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-
 
 
 // 지정값 : 세로 크기, 텍스트 크기, 텍스트 굵기
