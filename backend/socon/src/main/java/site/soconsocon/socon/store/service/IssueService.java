@@ -13,6 +13,7 @@ import site.soconsocon.socon.store.domain.entity.jpa.Socon;
 import site.soconsocon.socon.store.repository.IssueRepository;
 import site.soconsocon.socon.store.repository.ItemRepository;
 import site.soconsocon.socon.store.repository.SoconRepository;
+import site.soconsocon.socon.store.repository.StoreRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -24,6 +25,7 @@ public class IssueService {
     private final IssueRepository issueRepository;
     private final ItemRepository itemRepository;
     private final SoconRepository soconRepository;
+    private final StoreRepository storeRepository;
 
 
     // 발행 목록 조회
@@ -87,4 +89,19 @@ public class IssueService {
 
         issueRepository.save(issue);
     }
+
+    // 발행 중지
+    public void stopIssue(Integer issueId, MemberRequest memberRequest) {
+
+        Issue issue = issueRepository.findById(issueId).orElseThrow(() -> new RuntimeException("NOT FOUND BY ID : " + issueId));
+        if(storeRepository.findById(issue.getStoreId()).get().getMemberId() == memberRequest.getMemberId()){
+            issue.setStatus('I');
+            issueRepository.save(issue);
+        }
+        else{
+            //
+        }
+    }
+
+
 }

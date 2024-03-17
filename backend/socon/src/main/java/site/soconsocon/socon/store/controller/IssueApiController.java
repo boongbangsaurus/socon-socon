@@ -2,10 +2,7 @@ package site.soconsocon.socon.store.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import site.soconsocon.socon.store.domain.dto.request.AddMySoconRequest;
 import site.soconsocon.socon.store.domain.dto.request.MemberRequest;
 import site.soconsocon.socon.store.service.IssueService;
@@ -29,6 +26,15 @@ public class IssueApiController {
             MemberRequest memberRequest
     ){
 
+
+        return ResponseEntity.ok().body(MessageUtils.success(null));
+    }
+
+    @PutMapping("/{issue_id}")
+    public ResponseEntity stopIssue(
+            @PathVariable("issue_id") Integer issueId,
+            MemberRequest memberRequest
+    ){
 
         return ResponseEntity.ok().body(MessageUtils.success(null));
     }
