@@ -10,6 +10,7 @@ import site.soconsocon.socon.store.domain.dto.response.IssueListResponse;
 import site.soconsocon.socon.store.domain.entity.jpa.Issue;
 import site.soconsocon.socon.store.domain.entity.jpa.Item;
 import site.soconsocon.socon.store.domain.entity.jpa.Socon;
+import site.soconsocon.socon.store.exception.ForbiddenException;
 import site.soconsocon.socon.store.repository.IssueRepository;
 import site.soconsocon.socon.store.repository.ItemRepository;
 import site.soconsocon.socon.store.repository.SoconRepository;
@@ -29,15 +30,22 @@ public class IssueService {
 
 
     // 발행 목록 조회
-    public List<IssueListResponse> getIssueList(Integer storeId) {
+    public List<IssueListResponse> getIssueList(Integer storeId, MemberRequest memberRequest) {
 
-        List<IssueListResponse> issueList = issueRepository.findIssueListByStoreId(storeId);
+        Integer storeMemberId = storeRepository.findMemberIdByStoreId(storeId);
 
-        if(issueList.isEmpty()) {
-            return null;
+        if(storeMemberId != memberRequest.getMemberId()){
+            // 본인 가게 아닐 경우
+            throw new ForbiddenException("Forbidden, storeId : " + storeId + ", memberId : " + memberRequest.getMemberId());
         }
         else{
-            return issueList;
+            List<IssueListResponse> issueList = issueRepository.findIssueListByStoreId(storeId);
+            if(issueList.isEmpty()) {
+                return null;
+            }
+            else{
+                return issueList;
+            }
         }
     }
 
@@ -51,7 +59,7 @@ public class IssueService {
         Item item = itemRepository.findById(itemId).orElseThrow(() -> new RuntimeException("NOT FOUND BY ID : " + itemId));
 
         Issue issue = new Issue();
-        issue.setStoreId(storeId);
+        issue.setStoreName(storeRepository.findById(storeId).get().getName());
         issue.setName(item.getName());
         issue.setImage(item.getImage());
         issue.setIsMain(request.getIsMain());
@@ -94,12 +102,14 @@ public class IssueService {
     public void stopIssue(Integer issueId, MemberRequest memberRequest) {
 
         Issue issue = issueRepository.findById(issueId).orElseThrow(() -> new RuntimeException("NOT FOUND BY ID : " + issueId));
-        if(storeRepository.findById(issue.getStoreId()).get().getMemberId() == memberRequest.getMemberId()){
+        if(issue.getItem().getStore().getMemberId() == memberRequest.getMemberId()){
+            // 발행 상태 에러 처리 필요
             issue.setStatus('I');
             issueRepository.save(issue);
         }
         else{
             //
+
         }
     }
 

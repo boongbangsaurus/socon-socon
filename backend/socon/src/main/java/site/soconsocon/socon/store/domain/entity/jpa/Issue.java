@@ -22,6 +22,9 @@ public class Issue {
     @Column(name = "name", nullable = false)
     private String name; // 상품명
 
+    @Column(name = "store_name", nullable = false)
+    private String storeName; // 가게 이름
+
     @Column(name = "image", nullable = true)
     private String image;
 
@@ -59,7 +62,7 @@ public class Issue {
     @JoinColumn(name = "item_id")
     private Item item;
 
-    @Column(name = "store_id", nullable = false)
-    private Integer storeId;
+    @Column(name = "order_id", nullable = false)
+    private Integer orderId;
 
 }

@@ -47,23 +47,36 @@ public class StoreApiController {
 
         List<Store> stores = storeService.getStoreList(memberRequest);
 
-        return ResponseEntity.ok().body(MessageUtils.success(stores));
-
+        if(stores.isEmpty()){
+            Map<String, Object> response = new HashMap<>();
+            response.put("stores", stores);
+            return ResponseEntity.ok().body(MessageUtils.success(response));
+        }
+        else{
+            return ResponseEntity.ok().body(MessageUtils.success(stores));
+        }
     }
-
     // 가게 정보 상세 조회
     @GetMapping("/{store_id}/info")
     public ResponseEntity getStoreInfo(
-            @PathVariable("store_id") Integer storeId
+            @PathVariable("store_id") Integer storeId,
+            MemberRequest memberRequest
     ){
         StoreInfoResponse store = storeService.getStoreInfo(storeId);
-        List<IssueListResponse> issues = issueService.getIssueList(storeId);
-
+        List<IssueListResponse> issues = issueService.getIssueList(storeId, memberRequest);
         Map<String, Object> response = new HashMap<>();
-        response.put("store", store);
-        response.put("issues", issues);
 
-        return ResponseEntity.ok().body(MessageUtils.success(response));
+        if(issues.isEmpty()){
+            response.put("store", store);
+            response.put("issues", null);
+            return ResponseEntity.ok().body(MessageUtils.success(store));
+        }
+        else{
+            response.put("store", store);
+            response.put("issues", issues);
+
+            return ResponseEntity.ok().body(MessageUtils.success(response));
+        }
     }
 
     // 점주 가게 상세 정보 조회
@@ -72,9 +85,8 @@ public class StoreApiController {
             @PathVariable("store_id") Integer storeId,
             MemberRequest memberRequest
     ){
-
         List<ItemListResponse> items = itemService.getItemList(storeId, memberRequest);
-        List<IssueListResponse> issues = issueService.getIssueList(storeId);
+        List<IssueListResponse> issues = issueService.getIssueList(storeId, memberRequest);
 
         Map<String, Object> response = new HashMap<>();
         response.put("items", items);
@@ -90,7 +102,6 @@ public class StoreApiController {
             @PathVariable("store_id") Integer storeId,
             MemberRequest memberRequest
     ){
-        // 요청자의 memberId가 owner의 id와 일치하는지 확인 필요
 
         return ResponseEntity.ok().body(MessageUtils.success(null));
     }
