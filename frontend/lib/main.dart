@@ -8,6 +8,8 @@ import 'pages/mystore.dart';
 import 'pages/coupon_lists.dart';
 import 'pages/mypage.dart';
 
+import 'store_register/register_page.dart';
+
 
 void main() {
   runApp(MaterialApp(
@@ -35,7 +37,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return Scaffold(
 
-      body: [StoreLists(), Sogon(), if(is_owner) MyStore(), CouponLists(), MyPage(),][tab_idx],
+      body: [RegisterPage(), Sogon(), if(is_owner) MyStore(), CouponLists(), MyPage(),][tab_idx],
 
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
