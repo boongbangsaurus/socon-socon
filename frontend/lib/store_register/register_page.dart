@@ -34,7 +34,9 @@ class RegisterPage extends StatelessWidget {
                     onChanged: (value) => viewModel.setName(value),
                     decoration: InputDecoration(labelText: '가게 이름'),
                   ),
-                  // 추가적인 필드를 여기에 구성할 수 있습니다.
+
+
+
                   ElevatedButton(
                     onPressed: () {
                       // 등록 로직 처리

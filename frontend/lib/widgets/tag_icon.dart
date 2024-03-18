@@ -40,8 +40,9 @@ class TagIcon extends StatelessWidget {
 
 
 
-// 지정값 : 버튼 죄소 가로/세로 크기, 텍스트 크기, 텍스트 굵기
-class TagButton extends StatelessWidget {
+// 지정값 : 체크여부, 버튼 죄소 가로/세로 크기, 텍스트 크기, 텍스트 굵기
+class TagButton extends StatefulWidget {
+  final bool isSelected;
   final String buttonText;
   final Color buttonColor;
   final Color buttonTextColor;
@@ -53,6 +54,7 @@ class TagButton extends StatelessWidget {
 
   const TagButton({
     super.key,
+    this.isSelected = false,
     required this.buttonText,
     required this.buttonColor,
     required this.buttonTextColor,
@@ -62,15 +64,44 @@ class TagButton extends StatelessWidget {
   });
 
   @override
+  State<TagButton> createState() => _TagButtonState();
+}
+
+class _TagButtonState extends State<TagButton> {
+  late bool _isSelected;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _isSelected = widget.isSelected;
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final buttonStyle = _isSelected
+        ? ElevatedButton.styleFrom(
+      backgroundColor: widget.buttonColor,
+      minimumSize: Size(widget.minWidth, widget.minHeight),
+    )
+        : ElevatedButton.styleFrom(
+      backgroundColor: Colors.white,
+      foregroundColor: Colors.grey,
+      side: BorderSide(color: Colors.grey),
+      minimumSize: Size(widget.minWidth, widget.minHeight),
+    );
+
     return TextButton(
-      onPressed: onPressed,
-      style: ElevatedButton.styleFrom(
-        backgroundColor: buttonColor,
-        minimumSize: Size(minWidth, minHeight), // 최소 크기 설정
-        // padding: EdgeInsets.all(0),
-      ),
-      child: Text(buttonText, style: TextStyle( color: buttonTextColor, fontSize: 12, fontWeight: FontWeight.bold)),
+      onPressed: () {
+        setState(() {
+          _isSelected = !_isSelected;
+          widget.onPressed();
+        });
+      },
+      style: buttonStyle,
+      child: Text(
+          widget.buttonText,
+          style: TextStyle( color: _isSelected ? widget.buttonTextColor : Colors.grey, fontSize: 12, fontWeight: FontWeight.bold)),
     );
   }
 }

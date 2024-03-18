@@ -6,70 +6,66 @@ import 'register_model.dart';
 
 class RegisterViewModel extends ChangeNotifier {
   final RegisterModel _registerModel = RegisterModel();
-  bool _isFocused = false;
+
 
   // Getters
-  String get representative => _registerModel.representative;
-  String get registrationNumber => _registerModel.registration_number;
-  String get address => _registerModel.address;
-  String get name => _registerModel.name;
-  String get phoneNumber => _registerModel.phone_number;
-  String get category => _registerModel.category;
-  double get lat => _registerModel.lat;
-  double get lng => _registerModel.lng;
-  String get introduction => _registerModel.introduction;
-  bool get isFocused => _isFocused;
+  String? get representative => _registerModel.representative;
+  String? get registration_number => _registerModel.registration_number;
+  String? get address => _registerModel.address;
+  String? get name => _registerModel.name;
+  String? get phone_number => _registerModel.phone_number;
+  String? get category => _registerModel.category;
+  double? get lat => _registerModel.lat;
+  double? get lng => _registerModel.lng;
+  String? get introduction => _registerModel.introduction;
+
 
   // Setters
   void setRepresentative(String value) {
-    _registerModel.setRepresentative(value);
+    _registerModel.representative = value;
     notifyListeners();
   }
 
   void setRegistrationNumber(String value) {
-    _registerModel.setRegistrationNumber(value);
+    _registerModel.registration_number = value;
     notifyListeners();
   }
 
   void setAddress(String value) {
-    _registerModel.setAddress(value);
+    _registerModel.address = value;
     notifyListeners();
   }
 
   void setName(String value) {
-    _registerModel.setName(value);
+    _registerModel.name = value;
     notifyListeners();
   }
 
   void setPhoneNumber(String value) {
-    _registerModel.setPhoneNumber(value);
+    _registerModel.phone_number = value;
     notifyListeners();
   }
 
   void setCategory(String value) {
-    _registerModel.setCategory(value);
+    _registerModel.category = value;
     notifyListeners();
   }
 
   void setLat(double value) {
-    _registerModel.setLat(value);
+    _registerModel.lat = value;
     notifyListeners();
   }
 
   void setLng(double value) {
-    _registerModel.setLng(value);
+    _registerModel.lng = value;
     notifyListeners();
   }
 
   void setIntroduction(String value) {
-    _registerModel.setIntroduction(value);
+    _registerModel.introduction = value;
     notifyListeners();
   }
 
-  void setFocused(bool value) {
-    _isFocused = value;
-    notifyListeners();
-  }
 
   void register() {
     // 디버그 프린트
