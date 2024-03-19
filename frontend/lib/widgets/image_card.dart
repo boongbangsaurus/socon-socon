@@ -7,12 +7,13 @@ class ImageCard extends StatelessWidget {
   final String imgUrl;
 
 
-  const ImageCard({super.key, required this.imgUrl,this.width = 100, this.height = 100,});
+  const ImageCard({super.key, required this.imgUrl, this.width = 100, this.height = 100,});
 
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: width,
       height: height,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(10),

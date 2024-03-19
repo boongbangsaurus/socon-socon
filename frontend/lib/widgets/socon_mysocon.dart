@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:socon/widgets/image_card.dart';
 
@@ -5,12 +6,14 @@ class MySocon extends StatelessWidget {
   final String soconName;
   final String storeName;
   final String dueDate;
+  final String imageUrl;
 
   const MySocon({
     super.key,
     required this.soconName,
     required this.storeName,
     required this.dueDate,
+    required this.imageUrl,
   });
 
   @override
@@ -34,7 +37,7 @@ class MySocon extends StatelessWidget {
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
                 color: Colors.black,
-                height: 3),
+                height: 2.5),
             textAlign: TextAlign.center,
           ),
           Container(
@@ -49,6 +52,7 @@ class MySocon extends StatelessWidget {
               )),
           Container(
             margin: EdgeInsets.symmetric(horizontal: 10),
+            padding: EdgeInsets.only(bottom: 10),
             child: Text(
               '$dueDate 까지',
               style: TextStyle(
@@ -58,9 +62,10 @@ class MySocon extends StatelessWidget {
               textAlign: TextAlign.right,
             ),
           ),
-          ImageCard(
-            imgUrl:
-                'https://cdn.pixabay.com/photo/2017/12/10/13/37/christmas-3009949_1280.jpg',
+          Expanded(
+            child: ImageCard(
+              imgUrl: imageUrl,
+            ),
           ),
         ],
       ),
