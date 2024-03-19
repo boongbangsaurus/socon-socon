@@ -6,8 +6,11 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-//                 cleanWs()
-                checkout scm
+                checkout scmGit(
+                        branches: [[name: 'develop']],
+                        extensions: [submodule(parentCredentials: true, trackingSubmodules: true)],
+                        userRemoteConfigs: [[credentialsId: 'github-access-token', url: 'https://github.com/boongbangsaurus/boongbang-settings']]
+                )
             }
         }
         stage('Move .env File') {
