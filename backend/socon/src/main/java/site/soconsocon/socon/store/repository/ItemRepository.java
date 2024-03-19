@@ -11,4 +11,7 @@ public interface ItemRepository extends JpaRepository<Item, Integer> {
 
     @Query("SELECT i.id, i.name, i.image, i.price FROM ITEM i WHERE i.store.id = :storeId")
     List<ItemListResponse> findItemsByStoreId(Integer storeId);
+
+    @Query("SELECT i.store.memberId FROM ITEM i WHERE i.id = :itemId")
+    Integer findMemberIdByItemId(Integer itemId);
 }
