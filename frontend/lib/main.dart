@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:socon/utils/colors.dart';
 import 'package:socon/utils/fontSizes.dart';
 import 'package:socon/utils/responsive_utils.dart';
+import 'package:socon/view/atoms/searchBox.dart';
 
 void main() {
   runApp(const MyApp());
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
           // useMaterial3: true, // 이 줄을 주석 처리하거나 삭제하여 사용하시는 버전에 맞게 설정하세요.
           ),
       home: Scaffold(
-        backgroundColor: AppColors.YELLOW,
+        backgroundColor: AppColors.WHITE,
         body: Container(
           width: ResponsiveUtils.getWidthPercent(context, 100),
           height: ResponsiveUtils.getHeightPercent(context, 100),
@@ -36,6 +37,7 @@ class MyApp extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              SearchBox(),
               Text(
                 '소콘소콘',
                 style: TextStyle(
