@@ -27,6 +27,8 @@ public class IssueApiController {
             MemberRequest memberRequest
     ){
 
+        issueService.saveMySocon(issueId, request, memberRequest);
+
         return ResponseEntity.ok().body(MessageUtils.success(null));
     }
 
@@ -36,6 +38,7 @@ public class IssueApiController {
             @PathVariable("issue_id") Integer issueId,
             MemberRequest memberRequest
     ){
+        issueService.stopIssue(issueId, memberRequest);
 
         return ResponseEntity.ok().body(MessageUtils.success(null));
     }

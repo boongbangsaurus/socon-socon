@@ -20,16 +20,18 @@ public class SoconApiController {
 
     private final SoconService soconService;
 
+    // 소콘 상세 조회
     @GetMapping("/{socon_id}")
-    public ResponseEntity getSoconInfo(Integer soconId) {
+    public ResponseEntity<Object> getSoconInfo(Integer soconId) {
 
         SoconInfoResponse socon = soconService.getSoconInfo(soconId);
 
         return ResponseEntity.ok().body(MessageUtils.success(socon));
     }
 
+    // 소콘북 목록 조회
     @GetMapping("/book")
-    public ResponseEntity soconBook(
+    public ResponseEntity<Object> soconBook(
             MemberRequest memberRequest
     ) {
 

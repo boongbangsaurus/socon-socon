@@ -2,12 +2,14 @@ package site.soconsocon.socon.store.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import site.soconsocon.socon.global.exception.badrequest.BadRequest;
 import site.soconsocon.socon.store.domain.dto.request.AddStoreRequest;
 import site.soconsocon.socon.store.domain.dto.request.MemberRequest;
 import site.soconsocon.socon.store.domain.dto.request.UpdateClosedPlannedRequest;
 import site.soconsocon.socon.store.domain.dto.request.UpdateStoreInfoRequest;
 import site.soconsocon.socon.store.domain.dto.response.StoreInfoResponse;
 import site.soconsocon.socon.store.domain.entity.jpa.BusinessHour;
+import site.soconsocon.socon.store.domain.entity.jpa.FavStore;
 import site.soconsocon.socon.store.domain.entity.jpa.RegistrationNumber;
 import site.soconsocon.socon.store.domain.entity.jpa.Store;
 import site.soconsocon.socon.global.exception.conflict.SetClosePlanException;
@@ -207,5 +209,21 @@ public class StoreService {
             // 요청자의 memberId와 store의 memberId가 다를 경우
             throw new ForbiddenException("Forbidden, storeId : " + storeId + ", memberId : " + memberRequest.getMemberId());
         }
+    }
+
+    public void addFavoriteStore(Integer storeId, MemberRequest memberRequest) {
+
+        Store store = storeRepository.findById(storeId)
+                        .orElseThrow(() -> new StoreNotFoundException("Store not found, store_id : " + storeId));
+        if(!store.getIsClosed()){
+            favStoreRepository.save(FavStore.builder()
+                    .memberId(memberRequest.getMemberId())
+                    .storeId(storeId)
+                    .build());
+        }
+        else{
+            throw new BadRequest("Bad Request, store is closed, store_id : " + storeId);
+        }
+
     }
 }
