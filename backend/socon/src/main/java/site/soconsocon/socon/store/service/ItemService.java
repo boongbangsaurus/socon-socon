@@ -7,6 +7,9 @@ import site.soconsocon.socon.store.domain.dto.request.MemberRequest;
 import site.soconsocon.socon.store.domain.dto.response.ItemListResponse;
 import site.soconsocon.socon.store.domain.entity.jpa.Item;
 import site.soconsocon.socon.store.domain.entity.jpa.Store;
+import site.soconsocon.socon.global.exception.ForbiddenException;
+import site.soconsocon.socon.global.exception.notfound.ItemNotFoundException;
+import site.soconsocon.socon.global.exception.notfound.StoreNotFoundException;
 import site.soconsocon.socon.store.repository.ItemRepository;
 import site.soconsocon.socon.store.repository.StoreRepository;
 
@@ -23,7 +26,7 @@ public class ItemService {
     public void saveItem(AddItemRequest request, Integer storeId, MemberRequest memberRequest) {
 
         Store savedStore = storeRepository.findById(storeId)
-                .orElseThrow(() -> new RuntimeException("NOT FOUND BY ID : " + storeId));
+                .orElseThrow(() -> new StoreNotFoundException("NOT FOUND BY ID : " + storeId));
 
         if(savedStore.getMemberId() == memberRequest.getMemberId()) {
 
@@ -38,8 +41,7 @@ public class ItemService {
             itemRepository.save(item);
         }
         else {
-            // 에러처리
-            throw new RuntimeException("memberId is not matched with storeId");
+            throw new ForbiddenException("Forbidden, storeId : " + storeId + ", memberId : " + memberRequest.getMemberId());
         }
 
     }
@@ -51,12 +53,25 @@ public class ItemService {
         if(storeMemberId == memberRequest.getMemberId()){
             // 점주 id와 일치할 경우
             List<ItemListResponse> itemList = itemRepository.findItemsByStoreId(StoreId);
-
             return itemList;
-
         }
         else {
-            return null;
+            // 본인 가게가 아닌 경우
+            throw new ForbiddenException("Forbidden, storeId : " + StoreId + ", memberId : " + memberRequest.getMemberId());
         }
+    }
+
+    // 상품 정보 상세 조회
+    public Item getDetailItemInfo(Integer storeId, Integer itemId, MemberRequest memberRequest) {
+
+        if(memberRequest.getMemberId() != itemRepository.findMemberIdByItemId(itemId)) {
+            throw new ForbiddenException("Forbidden, storeId : " + storeId + ", memberId : " + memberRequest.getMemberId());
+        }
+        else{
+            Item item = itemRepository.findById(itemId)
+                    .orElseThrow(() -> new ItemNotFoundException("NOT FOUND BY ID : " + itemId));
+            return item;
+        }
+
     }
 }

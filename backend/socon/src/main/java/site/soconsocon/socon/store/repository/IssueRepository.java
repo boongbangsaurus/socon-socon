@@ -9,7 +9,8 @@ import java.util.List;
 
 public interface IssueRepository extends JpaRepository<Issue, Integer> {
 
-    @Query("SELECT i.id, i.name, i.image, i.isMain, i.maxQuantity, i.issuedQuantity, i.price, i.isDiscounted, i.discountedPrice, i.createdAt FROM ISSUE i WHERE i.storeId = :storeId")
+    @Query("SELECT i.id, i.name, i.image, i.isMain, i.maxQuantity, i.issuedQuantity, i.price, i.isDiscounted, i.discountedPrice, i.createdAt FROM ISSUE i WHERE i.item.store.id = :storeId")
     List<IssueListResponse> findIssueListByStoreId(Integer storeId);
+
 
 }
