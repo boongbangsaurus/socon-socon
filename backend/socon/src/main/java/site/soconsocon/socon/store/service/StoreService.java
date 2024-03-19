@@ -10,11 +10,11 @@ import site.soconsocon.socon.store.domain.dto.response.StoreInfoResponse;
 import site.soconsocon.socon.store.domain.entity.jpa.BusinessHour;
 import site.soconsocon.socon.store.domain.entity.jpa.RegistrationNumber;
 import site.soconsocon.socon.store.domain.entity.jpa.Store;
-import site.soconsocon.socon.store.exception.ConflictException.SetClosePlanException;
-import site.soconsocon.socon.store.exception.ForbiddenException;
-import site.soconsocon.socon.store.exception.NotFoundException.RegistrationNotFoundException;
-import site.soconsocon.socon.store.exception.StoreDuplicationException;
-import site.soconsocon.socon.store.exception.NotFoundException.StoreNotFoundException;
+import site.soconsocon.socon.global.exception.conflict.SetClosePlanException;
+import site.soconsocon.socon.global.exception.ForbiddenException;
+import site.soconsocon.socon.global.exception.notfound.RegistrationNotFoundException;
+import site.soconsocon.socon.global.exception.StoreDuplicationException;
+import site.soconsocon.socon.global.exception.notfound.StoreNotFoundException;
 import site.soconsocon.socon.store.repository.*;
 
 import java.time.LocalDateTime;

@@ -1,4 +1,4 @@
-package site.soconsocon.socon.store.exception;
+package site.soconsocon.socon.global.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

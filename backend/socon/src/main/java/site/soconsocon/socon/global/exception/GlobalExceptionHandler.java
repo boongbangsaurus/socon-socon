@@ -1,14 +1,18 @@
-package site.soconsocon.socon.store.exception;
+package site.soconsocon.socon.global.exception;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import site.soconsocon.socon.global.domain.ErrorCode;
-import site.soconsocon.socon.store.exception.ConflictException.SetClosePlanException;
-import site.soconsocon.socon.store.exception.NotFoundException.RegistrationNotFoundException;
-import site.soconsocon.socon.store.exception.NotFoundException.StoreNotFoundException;
+import site.soconsocon.socon.global.exception.badrequest.BadRequest;
+import site.soconsocon.socon.global.exception.badrequest.BadRequestValue;
+import site.soconsocon.socon.global.exception.conflict.SetClosePlanException;
+import site.soconsocon.socon.global.exception.notfound.IssueNotFoundException;
+import site.soconsocon.socon.global.exception.notfound.RegistrationNotFoundException;
+import site.soconsocon.socon.global.exception.notfound.StoreNotFoundException;
 import site.soconsocon.utils.MessageUtils;
 
 @Slf4j
@@ -21,6 +25,26 @@ public class GlobalExceptionHandler {
         log.error("NullPointerException occurred: {}", ex.getMessage());
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(MessageUtils.fail(ErrorCode.INTERNAL_SERVER_ERROR.getErrorCode(), ErrorCode.INTERNAL_SERVER_ERROR.getMessage()));
+    }
+
+    @ExceptionHandler(BadRequest.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<Object> handleBadRequestException(BadRequest e) {
+        log.error("BadRequestException occurred: " + e.getMessage());
+        String errorMessage = ErrorCode.BAD_REQUEST.getMessage();
+        String errorCode = ErrorCode.BAD_REQUEST.getErrorCode();
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(MessageUtils.fail(errorCode, errorMessage));
+    }
+
+    @ExceptionHandler(BadRequestValue.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<Object> handleBadRequestValueException(BadRequestValue e) {
+        log.error("BadRequestValueException occurred: " + e.getMessage());
+        String errorMessage = ErrorCode.BAD_REQUEST_VALUE.getMessage();
+        String errorCode = ErrorCode.BAD_REQUEST_VALUE.getErrorCode();
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(MessageUtils.fail(errorCode, errorMessage));
     }
 
 
@@ -69,5 +93,16 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.CONFLICT).body(MessageUtils.fail(errorCode, errorMessage));
     }
+
+    @ExceptionHandler(IssueNotFoundException.class)
+    public ResponseEntity<Object> handleIssueNotFoundException(IssueNotFoundException e) {
+        log.error("IssueNotFoundException occurred : " + e.getMessage());
+        String errorMessage = ErrorCode.ISSUE_NOT_FOUND.getMessage();
+        String errorCode = ErrorCode.ISSUE_NOT_FOUND.getErrorCode();
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(MessageUtils.fail(errorCode, errorMessage));
+    }
+
+
 }
 

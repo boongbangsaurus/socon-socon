@@ -7,9 +7,9 @@ import site.soconsocon.socon.store.domain.dto.request.MemberRequest;
 import site.soconsocon.socon.store.domain.dto.response.ItemListResponse;
 import site.soconsocon.socon.store.domain.entity.jpa.Item;
 import site.soconsocon.socon.store.domain.entity.jpa.Store;
-import site.soconsocon.socon.store.exception.ForbiddenException;
-import site.soconsocon.socon.store.exception.NotFoundException.ItemNotFoundException;
-import site.soconsocon.socon.store.exception.NotFoundException.StoreNotFoundException;
+import site.soconsocon.socon.global.exception.ForbiddenException;
+import site.soconsocon.socon.global.exception.notfound.ItemNotFoundException;
+import site.soconsocon.socon.global.exception.notfound.StoreNotFoundException;
 import site.soconsocon.socon.store.repository.ItemRepository;
 import site.soconsocon.socon.store.repository.StoreRepository;
 
