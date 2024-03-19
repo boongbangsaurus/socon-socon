@@ -16,7 +16,8 @@ pipeline {
         stage('Move .env File') {
             steps {
                 script{
-                    sh 'cp -r secure-settings/letsencrypt infra/nginx/letsencrypt'
+                    sh "rm -rf infra/nginx/letsencrypt"
+                    sh "cp -r secure-settings/letsencrypt infra/nginx/letsencrypt"
                 }
             }
         }
