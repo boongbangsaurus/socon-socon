@@ -21,12 +21,19 @@ class MySocon extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width / 2;
 
     return Container(
-      // padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       width: screenWidth,
       margin: EdgeInsets.all(5),
-      // color: Colors.green,
       decoration: BoxDecoration(
-          color: Colors.green, borderRadius: BorderRadius.circular(10)),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.7),
+              spreadRadius: 0,
+              blurRadius: 5.0,
+              offset: Offset(0, 5), // changes position of shadow
+            ),
+          ]),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,

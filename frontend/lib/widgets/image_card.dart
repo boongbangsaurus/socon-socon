@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 
 
 class ImageCard extends StatelessWidget {
+  final String imgUrl;
   final double width;
   final double height;
-  final String imgUrl;
+  final double borderRadius;
 
 
-  const ImageCard({super.key, required this.imgUrl, this.width = 100, this.height = 100,});
+  const ImageCard({super.key, required this.imgUrl, this.width = 100, this.height = 100, this.borderRadius = 10, });
 
 
   @override
@@ -16,7 +17,7 @@ class ImageCard extends StatelessWidget {
       width: width,
       height: height,
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(borderRadius),
         child: Image.network(
           imgUrl,
           fit: BoxFit.fill,

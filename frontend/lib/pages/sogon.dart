@@ -22,7 +22,7 @@ class Sogon extends StatelessWidget {
       appBar: AppBar(),
       body: GridView.builder(
         shrinkWrap: true, // child 위젯의 크기를 정해주지 않은 경우 true로 지정해야됨
-        itemCount: 6, //item 개수
+        itemCount: soconNames.length,
         gridDelegate:
         SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount:2, //1 개의 행에 보여줄 item 개수
