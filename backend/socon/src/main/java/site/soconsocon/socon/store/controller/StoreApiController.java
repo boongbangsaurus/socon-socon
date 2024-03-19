@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import site.soconsocon.socon.store.domain.dto.request.*;
+import site.soconsocon.socon.store.domain.dto.response.FavoriteStoresListResponse;
 import site.soconsocon.socon.store.domain.dto.response.IssueListResponse;
 import site.soconsocon.socon.store.domain.dto.response.ItemListResponse;
 import site.soconsocon.socon.store.domain.dto.response.StoreInfoResponse;
@@ -24,9 +25,9 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class StoreApiController {
 
-    private StoreService storeService;
-    private IssueService issueService;
-    private ItemService itemService;
+    private final StoreService storeService;
+    private final IssueService issueService;
+    private final ItemService itemService;
 
 
     // 가게 정보 등록
@@ -40,7 +41,7 @@ public class StoreApiController {
 
         storeService.saveStore(request, memberRequest);
 
-        return ResponseEntity.created(null).body(MessageUtils.success(null));
+        return ResponseEntity.ok().body(MessageUtils.success(null));
 
     }
 
@@ -172,4 +173,15 @@ public class StoreApiController {
 
         return ResponseEntity.ok().body(MessageUtils.success(null));
     }
+
+    // 관심 가게 목록 조회
+    @GetMapping("/favorite")
+    public ResponseEntity<Object> getFavoriteList(
+        MemberRequest memberRequest
+    ){
+        List <FavoriteStoresListResponse> stores = storeService.getFavoriteStoreList(memberRequest);
+
+        return ResponseEntity.ok().body(MessageUtils.success(stores));
+    }
+
 }
