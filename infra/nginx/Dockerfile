@@ -4,7 +4,7 @@ RUN rm -rf /etc/nginx/conf.d/default.conf
 
 
 RUN mkdir -p /etc/letsencrypt/live/socon-socon.site
-COPY ../../secure-settings/letsencrypt /etc/letsencrypt/live/socon-socon.site
+COPY /letsencrypt /etc/letsencrypt/live/socon-socon.site
 COPY nginx.conf /etc/nginx/nginx.conf
 
 CMD ["nginx", "-g", "daemon off;"]

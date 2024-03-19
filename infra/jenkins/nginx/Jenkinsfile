@@ -10,6 +10,13 @@ pipeline {
                 checkout scm
             }
         }
+        stage('Move .env File') {
+            steps {
+                script{
+                    sh 'cp -r secure-settings/letsencrypt infra/nginx/letsencrypt'
+                }
+            }
+        }
         stage("Build") {
             steps {
                 dir("${env.WORKSPACE}/infra/nginx"){
