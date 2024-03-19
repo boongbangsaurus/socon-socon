@@ -68,7 +68,7 @@ public class JwtUtil {
         String expireTimeString = redisTemplate.opsForValue().get(getRefreshTokenKey(memberId));
         if (expireTimeString == null) {
             // 만료 시간이 없는 경우 (리프레시 토큰이 없거나 만료되었음)
-            return true;
+            return true; //true
         }
         long expireTime = Long.parseLong(expireTimeString);
         return System.currentTimeMillis() > expireTime;
