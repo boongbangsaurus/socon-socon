@@ -12,31 +12,36 @@ class TagIcon extends StatelessWidget {
     required this.buttonText,
     required this.buttonColor,
     required this.buttonTextColor,
-
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 22.0,
-      padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-      decoration: BoxDecoration(
-        color: buttonColor,
-        borderRadius: BorderRadius.circular(50),
-      ),
-      child: Center(
-        child: Text(
-          buttonText,
-          style: TextStyle(
-            color: buttonTextColor,
-            fontSize: 12,
-            fontWeight: FontWeight.bold,
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        DecoratedBox(
+          decoration: BoxDecoration(
+            color: buttonColor,
+            borderRadius: BorderRadius.circular(50),
+          ),
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 1),
+            child: Text(
+              buttonText,
+              style: TextStyle(
+                color: buttonTextColor,
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
         ),
-      ),
+      ],
     );
   }
 }
+
+
 
 
 
