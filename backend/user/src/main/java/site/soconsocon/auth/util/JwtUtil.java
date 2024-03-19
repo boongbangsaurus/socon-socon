@@ -12,6 +12,7 @@ import site.soconsocon.auth.domain.entity.jpa.Member;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -26,7 +27,10 @@ public class JwtUtil {
     @Value("${jwt.refreshExpiration}")
     private long refreshExpiration;
 
-    private Key getSigningKey(String secretKey){
+    public static final String TOKEN_PREFIX = "Bearer ";
+    public static final String HEADER_STRING = "Authorization";
+
+    private Key getSigningKey(String secretKey) {
         byte[] keyBytes = secretKey.getBytes(StandardCharsets.UTF_8);
         return Keys.hmacShaKeyFor(keyBytes);
     }
@@ -43,26 +47,26 @@ public class JwtUtil {
         return extractAllClaims(token).getExpiration();
     }
 
-    public String getUsername(String token){
+    public String getUsername(String token) {
         return extractAllClaims(token).get("username", String.class);
     }
 
-    public Boolean isTokenExpired(String token){
+    public Boolean isTokenExpired(String token) {
         final Date expiration = extractAllClaims(token).getExpiration();
         return expiration.before(new Date());
     }
 
-    public String generateToken(Member member){
+    public String generateToken(Member member) {
         return doGenerateToken(String.valueOf(member.getId()), accessExpiration);
     }
 
-    public String generateRefreshToken(Member member){
+    public String generateRefreshToken(Member member) {
         return doGenerateToken(String.valueOf(member.getId()), refreshExpiration);
     }
 
-    public String doGenerateToken(String username, long expireTime){
+    public String doGenerateToken(String username, long expireTime) {
         Claims claims = Jwts.claims();
-        claims.put("username", username);
+        claims.put("username", username); //memberId
 
         String jwt = Jwts.builder()
                 .setClaims(claims)
@@ -74,9 +78,12 @@ public class JwtUtil {
         return jwt;
     }
 
-    public Boolean validateToken(String token, Member member){
+    public Boolean validateToken(String token, Member member) {
         final String username = getUsername(token); //memberId
 
-        return (username.equals(member.getUsername()) && !isTokenExpired(token));
+        return (username.equals(member.getId()) && !isTokenExpired(token));
     }
+
+
+
 }
