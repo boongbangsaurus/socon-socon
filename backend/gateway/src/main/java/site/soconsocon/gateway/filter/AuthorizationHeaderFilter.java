@@ -2,8 +2,7 @@ package site.soconsocon.gateway.filter;
 
 import io.jsonwebtoken.Jwts;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.aspectj.weaver.patterns.IToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
@@ -17,8 +16,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import site.soconsocon.gateway.util.JwtUtil;
 
-import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -27,6 +27,9 @@ import static java.nio.charset.StandardCharsets.*;
 @Component
 @Slf4j
 public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<AuthorizationHeaderFilter.Config> {
+
+    @Autowired
+    private JwtUtil jwtUtil;
     Environment env;
 
     public AuthorizationHeaderFilter() {
@@ -35,22 +38,12 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
 
     public static class Config {
         // application.yml 파일에서 지정한 filer의 Argument값을 받는 부분
-        private String requiredRole;
-
-        public String getRequiredRole() {
-            return requiredRole;
-        }
-
-        public void setRequiredRole(String requiredRole) {
-            this.requiredRole = requiredRole;
-        }
     }
 
     @Override
     public GatewayFilter apply(Config config) {
         return (exchange, chain) -> {
             ServerHttpRequest request = exchange.getRequest();
-            String requiredRole = config.getRequiredRole();
             log.info("요청한 uri : " + request.getURI());
 
             // Authorization 헤더가 없다면 에러
@@ -70,28 +63,16 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
             String jwt = authorizationHeader.replace("Bearer ", "");
             log.info(jwt);
 
-            // Create a cookie object
-//            ServerHttpResponse response = exchange.getResponse();
-//            ResponseCookie c1 = ResponseCookie.from("my_token", "test1234").maxAge(60 * 60 * 24).build();
-//            response.addCookie(c1);
-
             if (!isJwtValid(jwt)) {
                 return onError(exchange, "JWT token is not valid", HttpStatus.UNAUTHORIZED);
             }
-            log.info("JWT valid");
-            log.info("요청한 USER : " + resolveTokenRole(jwt));
-            String userRole = resolveTokenUser(jwt).replace("[", "").replace("]", "");
-            log.info(userRole);
 
-            //인가처리
-            if (requiredRole.equalsIgnoreCase("ADMIN")) {
-                if (!userRole.equalsIgnoreCase("ADMIN"))
-                    return onError(exchange, "do not have permission", HttpStatus.FORBIDDEN);
-            }
-            else if (requiredRole.equalsIgnoreCase("MANAGER")) {
-                if (!userRole.equalsIgnoreCase("MANAGER") && !userRole.equalsIgnoreCase("MANAGER"))
-                    return onError(exchange, "do not have permission", HttpStatus.FORBIDDEN);
-            }
+            log.info("JWT valid");
+            Map<String, Object> userInfo = jwtUtil.getUserParseInfo(jwt);
+
+            // memberId를 가져와서 HTTP 헤더에 추가
+            addAuthorizationHeaders(exchange.getRequest(), userInfo);
+
             return chain.filter(exchange);
         };
     }
@@ -116,6 +97,7 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
     }
 
     private boolean isJwtValid(String jwt) {
+        log.info("[JwtTokenProvider] validateToken, 토큰 유효성 체크");
         boolean returnValue = true;
 
         String subject = null;
@@ -127,6 +109,7 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
                     .parseClaimsJws(jwt).getBody()
                     .getSubject();
         } catch (Exception ex) {
+            log.info("[JwtTokenProvider] validateToken, 토큰 유효성 체크 예외 발생");
             returnValue = false;
         }
 
@@ -137,23 +120,4 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
         return returnValue;
     }
 
-    private String resolveTokenRole(String token) {
-        try {
-            String subject = Jwts.parser().setSigningKey(env.getProperty("jwt.secret")).parseClaimsJws(token).getBody().get("roles").toString();
-            return subject;
-        } catch (Exception e) {
-            log.info("유저 권한 체크 실패");
-            return "e";
-        }
-    }
-
-    private String resolveTokenUser(String token) {
-        try {
-            String subject = Jwts.parser().setSigningKey(env.getProperty("jwt.secret")).parseClaimsJws(token).getBody().get("sub").toString();
-            return subject;
-        } catch (Exception e) {
-            log.info("유저 권한 체크 실패");
-            return "e";
-        }
-    }
 }
