@@ -19,19 +19,20 @@ public class IssueApiController {
     private IssueService issueService;
     private ItemService itemService;
 
+    // 소콘 발행(생성)
     @PostMapping("/{issue_id}")
-    public ResponseEntity saveMySocon(
+    public ResponseEntity<Object> saveMySocon(
             @PathVariable("issue_id") Integer issueId,
             AddMySoconRequest request,
             MemberRequest memberRequest
     ){
 
-
         return ResponseEntity.ok().body(MessageUtils.success(null));
     }
 
+    // 소콘 발행 중지
     @PutMapping("/{issue_id}")
-    public ResponseEntity stopIssue(
+    public ResponseEntity<Object> stopIssue(
             @PathVariable("issue_id") Integer issueId,
             MemberRequest memberRequest
     ){

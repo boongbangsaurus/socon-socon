@@ -11,6 +11,10 @@ public enum ErrorCode {
     //사용자
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "404 NOT_FOUND", "사용자를 찾을 수 없습니다."),
 
+    // 400 BAD REQUEST
+    BAD_REQUEST(HttpStatus.BAD_REQUEST, "400 BAD_REQUEST", "잘못된 요청입니다"),
+    BAD_REQUEST_VALUE(HttpStatus.BAD_REQUEST, "400 BAD_REQUEST", "요청 값이 잘못되었습니다."),
+
     // 403 FORBIDDEN
     FORBIDDEN(HttpStatus.FORBIDDEN, "403 FORBIDDEN", "해당 memberId에 허용되지 않는 요청입니다."),
 

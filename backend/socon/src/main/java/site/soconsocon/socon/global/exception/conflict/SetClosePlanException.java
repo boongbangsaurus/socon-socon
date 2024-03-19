@@ -1,8 +1,8 @@
-package site.soconsocon.socon.store.exception.ConflictException;
+package site.soconsocon.socon.global.exception.conflict;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import site.soconsocon.socon.store.exception.CustomException;
+import site.soconsocon.socon.global.exception.CustomException;
 
 @AllArgsConstructor
 @Getter

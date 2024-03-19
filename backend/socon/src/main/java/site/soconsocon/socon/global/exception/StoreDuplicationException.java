@@ -1,4 +1,4 @@
-package site.soconsocon.socon.store.exception;
+package site.soconsocon.socon.global.exception;
 
 public class StoreDuplicationException extends CustomException{
 
