@@ -23,26 +23,45 @@ class MySocon extends StatelessWidget {
       margin: EdgeInsets.all(5),
       // color: Colors.green,
       decoration: BoxDecoration(
-          color: Colors.green,
-          borderRadius: BorderRadius.circular(10)
-      ),
+          color: Colors.green, borderRadius: BorderRadius.circular(10)),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
             soconName,
             style: TextStyle(
-                fontSize: 22, fontWeight: FontWeight.bold, color: Colors.black, height: 3), textAlign: TextAlign.center,
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+                height: 3),
+            textAlign: TextAlign.center,
           ),
-          Container(margin: EdgeInsets.symmetric(horizontal: 10),child: Text('from. $storeName', style: TextStyle(fontSize: 12, color: Colors.black,), textAlign: TextAlign.right,)),
-          Container(margin: EdgeInsets.symmetric(horizontal: 10),
+          Container(
+              margin: EdgeInsets.symmetric(horizontal: 10),
+              child: Text(
+                'from. $storeName',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.black,
+                ),
+                textAlign: TextAlign.right,
+              )),
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 10),
             child: Text(
               '$dueDate 까지',
               style: TextStyle(
-                  fontSize: 13, fontWeight: FontWeight.bold, color: Colors.black),textAlign: TextAlign.right,
+                  fontSize: 13,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black),
+              textAlign: TextAlign.right,
             ),
           ),
-          ImageCard(imgUrl: 'https://cdn.pixabay.com/photo/2017/12/10/13/37/christmas-3009949_1280.jpg',),
+          ImageCard(
+            imgUrl:
+                'https://cdn.pixabay.com/photo/2017/12/10/13/37/christmas-3009949_1280.jpg',
+          ),
         ],
       ),
     );
