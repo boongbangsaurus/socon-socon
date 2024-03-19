@@ -133,7 +133,7 @@ public class StoreService {
     }
 
     // 가게 정보 수정
-    public Store updateStoreInfo(Integer storeId, UpdateStoreInfoRequest request, MemberRequest memberRequest) {
+    public void updateStoreInfo(Integer storeId, UpdateStoreInfoRequest request, MemberRequest memberRequest) {
 
         var store = storeRepository.findById(storeId).orElseThrow(() -> new StoreNotFoundException("Store not found, store_id : " + storeId));
 
@@ -185,7 +185,6 @@ public class StoreService {
 
             storeRepository.save(store);
 
-            return store;
         }
     }
 
