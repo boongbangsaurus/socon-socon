@@ -35,7 +35,7 @@ pipeline {
         }
         stage("Build & Run") {
             steps {
-                dir("infra/jenkins/back/socon"){
+                dir("backend/socon"){
                     script {
                         try {
                             sh "docker build -t kimdahui/socon ."

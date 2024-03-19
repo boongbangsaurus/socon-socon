@@ -35,7 +35,7 @@ pipeline {
         }
         stage("Build & Run") {
             steps {
-                dir("infra/jenkins/back/notification"){
+                dir("backend/notification"){
                     script {
                         try {
                             sh "docker build -t kimdahui/notification ."

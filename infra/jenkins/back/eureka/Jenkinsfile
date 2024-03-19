@@ -34,7 +34,7 @@ pipeline {
         }
         stage("Build & Run") {
             steps {
-                dir("infra/jenkins/back/eureka"){
+                dir("backend/eureka"){
                     script {
                         try {
                             sh "docker build -t kimdahui/eureka ."

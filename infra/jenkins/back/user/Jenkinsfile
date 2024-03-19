@@ -35,7 +35,7 @@ pipeline {
         }
         stage("Build & Run") {
             steps {
-                dir("infra/jenkins/back/user"){
+                dir("backend/user"){
                     script {
                         try {
                             sh "docker build -t kimdahui/user ."
