@@ -15,6 +15,15 @@ import site.soconsocon.utils.MessageUtils;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(NullPointerException.class)
+    public ResponseEntity<Object> handleNullPointerException(NullPointerException ex) {
+        // 예외 처리
+        log.error("NullPointerException occurred: {}", ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(MessageUtils.fail(ErrorCode.INTERNAL_SERVER_ERROR.getErrorCode(), ErrorCode.INTERNAL_SERVER_ERROR.getMessage()));
+    }
+
+
 
     @ExceptionHandler(StoreNotFoundException.class)
     public ResponseEntity<Object> handleStoreNotFoundException(StoreNotFoundException e) {

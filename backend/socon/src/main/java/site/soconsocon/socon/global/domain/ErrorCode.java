@@ -26,6 +26,9 @@ public enum ErrorCode {
     ALREADY_SAVED_REGISTRATION_NUMBER(HttpStatus.CONFLICT, "406 CONFLICT", "이미 등록된 사업자번호입니다."),
     ALREADY_SET_CLOSE_PLAN(HttpStatus.CONFLICT, "406 CONFLICT", "이미 폐업신고 된 가게입니다."),
 
+
+    // 500 INTERNAL SERVER ERROR
+    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "500 INTERNAL_SERVER_ERROR", "서버 에러 발생"),
     ;
 
     private final HttpStatus httpStatus;
