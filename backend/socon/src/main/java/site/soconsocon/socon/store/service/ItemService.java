@@ -7,6 +7,7 @@ import site.soconsocon.socon.store.domain.dto.request.MemberRequest;
 import site.soconsocon.socon.store.domain.dto.response.ItemListResponse;
 import site.soconsocon.socon.store.domain.entity.jpa.Item;
 import site.soconsocon.socon.store.domain.entity.jpa.Store;
+import site.soconsocon.socon.store.exception.ForbiddenException;
 import site.soconsocon.socon.store.repository.ItemRepository;
 import site.soconsocon.socon.store.repository.StoreRepository;
 
@@ -51,12 +52,11 @@ public class ItemService {
         if(storeMemberId == memberRequest.getMemberId()){
             // 점주 id와 일치할 경우
             List<ItemListResponse> itemList = itemRepository.findItemsByStoreId(StoreId);
-
             return itemList;
-
         }
         else {
-            return null;
+            // 본인 가게가 아닌 경우
+            throw new ForbiddenException("Forbidden, storeId : " + StoreId + ", memberId : " + memberRequest.getMemberId());
         }
     }
 
