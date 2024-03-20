@@ -52,5 +52,18 @@ public class SoconApiController {
         return ResponseEntity.ok().body(MessageUtils.success());
     }
 
+    // 소콘북 검색
+    @PostMapping("/book/search?category={category}&keyword={keyword}")
+    public ResponseEntity<Object> soconBookSearch(
+            @PathVariable("category") String category,
+            @PathVariable("keyword") String keyword,
+            MemberRequest memberRequest
+    ){
+
+
+
+        return ResponseEntity.ok().body(MessageUtils.success());
+    }
+
 
 }
