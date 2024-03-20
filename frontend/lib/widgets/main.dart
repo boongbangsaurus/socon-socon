@@ -56,8 +56,6 @@ class MyApp extends StatelessWidget {
                   color: AppColors.WHITE,
                 ),
               ),
-              // Button components Test: Hayoon
-              LargeButton(text: "저장", onPressed: () {})
               // Container(
               //     width: ResponsiveUtils.getHeightWithPixels(context, 200),
               //     height: ResponsiveUtils.getHeightWithPixels(context, 60),
