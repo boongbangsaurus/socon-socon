@@ -1,22 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:socon/utils/responsive_utils.dart';
 
 class ImageLoader extends StatelessWidget {
-  final String ImageUrl;
-  final double width;
-  final double height;
-  final double radius;
-  const ImageLoader({super.key, required this.ImageUrl, required this.width, required this.height, required this.radius});
+  final String imageUrl;
+
+  // const ImageLoader({super.key, required this.imageUrl, required this.width, required this.height, required this.radius});
+  const ImageLoader({super.key, required this.imageUrl});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(radius),
-      ),
       child: Image(
-        image: NetworkImage(ImageUrl),
-        width: width,
-        height: height,
+        image: NetworkImage(imageUrl),
+        width: ResponsiveUtils.getWidthWithPixels(context, 77),
+        height: ResponsiveUtils.getHeightWithPixels(context, 77),
       )
     );
   }

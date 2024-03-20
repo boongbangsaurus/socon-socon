@@ -7,15 +7,12 @@ class PlaceList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return const Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Container(
-          width: ResponsiveUtils.getWidthWithPixels(context, 320),
-          height: ResponsiveUtils.getHeightPercent(context, 50),
-          color: AppColors.INDIGO200,
-          child: PlaceListCard(),
-        )
+        PlaceListCard(),
+        PlaceListCard(),
+        PlaceListCard(),
       ],
     );
   }
