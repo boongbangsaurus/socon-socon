@@ -40,5 +40,5 @@ networks:
     external: true
 
 volumes:
-  infra/redis/data:
-  infra/redis-key/data:
+  redis:
+  redis-key:
