@@ -9,7 +9,7 @@ pipeline {
                 checkout scmGit(
                         branches: [[name: 'develop']],
                         extensions: [submodule(parentCredentials: true, trackingSubmodules: true)],
-                        utilsRemoteConfigs: [[credentialsId: 'github-access-token', url: 'https://github.com/boongbangsaurus/boongbang-settings']]
+                        userRemoteConfigs: [[credentialsId: 'github-access-token', url: 'https://github.com/boongbangsaurus/boongbang-settings']]
                 )
             }
         }
@@ -37,12 +37,7 @@ pipeline {
             steps {
                 dir("backend/utils"){
                     script {
-                        try {
-                            sh "docker build -t kimdahui/utils ."
-                            sh "docker run -d --name utils"
-                        }catch (Exception e) {
-                            sh "docker restart utils"
-                        }
+                        sh "docker build -t kimdahui/utils ."
                     }
                 }
             }
