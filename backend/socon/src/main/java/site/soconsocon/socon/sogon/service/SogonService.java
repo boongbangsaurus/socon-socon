@@ -5,8 +5,10 @@ import org.springframework.stereotype.Service;
 import site.soconsocon.socon.global.exception.ForbiddenException;
 import site.soconsocon.socon.global.exception.badrequest.InvalidSoconException;
 import site.soconsocon.socon.global.exception.notfound.SoconNotFoundException;
+import site.soconsocon.socon.sogon.domain.dto.request.AddCommentRequest;
 import site.soconsocon.socon.sogon.domain.dto.request.AddSogonRequest;
-import site.soconsocon.socon.sogon.domain.entity.Sogon;
+import site.soconsocon.socon.sogon.domain.entity.jpa.Sogon;
+import site.soconsocon.socon.sogon.repository.CommentRepository;
 import site.soconsocon.socon.sogon.repository.SogonRepository;
 import site.soconsocon.socon.store.domain.dto.request.MemberRequest;
 import site.soconsocon.socon.store.domain.entity.jpa.Socon;
@@ -21,6 +23,7 @@ public class SogonService {
 
     private final SoconRepository soconRepository;
     private final SogonRepository sogonRepository;
+    private final CommentRepository commentRepository;
 
 
     public void addSogon(AddSogonRequest request, MemberRequest memberRequest) {
@@ -64,6 +67,15 @@ public class SogonService {
                 .lat(request.getLat())
                 .lng(request.getLng())
                 .build();
+
         sogonRepository.save(sogon);
+    }
+
+    public void addSogonComment(Integer sogonId,
+                                Integer commentId,
+                                AddCommentRequest request,
+                                MemberRequest memberRequest) {
+        Sogon sogon = sogonRepository.findById(sogonId)
+                .orElseThrow();
     }
 }

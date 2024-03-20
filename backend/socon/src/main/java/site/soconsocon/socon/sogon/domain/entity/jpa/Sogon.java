@@ -1,10 +1,12 @@
-package site.soconsocon.socon.sogon.domain.entity;
+package site.soconsocon.socon.sogon.domain.entity.jpa;
 
 import jakarta.persistence.*;
 import lombok.*;
 import site.soconsocon.socon.store.domain.entity.jpa.Socon;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity(name="SOGON")
 @AllArgsConstructor
@@ -53,4 +55,8 @@ public class Sogon {
     @OneToOne
     @JoinColumn(name = "socon_id")
     private Socon socon;
+
+    @OneToMany(mappedBy = "comment")
+    private List<Comment> comments = new ArrayList<>();
+
 }

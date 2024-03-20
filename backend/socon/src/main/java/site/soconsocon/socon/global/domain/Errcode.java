@@ -24,6 +24,7 @@ public enum Errcode {
     ITEM_NOT_FOUND(HttpStatus.NOT_FOUND, "404 ITEM_NOT_FOUND", "존재하지 않는 상품 ID입니다."),
     ISSUE_NOT_FOUND(HttpStatus.NOT_FOUND, "404 ISSUE_NOT_FOUND", "존재하지 않는 발행 ID입니다."),
     SOCON_NOT_FOUND(HttpStatus.NOT_FOUND, "404 SOCON_NOT_FOUND", "존재하지 않는 소콘 ID입니다."),
+    SOGON_NOT_FOUND(HttpStatus.NOT_FOUND, "404 SOGON_NOT_FOUND", "존재하지 않는 소곤 ID입니다."),
     REGISTRATION_NUMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "404 REGISTRATION_NUMBER_NOT_FOUND", "존재하지 않는 사업자번호 ID입니다."),
 
     // 406 CONFLICT
