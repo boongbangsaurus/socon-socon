@@ -4,17 +4,20 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:socon/widgets/socon_mysocon.dart';
+import 'package:socon/widgets/socon_storesocon.dart';
 
 
 class Sogon extends StatelessWidget {
   Sogon({super.key});
 
   // 데이터 배열
-  final List<String> soconNames = ['소금빵', '마카롱', '상추', '콜라', '후라이드', '아메리카노'];
+  final List<String> soconNames = ['소금빵테스트입니다', '마카롱', '상추', '콜라', '후라이드', '아메리카노'];
   final List<String> storeNames = ['오소유', '빵집1', '마트1', '마트2', '치킨집', '카페1'];
   final List<String> dueDate = ['2024-02-11', '2024-02-10', '2025-06-09', '2024-07-12', '2024-08-30', '2024-01-01'];
   final List<String> imageUrl = ['https://cdn.pixabay.com/photo/2017/12/10/13/37/christmas-3009949_1280.jpg','https://cdn.pixabay.com/photo/2017/12/10/13/37/christmas-3009949_1280.jpg','https://cdn.pixabay.com/photo/2017/12/10/13/37/christmas-3009949_1280.jpg','https://cdn.pixabay.com/photo/2017/12/10/13/37/christmas-3009949_1280.jpg','https://cdn.pixabay.com/photo/2017/12/10/13/37/christmas-3009949_1280.jpg','https://cdn.pixabay.com/photo/2017/12/10/13/37/christmas-3009949_1280.jpg',];
-
+  final List<int> leftNumber = [3, 4, 5, 1, 1, 3];
+  final List<int> cost = [];
+  final List<int> discount = [];
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +34,7 @@ class Sogon extends StatelessWidget {
           crossAxisSpacing: 5, //수직 Padding
         ),
         itemBuilder: (BuildContext context, index) {
-          return MySocon(
+          return StoreSoconLists(
             soconName: soconNames[index],
             storeName: storeNames[index],
             dueDate: dueDate[index],
