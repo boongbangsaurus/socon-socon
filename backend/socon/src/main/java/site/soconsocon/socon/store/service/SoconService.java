@@ -2,16 +2,23 @@ package site.soconsocon.socon.store.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import site.soconsocon.socon.global.exception.ForbiddenException;
+import site.soconsocon.socon.global.exception.badrequest.BadRequest;
+import site.soconsocon.socon.global.exception.badrequest.InvalidSoconException;
+import site.soconsocon.socon.global.exception.notfound.SoconNotFoundException;
 import site.soconsocon.socon.store.domain.dto.request.MemberRequest;
+import site.soconsocon.socon.store.domain.dto.request.SoconApprovalRequest;
 import site.soconsocon.socon.store.domain.dto.response.UnusableSoconListResponse;
 import site.soconsocon.socon.store.domain.dto.response.UsableSoconListResponse;
 import site.soconsocon.socon.store.domain.dto.response.SoconInfoResponse;
 import site.soconsocon.socon.store.domain.entity.jpa.Issue;
 import site.soconsocon.socon.store.domain.entity.jpa.Item;
 import site.soconsocon.socon.store.domain.entity.jpa.Socon;
+import site.soconsocon.socon.store.domain.entity.jpa.Store;
 import site.soconsocon.socon.store.repository.IssueRepository;
 import site.soconsocon.socon.store.repository.SoconRepository;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -84,7 +91,35 @@ public class SoconService {
         response.put("unusableSocons", unusableSocons);
 
         return response;
+    }
 
+    // 소콘 사용 승인
+    public void soconApproval(
+            SoconApprovalRequest request,
+            MemberRequest memberRequest
+    ){
+        Socon socon = soconRepository.findById(request.getSoconId())
+                .orElseThrow(()-> new SoconNotFoundException("NOT FOUND BY ID : " + request.getSoconId()));
 
+        if(socon.getIssue().getItem().getStore().getId() != memberRequest.getMemberId()){
+            // 요청자가 해당 점포 주인이 아닌 경우
+            throw new ForbiddenException("FORBIDDEN, request doesn't allowed to this memberId");
+        }
+
+        if(!socon.getIsUsed() && socon.getExpiredAt().isAfter(LocalDateTime.now())){
+            socon.setIsUsed(true);
+            socon.setUsedAt(LocalDateTime.now());
+            soconRepository.save(socon);
+        }
+        else{
+            if(socon.getIsUsed()){
+                // 이미 사용된 소콘
+                throw new InvalidSoconException("사용된 소콘. 사용일시 : " + socon.getUsedAt().toString());
+            }
+            else{
+                // 만료된 소콘
+                throw new InvalidSoconException("만료된 소콘. 만료일시 : " + socon.getExpiredAt().toString());
+            }
+        }
     }
 }
