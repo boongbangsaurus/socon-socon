@@ -1,9 +1,14 @@
 package site.soconsocon.utils;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.*;
+import site.soconsocon.utils.exception.CustomError;
+
+import java.io.IOException;
 
 @Data
 @Builder
@@ -36,6 +41,14 @@ public class MessageUtils<T> {
                 .dataHeader(DataHeader.fail(resultCode, resultMessage))
                 .dataBody(null)
                 .build();
+    }
+
+    public static void customExceptionHandler(HttpServletResponse response, CustomError errorCode) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        response.setStatus(errorCode.getHttpStatus().value());
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write(objectMapper.writeValueAsString(MessageUtils.fail(errorCode.getErrorCode(),errorCode.getMessage())));
     }
 
     @AllArgsConstructor
