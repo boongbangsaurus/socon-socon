@@ -35,7 +35,7 @@ public class GlobalExceptionHandler {
         String errorMessage = Errcode.BAD_REQUEST.getMessage();
         String errorCode = Errcode.BAD_REQUEST.getErrorCode();
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(MessageUtils.fail(errorCode, errorMessage));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(MessageUtils.fail(errorCode, errorMessage + e.getMessage()));
     }
 
     @ExceptionHandler(BadRequestValue.class)
