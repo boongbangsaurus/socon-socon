@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:socon/utils/colors.dart';
 import 'package:socon/utils/fontSizes.dart';
 import 'package:socon/utils/responsive_utils.dart';
-import 'package:socon/widgets/buttons.dart';
 
 void main() {
   runApp(const MyApp());
