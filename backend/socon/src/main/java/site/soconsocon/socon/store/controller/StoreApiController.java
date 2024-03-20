@@ -163,13 +163,13 @@ public class StoreApiController {
         return ResponseEntity.ok().body(MessageUtils.success(null));
     }
 
-    // 관심 가게 추가
+    // 관심 가게 추가, 취소
     @PostMapping("/favorite/{store_id}")
-    public ResponseEntity<Object> addFavorite(
+    public ResponseEntity<Object> favoriteStore(
         @PathVariable("store_id") Integer storeId,
         MemberRequest memberRequest
     ){
-        storeService.addFavoriteStore(storeId, memberRequest);
+        storeService.favoriteStore(storeId, memberRequest);
 
         return ResponseEntity.ok().body(MessageUtils.success(null));
     }

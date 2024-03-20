@@ -15,6 +15,7 @@ public interface FavStoreRepository extends JpaRepository<FavStore, Integer> {
     @Query("SELECT s FROM FAV_STORE s WHERE s.memberId = :memberId")
     List<FavStore> findByMemberId(Integer memberId);
 
-    @Query("SELECT COUNT(*) FROM FAV_STORE s WHERE s.memberId = :memberId AND s.storeId = :storeId")
-    Integer isDuplicated(Integer memberId, Integer storeId);
+    @Query("SELECT s FROM FAV_STORE s WHERE s.memberId = :memberId AND s.storeId = :storeId")
+    FavStore isExist(Integer memberId, Integer storeId);
+
 }

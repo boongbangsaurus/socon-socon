@@ -209,18 +209,26 @@ public class StoreService {
         }
     }
 
-    // 관심 가게 추가
-    public void addFavoriteStore(Integer storeId, MemberRequest memberRequest) {
+    // 관심 가게 추가, 취소
+    public void favoriteStore(Integer storeId, MemberRequest memberRequest) {
 
         Store store = storeRepository.findById(storeId)
                         .orElseThrow(() -> new StoreNotFoundException("Store not found, store_id : " + storeId));
-        if(!store.getIsClosed() && favStoreRepository.isDuplicated(memberRequest.getMemberId(), storeId) == 0){
-            favStoreRepository.save(FavStore.builder()
-                    .memberId(memberRequest.getMemberId())
-                    .storeId(storeId)
-                    .build());
+        if(!store.getIsClosed()){
+            FavStore favStore = favStoreRepository.isExist(memberRequest.getMemberId(), storeId);
+            if(favStore != null){
+                // 이미 좋아요 한 경우
+                favStoreRepository.delete(favStore);
+            }
+            else {
+                favStoreRepository.save(FavStore.builder()
+                        .memberId(memberRequest.getMemberId())
+                        .storeId(storeId)
+                        .build());
+            }
         }
         else{
+            // 폐업상태일 경우
             throw new BadRequest("Bad request, storeId : " + storeId + ", memberId : " + memberRequest.getMemberId());
         }
     }
