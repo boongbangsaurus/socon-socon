@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import site.soconsocon.socon.store.domain.dto.request.AddMySoconRequest;
 import site.soconsocon.socon.store.domain.dto.request.MemberRequest;
+import site.soconsocon.socon.store.domain.dto.request.OrderRequest;
 import site.soconsocon.socon.store.service.IssueService;
 import site.soconsocon.socon.store.service.ItemService;
 import site.soconsocon.socon.store.service.StoreService;
@@ -38,6 +39,18 @@ public class IssueApiController {
             MemberRequest memberRequest
     ){
         issueService.stopIssue(issueId, memberRequest);
+
+        return ResponseEntity.ok().body(MessageUtils.success(null));
+    }
+
+    // 소콘 주문
+    @PostMapping("/{issue_id}/order")
+    public ResponseEntity<Object> order(
+            @PathVariable("issue_id") Integer issueId,
+            OrderRequest request,
+            MemberRequest memberRequest
+    ){
+        issueService.order(issueId, request, memberRequest);
 
         return ResponseEntity.ok().body(MessageUtils.success(null));
     }
