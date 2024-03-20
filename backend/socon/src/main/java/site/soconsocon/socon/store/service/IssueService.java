@@ -16,9 +16,11 @@ import site.soconsocon.socon.global.exception.notfound.IssueNotFoundException;
 import site.soconsocon.socon.global.exception.notfound.ItemNotFoundException;
 import site.soconsocon.socon.store.repository.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
@@ -36,7 +38,7 @@ public class IssueService {
 
         Integer storeMemberId = storeRepository.findMemberIdByStoreId(storeId);
 
-        if(storeMemberId != memberRequest.getMemberId()){
+        if(!Objects.equals(storeMemberId, memberRequest.getMemberId())){
             // 본인 가게 아닐 경우
             throw new ForbiddenException("본인 점포 아님. storeId : " + storeId + ", memberId : " + memberRequest.getMemberId());
         }
@@ -57,7 +59,7 @@ public class IssueService {
                           Integer itemId,
                           MemberRequest memberRequest)
     {
-        if(memberRequest.getMemberId() != itemRepository.findMemberIdByItemId(itemId)){
+        if(!Objects.equals(memberRequest.getMemberId(), itemRepository.findMemberIdByItemId(itemId))){
             throw new ForbiddenException("Forbidden, itemId : " + itemId + ", memberId : " + memberRequest.getMemberId());
         }
         else{
@@ -122,7 +124,7 @@ public class IssueService {
         Issue issue = issueRepository.findById(issueId)
                 .orElseThrow(() -> new IssueNotFoundException("NOT FOUND BY ID : " + issueId));
 
-        if(issue.getItem().getStore().getMemberId() != memberRequest.getMemberId()){
+        if(!Objects.equals(issue.getItem().getStore().getMemberId(), memberRequest.getMemberId())){
             // 본인 점포의 상품이 아닐 경우
             throw new ForbiddenException("Forbidden, issueId : " + issueId + ", memberId : " + memberRequest.getMemberId());
         }
@@ -158,12 +160,15 @@ public class IssueService {
             throw new BadRequest("발행 중지/완료된 소콘. issueId : " + issueId);
         }
         else{
+            // 주문번호 생성
+            String orderUid = LocalDate.now() + "-" + UUID.randomUUID().toString().replace("-", "");
+
             // 주문 엔터티 생성
             Order order = new Order().builder()
                     .price(request.getPrice())
                     .name(issue.getName())
                     .quantity(request.getOrderQuantity())
-                    .orderUid("")
+                    .orderUid(orderUid)
                     .orderStatus("success")
                     .orderTime(LocalDateTime.now())
                     .build();

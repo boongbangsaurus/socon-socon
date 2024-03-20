@@ -27,10 +27,10 @@ public class Order {
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
 
-    @Column(name = "order_uid", nullable = true)
+    @Column(name = "order_uid")
     private String orderUid;
 
-    @Column(name = "order_status", nullable = true)
+    @Column(name = "order_status")
     private String orderStatus;
 
     @Column(name = "order_time", nullable = false)

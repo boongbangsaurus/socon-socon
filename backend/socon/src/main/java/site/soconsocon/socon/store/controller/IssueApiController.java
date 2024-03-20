@@ -16,9 +16,7 @@ import site.soconsocon.utils.MessageUtils;
 @RequiredArgsConstructor
 public class IssueApiController {
 
-    private StoreService storeService;
-    private IssueService issueService;
-    private ItemService itemService;
+    private final IssueService issueService;
 
     // 소콘 발행(생성)
     @PostMapping("/{issue_id}")
