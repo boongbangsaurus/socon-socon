@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:socon/view/atoms/searchBox.dart';
+import 'package:socon/view/modules/PlaceList.dart';
 import './utils/toast_utils.dart';
 
 void main() {
@@ -43,13 +44,14 @@ class _MainScreen extends State<MainScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SearchBox(),
+            const SearchBox(),
             ElevatedButton(
-              child: Text("Show Toast"),
+              child: const Text("Show Toast"),
               onPressed: () {
                 ToastUtil.showCustomToast(context, "availableSocon");
               },
             ),
+            PlaceList(),
           ],
         ),
       ),
