@@ -23,7 +23,7 @@ pipeline {
         stage("Build") {
             steps {
                 dir("infra/redis"){
-                    sh "docker compose -p redis-project build"
+                    sh "docker-compose -p redis-project build"
                 }
             }
         }
@@ -39,11 +39,11 @@ pipeline {
                 dir("infra/redis"){
                     script {
                         try {
-                            sh "docker compose up -d"
+                            sh "docker-compose up -d"
                         } catch (Exception e) {
                             // 'docker compose up -d' 명령이 실패한 경우
                             echo "Failed to up. Starting 'docker compose start'..."
-                            sh "docker compose restart"
+                            sh "docker-compose restart"
                         }
                     }
                 }
