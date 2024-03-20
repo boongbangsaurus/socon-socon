@@ -1,4 +1,4 @@
-package site.soconsocon.socon.sogon.domain;
+package site.soconsocon.socon.sogon.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
 @ToString
 public class Sogon {
 
@@ -29,10 +30,10 @@ public class Sogon {
     private LocalDateTime createdDate;
 
     @Column(name = "is_expired", nullable = false, columnDefinition = "boolean default false")
-    private LocalDateTime isExpired; // 만료 여부
+    private LocalDateTime isExpired; // 만료 일시
 
     @Column(name = "is_picked", nullable = false, columnDefinition = "boolean default false")
-    private LocalDateTime isPicked; // 채택 소곤 여부
+    private Boolean isPicked; // 채택 소곤 여부
 
     @Column(name = "image1", nullable = true)
     private String image1; // 이미지 1
@@ -50,6 +51,6 @@ public class Sogon {
     private Integer memberId; // 멤버 id
 
     @OneToOne
-    @JoinColumn(name = "my_socon_id")
-    private Socon mySocon;
+    @JoinColumn(name = "socon_id")
+    private Socon socon;
 }
