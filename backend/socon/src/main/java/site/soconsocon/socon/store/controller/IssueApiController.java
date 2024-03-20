@@ -26,7 +26,6 @@ public class IssueApiController {
             AddMySoconRequest request,
             MemberRequest memberRequest
     ){
-
         issueService.saveMySocon(issueId, request, memberRequest);
 
         return ResponseEntity.ok().body(MessageUtils.success(null));

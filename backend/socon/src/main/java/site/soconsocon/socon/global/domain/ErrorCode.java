@@ -14,6 +14,7 @@ public enum ErrorCode {
     // 400 BAD REQUEST
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "400 BAD_REQUEST", "잘못된 요청입니다"),
     BAD_REQUEST_VALUE(HttpStatus.BAD_REQUEST, "400 BAD_REQUEST", "요청 값이 잘못되었습니다."),
+    INVALID_SOCON(HttpStatus.BAD_REQUEST, "400 BAD_REQUEST", "사용 불가능한 소콘"),
 
     // 403 FORBIDDEN
     FORBIDDEN(HttpStatus.FORBIDDEN, "403 FORBIDDEN", "해당 memberId에 허용되지 않는 요청입니다."),
