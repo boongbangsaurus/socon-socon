@@ -16,7 +16,7 @@ pipeline {
         stage('Move .env File') {
             steps {
                 script{
-                    sh "cp -r secure-settings/back/.env .env"
+                    sh "cp -r secure-settings/back/.env infra/redis/.env"
                 }
             }
         }
