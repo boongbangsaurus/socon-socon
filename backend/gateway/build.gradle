@@ -77,6 +77,11 @@ tasks.register('copyPrivate', Copy) {
         include "*.yml"
         into 'src/main/resources'
     }
+    copy {
+        from '../../secure-settings/'
+        include "gradle.properties"
+        into '.'
+    }
 }
 
 processResources {

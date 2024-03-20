@@ -29,7 +29,7 @@ public class MemberDetailService implements UserDetailsService {
         if (result.isPresent()) {
             Member member = result.get();
             MemberDetails userDetails = new MemberDetails(member);
-            userDetails.setAuthorities(Arrays.asList(new SimpleGrantedAuthority(member.getRole())));
+            userDetails.setAuthorities(Arrays.asList(new SimpleGrantedAuthority(String.valueOf(member.getRole()))));
             return userDetails;
         }
         return null;

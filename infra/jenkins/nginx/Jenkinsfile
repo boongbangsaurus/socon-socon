@@ -6,8 +6,19 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-//                 cleanWs()
-                checkout scm
+                checkout scmGit(
+                        branches: [[name: 'develop']],
+                        extensions: [submodule(parentCredentials: true, trackingSubmodules: true)],
+                        userRemoteConfigs: [[credentialsId: 'github-access-token', url: 'https://github.com/boongbangsaurus/boongbang-settings']]
+                )
+            }
+        }
+        stage('Move .env File') {
+            steps {
+                script{
+                    sh "rm -rf infra/nginx/letsencrypt"
+                    sh "cp -r secure-settings/letsencrypt infra/nginx/letsencrypt"
+                }
             }
         }
         stage("Build") {

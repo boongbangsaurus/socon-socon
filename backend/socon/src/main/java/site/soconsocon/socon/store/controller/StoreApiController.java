@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import site.soconsocon.socon.store.domain.dto.request.*;
+import site.soconsocon.socon.store.domain.dto.response.FavoriteStoresListResponse;
 import site.soconsocon.socon.store.domain.dto.response.IssueListResponse;
 import site.soconsocon.socon.store.domain.dto.response.ItemListResponse;
 import site.soconsocon.socon.store.domain.dto.response.StoreInfoResponse;
@@ -24,26 +25,29 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class StoreApiController {
 
-    private StoreService storeService;
-    private IssueService issueService;
-    private ItemService itemService;
+    private final StoreService storeService;
+    private final IssueService issueService;
+    private final ItemService itemService;
 
 
     // 가게 정보 등록
     @PostMapping("")
-    public ResponseEntity saveStore(
+    public ResponseEntity<Object> saveStore(
             @Valid
             @RequestBody
             AddStoreRequest request,
             MemberRequest memberRequest
     ) {
-        return ResponseEntity.created(null).body(MessageUtils.success(null));
+
+        storeService.saveStore(request, memberRequest);
+
+        return ResponseEntity.ok().body(MessageUtils.success(null));
 
     }
 
     // 가게 정보 목록 조회
     @GetMapping("")
-    public ResponseEntity getStoreList(MemberRequest memberRequest) {
+    public ResponseEntity<Object> getStoreList(MemberRequest memberRequest) {
 
         List<Store> stores = storeService.getStoreList(memberRequest);
 
@@ -58,7 +62,7 @@ public class StoreApiController {
     }
     // 가게 정보 상세 조회
     @GetMapping("/{store_id}/info")
-    public ResponseEntity getStoreInfo(
+    public ResponseEntity<Object> getStoreInfo(
             @PathVariable("store_id") Integer storeId,
             MemberRequest memberRequest
     ){
@@ -81,7 +85,7 @@ public class StoreApiController {
 
     // 점주 가게 상세 정보 조회
     @GetMapping("/stores/{store_id}/manage/info")
-    public ResponseEntity getDetailStoreInfo(
+    public ResponseEntity<Object> getDetailStoreInfo(
             @PathVariable("store_id") Integer storeId,
             MemberRequest memberRequest
     ){
@@ -97,18 +101,20 @@ public class StoreApiController {
 
     // 가게 정보 수정
     @PutMapping("/{store_id}/info")
-    public ResponseEntity updateStoreInfo(
+    public ResponseEntity<Object> updateStoreInfo(
             UpdateStoreInfoRequest request,
             @PathVariable("store_id") Integer storeId,
             MemberRequest memberRequest
     ){
+
+        storeService.updateStoreInfo(storeId, request, memberRequest);
 
         return ResponseEntity.ok().body(MessageUtils.success(null));
     }
 
     // 가게 폐업 정보 업데이트
     @PutMapping("/{store_id}/manage/info")
-    public ResponseEntity updateClosedPlanned(
+    public ResponseEntity<Object> updateClosedPlanned(
             @PathVariable("store_id") Integer storeId,
             UpdateClosedPlannedRequest request,
             MemberRequest memberRequest
@@ -121,18 +127,20 @@ public class StoreApiController {
 
     // 상품 정보 등록
     @PostMapping("/stores/{store_id}/items")
-    public ResponseEntity saveStoreItem(
+    public ResponseEntity<Object> saveStoreItem(
         @PathVariable("store_id") Integer storeId,
         @RequestBody AddItemRequest request,
         MemberRequest memberRequest
     ){
+
+        itemService.saveItem(request, storeId, memberRequest);
 
         return ResponseEntity.ok().body(MessageUtils.success(null));
     }
 
     // 상품 정보 상세 조회
     @GetMapping("/stores/{store_id}/items/{item_id}")
-    public ResponseEntity getDetailItemInfo(
+    public ResponseEntity<Object> getDetailItemInfo(
         @PathVariable("store_id") Integer storeId,
         @PathVariable("item_id") Integer itemId,
         MemberRequest memberRequest
@@ -144,16 +152,36 @@ public class StoreApiController {
 
     // 상품 발행 정보 등록
     @PostMapping("/stores/{store_id}/items/{item_id}")
-    public ResponseEntity saveIssue(
+    public ResponseEntity<Object> saveIssue(
         @PathVariable("store_id") Integer storeId,
         @PathVariable("item_id") Integer itemId,
         @RequestBody AddIssueRequest request,
         MemberRequest memberRequest
     ){
+        issueService.saveIssue(request, storeId, itemId, memberRequest);
 
         return ResponseEntity.ok().body(MessageUtils.success(null));
     }
 
+    // 관심 가게 추가, 취소
+    @PostMapping("/favorite/{store_id}")
+    public ResponseEntity<Object> favoriteStore(
+        @PathVariable("store_id") Integer storeId,
+        MemberRequest memberRequest
+    ){
+        storeService.favoriteStore(storeId, memberRequest);
 
+        return ResponseEntity.ok().body(MessageUtils.success(null));
+    }
+
+    // 관심 가게 목록 조회
+    @GetMapping("/favorite")
+    public ResponseEntity<Object> getFavoriteList(
+        MemberRequest memberRequest
+    ){
+        List <FavoriteStoresListResponse> stores = storeService.getFavoriteStoreList(memberRequest);
+
+        return ResponseEntity.ok().body(MessageUtils.success(stores));
+    }
 
 }

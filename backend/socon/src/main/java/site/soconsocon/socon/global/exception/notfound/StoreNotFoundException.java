@@ -1,6 +1,6 @@
-package site.soconsocon.socon.store.exception.NotFoundException;
+package site.soconsocon.socon.global.exception.notfound;
 
-import site.soconsocon.socon.store.exception.CustomException;
+import site.soconsocon.socon.global.exception.CustomException;
 
 public class StoreNotFoundException extends CustomException {
     public StoreNotFoundException(String message){
