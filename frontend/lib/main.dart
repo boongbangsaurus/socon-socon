@@ -59,16 +59,20 @@ class _MainScreen extends State<MainScreen> {
               child: const PlaceList(),
             )),
             SizedBox(
-              height: 80,
-              width: 300,
-              child: Inputs(
-                labelText: '아이디',
-                onSaved: (val) {},
-                validator: (val) {
-                  return null;
-                },
-              ),
-            ),
+                height: 100,
+                width: 300,
+                child: CustomTextFormField(
+                    labelText: '아이디',
+                    onSaved: (String? val) {},
+                    validator: (String? val) {
+                      if (val!.isEmpty) {
+                        return "Please enter some text";
+                      }
+                      if (!RegExp(r'^.{5,}$').hasMatch(val)) {
+                        return ("Minimum of 5 characters Required");
+                      }
+                      return null;
+                    })),
           ],
         ),
       ),
