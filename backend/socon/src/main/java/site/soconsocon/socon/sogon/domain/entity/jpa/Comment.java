@@ -25,8 +25,8 @@ public class Comment {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "is_chosen")
-    private Boolean isChosen;
+    @Column(name = "is_picked")
+    private Boolean isPicked;
 
     @ManyToOne
     @JoinColumn(name = "sogon_id")

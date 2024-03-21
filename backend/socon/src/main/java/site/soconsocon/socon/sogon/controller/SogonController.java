@@ -68,5 +68,13 @@ public class SogonController {
         return ResponseEntity.ok().body(MessageUtils.success(sogonService.getMySogons(memberRequest)));
     }
 
+    // 작성 댓글 목록 조회
+    @GetMapping("/mine/comments")
+    public ResponseEntity<Object> getMyComments(
+        MemberRequest memberRequest
+    ){
+        return ResponseEntity.ok().body(MessageUtils.success(sogonService.getMyComments(memberRequest)));
+    }
+
 
 }

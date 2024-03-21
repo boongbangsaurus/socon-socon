@@ -10,6 +10,7 @@ import site.soconsocon.socon.global.exception.notfound.SoconNotFoundException;
 import site.soconsocon.socon.global.exception.notfound.SogonNotFoundException;
 import site.soconsocon.socon.sogon.domain.dto.request.AddCommentRequest;
 import site.soconsocon.socon.sogon.domain.dto.request.AddSogonRequest;
+import site.soconsocon.socon.sogon.domain.dto.response.CommentListResponse;
 import site.soconsocon.socon.sogon.domain.dto.response.CommentResponse;
 import site.soconsocon.socon.sogon.domain.dto.response.SogonListResponse;
 import site.soconsocon.socon.sogon.domain.dto.response.SogonResponse;
@@ -98,7 +99,7 @@ public class SogonService {
         Comment comment = new Comment().builder()
                 .content(request.getContent())
                 .createdAt(LocalDateTime.now())
-                .isChosen(false)
+                .isPicked(false)
                 .sogon(sogon)
                 .memberId(memberRequest.getMemberId())
                 .build();
@@ -128,7 +129,7 @@ public class SogonService {
 
         // 소콘 소유권 이전
         socon.setMemberId(comment.getMemberId());
-        comment.setIsChosen(true);
+        comment.setIsPicked(true);
         sogon.setIsPicked(true);
 
         soconRepository.save(socon);
@@ -167,7 +168,7 @@ public class SogonService {
                     .content(comment.getContent())
                     .memberName("수정필요")
                     .memberImg("수정필요")
-                    .isPicked(comment.getIsChosen())
+                    .isPicked(comment.getIsPicked())
                     .build();
 
             commentRepsonses.add(commentResponse);
@@ -176,6 +177,7 @@ public class SogonService {
         return Map.of("sogon", sogonResponse, "comments", commentRepsonses);
     }
 
+    // 작성 소곤 목록 조회
     public List<SogonListResponse> getMySogons(MemberRequest memberRequest) {
 
         List<Sogon> sogons = sogonRepository.findAllByMemberId(memberRequest.getMemberId());
@@ -197,5 +199,24 @@ public class SogonService {
 
         return sogonListResponses;
 
+    }
+
+    // 작성 댓글 목록 조회
+    public List<CommentListResponse> getMyComments(MemberRequest memberRequest) {
+
+        List<Comment> comments = commentRepository.findAllByMemberId(memberRequest.getMemberId());
+        List<CommentListResponse> commentListResponses = new ArrayList<>();
+        for(Comment comment : comments ){
+
+            CommentListResponse commentListResponse = new CommentListResponse().builder()
+                    .title(comment.getSogon().getTitle())
+                    .content(comment.getContent())
+                    .createdAt(comment.getCreatedAt())
+                    .isPicked(comment.getIsPicked())
+                    .build();
+
+            commentListResponses.add(commentListResponse);
+        }
+        return commentListResponses;
     }
 }
