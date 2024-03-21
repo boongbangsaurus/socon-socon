@@ -10,10 +10,8 @@ import site.soconsocon.socon.global.exception.notfound.SoconNotFoundException;
 import site.soconsocon.socon.global.exception.notfound.SogonNotFoundException;
 import site.soconsocon.socon.sogon.domain.dto.request.AddCommentRequest;
 import site.soconsocon.socon.sogon.domain.dto.request.AddSogonRequest;
-import site.soconsocon.socon.sogon.domain.dto.response.CommentListResponse;
-import site.soconsocon.socon.sogon.domain.dto.response.CommentResponse;
-import site.soconsocon.socon.sogon.domain.dto.response.SogonListResponse;
-import site.soconsocon.socon.sogon.domain.dto.response.SogonResponse;
+import site.soconsocon.socon.sogon.domain.dto.request.GetSogonListRequest;
+import site.soconsocon.socon.sogon.domain.dto.response.*;
 import site.soconsocon.socon.sogon.domain.entity.jpa.Comment;
 import site.soconsocon.socon.sogon.domain.entity.jpa.Sogon;
 import site.soconsocon.socon.sogon.repository.CommentRepository;
@@ -22,6 +20,7 @@ import site.soconsocon.socon.store.domain.dto.request.MemberRequest;
 import site.soconsocon.socon.store.domain.entity.jpa.Socon;
 import site.soconsocon.socon.store.repository.SoconRepository;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -70,7 +69,7 @@ public class SogonService {
         Sogon sogon = new Sogon().builder()
                 .title(request.getTitle())
                 .content(request.getContent())
-                .createdDate(LocalDateTime.now())
+                .createdAt(LocalDateTime.now())
                 .expiredAt(now)
                 .isExpired(false)
                 .isPicked(false)
@@ -155,7 +154,7 @@ public class SogonService {
                 .image1(sogon.getImage1())
                 .image2(sogon.getImage2())
                 .soconImg(socon.getIssue().getImage())
-                .createdAt(sogon.getCreatedDate())
+                .createdAt(sogon.getCreatedAt())
                 .expiredAt(sogon.getExpiredAt())
                 .isExpired(sogon.getIsExpired())
                 .build();
@@ -189,7 +188,7 @@ public class SogonService {
             SogonListResponse sogonListResponse = new SogonListResponse().builder()
                     .title(sogon.getTitle())
                     .soconImg(socon.getIssue().getImage())
-                    .createdAt(sogon.getCreatedDate())
+                    .createdAt(sogon.getCreatedAt())
                     .isExpired(sogon.getIsExpired())
                     .isPicked(sogon.getIsPicked())
                     .build();
@@ -218,5 +217,59 @@ public class SogonService {
             commentListResponses.add(commentListResponse);
         }
         return commentListResponses;
+    }
+
+    // 범위 내 소곤 리스트 조회
+    public Object getSogonList(Double x, Double y) {
+        // 중심 좌표와 반경 1.5km 이내에 있는 Sogon 리스트 반환
+
+        double radius = 1.5;
+        double radiusInRadians = radius / 6371.0;
+
+        if (x == null || y == null) {
+            throw new IllegalArgumentException("Center coordinates cannot be null");
+        }
+
+        // 중심 좌표의 위도 경도 값
+        double centerXInRadians = Math.toRadians(x);
+        double centerYInRadians = Math.toRadians(y);
+
+        // 반경 1.5km 이내의 위도 범위 계산
+        double minLatitude = Math.toDegrees(centerXInRadians - radiusInRadians);
+        double maxLatitude = Math.toDegrees(centerXInRadians + radiusInRadians);
+
+        // 반경 1.5km 이내의 경도 범위 계산
+        double minLongitude = Math.toDegrees(centerYInRadians - radiusInRadians / Math.cos(centerXInRadians));
+        double maxLongitude = Math.toDegrees(centerYInRadians + radiusInRadians / Math.cos(centerXInRadians));
+
+        // 중심 좌표를 중심으로 반경 1.5km 이내에 있는 sogon을 조회
+        List<Sogon> sogons = sogonRepository.findByLatitudeBetweenAndLongitudeBetween(
+                minLatitude, maxLatitude, minLongitude, maxLongitude);
+
+        List<GetSogonListResponse> sogonListResponses = new ArrayList<>();
+
+        for(Sogon sogon: sogons){
+
+            LocalDateTime createdAt = sogon.getCreatedAt();
+            LocalDateTime expiredAt = sogon.getExpiredAt();
+
+            Duration duration = Duration.between(createdAt, expiredAt);
+
+
+            GetSogonListResponse response = new GetSogonListResponse().builder()
+                    .id(sogon.getId())
+                    .title(sogon.getTitle())
+                    .lastTime((int)duration.toHours())
+                    .memberName("수정필요")
+                    .commentCount(commentRepository.countBySogonId(sogon.getId()))
+                    .soconImg(sogon.getSocon().getIssue().getImage())
+                    .isPicked(sogon.getIsPicked())
+                    .build();
+
+            sogonListResponses.add(response);
+        }
+
+        return sogonListResponses;
+
     }
 }

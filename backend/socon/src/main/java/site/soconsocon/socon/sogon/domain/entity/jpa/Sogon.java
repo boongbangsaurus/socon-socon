@@ -28,8 +28,8 @@ public class Sogon {
     @Column(name = "content", nullable = false)
     private String content;
 
-    @Column(name = "created_date", nullable = false)
-    private LocalDateTime createdDate;
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
 
     @Column(name = "expired_at", nullable = false)
     private LocalDateTime expiredAt;

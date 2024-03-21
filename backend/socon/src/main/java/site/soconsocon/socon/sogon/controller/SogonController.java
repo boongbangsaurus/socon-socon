@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import site.soconsocon.socon.sogon.domain.dto.request.AddCommentRequest;
 import site.soconsocon.socon.sogon.domain.dto.request.AddSogonRequest;
+import site.soconsocon.socon.sogon.domain.dto.request.GetSogonListRequest;
 import site.soconsocon.socon.sogon.service.SogonService;
 import site.soconsocon.socon.store.domain.dto.request.MemberRequest;
 import site.soconsocon.utils.MessageUtils;
@@ -75,6 +76,15 @@ public class SogonController {
     ){
         return ResponseEntity.ok().body(MessageUtils.success(sogonService.getMyComments(memberRequest)));
     }
+
+    // 반경 내 소곤 목록 조회
+    @PostMapping("/list")
+    public ResponseEntity<Object> getSogonList(
+        @RequestBody GetSogonListRequest request
+    ){
+        return ResponseEntity.ok().body(MessageUtils.success(sogonService.getSogonList(request.getLat(), request.getLng())));
+    }
+
 
 
 }
