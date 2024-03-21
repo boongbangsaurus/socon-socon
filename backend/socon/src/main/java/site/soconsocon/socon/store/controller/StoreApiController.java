@@ -29,7 +29,6 @@ public class StoreApiController {
     private final IssueService issueService;
     private final ItemService itemService;
 
-
     // 가게 정보 등록
     @PostMapping("")
     public ResponseEntity<Object> saveStore(
@@ -38,28 +37,19 @@ public class StoreApiController {
             AddStoreRequest request,
             MemberRequest memberRequest
     ) {
-
         storeService.saveStore(request, memberRequest);
 
         return ResponseEntity.ok().body(MessageUtils.success(null));
-
     }
 
-    // 가게 정보 목록 조회
+    // 점주 등록 가게 정보 목록 조회
     @GetMapping("")
     public ResponseEntity<Object> getStoreList(MemberRequest memberRequest) {
 
-        List<Store> stores = storeService.getStoreList(memberRequest);
 
-        if(stores.isEmpty()){
-            Map<String, Object> response = new HashMap<>();
-            response.put("stores", stores);
-            return ResponseEntity.ok().body(MessageUtils.success(response));
-        }
-        else{
-            return ResponseEntity.ok().body(MessageUtils.success(stores));
-        }
+        return ResponseEntity.ok().body(MessageUtils.success(storeService.getStoreList(memberRequest)));
     }
+
     // 가게 정보 상세 조회
     @GetMapping("/{store_id}/info")
     public ResponseEntity<Object> getStoreInfo(
@@ -70,17 +60,10 @@ public class StoreApiController {
         List<IssueListResponse> issues = issueService.getIssueList(storeId, memberRequest);
         Map<String, Object> response = new HashMap<>();
 
-        if(issues.isEmpty()){
-            response.put("store", store);
-            response.put("issues", null);
-            return ResponseEntity.ok().body(MessageUtils.success(store));
-        }
-        else{
-            response.put("store", store);
-            response.put("issues", issues);
+        response.put("store", store);
+        response.put("issues", issues);
 
-            return ResponseEntity.ok().body(MessageUtils.success(response));
-        }
+        return ResponseEntity.ok().body(MessageUtils.success(response));
     }
 
     // 점주 가게 상세 정보 조회
@@ -106,7 +89,6 @@ public class StoreApiController {
             @PathVariable("store_id") Integer storeId,
             MemberRequest memberRequest
     ){
-
         storeService.updateStoreInfo(storeId, request, memberRequest);
 
         return ResponseEntity.ok().body(MessageUtils.success(null));
@@ -119,10 +101,7 @@ public class StoreApiController {
             UpdateClosedPlannedRequest request,
             MemberRequest memberRequest
     ){
-
-        Store store = storeService.updateClosedPlanned(storeId, request, memberRequest);
-
-        return ResponseEntity.ok().body(MessageUtils.success(store.getClosingPlanned()));
+        return ResponseEntity.ok().body(MessageUtils.success(storeService.updateClosedPlanned(storeId, request, memberRequest)));
     }
 
     // 상품 정보 등록

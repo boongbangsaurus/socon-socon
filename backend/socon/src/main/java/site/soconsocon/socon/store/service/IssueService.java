@@ -17,6 +17,7 @@ import site.soconsocon.socon.store.repository.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -39,15 +40,25 @@ public class IssueService {
 
         if (!Objects.equals(storeMemberId, memberRequest.getMemberId())) {
             // 본인 가게 아닐 경우
-            throw new GlobalException(ErrorCode.FORBIDDEN, "본인 점포 아님");
-        } else {
-            List<IssueListResponse> issueList = issueRepository.findIssueListByStoreId(storeId);
-            if (issueList.isEmpty()) {
-                return null;
-            } else {
-                return issueList;
-            }
+            throw new GlobalException(ErrorCode.FORBIDDEN, "점포 소유주 아님");
         }
+        List<Issue> issues = issueRepository.findIssueListByStoreId(storeId);
+        List<IssueListResponse> issueList = new ArrayList<>();
+        for(Issue issue : issues) {
+            issueList.add(IssueListResponse.builder()
+                    .id(issue.getId())
+                    .isMain(issue.getIsMain())
+                    .name(issue.getName())
+                    .image(issue.getImage())
+                    .issuedQuantity(issue.getIssuedQuantity())
+                    .leftQuantity(issue.getMaxQuantity() - issue.getIssuedQuantity())
+                    .isDiscounted(issue.getIsDiscounted())
+                    .price(issue.getPrice())
+                    .discountedPrice(issue.getDiscountedPrice())
+                    .createdAt(issue.getCreatedAt())
+                    .build());
+        }
+        return issueList;
     }
 
     // 발행 정보 등록

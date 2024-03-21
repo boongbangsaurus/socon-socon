@@ -1,6 +1,7 @@
 package site.soconsocon.socon.store.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 import site.soconsocon.socon.global.domain.ErrorCode;
 import site.soconsocon.socon.global.exception.GlobalException;
@@ -10,6 +11,7 @@ import site.soconsocon.socon.store.domain.dto.request.UpdateClosedPlannedRequest
 import site.soconsocon.socon.store.domain.dto.request.UpdateStoreInfoRequest;
 import site.soconsocon.socon.store.domain.dto.response.FavoriteStoresListResponse;
 import site.soconsocon.socon.store.domain.dto.response.StoreInfoResponse;
+import site.soconsocon.socon.store.domain.dto.response.StoreListResponse;
 import site.soconsocon.socon.store.domain.entity.jpa.BusinessHour;
 import site.soconsocon.socon.store.domain.entity.jpa.FavStore;
 import site.soconsocon.socon.store.domain.entity.jpa.RegistrationNumber;
@@ -21,6 +23,7 @@ import site.soconsocon.socon.store.repository.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 @RequiredArgsConstructor
@@ -42,10 +45,10 @@ public class StoreService {
 
         // 본인 소유의 사업자 등록 id가 아닌 경우
         if(registrationNumber.getMemberId().equals(memberRequest.getMemberId())){
-            throw new GlobalException(ErrorCode.FORBIDDEN,  "점포 소유자 아님");
+            throw new GlobalException(ErrorCode.FORBIDDEN,  "점포 소유주 아님");
         }
 
-       var store = Store.builder()
+       Store store = Store.builder()
             .name(request.getName())
             .category(request.getCategory())
             .image(request.getImage())
@@ -86,20 +89,22 @@ public class StoreService {
     }
 
     // 가게 정보 목록 조회
-    public List<Store> getStoreList(MemberRequest request) {
+    public List<StoreListResponse> getStoreList(MemberRequest request) {
 
-        var memberId = request.getMemberId();
-
-        List<Store> storeList = storeRepository.findStoresByMemberId(memberId);
-
-        if(storeList.isEmpty()){
-            return null;
+        Integer memberId = request.getMemberId();
+        List<Store> stores = storeRepository.findStoresByMemberId(memberId);
+        List<StoreListResponse> storeList = new ArrayList<>();
+        for (Store store : stores){
+            storeList.add(StoreListResponse.builder()
+                    .id(store.getId())
+                    .name(store.getName())
+                    .category(store.getCategory())
+                    .image(store.getImage())
+                    .createdAt(store.getCreatedAt())
+                    .build());
         }
-        else{
-            return storeList;
-        }
+        return storeList;
     }
-
 
     // 가게 정보 상세 조회
     public StoreInfoResponse getStoreInfo(Integer storeId) {
@@ -108,7 +113,6 @@ public class StoreService {
                 .orElseThrow(() -> new StoreException(StoreErrorCode.STORE_NOT_FOUND, "" + storeId));
 
         RegistrationNumber registrationNumber = store.getRegistrationNumber();
-
         Integer favoriteCount = favStoreRepository.countByStoreId(storeId);
 
             return StoreInfoResponse.builder()
@@ -127,7 +131,6 @@ public class StoreService {
                     .registrationAddress(registrationNumber.getRegistrationAddress())
                     .owner("temp_user") // 사업자 나중에 수정
                     .build();
-
     }
 
     // 가게 정보 수정
@@ -143,6 +146,7 @@ public class StoreService {
         else{
             // 영업시간 수정
             List<BusinessHour> requestBusinessHours = request.getBusinessHours();
+
             List<BusinessHour> savedBusinessHours = businessHourRepository.findByStoreId(storeId);
             if(savedBusinessHours.isEmpty()){
                // 저장된 값이 없을 경우
@@ -163,7 +167,7 @@ public class StoreService {
                     BusinessHour matchedBusinessHour = savedBusinessHours.stream()
                             .filter(savedBusinessHour -> savedBusinessHour.getDay().equals(businessHour.getDay()))
                             .findFirst()
-                            .orElse(null); // 만약 값이 없으면 null 반환
+                            .orElse(null); // null일 경우
 
                     matchedBusinessHour.setIsWorking(businessHour.getIsWorking());
                     matchedBusinessHour.setOpenAt(businessHour.getOpenAt());
@@ -174,7 +178,6 @@ public class StoreService {
                     businessHourRepository.save(matchedBusinessHour);
                     }
                 }
-
             store.setImage(request.getImage());
             store.setPhoneNumber(request.getPhoneNumber());
             store.setAddress(request.getAddress());
@@ -183,30 +186,27 @@ public class StoreService {
             store.setIntroduction(request.getIntroduction());
 
             storeRepository.save(store);
-
         }
     }
 
     // 가게 폐업 정보 수정
-    public Store updateClosedPlanned(Integer storeId, UpdateClosedPlannedRequest request, MemberRequest memberRequest) {
+    public LocalDateTime updateClosedPlanned(Integer storeId, UpdateClosedPlannedRequest request, MemberRequest memberRequest) {
         var store = storeRepository.findById(storeId)
                 .orElseThrow(() -> new StoreException(StoreErrorCode.STORE_NOT_FOUND, "" + storeId));
 
-        if (memberRequest.getMemberId().equals(store.getMemberId())) {
-             if(store.getClosingPlanned()!= null){
-                 // 이미 폐업 신고가 되어 있는 경우
-                 throw new StoreException(StoreErrorCode.ALREADY_SET_CLOSE_PLAN, "" + storeId);
-             }
-             else{
-                store.setClosingPlanned(LocalDateTime.now().plusDays(request.getCloseAfter()));
-                storeRepository.save(store);
-                return store;
-             }
-        }
-        else{
+        if (!Objects.equals(memberRequest.getMemberId(), store.getMemberId())) {
             // 요청자의 memberId와 store의 memberId가 다를 경우
-            throw new GlobalException(ErrorCode.FORBIDDEN,  "점포 소유자 아님" + memberRequest.getMemberId());
+            throw new GlobalException(ErrorCode.FORBIDDEN,  "점포 소유주 아님" + memberRequest.getMemberId());
         }
+         if(store.getClosingPlanned()!= null){
+             // 이미 폐업 신고가 되어 있는 경우
+             throw new StoreException(StoreErrorCode.ALREADY_SET_CLOSE_PLAN, "" + storeId);
+         }
+         else{
+            store.setClosingPlanned(LocalDateTime.now().plusDays(request.getCloseAfter()));
+            storeRepository.save(store);
+            return store.getClosingPlanned();
+         }
     }
 
     // 관심 가게 추가, 취소
