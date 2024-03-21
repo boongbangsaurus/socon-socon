@@ -10,7 +10,6 @@ import site.soconsocon.socon.global.exception.notfound.SoconNotFoundException;
 import site.soconsocon.socon.global.exception.notfound.SogonNotFoundException;
 import site.soconsocon.socon.sogon.domain.dto.request.AddCommentRequest;
 import site.soconsocon.socon.sogon.domain.dto.request.AddSogonRequest;
-import site.soconsocon.socon.sogon.domain.dto.request.GetSogonListRequest;
 import site.soconsocon.socon.sogon.domain.dto.response.*;
 import site.soconsocon.socon.sogon.domain.entity.jpa.Comment;
 import site.soconsocon.socon.sogon.domain.entity.jpa.Sogon;

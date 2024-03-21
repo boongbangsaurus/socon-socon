@@ -40,10 +40,10 @@ public class Sogon {
     @Column(name = "is_picked", nullable = false, columnDefinition = "boolean default false")
     private Boolean isPicked; // 채택 소곤 여부
 
-    @Column(name = "image1", nullable = true)
+    @Column(name = "image1")
     private String image1; // 이미지 1
 
-    @Column(name = "image2", nullable = true)
+    @Column(name = "image2")
     private String image2; // 이미지 2
 
     @Column(name = "lat", nullable = false)
