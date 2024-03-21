@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:socon/utils/responsive_utils.dart';
+import 'package:socon/view/atoms/inputs.dart';
 import 'package:socon/view/atoms/searchBox.dart';
 import 'package:socon/view/modules/PlaceList.dart';
 import './utils/toast_utils.dart';
@@ -56,7 +57,18 @@ class _MainScreen extends State<MainScreen> {
                 child: SizedBox(
               width: ResponsiveUtils.getWidthWithPixels(context, 320),
               child: const PlaceList(),
-            ))
+            )),
+            SizedBox(
+              height: 80,
+              width: 300,
+              child: Inputs(
+                labelText: '아이디',
+                onSaved: (val) {},
+                validator: (val) {
+                  return null;
+                },
+              ),
+            ),
           ],
         ),
       ),
