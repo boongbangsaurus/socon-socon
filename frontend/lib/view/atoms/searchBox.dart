@@ -31,11 +31,7 @@ class _SearchBoxState extends State<SearchBox> {
                 onTap: () {
                   print("search Icon Clicked");
                 },
-<<<<<<< Updated upstream
-                child: IconLoader(iconName: 'search'),
-=======
                 child: const IconLoader(iconName: 'search', padding:10),
->>>>>>> Stashed changes
               ),
               suffixIcon: GestureDetector(
                 onTap: () {
@@ -45,11 +41,8 @@ class _SearchBoxState extends State<SearchBox> {
                   });
                   print("let's use search filtegit sring!");
                 },
-<<<<<<< Updated upstream
-                child: IconLoader(iconName: 'filter'),
-=======
                 child: const IconLoader(iconName: 'filter', padding: 10,),
->>>>>>> Stashed changes
+
               ),
               enabledBorder: OutlineInputBorder(
                 borderSide: const BorderSide(
