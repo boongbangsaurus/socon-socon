@@ -52,6 +52,7 @@ class _MainScreen extends State<MainScreen> {
             //     ToastUtil.showCustomToast(context, "availableSocon");
             //   },
             // ),
+            SizedBox(height: ResponsiveUtils.getWidthWithPixels(context, 10.0)),
             Expanded(
                 child: SizedBox(
               width: ResponsiveUtils.getWidthWithPixels(context, 320),
