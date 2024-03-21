@@ -31,17 +31,17 @@ class _SearchBoxState extends State<SearchBox> {
                 onTap: () {
                   print("search Icon Clicked");
                 },
-                child: FilterIcon(iconName: 'search'),
+                child: IconLoader(iconName: 'search'),
               ),
               suffixIcon: GestureDetector(
                 onTap: () {
-                  // 필터 아이콘이 탭되었을 때 isFilterApplied 상태 변수를 업데이트하고 화면을 다시 그립니다.
+
                   setState(() {
                     isFilterApplied = !isFilterApplied;
                   });
-                  print("let's use search filtering!");
+                  print("let's use search filtegit sring!");
                 },
-                child: FilterIcon(iconName: 'filter'),
+                child: IconLoader(iconName: 'filter'),
               ),
               enabledBorder: OutlineInputBorder(
                 borderSide: const BorderSide(
