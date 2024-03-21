@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:socon/utils/responsive_utils.dart';
 import 'package:socon/view/atoms/searchBox.dart';
 import 'package:socon/view/modules/PlaceList.dart';
 import './utils/toast_utils.dart';
@@ -15,7 +16,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Socon',
-      theme: ThemeData(
+      theme: ThemeData(fontFamily: 'Pretendard'
           // colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.amber),
           // primaryColor: AppColors.mainYellow
           // useMaterial3: true, // 이 줄을 주석 처리하거나 삭제하여 사용하시는 버전에 맞게 설정하세요.
@@ -45,13 +46,17 @@ class _MainScreen extends State<MainScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const SearchBox(),
-            ElevatedButton(
-              child: const Text("Show Toast"),
-              onPressed: () {
-                ToastUtil.showCustomToast(context, "availableSocon");
-              },
-            ),
-            PlaceList(),
+            // ElevatedButton(
+            //   child: const Text("Show Toast"),
+            //   onPressed: () {
+            //     ToastUtil.showCustomToast(context, "availableSocon");
+            //   },
+            // ),
+            Expanded(
+                child: SizedBox(
+              width: ResponsiveUtils.getWidthWithPixels(context, 320),
+              child: const PlaceList(),
+            ))
           ],
         ),
       ),

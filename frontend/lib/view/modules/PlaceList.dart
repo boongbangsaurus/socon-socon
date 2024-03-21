@@ -4,16 +4,15 @@ import 'package:socon/utils/responsive_utils.dart';
 import 'package:socon/view/modules/placeListCard.dart';
 
 class PlaceList extends StatelessWidget {
+  const PlaceList({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        PlaceListCard(),
-        PlaceListCard(),
-        PlaceListCard(),
-      ],
+    return ListView.builder(
+      itemCount: 8,
+      itemBuilder: (BuildContext context, int index) {
+        return const PlaceListCard();
+      },
     );
   }
 }

@@ -22,7 +22,7 @@ class _SearchBoxState extends State<SearchBox> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(
-          width: ResponsiveUtils.getWidthWithPixels(context, 320),
+          width: ResponsiveUtils.getWidthWithPixels(context, 340),
           child: TextField(
             controller: _textEditingController,
             decoration: InputDecoration(
@@ -31,7 +31,11 @@ class _SearchBoxState extends State<SearchBox> {
                 onTap: () {
                   print("search Icon Clicked");
                 },
+<<<<<<< Updated upstream
                 child: IconLoader(iconName: 'search'),
+=======
+                child: const IconLoader(iconName: 'search', padding:10),
+>>>>>>> Stashed changes
               ),
               suffixIcon: GestureDetector(
                 onTap: () {
@@ -41,7 +45,11 @@ class _SearchBoxState extends State<SearchBox> {
                   });
                   print("let's use search filtegit sring!");
                 },
+<<<<<<< Updated upstream
                 child: IconLoader(iconName: 'filter'),
+=======
+                child: const IconLoader(iconName: 'filter', padding: 10,),
+>>>>>>> Stashed changes
               ),
               enabledBorder: OutlineInputBorder(
                 borderSide: const BorderSide(
