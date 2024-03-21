@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import site.soconsocon.socon.global.exception.ForbiddenException;
 import site.soconsocon.socon.global.exception.badrequest.BadRequest;
 import site.soconsocon.socon.global.exception.badrequest.InvalidSoconException;
+import site.soconsocon.socon.global.exception.notfound.CommentNotFoundException;
 import site.soconsocon.socon.global.exception.notfound.SoconNotFoundException;
 import site.soconsocon.socon.global.exception.notfound.SogonNotFoundException;
 import site.soconsocon.socon.sogon.domain.dto.request.AddCommentRequest;
@@ -95,5 +96,31 @@ public class SogonService {
                 .build();
 
         commentRepository.save(comment);
+    }
+
+    // 소곤 댓글 채택
+    public void pickSogonComment(Integer sogonId, Integer commentId, MemberRequest memberRequest) {
+
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new CommentNotFoundException("" + commentId));
+
+        Sogon sogon = sogonRepository.findById(sogonId)
+                .orElseThrow(() -> new SogonNotFoundException("" + sogonId));
+
+        if(sogon.getMemberId().equals(memberRequest.getMemberId())){
+            throw new ForbiddenException("본인 소유 소콘 댓글 채택");
+        }
+
+        Socon socon = soconRepository.findById(sogon.getSocon().getId())
+                        .orElseThrow(() -> new SoconNotFoundException("" + sogon.getSocon().getId()));
+
+        // 소콘 소유권 이전
+        socon.setMemberId(comment.getMemberId());
+        comment.setIsChosen(true);
+        sogon.setIsPicked(true);
+
+        soconRepository.save(socon);
+        commentRepository.save(comment);
+        sogonRepository.save(sogon);
     }
 }

@@ -125,6 +125,16 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(MessageUtils.fail(errorCode, errorMessage + e.getMessage()));
     }
 
+    @ExceptionHandler(CommentNotFoundException.class)
+    public ResponseEntity<Object> handleCommentNotFoundException(CommentNotFoundException e) {
+        log.error("CommentNotFoundException occurred : " + e.getMessage());
+        String errorMessage = Errcode.COMMENT_NOT_FOUND.getMessage();
+        String errorCode = Errcode.COMMENT_NOT_FOUND.getErrorCode();
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(MessageUtils.fail(errorCode, errorMessage + e.getMessage()));
+    }
+
+
 
 }
 

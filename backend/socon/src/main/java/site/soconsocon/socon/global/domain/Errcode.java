@@ -20,12 +20,13 @@ public enum Errcode {
     FORBIDDEN(HttpStatus.FORBIDDEN, "403 FORBIDDEN", "해당 memberId에 허용되지 않는 요청입니다."),
 
     // 404 NOT FOUND
-    STORE_NOT_FOUND(HttpStatus.NOT_FOUND, "404 STORE_NOT_FOUND", "존재하지 않는 점포 ID입니다."),
-    ITEM_NOT_FOUND(HttpStatus.NOT_FOUND, "404 ITEM_NOT_FOUND", "존재하지 않는 상품 ID입니다."),
-    ISSUE_NOT_FOUND(HttpStatus.NOT_FOUND, "404 ISSUE_NOT_FOUND", "존재하지 않는 발행 ID입니다."),
-    SOCON_NOT_FOUND(HttpStatus.NOT_FOUND, "404 SOCON_NOT_FOUND", "존재하지 않는 소콘 ID입니다."),
+    STORE_NOT_FOUND(HttpStatus.NOT_FOUND, "404 STORE_NOT_FOUND", "존재하지 않는 점포 ID : "),
+    ITEM_NOT_FOUND(HttpStatus.NOT_FOUND, "404 ITEM_NOT_FOUND", "존재하지 않는 상품 ID : "),
+    ISSUE_NOT_FOUND(HttpStatus.NOT_FOUND, "404 ISSUE_NOT_FOUND", "존재하지 않는 발행 ID : "),
+    SOCON_NOT_FOUND(HttpStatus.NOT_FOUND, "404 SOCON_NOT_FOUND", "존재하지 않는 소콘 ID : "),
     SOGON_NOT_FOUND(HttpStatus.NOT_FOUND, "404 SOGON_NOT_FOUND", "존재하지 않는 소곤 ID : "),
-    REGISTRATION_NUMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "404 REGISTRATION_NUMBER_NOT_FOUND", "존재하지 않는 사업자번호 ID입니다."),
+    COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "404 COMMENT_NOT_FOUND", "존재하지 않는 댓글 ID : "),
+    REGISTRATION_NUMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "404 REGISTRATION_NUMBER_NOT_FOUND", "존재하지 않는 사업자번호 ID : "),
 
     // 406 CONFLICT
     ALREADY_SAVED_STORE(HttpStatus.CONFLICT, "406 STORE_CONFLICT", "이미 등록된 가게입니다."),
