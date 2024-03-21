@@ -5,17 +5,16 @@ import 'package:socon/models/store.dart';
 import 'package:socon/utils/colors.dart';
 import 'package:socon/utils/fontSizes.dart';
 import 'package:socon/utils/responsive_utils.dart';
-import 'package:socon/view/atoms/iconLoader.dart';
-import 'package:socon/view/atoms/imageLoader.dart';
+import 'package:socon/view/atoms/icon_loader.dart';
+import 'package:socon/view/atoms/image_loader.dart';
 import 'package:socon/view/atoms/tag_icon.dart';
 
-const imageUrl = "https://loremflickr.com/320/240";
-const radius = 15.0;
-const double cardHeight = 120.0;
+// 상수 정의: imageUrl, borderRadius, 이미지 컨테이너 너비
+const imageUrl = "https://cataas.com/cat";
+const borderRadius = 15.0;
 const double imageContainerWidth = 70.0;
-const double horizontalSpacing = 10.0;
-const double verticalSpacing = 10.0;
 
+// 장소 목록 카드 위젯
 class PlaceListCard extends StatefulWidget {
   final Store storeInfo;
 
@@ -25,6 +24,7 @@ class PlaceListCard extends StatefulWidget {
   State<StatefulWidget> createState() => _PlaceListCardState();
 }
 
+// 장소 목록 카드 상태 클래스
 class _PlaceListCardState extends State<PlaceListCard> {
   @override
   Widget build(BuildContext context) {
@@ -33,7 +33,6 @@ class _PlaceListCardState extends State<PlaceListCard> {
           bottom: ResponsiveUtils.getHeightWithPixels(
               context, ResponsiveUtils.getHeightWithPixels(context, 5.0))),
       color: AppColors.WHITE,
-      // color: AppColors.INDIGO200,
       height: ResponsiveUtils.getHeightWithPixels(context, 100),
       width: ResponsiveUtils.getWidthWithPixels(context, 360),
       child: Row(
@@ -45,12 +44,11 @@ class _PlaceListCardState extends State<PlaceListCard> {
                 context, imageContainerWidth),
             decoration: BoxDecoration(
               color: AppColors.WHITE,
-              // color: AppColors.ERROR200,
-              borderRadius: BorderRadius.circular(15.0),
+              borderRadius: BorderRadius.circular(borderRadius),
             ),
             child: const ImageLoader(
               imageUrl: "https://cataas.com/cat",
-              borderRadius: 15.0,
+              borderRadius: borderRadius,
             ),
           ),
           const SizedBox(width: 10.0),
@@ -61,17 +59,16 @@ class _PlaceListCardState extends State<PlaceListCard> {
               height: ResponsiveUtils.getWidthWithPixels(
                   context, imageContainerWidth),
               color: AppColors.WHITE,
-              // color: AppColors.WARNING100,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Expanded(
                     flex: 2,
-                    child: buildPlaceInfo(),
+                    child: buildPlaceInfo(), // 장소 정보 위젯
                   ),
                   Expanded(
                     flex: 1,
-                    child: buildTagsAndDistance(),
+                    child: buildTagsAndDistance(), // 태그 및 거리 위젯
                   ),
                 ],
               ),
@@ -82,6 +79,7 @@ class _PlaceListCardState extends State<PlaceListCard> {
     );
   }
 
+  // 장소 정보 위젯
   Widget buildPlaceInfo() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -92,7 +90,7 @@ class _PlaceListCardState extends State<PlaceListCard> {
             Expanded(
               child: Text(
                 widget.storeInfo.name,
-                overflow: TextOverflow.ellipsis, // Add this line
+                overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   fontSize: ResponsiveUtils.calculateResponsiveFontSize(
                       context, FontSizes.SMALL),
@@ -106,11 +104,10 @@ class _PlaceListCardState extends State<PlaceListCard> {
                 height: ResponsiveUtils.getWidthWithPixels(context, 14)),
           ],
         ),
-        // SizedBox(height: ResponsiveUtils.getHeightWithPixels(context, 3.0)), // Add some spacing between the two texts
         Expanded(
           child: Text(
             widget.storeInfo.address,
-            overflow: TextOverflow.ellipsis, // Add this line
+            overflow: TextOverflow.ellipsis,
             style: TextStyle(
               fontSize: ResponsiveUtils.calculateResponsiveFontSize(
                   context, FontSizes.XXXSMALL),
@@ -122,6 +119,7 @@ class _PlaceListCardState extends State<PlaceListCard> {
     );
   }
 
+  // 태그 및 거리 위젯
   Widget buildTagsAndDistance() {
     final String mainSocon = widget.storeInfo.mainSocon;
     final String category = widget.storeInfo.category;
@@ -153,3 +151,5 @@ class _PlaceListCardState extends State<PlaceListCard> {
     );
   }
 }
+
+// author: 김아현
