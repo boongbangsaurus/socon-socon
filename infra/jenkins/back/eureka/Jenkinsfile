@@ -6,10 +6,9 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                cleanWs()
                 checkout scmGit(
                         branches: [[name: 'develop']],
-                        extensions: [submodule(parentCredentials: true, trackingSubmodules: true)],
+                         extensions: [submodule(parentCredentials: true, trackingSubmodules: true)],
                         userRemoteConfigs: [[credentialsId: 'github-access-token', url: 'https://github.com/boongbangsaurus/boongbang-settings']]
                 )
             }
@@ -44,6 +43,7 @@ pipeline {
                             --network jenkins-project_socon-net \\
                             --restart unless-stopped \\
                             -e "SPRING_PROFILES_ACTIVE=prod,eureka_prod" \\
+                            -e "SERVER_PORT=8761" \\
                             -p 8761:8761 kimdahui/eureka
                             '''
                         }catch (Exception e) {
