@@ -12,6 +12,8 @@ class StoreSoconLists extends StatelessWidget {
   final bool isDicounted;
   final int discountedPrice;    // 할인된 가격. 없을 경우 null
   final String imageUrl;
+  final DateTime createdAt;
+
 
   const StoreSoconLists({
     super.key,
@@ -23,6 +25,7 @@ class StoreSoconLists extends StatelessWidget {
     required this.isDicounted,
     required this.discountedPrice,
     required this.imageUrl,
+    required this.createdAt,
   });
 
   @override
@@ -30,6 +33,8 @@ class StoreSoconLists extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width / 2;
     final remainQuantity = maxQuantity - issuedQuantity;
     final discountPercent = isDicounted ? ((price - discountedPrice) / price * 100).toStringAsFixed(0) : '0';
+    final isNew = DateTime.now().difference(createdAt).inDays < 1 && DateTime.now().difference(createdAt).isNegative == false;
+
     return Container(
       width: screenWidth,
       margin: EdgeInsets.all(5),
@@ -53,8 +58,9 @@ class StoreSoconLists extends StatelessWidget {
             margin: EdgeInsets.symmetric(horizontal: 15),
             child: Row(
               children: [
-                TagIcon(buttonText: 'NEW', buttonColor: Color(0xffFBBC05), buttonTextColor: Colors.white),
-                TagIcon(buttonText: 'SALE', buttonColor: Color(0xffFEF4444), buttonTextColor: Colors.white),
+                isNew? TagIcon.NEW() : Text(''),
+                // isNew? TagIcon.NEW() : Text(''),
+                isDicounted? TagIcon.SALE() : Text(''),
               ],
             ),
           ),
@@ -70,7 +76,7 @@ class StoreSoconLists extends StatelessWidget {
                       soconName,
                       textAlign: TextAlign.start,
                       style: TextStyle(
-                        fontSize: 22,
+                        fontSize: 20,
                         fontWeight: FontWeight.bold,
                         color: Colors.black, ),
                     ),
@@ -79,7 +85,7 @@ class StoreSoconLists extends StatelessWidget {
                       child: Text(
                         '잔여수량 $remainQuantity',
                         style: TextStyle(
-                            fontSize: 12,
+                            fontSize: 10,
                             color: Colors.black),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
@@ -91,11 +97,11 @@ class StoreSoconLists extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     if (isDicounted) ...[ // 할인된 경우
-                      Text('($discountPercent%)', style: TextStyle(fontSize: 12, color: Colors.red), ),
-                      Text('$discountedPrice원', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.red)),
+                      Text('($discountPercent%)', style: TextStyle(fontSize: 11, color: Colors.red), ),
+                      Text('$discountedPrice원', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.red)),
                       Text('$price원', style: TextStyle(fontSize: 12, decoration: TextDecoration.lineThrough, fontWeight: FontWeight.bold)),
                     ] else ...[ // 할인되지 않은 경우
-                      Text('$price원', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black87)),
+                      Text('$price원', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87)),
                     ]
                   ],
                 )
