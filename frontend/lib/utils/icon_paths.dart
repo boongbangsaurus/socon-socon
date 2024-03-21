@@ -4,4 +4,6 @@ const Map<String, String> iconPaths = {
   'calendar': 'assets/icons/calendar.svg',
   'home': 'assets/icons/home.svg',
   'notifications': 'assets/icons/notifications.svg',
+  'heart_empty': 'assets/icons/heart_empty.svg',
+  'heart_fill': 'assets/icons/heart_fill.svg',
 };

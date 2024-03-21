@@ -41,10 +41,6 @@ class TagIcon extends StatelessWidget {
   }
 }
 
-
-
-
-
 // 지정값 : 체크여부, 버튼 죄소 가로/세로 크기, 텍스트 크기, 텍스트 굵기
 class TagButton extends StatefulWidget {
   final bool isSelected;
