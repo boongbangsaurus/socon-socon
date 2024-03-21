@@ -76,7 +76,7 @@ class StoreSoconLists extends StatelessWidget {
                       soconName,
                       textAlign: TextAlign.start,
                       style: TextStyle(
-                        fontSize: 20,
+                        fontSize: 18,
                         fontWeight: FontWeight.bold,
                         color: Colors.black, ),
                     ),
@@ -98,10 +98,10 @@ class StoreSoconLists extends StatelessWidget {
                   children: [
                     if (isDicounted) ...[ // 할인된 경우
                       Text('($discountPercent%)', style: TextStyle(fontSize: 11, color: Colors.red), ),
-                      Text('$discountedPrice원', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.red)),
-                      Text('$price원', style: TextStyle(fontSize: 12, decoration: TextDecoration.lineThrough, fontWeight: FontWeight.bold)),
+                      Text('$discountedPrice원', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.red)),
+                      Text('$price원', style: TextStyle(fontSize: 12, decoration: TextDecoration.lineThrough ,decorationColor: Colors.red, decorationThickness: 3.0, fontWeight: FontWeight.bold)),
                     ] else ...[ // 할인되지 않은 경우
-                      Text('$price원', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87)),
+                      Text('$price원', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87)),
                     ]
                   ],
                 )
