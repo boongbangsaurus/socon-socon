@@ -3,10 +3,13 @@ package site.soconsocon.socon.sogon.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import site.soconsocon.socon.global.exception.ForbiddenException;
+import site.soconsocon.socon.global.exception.badrequest.BadRequest;
 import site.soconsocon.socon.global.exception.badrequest.InvalidSoconException;
 import site.soconsocon.socon.global.exception.notfound.SoconNotFoundException;
+import site.soconsocon.socon.global.exception.notfound.SogonNotFoundException;
 import site.soconsocon.socon.sogon.domain.dto.request.AddCommentRequest;
 import site.soconsocon.socon.sogon.domain.dto.request.AddSogonRequest;
+import site.soconsocon.socon.sogon.domain.entity.jpa.Comment;
 import site.soconsocon.socon.sogon.domain.entity.jpa.Sogon;
 import site.soconsocon.socon.sogon.repository.CommentRepository;
 import site.soconsocon.socon.sogon.repository.SogonRepository;
@@ -60,7 +63,8 @@ public class SogonService {
                 .title(request.getTitle())
                 .content(request.getContent())
                 .createdDate(LocalDateTime.now())
-                .isExpired(now)
+                .expiredAt(now)
+                .isExpired(false)
                 .isPicked(false)
                 .image1(request.getImage1())
                 .image2(request.getImage2())
@@ -72,10 +76,24 @@ public class SogonService {
     }
 
     public void addSogonComment(Integer sogonId,
-                                Integer commentId,
                                 AddCommentRequest request,
                                 MemberRequest memberRequest) {
+
         Sogon sogon = sogonRepository.findById(sogonId)
-                .orElseThrow();
+                .orElseThrow(() -> new SogonNotFoundException("" + sogonId));
+
+        if(!sogon.getIsExpired()){
+            throw new BadRequest("만료 소곤 " + sogonId);
+        }
+
+        Comment comment = new Comment().builder()
+                .content(request.getContent())
+                .createdAt(LocalDateTime.now())
+                .isChosen(false)
+                .sogon(sogon)
+                .memberId(memberRequest.getMemberId())
+                .build();
+
+        commentRepository.save(comment);
     }
 }

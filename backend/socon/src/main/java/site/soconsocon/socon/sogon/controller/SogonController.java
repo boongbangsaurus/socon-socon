@@ -30,15 +30,15 @@ public class SogonController {
         return ResponseEntity.ok().body(MessageUtils.success());
     }
 
-    @PostMapping("/{sogon_id}/comment/{comment_id}")
+    @PostMapping("/{sogon_id}/comment")
     public ResponseEntity<Object> addSogonComment(
         @PathVariable ("sogon_id") Integer sogonId,
-        @PathVariable ("comment_id") Integer commentId,
         AddCommentRequest request,
         MemberRequest memberRequest
     ){
+        sogonService.addSogonComment(sogonId, request, memberRequest);
 
-        sogonService.addSogonComment(sogonId, commentId, request, memberRequest);
+        return ResponseEntity.ok().body(MessageUtils.success());
     }
 
 }
