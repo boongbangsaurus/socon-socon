@@ -10,6 +10,9 @@ import site.soconsocon.socon.global.exception.notfound.SoconNotFoundException;
 import site.soconsocon.socon.global.exception.notfound.SogonNotFoundException;
 import site.soconsocon.socon.sogon.domain.dto.request.AddCommentRequest;
 import site.soconsocon.socon.sogon.domain.dto.request.AddSogonRequest;
+import site.soconsocon.socon.sogon.domain.dto.response.CommentResponse;
+import site.soconsocon.socon.sogon.domain.dto.response.SogonListResponse;
+import site.soconsocon.socon.sogon.domain.dto.response.SogonResponse;
 import site.soconsocon.socon.sogon.domain.entity.jpa.Comment;
 import site.soconsocon.socon.sogon.domain.entity.jpa.Sogon;
 import site.soconsocon.socon.sogon.repository.CommentRepository;
@@ -19,6 +22,7 @@ import site.soconsocon.socon.store.domain.entity.jpa.Socon;
 import site.soconsocon.socon.store.repository.SoconRepository;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -71,8 +75,10 @@ public class SogonService {
                 .isPicked(false)
                 .image1(request.getImage1())
                 .image2(request.getImage2())
+                .memberId(memberRequest.getMemberId())
                 .lat(request.getLat())
                 .lng(request.getLng())
+                .socon(socon)
                 .build();
 
         sogonRepository.save(sogon);
@@ -136,8 +142,60 @@ public class SogonService {
         Sogon sogon = sogonRepository.findById(id)
                 .orElseThrow(() -> new SogonNotFoundException("" + id));
 
-        List<Comment> comments = commentRepository.findAllBySogonId(id);
+        Socon socon = soconRepository.findById(sogon.getSocon().getId())
+                .orElseThrow(() -> new SoconNotFoundException("" + sogon.getSocon().getId()));
 
-        return Map.of("sogon", sogon, "comments", comments);
+        SogonResponse sogonResponse = new SogonResponse().builder()
+                .id(sogon.getId())
+                .title(sogon.getTitle())
+                .memberName("수정필요")
+                .memberImg("수정필요")
+                .content(sogon.getContent())
+                .image1(sogon.getImage1())
+                .image2(sogon.getImage2())
+                .soconImg(socon.getIssue().getImage())
+                .createdAt(sogon.getCreatedDate())
+                .expiredAt(sogon.getExpiredAt())
+                .isExpired(sogon.getIsExpired())
+                .build();
+
+        List<CommentResponse> commentRepsonses = new ArrayList<>();
+        List<Comment> comments = commentRepository.findAllBySogonId(id);
+        for(Comment comment : comments){
+            CommentResponse commentResponse = new CommentResponse().builder()
+                    .id(comment.getId())
+                    .content(comment.getContent())
+                    .memberName("수정필요")
+                    .memberImg("수정필요")
+                    .isPicked(comment.getIsChosen())
+                    .build();
+
+            commentRepsonses.add(commentResponse);
+        }
+
+        return Map.of("sogon", sogonResponse, "comments", commentRepsonses);
+    }
+
+    public List<SogonListResponse> getMySogons(MemberRequest memberRequest) {
+
+        List<Sogon> sogons = sogonRepository.findAllByMemberId(memberRequest.getMemberId());
+        List<SogonListResponse> sogonListResponses = new ArrayList<>();
+        for(Sogon sogon : sogons){
+            Socon socon = soconRepository.findById(sogon.getSocon().getId())
+                    .orElseThrow(() -> new SoconNotFoundException("" + sogon.getSocon().getId()));
+
+            SogonListResponse sogonListResponse = new SogonListResponse().builder()
+                    .title(sogon.getTitle())
+                    .soconImg(socon.getIssue().getImage())
+                    .createdAt(sogon.getCreatedDate())
+                    .isExpired(sogon.getIsExpired())
+                    .isPicked(sogon.getIsPicked())
+                    .build();
+
+            sogonListResponses.add(sogonListResponse);
+        }
+
+        return sogonListResponses;
+
     }
 }
