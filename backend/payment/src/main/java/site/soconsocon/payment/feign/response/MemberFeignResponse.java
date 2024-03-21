@@ -1,4 +1,4 @@
-package site.soconsocon.payment.domain.dto.response;
+package site.soconsocon.payment.feign.response;
 
 import lombok.Data;
 

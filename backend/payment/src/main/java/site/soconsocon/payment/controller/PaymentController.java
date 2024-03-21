@@ -25,17 +25,17 @@ public class PaymentController {
     private final PaymentService paymentService;
     private IamportClient iamportClient;
 
-    @PostMapping("/{orderId}/processPayment")
-    public ResponseEntity<String> processPayment(@PathVariable int orderId) {
-        // 주문 PK를 이용한 결제 처리 로직
-        boolean paymentResult = paymentService.processPaymentForOrder(orderId);
-
-        if (paymentResult) {
-            return new ResponseEntity<>("Payment processed successfully for order " + orderId, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("Payment processing failed for order " + orderId, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+//    @PostMapping("/{orderId}/processPayment")
+//    public ResponseEntity<String> processPayment(@PathVariable int orderId) {
+//        // 주문 PK를 이용한 결제 처리 로직
+//        boolean paymentResult = paymentService.processPaymentForOrder(orderId);
+//
+//        if (paymentResult) {
+//            return new ResponseEntity<>("Payment processed successfully for order " + orderId, HttpStatus.OK);
+//        } else {
+//            return new ResponseEntity<>("Payment processing failed for order " + orderId, HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
 
 
     //Iamport로 결제 완료했을 때

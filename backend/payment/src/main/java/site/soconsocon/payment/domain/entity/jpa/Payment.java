@@ -18,7 +18,7 @@ public class Payment {
     private int price; //결제 금액
 
     @Enumerated(EnumType.STRING)
-    private PaymentStatus paymentStatus; //결제 상태
+    private PaymentStatus status; //결제 상태
 
     private String paymentUid; //결제 고유번호
 
@@ -26,5 +26,9 @@ public class Payment {
 
     private String orderUid; //주문 고유번호 id
 
+    public void changePaymentBySuccess(PaymentStatus status, String paymentUid) {
+        this.status = status;
+        this.paymentUid = paymentUid;
+    }
 
 }
