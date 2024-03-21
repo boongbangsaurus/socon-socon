@@ -2,14 +2,15 @@ package site.soconsocon.socon.store.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import site.soconsocon.socon.global.domain.ErrorCode;
+import site.soconsocon.socon.global.exception.GlobalException;
 import site.soconsocon.socon.store.domain.dto.request.AddItemRequest;
 import site.soconsocon.socon.store.domain.dto.request.MemberRequest;
 import site.soconsocon.socon.store.domain.dto.response.ItemListResponse;
 import site.soconsocon.socon.store.domain.entity.jpa.Item;
 import site.soconsocon.socon.store.domain.entity.jpa.Store;
-import site.soconsocon.socon.global.exception.ForbiddenException;
-import site.soconsocon.socon.global.exception.notfound.ItemNotFoundException;
-import site.soconsocon.socon.global.exception.notfound.StoreNotFoundException;
+import site.soconsocon.socon.store.exception.StoreErrorCode;
+import site.soconsocon.socon.store.exception.StoreException;
 import site.soconsocon.socon.store.repository.ItemRepository;
 import site.soconsocon.socon.store.repository.StoreRepository;
 
@@ -26,7 +27,7 @@ public class ItemService {
     public void saveItem(AddItemRequest request, Integer storeId, MemberRequest memberRequest) {
 
         Store savedStore = storeRepository.findById(storeId)
-                .orElseThrow(() -> new StoreNotFoundException("NOT FOUND BY ID : " + storeId));
+                .orElseThrow(() -> new StoreException(StoreErrorCode.STORE_NOT_FOUND, "" + storeId));
 
         if(savedStore.getMemberId() == memberRequest.getMemberId()) {
 
@@ -41,7 +42,7 @@ public class ItemService {
             itemRepository.save(item);
         }
         else {
-            throw new ForbiddenException("Forbidden, storeId : " + storeId + ", memberId : " + memberRequest.getMemberId());
+            throw new GlobalException(ErrorCode.FORBIDDEN,  "점포 소유자 아님" + memberRequest.getMemberId());
         }
 
     }
@@ -57,7 +58,7 @@ public class ItemService {
         }
         else {
             // 본인 가게가 아닌 경우
-            throw new ForbiddenException("Forbidden, storeId : " + StoreId + ", memberId : " + memberRequest.getMemberId());
+            throw new GlobalException(ErrorCode.FORBIDDEN,  "점포 소유자 아님" + memberRequest.getMemberId());
         }
     }
 
@@ -65,11 +66,11 @@ public class ItemService {
     public Item getDetailItemInfo(Integer storeId, Integer itemId, MemberRequest memberRequest) {
 
         if(memberRequest.getMemberId() != itemRepository.findMemberIdByItemId(itemId)) {
-            throw new ForbiddenException("Forbidden, storeId : " + storeId + ", memberId : " + memberRequest.getMemberId());
+            throw new GlobalException(ErrorCode.FORBIDDEN,  "점포 소유자 아님" + memberRequest.getMemberId());
         }
         else{
             Item item = itemRepository.findById(itemId)
-                    .orElseThrow(() -> new ItemNotFoundException("NOT FOUND BY ID : " + itemId));
+                    .orElseThrow(() -> new StoreException(StoreErrorCode.ITEM_NOT_FOUND, "" + itemId));
             return item;
         }
 

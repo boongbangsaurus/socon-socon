@@ -2,12 +2,10 @@ package site.soconsocon.socon.sogon.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import site.soconsocon.socon.global.exception.ForbiddenException;
-import site.soconsocon.socon.global.exception.badrequest.BadRequest;
-import site.soconsocon.socon.global.exception.badrequest.InvalidSoconException;
-import site.soconsocon.socon.global.exception.notfound.CommentNotFoundException;
-import site.soconsocon.socon.global.exception.notfound.SoconNotFoundException;
-import site.soconsocon.socon.global.exception.notfound.SogonNotFoundException;
+import site.soconsocon.socon.global.domain.ErrorCode;
+import site.soconsocon.socon.global.exception.GlobalException;
+import site.soconsocon.socon.sogon.exception.CommentNotFoundException;
+import site.soconsocon.socon.sogon.exception.SogonNotFoundException;
 import site.soconsocon.socon.sogon.domain.dto.request.AddCommentRequest;
 import site.soconsocon.socon.sogon.domain.dto.request.AddSogonRequest;
 import site.soconsocon.socon.sogon.domain.dto.response.*;
@@ -17,6 +15,8 @@ import site.soconsocon.socon.sogon.repository.CommentRepository;
 import site.soconsocon.socon.sogon.repository.SogonRepository;
 import site.soconsocon.socon.store.domain.dto.request.MemberRequest;
 import site.soconsocon.socon.store.domain.entity.jpa.Socon;
+import site.soconsocon.socon.store.exception.StoreErrorCode;
+import site.soconsocon.socon.store.exception.StoreException;
 import site.soconsocon.socon.store.repository.SoconRepository;
 
 import java.time.Duration;
@@ -39,22 +39,22 @@ public class SogonService {
 
         // 유효한 소콘인지 체크
         Socon socon = soconRepository.findById(request.getSoconId())
-                .orElseThrow(() -> new SoconNotFoundException("존재하지 않는 소콘, socon_id : " + request.getSoconId()));
+                .orElseThrow(() -> new StoreException(StoreErrorCode.SOCON_NOT_FOUND, "" + request.getSoconId()));
         if(socon.getIsUsed()){
             // 이미 사용된 소콘
-            throw new InvalidSoconException("사용된 소콘, socon_id : " + request.getSoconId());
+            throw new StoreException(StoreErrorCode.INVALID_SOCON, "사용된 소콘, socon_id : " + request.getSoconId());
         }
         if(socon.getExpiredAt().isBefore(LocalDateTime.now())){
             // 이미 만료된 소콘
-            throw new InvalidSoconException("만료된 소콘, socon_id : " + request.getSoconId());
+            throw new StoreException(StoreErrorCode.INVALID_SOCON, "만료된 소콘, socon_id : " + request.getSoconId());
         }
         if(sogonRepository.countBySoconId(request.getSoconId()) > 0){
             // 이미 소곤에 등록된 소콘
-            throw new InvalidSoconException("이미 소곤에 등록된 소콘, socon_id : " + request.getSoconId());
+            throw new StoreException(StoreErrorCode.INVALID_SOCON, "이미 소곤에 등록된 소콘, socon_id : " + request.getSoconId());
         }
         if(!Objects.equals(socon.getMemberId(), memberRequest.getMemberId())){
             // 본인 소유 소콘이 아님
-            throw new ForbiddenException("본인 소유 소콘이 아님, socon_id : " + request.getSoconId() + " member_id : " + memberRequest.getMemberId());
+            throw new GlobalException(ErrorCode.FORBIDDEN, "본인 소유 소콘이 아님");
         }
 
         LocalDateTime now = LocalDateTime.now();
@@ -91,7 +91,7 @@ public class SogonService {
                 .orElseThrow(() -> new SogonNotFoundException("" + sogonId));
 
         if(!sogon.getIsExpired()){
-            throw new BadRequest("만료 소곤 " + sogonId);
+            throw new StoreException(StoreErrorCode.INVALID_SOCON, "만료된 소콘");
         }
 
         Comment comment = new Comment().builder()
@@ -115,14 +115,14 @@ public class SogonService {
                 .orElseThrow(() -> new SogonNotFoundException("" + sogonId));
 
         if(sogon.getMemberId().equals(memberRequest.getMemberId())){
-            throw new ForbiddenException("본인 소유 소콘 댓글 채택");
+            throw new GlobalException(ErrorCode.FORBIDDEN, "본인 소유 소콘 댓글 채택");
         }
 
         Socon socon = soconRepository.findById(sogon.getSocon().getId())
-                        .orElseThrow(() -> new SoconNotFoundException("" + sogon.getSocon().getId()));
+                        .orElseThrow(() -> new StoreException(StoreErrorCode.SOCON_NOT_FOUND, "" + sogon.getSocon().getId()));
 
         if(socon.getIsUsed()){
-            throw new BadRequest("사용된 소콘 : " + socon.getId());
+            throw new StoreException(StoreErrorCode.INVALID_SOCON, "사용된 소콘 : " + socon.getId());
         }
 
         // 소콘 소유권 이전
@@ -142,7 +142,7 @@ public class SogonService {
                 .orElseThrow(() -> new SogonNotFoundException("" + id));
 
         Socon socon = soconRepository.findById(sogon.getSocon().getId())
-                .orElseThrow(() -> new SoconNotFoundException("" + sogon.getSocon().getId()));
+                .orElseThrow(() -> new StoreException(StoreErrorCode.SOCON_NOT_FOUND,"" + sogon.getSocon().getId()));
 
         SogonResponse sogonResponse = new SogonResponse().builder()
                 .id(sogon.getId())
@@ -182,7 +182,7 @@ public class SogonService {
         List<SogonListResponse> sogonListResponses = new ArrayList<>();
         for(Sogon sogon : sogons){
             Socon socon = soconRepository.findById(sogon.getSocon().getId())
-                    .orElseThrow(() -> new SoconNotFoundException("" + sogon.getSocon().getId()));
+                    .orElseThrow(() -> new StoreException(StoreErrorCode.SOCON_NOT_FOUND,"" + sogon.getSocon().getId()));
 
             SogonListResponse sogonListResponse = new SogonListResponse().builder()
                     .title(sogon.getTitle())

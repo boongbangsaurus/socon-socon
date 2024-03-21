@@ -2,12 +2,8 @@ package site.soconsocon.socon.store.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import site.soconsocon.socon.global.exception.ForbiddenException;
-import site.soconsocon.socon.global.exception.StoreDuplicationException;
-import site.soconsocon.socon.global.exception.badrequest.BadRequest;
-import site.soconsocon.socon.global.exception.conflict.SetClosePlanException;
-import site.soconsocon.socon.global.exception.notfound.RegistrationNotFoundException;
-import site.soconsocon.socon.global.exception.notfound.StoreNotFoundException;
+import site.soconsocon.socon.global.domain.ErrorCode;
+import site.soconsocon.socon.global.exception.GlobalException;
 import site.soconsocon.socon.store.domain.dto.request.AddStoreRequest;
 import site.soconsocon.socon.store.domain.dto.request.MemberRequest;
 import site.soconsocon.socon.store.domain.dto.request.UpdateClosedPlannedRequest;
@@ -18,6 +14,8 @@ import site.soconsocon.socon.store.domain.entity.jpa.BusinessHour;
 import site.soconsocon.socon.store.domain.entity.jpa.FavStore;
 import site.soconsocon.socon.store.domain.entity.jpa.RegistrationNumber;
 import site.soconsocon.socon.store.domain.entity.jpa.Store;
+import site.soconsocon.socon.store.exception.StoreErrorCode;
+import site.soconsocon.socon.store.exception.StoreException;
 import site.soconsocon.socon.store.repository.*;
 
 import java.time.LocalDateTime;
@@ -40,11 +38,11 @@ public class StoreService {
 
         //RegistrationNumber 조회
         RegistrationNumber registrationNumber = registrationNumberRepository.findById(request.getRegistrationNumberId())
-                .orElseThrow(() -> new RegistrationNotFoundException("Registration not found, registration_number_id : " + request.getRegistrationNumberId()));
+                .orElseThrow(() -> new StoreException(StoreErrorCode.REGISTRATION_NUMBER_NOT_FOUND, "" + request.getRegistrationNumberId()));
 
         // 본인 소유의 사업자 등록 id가 아닌 경우
         if(registrationNumber.getMemberId().equals(memberRequest.getMemberId())){
-            throw new ForbiddenException("Forbidden, registration_number_id : " + request.getRegistrationNumberId() + ", member_id : " + memberRequest.getMemberId());
+            throw new GlobalException(ErrorCode.FORBIDDEN,  "점포 소유자 아님");
         }
 
        var store = Store.builder()
@@ -65,7 +63,7 @@ public class StoreService {
 
        // 중복체크 : store name, registrationNumber, lat, lng
        if(storeRepository.checkStoreDuplication(store.getName(), store.getRegistrationNumber().getId(), store.getLat(), store.getLng()) > 0){
-           throw new StoreDuplicationException ("Store duplication, name : " + store.getName() + ", registration_number_id : " + store.getRegistrationNumber().getId() + ", lat : " + store.getLat() + ", lng : " + store.getLng());
+           throw new StoreException (StoreErrorCode.ALREADY_SAVED_STORE, "" + store.getId());
        }
        else {
            storeRepository.save(store);
@@ -81,7 +79,7 @@ public class StoreService {
            List<BusinessHour> savedBusinessHours = businessHourRepository.findByStoreId(storeId);
 
            Store savedStore = storeRepository.findById(storeId)
-                   .orElseThrow(() -> new RuntimeException("Store not found, store_id : " + storeId));
+                   .orElseThrow(() -> new StoreException(StoreErrorCode.STORE_NOT_FOUND, "" + storeId));
            savedStore.setBusinessHours(savedBusinessHours);
            storeRepository.save(savedStore);
        }
@@ -107,7 +105,7 @@ public class StoreService {
     public StoreInfoResponse getStoreInfo(Integer storeId) {
 
         Store store = storeRepository.findById(storeId)
-                .orElseThrow(() -> new StoreNotFoundException("Store not found, store_id : " + storeId));
+                .orElseThrow(() -> new StoreException(StoreErrorCode.STORE_NOT_FOUND, "" + storeId));
 
         RegistrationNumber registrationNumber = store.getRegistrationNumber();
 
@@ -135,11 +133,12 @@ public class StoreService {
     // 가게 정보 수정
     public void updateStoreInfo(Integer storeId, UpdateStoreInfoRequest request, MemberRequest memberRequest) {
 
-        var store = storeRepository.findById(storeId).orElseThrow(() -> new StoreNotFoundException("Store not found, store_id : " + storeId));
+        var store = storeRepository.findById(storeId)
+                .orElseThrow(() -> new StoreException(StoreErrorCode.STORE_NOT_FOUND, "" + storeId));
 
         if(store.getMemberId().equals(memberRequest.getMemberId())){
             // 본인 가게 아닐 경우
-            throw new ForbiddenException("Forbidden, storeId : " + storeId + ", memberId : " + memberRequest.getMemberId());
+            throw new GlobalException(ErrorCode.FORBIDDEN, "점포 소유자 아님");
         }
         else{
             // 영업시간 수정
@@ -154,7 +153,7 @@ public class StoreService {
                 List<BusinessHour> newBusinessHours = businessHourRepository.findByStoreId(storeId);
 
                 Store savedStore = storeRepository.findById(storeId)
-                        .orElseThrow(() -> new RuntimeException("Store not found, store_id : " + storeId));
+                        .orElseThrow(() -> new StoreException(StoreErrorCode.STORE_NOT_FOUND, "" + storeId));
                 savedStore.setBusinessHours(newBusinessHours);
                 storeRepository.save(savedStore);
             }
@@ -190,12 +189,13 @@ public class StoreService {
 
     // 가게 폐업 정보 수정
     public Store updateClosedPlanned(Integer storeId, UpdateClosedPlannedRequest request, MemberRequest memberRequest) {
-        var store = storeRepository.findById(storeId).orElseThrow(() -> new RuntimeException("NOT FOUND BY ID : " + storeId));
+        var store = storeRepository.findById(storeId)
+                .orElseThrow(() -> new StoreException(StoreErrorCode.STORE_NOT_FOUND, "" + storeId));
 
         if (memberRequest.getMemberId().equals(store.getMemberId())) {
              if(store.getClosingPlanned()!= null){
                  // 이미 폐업 신고가 되어 있는 경우
-                 throw new SetClosePlanException("Set close plan exception, storeId : " + storeId + ", memberId : " + memberRequest.getMemberId());
+                 throw new StoreException(StoreErrorCode.ALREADY_SET_CLOSE_PLAN, "" + storeId);
              }
              else{
                 store.setClosingPlanned(LocalDateTime.now().plusDays(request.getCloseAfter()));
@@ -205,7 +205,7 @@ public class StoreService {
         }
         else{
             // 요청자의 memberId와 store의 memberId가 다를 경우
-            throw new ForbiddenException("Forbidden, storeId : " + storeId + ", memberId : " + memberRequest.getMemberId());
+            throw new GlobalException(ErrorCode.FORBIDDEN,  "점포 소유자 아님" + memberRequest.getMemberId());
         }
     }
 
@@ -213,7 +213,7 @@ public class StoreService {
     public void favoriteStore(Integer storeId, MemberRequest memberRequest) {
 
         Store store = storeRepository.findById(storeId)
-                        .orElseThrow(() -> new StoreNotFoundException("Store not found, store_id : " + storeId));
+                        .orElseThrow(() -> new StoreException(StoreErrorCode.STORE_NOT_FOUND, "" + storeId));
         if(!store.getIsClosed()){
             FavStore favStore = favStoreRepository.isExist(memberRequest.getMemberId(), storeId);
             if(favStore != null){
@@ -229,7 +229,7 @@ public class StoreService {
         }
         else{
             // 폐업상태일 경우
-            throw new BadRequest("Bad request, storeId : " + storeId + ", memberId : " + memberRequest.getMemberId());
+            throw new GlobalException(ErrorCode.BAD_REQUEST, "폐업 점포");
         }
     }
 
@@ -242,7 +242,7 @@ public class StoreService {
 
         for (FavStore favStore : favStores) {
             Store store = storeRepository.findById(favStore.getStoreId())
-                    .orElseThrow(() -> new StoreNotFoundException("Store not found, store_id : " + favStore.getStoreId()));
+                    .orElseThrow(() -> new StoreException(StoreErrorCode.STORE_NOT_FOUND, "" + favStore.getStoreId()));
             FavoriteStoresListResponse res = FavoriteStoresListResponse.builder()
                     .storeId(store.getId())
                     .name(store.getName())

@@ -3,17 +3,16 @@ package site.soconsocon.socon.store.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import site.soconsocon.socon.global.exception.badrequest.BadRequest;
-import site.soconsocon.socon.global.exception.badrequest.BadRequestValue;
+import site.soconsocon.socon.global.domain.ErrorCode;
+import site.soconsocon.socon.global.exception.GlobalException;
 import site.soconsocon.socon.store.domain.dto.request.AddIssueRequest;
 import site.soconsocon.socon.store.domain.dto.request.AddMySoconRequest;
 import site.soconsocon.socon.store.domain.dto.request.MemberRequest;
 import site.soconsocon.socon.store.domain.dto.request.OrderRequest;
 import site.soconsocon.socon.store.domain.dto.response.IssueListResponse;
 import site.soconsocon.socon.store.domain.entity.jpa.*;
-import site.soconsocon.socon.global.exception.ForbiddenException;
-import site.soconsocon.socon.global.exception.notfound.IssueNotFoundException;
-import site.soconsocon.socon.global.exception.notfound.ItemNotFoundException;
+import site.soconsocon.socon.store.exception.StoreErrorCode;
+import site.soconsocon.socon.store.exception.StoreException;
 import site.soconsocon.socon.store.repository.*;
 
 import java.time.LocalDate;
@@ -38,16 +37,14 @@ public class IssueService {
 
         Integer storeMemberId = storeRepository.findMemberIdByStoreId(storeId);
 
-        if(!Objects.equals(storeMemberId, memberRequest.getMemberId())){
+        if (!Objects.equals(storeMemberId, memberRequest.getMemberId())) {
             // 본인 가게 아닐 경우
-            throw new ForbiddenException("본인 점포 아님. storeId : " + storeId + ", memberId : " + memberRequest.getMemberId());
-        }
-        else{
+            throw new GlobalException(ErrorCode.FORBIDDEN, "본인 점포 아님");
+        } else {
             List<IssueListResponse> issueList = issueRepository.findIssueListByStoreId(storeId);
-            if(issueList.isEmpty()) {
+            if (issueList.isEmpty()) {
                 return null;
-            }
-            else{
+            } else {
                 return issueList;
             }
         }
@@ -57,14 +54,12 @@ public class IssueService {
     public void saveIssue(AddIssueRequest request,
                           Integer storeId,
                           Integer itemId,
-                          MemberRequest memberRequest)
-    {
-        if(!Objects.equals(memberRequest.getMemberId(), itemRepository.findMemberIdByItemId(itemId))){
-            throw new ForbiddenException("Forbidden, itemId : " + itemId + ", memberId : " + memberRequest.getMemberId());
-        }
-        else{
+                          MemberRequest memberRequest) {
+        if (!Objects.equals(memberRequest.getMemberId(), storeRepository.findById(storeId).get().getMemberId())) {
+            throw new GlobalException(ErrorCode.FORBIDDEN, "본인 점포 아님");
+        } else {
             Item item = itemRepository.findById(itemId)
-                    .orElseThrow(() -> new ItemNotFoundException("NOT FOUND BY ID : " + itemId));
+                    .orElseThrow(() -> new StoreException(StoreErrorCode.ITEM_NOT_FOUND, "" + itemId));
 
             Issue issue = new Issue();
             issue.setStoreName(storeRepository.findById(storeId).get().getName());
@@ -89,19 +84,19 @@ public class IssueService {
     public void saveMySocon(Integer issueId, AddMySoconRequest request, MemberRequest memberRequest) {
 
         Issue issue = issueRepository.findById(issueId)
-                .orElseThrow(() -> new IssueNotFoundException("NOT FOUND BY ID : " + issueId));
+                .orElseThrow(() -> new StoreException(StoreErrorCode.ISSUE_NOT_FOUND, "" + issueId));
 
-        if(issue.getStatus() != 'A'){
+        if (issue.getStatus() != 'A') {
             // 발행 중 아님
-            throw new BadRequest("BAD REQUEST VALUE, ISSUE STATUS : " + issue.getStatus());
+            throw new GlobalException(ErrorCode.BAD_REQUEST, "발행 중지/완료된 상태. status : " + issue.getStatus());
         }
 
-        if(issue.getMaxQuantity() - issue.getIssuedQuantity() < request.getPurchaseQuantity()){
+        if (issue.getMaxQuantity() - issue.getIssuedQuantity() < request.getPurchaseQuantity()) {
             // 발행 가능 개수보다 요청한 개수가 많을 경우
-            throw new BadRequestValue("발행 가능 개수 초과, 남은 발행 개수 : " + (issue.getMaxQuantity() - issue.getIssuedQuantity() + "요청 개수 : " + request.getPurchaseQuantity()));
+            throw new GlobalException(ErrorCode.BAD_REQUEST, "발행 가능 개수 초과, 남은 발행 개수 : " + (issue.getMaxQuantity() - issue.getIssuedQuantity()));
         }
 
-        for(int i = 0; i < request.getPurchaseQuantity(); i++) {
+        for (int i = 0; i < request.getPurchaseQuantity(); i++) {
             Socon socon = new Socon();
             socon.setPurchasedAt(LocalDateTime.now());
             socon.setExpiredAt(LocalDateTime.now().plusDays(issue.getPeriod()));
@@ -112,8 +107,8 @@ public class IssueService {
 
             soconRepository.save(socon);
 
-        issue.setIssuedQuantity(issue.getIssuedQuantity() + request.getPurchaseQuantity());
-        issueRepository.save(issue);
+            issue.setIssuedQuantity(issue.getIssuedQuantity() + request.getPurchaseQuantity());
+            issueRepository.save(issue);
 
         }
     }
@@ -122,18 +117,16 @@ public class IssueService {
     public void stopIssue(Integer issueId, MemberRequest memberRequest) {
 
         Issue issue = issueRepository.findById(issueId)
-                .orElseThrow(() -> new IssueNotFoundException("NOT FOUND BY ID : " + issueId));
+                .orElseThrow(() -> new StoreException(StoreErrorCode.ISSUE_NOT_FOUND, "" + issueId));
 
-        if(!Objects.equals(issue.getItem().getStore().getMemberId(), memberRequest.getMemberId())){
+        if (!Objects.equals(issue.getItem().getStore().getMemberId(), memberRequest.getMemberId())) {
             // 본인 점포의 상품이 아닐 경우
-            throw new ForbiddenException("Forbidden, issueId : " + issueId + ", memberId : " + memberRequest.getMemberId());
-        }
-        else{
-            if(issue.getStatus() != 'A'){
+            throw new GlobalException(ErrorCode.FORBIDDEN, "본인 점포 아님");
+        } else {
+            if (issue.getStatus() != 'A') {
                 // 발행 중 아님
-                throw new BadRequest("BAD REQUEST VALUE, ISSUE STATUS : " + issue.getStatus());
-            }
-            else{
+                throw new GlobalException(ErrorCode.BAD_REQUEST, "발행 중지/완료된 상태. status : " + issue.getStatus());
+            } else {
                 issue.setStatus('I');
                 issue.setMaxQuantity(issue.getIssuedQuantity()); // 발행 재개 없음, 최대 발행량 현재 발행량과 일치시킴
                 issueRepository.save(issue);
@@ -145,21 +138,19 @@ public class IssueService {
     public void order(Integer issueId, OrderRequest request, MemberRequest memberRequest) {
 
         Issue issue = issueRepository.findById(issueId)
-                .orElseThrow(() -> new IssueNotFoundException("NOT FOUND BY ID : " + issueId));
+                .orElseThrow(() -> new StoreException(StoreErrorCode.ISSUE_NOT_FOUND, "" + issueId));
         Store store = issue.getItem().getStore();
-        if(store.getIsClosed()){
-            throw new BadRequest("폐업 점포. storeId : " + store.getId());
+        if (store.getIsClosed()) {
+            throw new StoreException(StoreErrorCode.ALREADY_SET_CLOSE_PLAN, "" + store.getId());
         }
-        if(issue.getMaxQuantity() - issue.getIssuedQuantity() < request.getOrderQuantity()){
+        if (issue.getMaxQuantity() - issue.getIssuedQuantity() < request.getOrderQuantity()) {
             // 소콘 가능 개수보다 요청한 개수가 많을 경우
-            throw new BadRequestValue("발행 가능 개수 초과, 남은 발행 개수 : " + (issue.getMaxQuantity() - issue.getIssuedQuantity() + "요청 개수 : " + request.getOrderQuantity()));
+            throw new GlobalException(ErrorCode.BAD_REQUEST, "발행 가능 개수 초과, 남은 발행 개수 : " + (issue.getMaxQuantity() - issue.getIssuedQuantity()));
         }
-
-        if(issue.getStatus() != 'A'){
+        if(issue.getStatus() != 'A') {
             // 발행 중 아님
-            throw new BadRequest("발행 중지/완료된 소콘. issueId : " + issueId);
-        }
-        else{
+            throw new GlobalException(ErrorCode.BAD_REQUEST, "발행 중지/완료된 상태. status : " + issue.getStatus());
+        } else {
             // 주문번호 생성
             String orderUid = LocalDate.now() + "-" + UUID.randomUUID().toString().replace("-", "");
 
@@ -179,4 +170,5 @@ public class IssueService {
 
         }
     }
+
 }

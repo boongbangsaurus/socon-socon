@@ -1,4 +1,4 @@
-package site.soconsocon.socon.global.exception.notfound;
+package site.soconsocon.socon.sogon.exception;
 
 import site.soconsocon.socon.global.exception.CustomException;
 
