@@ -3,6 +3,7 @@ import 'package:socon/utils/responsive_utils.dart';
 import 'package:socon/view/atoms/searchBox.dart';
 import 'package:socon/view/modules/PlaceList.dart';
 import './utils/toast_utils.dart';
+import 'models/store.dart';
 
 void main() {
   runApp(const MyApp());
@@ -56,7 +57,7 @@ class _MainScreen extends State<MainScreen> {
             Expanded(
                 child: SizedBox(
               width: ResponsiveUtils.getWidthWithPixels(context, 320),
-              child: const PlaceList(),
+              child: PlaceList(stores: stores),
             ))
           ],
         ),
@@ -64,3 +65,16 @@ class _MainScreen extends State<MainScreen> {
     );
   }
 }
+
+Store tempStore = Store(
+    storeId: 0,
+    name: "늘솜꼬마김밥",
+    imageUrl: "https://cataas.com/cat",
+    address: "광주 광산구 장덕로40번길 13-1 1층",
+    category: "음식점",
+    createdAt: "YYYY-MM-DD",
+    isLike: true,
+    mainSocon: "소금빵",
+    distance: 15);
+
+List<Store> stores = [tempStore, tempStore, tempStore, tempStore, tempStore];

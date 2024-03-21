@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:socon/models/store.dart';
 import 'package:socon/utils/colors.dart';
 import 'package:socon/utils/fontSizes.dart';
 import 'package:socon/utils/responsive_utils.dart';
@@ -16,7 +17,9 @@ const double horizontalSpacing = 10.0;
 const double verticalSpacing = 10.0;
 
 class PlaceListCard extends StatefulWidget {
-  const PlaceListCard({super.key});
+  final Store storeInfo;
+
+  const PlaceListCard({super.key, required this.storeInfo});
 
   @override
   State<StatefulWidget> createState() => _PlaceListCardState();
@@ -26,7 +29,9 @@ class _PlaceListCardState extends State<PlaceListCard> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(bottom: ResponsiveUtils.getHeightWithPixels(context, ResponsiveUtils.getHeightWithPixels(context, 5.0))),
+      margin: EdgeInsets.only(
+          bottom: ResponsiveUtils.getHeightWithPixels(
+              context, ResponsiveUtils.getHeightWithPixels(context, 5.0))),
       color: AppColors.WHITE,
       // color: AppColors.INDIGO200,
       height: ResponsiveUtils.getHeightWithPixels(context, 100),
@@ -48,11 +53,13 @@ class _PlaceListCardState extends State<PlaceListCard> {
               borderRadius: 15.0,
             ),
           ),
-          const SizedBox(width: 10.0 ),
+          const SizedBox(width: 10.0),
           Expanded(
             child: Container(
-                padding: EdgeInsets.only(right: ResponsiveUtils.getWidthWithPixels(context, 5.0)),
-              height: ResponsiveUtils.getWidthWithPixels(context, imageContainerWidth),
+              padding: EdgeInsets.only(
+                  right: ResponsiveUtils.getWidthWithPixels(context, 5.0)),
+              height: ResponsiveUtils.getWidthWithPixels(
+                  context, imageContainerWidth),
               color: AppColors.WHITE,
               // color: AppColors.WARNING100,
               child: Column(
@@ -84,24 +91,29 @@ class _PlaceListCardState extends State<PlaceListCard> {
           children: [
             Expanded(
               child: Text(
-                "오소유",
+                widget.storeInfo.name,
                 overflow: TextOverflow.ellipsis, // Add this line
                 style: TextStyle(
-                  fontSize: ResponsiveUtils.calculateResponsiveFontSize(context, FontSizes.SMALL),
+                  fontSize: ResponsiveUtils.calculateResponsiveFontSize(
+                      context, FontSizes.SMALL),
                   fontWeight: FontWeight.w800,
                 ),
               ),
             ),
-            IconLoader(iconName: 'heart_empty', width: ResponsiveUtils.getWidthWithPixels(context, 14), height: ResponsiveUtils.getWidthWithPixels(context, 14)),
+            IconLoader(
+                iconName: 'heart_empty',
+                width: ResponsiveUtils.getWidthWithPixels(context, 14),
+                height: ResponsiveUtils.getWidthWithPixels(context, 14)),
           ],
         ),
         // SizedBox(height: ResponsiveUtils.getHeightWithPixels(context, 3.0)), // Add some spacing between the two texts
         Expanded(
           child: Text(
-            "광주 광산구 장덕로40번길 13-1 1층",
+            widget.storeInfo.address,
             overflow: TextOverflow.ellipsis, // Add this line
             style: TextStyle(
-              fontSize: ResponsiveUtils.calculateResponsiveFontSize(context, FontSizes.XXXSMALL),
+              fontSize: ResponsiveUtils.calculateResponsiveFontSize(
+                  context, FontSizes.XXXSMALL),
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -110,30 +122,33 @@ class _PlaceListCardState extends State<PlaceListCard> {
     );
   }
 
+  Widget buildTagsAndDistance() {
+    final String mainSocon = widget.storeInfo.mainSocon;
+    final String category = widget.storeInfo.category;
 
-  Widget buildTagsAndDistance( ) {
-    return  Row(
+    return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        const Row(
+        Row(
           children: [
             TagIcon(
-              buttonText: '빵집',
+              buttonText: category,
               buttonColor: AppColors.YELLOW,
               buttonTextColor: AppColors.WHITE,
             ),
-            SizedBox(width: 8.0),
+            const SizedBox(width: 8.0),
             TagIcon(
-              buttonText: '소금빵',
+              buttonText: mainSocon,
               buttonColor: AppColors.YELLOW,
               buttonTextColor: AppColors.WHITE,
             ),
           ],
         ),
-        Text("15m",
+        Text(widget.storeInfo.distance.toString(),
             style: TextStyle(
                 fontSize: ResponsiveUtils.calculateResponsiveFontSize(
-                    context, FontSizes.XXXSMALL), fontWeight: FontWeight.w500)),
+                    context, FontSizes.XXXSMALL),
+                fontWeight: FontWeight.w500)),
       ],
     );
   }
