@@ -19,6 +19,8 @@ import site.soconsocon.socon.store.domain.entity.jpa.Socon;
 import site.soconsocon.socon.store.repository.SoconRepository;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @RequiredArgsConstructor
@@ -114,6 +116,10 @@ public class SogonService {
         Socon socon = soconRepository.findById(sogon.getSocon().getId())
                         .orElseThrow(() -> new SoconNotFoundException("" + sogon.getSocon().getId()));
 
+        if(socon.getIsUsed()){
+            throw new BadRequest("사용된 소콘 : " + socon.getId());
+        }
+
         // 소콘 소유권 이전
         socon.setMemberId(comment.getMemberId());
         comment.setIsChosen(true);
@@ -122,5 +128,16 @@ public class SogonService {
         soconRepository.save(socon);
         commentRepository.save(comment);
         sogonRepository.save(sogon);
+    }
+
+    // 소곤 상세 조회
+    public Map<String, Object> getSogon(Integer id) {
+
+        Sogon sogon = sogonRepository.findById(id)
+                .orElseThrow(() -> new SogonNotFoundException("" + id));
+
+        List<Comment> comments = commentRepository.findAllBySogonId(id);
+
+        return Map.of("sogon", sogon, "comments", comments);
     }
 }

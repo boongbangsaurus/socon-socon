@@ -52,4 +52,13 @@ public class SogonController {
         return ResponseEntity.ok().body(MessageUtils.success());
     }
 
+    // 소곤 상세 조회
+    @GetMapping("/{sogon_id}")
+    public ResponseEntity<Object> getSogon(
+            @PathVariable ("sogon_id") Integer sogonId
+    ){
+        return ResponseEntity.ok().body(MessageUtils.success(sogonService.getSogon(sogonId)));
+    }
+
+
 }
