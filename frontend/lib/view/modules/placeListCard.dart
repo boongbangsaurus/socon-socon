@@ -38,7 +38,7 @@ class _PlaceListCardState extends State<PlaceListCard> {
                 context, imageContainerWidth),
             decoration: BoxDecoration(
               color: AppColors.WHITE,
-              borderRadius: BorderRadius.circular(15.0), // 원하는 값을 넣어줍니다.
+              borderRadius: BorderRadius.circular(15.0),
             ),
             child: const ImageLoader(
               imageUrl: "https://cataas.com/cat",

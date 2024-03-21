@@ -14,7 +14,7 @@ class SearchBox extends StatefulWidget {
 
 class _SearchBoxState extends State<SearchBox> {
   final TextEditingController _textEditingController = TextEditingController();
-  bool isFilterApplied = false; // 필터가 적용되었는지 여부를 나타내는 상태 변수
+  bool isFilterApplied = false; 
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +60,6 @@ class _SearchBoxState extends State<SearchBox> {
               ),
             ),
             onSubmitted: (value) {
-              // 검색어 값이 변경될 때 호출됩니다.
               print('검색어: $value');
               setState(() {
                 if(isFilterApplied){
