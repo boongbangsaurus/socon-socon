@@ -42,7 +42,8 @@
       * 화면
       <details>
          <summary>이번주 내용 정리</summary>
-         ## 컴포넌트(위젯) 분리
+         <div markdown='1'>
+            ## 컴포넌트(위젯) 분리
 
 - 네비게이션 바
 - 이미지 카드
@@ -526,6 +527,7 @@ TagButton.SALE()
 ```
 
 간단하게 불러올 수 있게 되었다.
+         </div>
       </details>
 
 
