@@ -49,8 +49,7 @@
       * 화면
 
 ## BE
-![feign_client](/uploads/61771223fec7e7cc38593618eee4aaf3/feign_client.PNG)
-MSA 방식에서 도메인 간의 소통 -> feign client
+![feign_client](/uploads/61771223fec7e7cc38593618eee4aaf3/feign_client.PNG){: height="500"}  
 ### 김다희
 * 역할
 *  기능
