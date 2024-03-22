@@ -1,17 +1,18 @@
-import 'package:flutter/material.dart' as image_loader;
+import 'package:flutter/material.dart';
 
-class ImageLoader extends image_loader.StatelessWidget {
+// 네트워크 상 이미지를 로드하는 위젯
+class ImageLoader extends StatelessWidget {
   final String imageUrl;
   final double borderRadius;
   const ImageLoader({super.key, required this.imageUrl, this.borderRadius = 0});
 
   @override
-  image_loader.Widget build(image_loader.BuildContext context) {
-    return image_loader.ClipRRect(
-      borderRadius: image_loader.BorderRadius.circular(borderRadius),
-      child: image_loader.Image.network(
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(borderRadius),
+      child: Image.network(
         imageUrl,
-        fit: image_loader.BoxFit.fill,
+        fit: BoxFit.fill,
       ),
     );
   }

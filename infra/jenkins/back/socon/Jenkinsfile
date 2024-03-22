@@ -44,6 +44,7 @@ pipeline {
                             --network jenkins-project_socon-net \\
                             --restart unless-stopped \\
                             -e "SPRING_PROFILES_ACTIVE=prod,socon_prod" \\
+                            -e "SERVER_PORT=8030" \\
                             -p 8030:8030 kimdahui/socon
                             '''
                         }catch (Exception e) {

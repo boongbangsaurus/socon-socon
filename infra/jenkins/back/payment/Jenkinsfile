@@ -44,6 +44,7 @@ pipeline {
                             --network jenkins-project_socon-net \\
                             --restart unless-stopped \\
                             -e "SPRING_PROFILES_ACTIVE=prod,payment_prod" \\
+                            -e "SERVER_PORT=8020" \\
                             -p 8020:8020 kimdahui/payment
                             '''
                         }catch (Exception e) {

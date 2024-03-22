@@ -5,9 +5,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import site.soconsocon.socon.store.domain.dto.request.AddMySoconRequest;
 import site.soconsocon.socon.store.domain.dto.request.MemberRequest;
+import site.soconsocon.socon.store.domain.dto.request.OrderRequest;
 import site.soconsocon.socon.store.service.IssueService;
-import site.soconsocon.socon.store.service.ItemService;
-import site.soconsocon.socon.store.service.StoreService;
 import site.soconsocon.utils.MessageUtils;
 
 @RestController
@@ -15,9 +14,7 @@ import site.soconsocon.utils.MessageUtils;
 @RequiredArgsConstructor
 public class IssueApiController {
 
-    private StoreService storeService;
-    private IssueService issueService;
-    private ItemService itemService;
+    private final IssueService issueService;
 
     // 소콘 발행(생성)
     @PostMapping("/{issue_id}")
@@ -26,7 +23,6 @@ public class IssueApiController {
             AddMySoconRequest request,
             MemberRequest memberRequest
     ){
-
         issueService.saveMySocon(issueId, request, memberRequest);
 
         return ResponseEntity.ok().body(MessageUtils.success(null));
@@ -39,6 +35,18 @@ public class IssueApiController {
             MemberRequest memberRequest
     ){
         issueService.stopIssue(issueId, memberRequest);
+
+        return ResponseEntity.ok().body(MessageUtils.success(null));
+    }
+
+    // 소콘 주문
+    @PostMapping("/{issue_id}/order")
+    public ResponseEntity<Object> order(
+            @PathVariable("issue_id") Integer issueId,
+            OrderRequest request,
+            MemberRequest memberRequest
+    ){
+        issueService.order(issueId, request, memberRequest);
 
         return ResponseEntity.ok().body(MessageUtils.success(null));
     }

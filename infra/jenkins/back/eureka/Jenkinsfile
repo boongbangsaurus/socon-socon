@@ -6,11 +6,12 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                checkout scmGit(
-                        branches: [[name: 'develop']],
-                        extensions: [submodule(parentCredentials: true, trackingSubmodules: true)],
-                        userRemoteConfigs: [[credentialsId: 'github-access-token', url: 'https://github.com/boongbangsaurus/boongbang-settings']]
-                )
+                checkout([
+                    $class: 'GitSCM',
+                    branches: [[name: 'develop']],
+                    extensions: [submodule(parentCredentials: true, trackingSubmodules: true)],
+                    userRemoteConfigs: [[credentialsId: 'github-access-token', url: 'https://github.com/boongbangsaurus/boongbang-settings']]
+                ])
             }
         }
         stage('Move .env File') {
@@ -37,12 +38,13 @@ pipeline {
                 dir("backend/eureka"){
                     script {
                         try {
-                            sh "docker build -t kimdahui/eureka ."
+                            sh "docker build --no-cache -t kimdahui/eureka ."
                             sh '''
                             docker run -d --name eureka \\
                             --network jenkins-project_socon-net \\
                             --restart unless-stopped \\
                             -e "SPRING_PROFILES_ACTIVE=prod,eureka_prod" \\
+                            -e "SERVER_PORT=8761" \\
                             -p 8761:8761 kimdahui/eureka
                             '''
                         }catch (Exception e) {

@@ -14,32 +14,59 @@ class TagIcon extends StatelessWidget {
     required this.buttonTextColor,
   });
 
+
+  // 'NEW' 태그 아이콘을 생성하기 위한 팩토리 생성자
+  factory TagIcon.NEW() {
+    return TagIcon(
+      buttonText: 'NEW',
+      buttonColor: Color(0xffFBBC05),
+      buttonTextColor: Colors.white,
+    );
+  }
+
+  // 'SALE' 태그 아이콘을 생성하기 위한 팩토리 생성자
+  factory TagIcon.SALE() {
+    return TagIcon(
+      buttonText: 'SALE',
+      buttonColor: Color(0xffFEF4444),
+      buttonTextColor: Colors.white,
+    );
+  }
+
+
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        DecoratedBox(
-          decoration: BoxDecoration(
-            color: buttonColor,
-            borderRadius: BorderRadius.circular(50),
-          ),
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 1),
-            child: Text(
-              buttonText,
-              style: TextStyle(
-                color: buttonTextColor,
-                fontSize: 12,
-                fontWeight: FontWeight.bold,
+    return Container(
+      margin: EdgeInsets.only(right: 3),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          DecoratedBox(
+            decoration: BoxDecoration(
+              color: buttonColor,
+              borderRadius: BorderRadius.circular(50),
+            ),
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 1),
+              child: Text(
+                buttonText,
+                style: TextStyle(
+                  color: buttonTextColor,
+                  fontSize: 8,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
+
+
+
+
 
 // 지정값 : 체크여부, 버튼 죄소 가로/세로 크기, 텍스트 크기, 텍스트 굵기
 class TagButton extends StatefulWidget {
