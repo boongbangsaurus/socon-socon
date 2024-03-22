@@ -104,6 +104,12 @@
       "languageVersion": "2.19"
     },
     {
+      "name": "go_router",
+      "rootUri": "file:///C:/Users/SSAFY/AppData/Local/Pub/Cache/hosted/pub.dev/go_router-13.2.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.2"
+    },
+    {
       "name": "http",
       "rootUri": "file:///C:/Users/SSAFY/AppData/Local/Pub/Cache/hosted/pub.dev/http-1.2.1",
       "packageUri": "lib/",
@@ -138,6 +144,12 @@
       "rootUri": "file:///C:/Users/SSAFY/AppData/Local/Pub/Cache/hosted/pub.dev/lints-3.0.0",
       "packageUri": "lib/",
       "languageVersion": "3.0"
+    },
+    {
+      "name": "logging",
+      "rootUri": "file:///C:/Users/SSAFY/AppData/Local/Pub/Cache/hosted/pub.dev/logging-1.2.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.19"
     },
     {
       "name": "matcher",
@@ -284,7 +296,7 @@
       "languageVersion": "3.3"
     }
   ],
-  "generated": "2024-03-21T08:31:14.228809Z",
+  "generated": "2024-03-22T05:57:11.114763Z",
   "generator": "pub",
   "generatorVersion": "3.3.1"
 }
