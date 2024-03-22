@@ -6,8 +6,12 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import site.soconsocon.auth.domain.entity.jpa.Member;
+import site.soconsocon.auth.security.MemberDetailService;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
@@ -29,6 +33,8 @@ public class JwtUtil {
 
     public static final String TOKEN_PREFIX = "Bearer ";
     public static final String HEADER_STRING = "Authorization";
+
+    private final MemberDetailService memberDetailService;
 
     private Key getSigningKey(String secretKey) {
         byte[] keyBytes = secretKey.getBytes(StandardCharsets.UTF_8);
@@ -83,7 +89,10 @@ public class JwtUtil {
 
         return (username.equals(member.getId()) && !isTokenExpired(token));
     }
-
+    public Authentication getAuthentication(String jwtToken) {
+        UserDetails userDetails = memberDetailService.loadUserByUsername(getUsername(jwtToken));
+        return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+    }
 
 
 }
