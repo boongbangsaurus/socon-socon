@@ -8,18 +8,28 @@ class IconLoader extends StatelessWidget {
   final double width;
   final double height;
   final double padding;
-  const IconLoader({super.key, required this.iconName, this.width = 20.0, this.height = 20.0, this.padding = 0});
+  final VoidCallback? onPressed;
+
+  const IconLoader({
+    super.key,
+    required this.iconName,
+    this.width = 20.0,
+    this.height = 20.0,
+    this.padding = 0,
+    this.onPressed,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(padding),
-      child: SvgPicture.asset(
-        // 'assets/icons/filter.svg',
-        iconPaths[iconName].toString(),
-        width: width,
-        height: height,
-
+    return GestureDetector(
+      onTap: onPressed,
+      child: Container(
+        padding: EdgeInsets.all(padding),
+        child: SvgPicture.asset(
+          iconPaths[iconName].toString(),
+          width: width,
+          height: height,
+        ),
       ),
     );
   }

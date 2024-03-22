@@ -26,6 +26,14 @@ class PlaceListCard extends StatefulWidget {
 
 // 장소 목록 카드 상태 클래스
 class _PlaceListCardState extends State<PlaceListCard> {
+  late bool isFavorite;
+
+  @override
+  void initState() {
+    super.initState();
+    isFavorite = false;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -99,15 +107,22 @@ class _PlaceListCardState extends State<PlaceListCard> {
               ),
             ),
             IconLoader(
-                iconName: 'heart_empty',
-                width: ResponsiveUtils.getWidthWithPixels(context, 14),
-                height: ResponsiveUtils.getWidthWithPixels(context, 14)),
+              iconName: isFavorite ? 'heart_fill' : 'heart_empty',
+              width: ResponsiveUtils.getWidthWithPixels(context, 14),
+              height: ResponsiveUtils.getWidthWithPixels(context, 14),
+              onPressed: () {
+                setState(() {
+                  isFavorite = !isFavorite; // 상태 변경
+                });
+                print(isFavorite ? "관심 가게로 등록" : "관심 가게 해제");
+              },
+            ),
           ],
         ),
         Expanded(
           child: Text(
-            widget.storeInfo.address,
-            overflow: TextOverflow.ellipsis,
+            '${widget.storeInfo.address}m',
+            // overflow: TextOverflow.ellipsis,
             style: TextStyle(
               fontSize: ResponsiveUtils.calculateResponsiveFontSize(
                   context, FontSizes.XXXSMALL),

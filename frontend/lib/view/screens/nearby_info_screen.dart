@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:socon/utils/colors.dart';
 import 'package:socon/utils/fontSizes.dart';
-import 'package:socon/view/atoms/icon_loader.dart';
 import 'package:socon/view/atoms/image_card.dart';
+import 'package:socon/view/modules/app_bar.dart';
 
 import '../../models/store.dart';
 import '../../utils/responsive_utils.dart';
@@ -54,9 +54,7 @@ class _NearbyInfoScreen extends State<NearbyInfoScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Flutter Toast"),
-      ),
+      appBar: CustomAppBar(),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -75,12 +73,6 @@ class _NearbyInfoScreen extends State<NearbyInfoScreen> {
             ),
             const SizedBox(height: 15.0),
             const SearchBox(),
-            // ElevatedButton(
-            //   child: const Text("Show Toast"),
-            //   onPressed: () {
-            //     ToastUtil.showCustomToast(context, "availableSocon");
-            //   },
-            // ),
             SizedBox(height: 10.0),
             Expanded(
                 child: SizedBox(
