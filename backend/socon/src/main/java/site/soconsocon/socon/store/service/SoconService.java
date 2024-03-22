@@ -2,7 +2,6 @@ package site.soconsocon.socon.store.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 import site.soconsocon.socon.global.exception.ForbiddenException;
 import site.soconsocon.socon.global.exception.badrequest.BadRequestValue;
 import site.soconsocon.socon.global.exception.badrequest.InvalidSoconException;

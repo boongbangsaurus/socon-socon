@@ -11,10 +11,7 @@ import site.soconsocon.socon.global.exception.badrequest.BadRequest;
 import site.soconsocon.socon.global.exception.badrequest.BadRequestValue;
 import site.soconsocon.socon.global.exception.badrequest.InvalidSoconException;
 import site.soconsocon.socon.global.exception.conflict.SetClosePlanException;
-import site.soconsocon.socon.global.exception.notfound.IssueNotFoundException;
-import site.soconsocon.socon.global.exception.notfound.RegistrationNotFoundException;
-import site.soconsocon.socon.global.exception.notfound.SoconNotFoundException;
-import site.soconsocon.socon.global.exception.notfound.StoreNotFoundException;
+import site.soconsocon.socon.global.exception.notfound.*;
 import site.soconsocon.utils.MessageUtils;
 
 @Slf4j
@@ -117,6 +114,24 @@ public class GlobalExceptionHandler {
         String errorCode = Errcode.SOCON_NOT_FOUND.getErrorCode();
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(MessageUtils.fail(errorCode, errorMessage));
+    }
+
+    @ExceptionHandler(SogonNotFoundException.class)
+    public ResponseEntity<Object> handleSogonNotFoundException(SogonNotFoundException e) {
+        log.error("SogonNotFoundException occurred : " + e.getMessage());
+        String errorMessage = Errcode.SOGON_NOT_FOUND.getMessage();
+        String errorCode = Errcode.SOGON_NOT_FOUND.getErrorCode();
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(MessageUtils.fail(errorCode, errorMessage + e.getMessage()));
+    }
+
+    @ExceptionHandler(CommentNotFoundException.class)
+    public ResponseEntity<Object> handleCommentNotFoundException(CommentNotFoundException e) {
+        log.error("CommentNotFoundException occurred : " + e.getMessage());
+        String errorMessage = Errcode.COMMENT_NOT_FOUND.getMessage();
+        String errorCode = Errcode.COMMENT_NOT_FOUND.getErrorCode();
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(MessageUtils.fail(errorCode, errorMessage + e.getMessage()));
     }
 
 
