@@ -3,7 +3,7 @@ package site.soconsocon.socon.store.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import site.soconsocon.socon.global.domain.ErrorCode;
-import site.soconsocon.socon.global.exception.GlobalException;
+import site.soconsocon.socon.global.exception.SoconException;
 import site.soconsocon.socon.store.domain.dto.request.MemberRequest;
 import site.soconsocon.socon.store.domain.dto.request.SoconApprovalRequest;
 import site.soconsocon.socon.store.domain.dto.response.SoconListResponse;
@@ -62,7 +62,7 @@ public class SoconService {
             soconResponse.setItemName(socon.getIssue().getName());
             soconResponse.setStoreName(socon.getIssue().getItem().getStore().getName());
             soconResponse.setExpiredAt(socon.getExpiredAt());
-            soconResponse.setIsUsed(socon.getIsUsed());
+            soconResponse.setStatus(socon.getStatus());
             soconResponse.setUsedAt(socon.getUsedAt());
             soconResponse.setItemImage(socon.getIssue().getItem().getImage());
 
@@ -75,7 +75,7 @@ public class SoconService {
             soconResponse.setItemName(socon.getIssue().getName());
             soconResponse.setStoreName(socon.getIssue().getItem().getStore().getName());
             soconResponse.setExpiredAt(socon.getExpiredAt());
-            soconResponse.setIsUsed(socon.getIsUsed());
+            soconResponse.setStatus(socon.getStatus());
             soconResponse.setUsedAt(socon.getUsedAt());
             soconResponse.setItemImage(socon.getIssue().getItem().getImage());
 
@@ -99,16 +99,16 @@ public class SoconService {
 
         if(socon.getIssue().getItem().getStore().getId() != memberRequest.getMemberId()){
             // 요청자가 해당 점포 주인이 아닌 경우
-            throw  new GlobalException(ErrorCode.FORBIDDEN,  "점포 소유자 아님" + memberRequest.getMemberId());
+            throw  new SoconException(ErrorCode.FORBIDDEN,  "점포 소유자 아님" + memberRequest.getMemberId());
         }
 
-        if(!socon.getIsUsed() && socon.getExpiredAt().isAfter(LocalDateTime.now())){
-            socon.setIsUsed(true);
+        if(socon.getStatus() == "usused" && socon.getExpiredAt().isAfter(LocalDateTime.now())){
+            socon.setStatus("used");
             socon.setUsedAt(LocalDateTime.now());
             soconRepository.save(socon);
         }
         else{
-            if(socon.getIsUsed()){
+            if(socon.getStatus() == "used"){
                 // 이미 사용된 소콘
                 throw new StoreException(StoreErrorCode.INVALID_SOCON, "사용된 소콘. 사용일시 : " + socon.getUsedAt().toString());
             }
@@ -132,7 +132,7 @@ public class SoconService {
             return soconRepository.getSoconByMemberIdAndItemName(memberRequest.getMemberId(), keyword);
         }
         else{
-            throw new GlobalException(ErrorCode.BAD_REQUEST, "");
+            throw new SoconException(ErrorCode.BAD_REQUEST, "");
         }
     }
 }

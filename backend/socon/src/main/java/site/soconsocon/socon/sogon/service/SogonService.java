@@ -3,7 +3,7 @@ package site.soconsocon.socon.sogon.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import site.soconsocon.socon.global.domain.ErrorCode;
-import site.soconsocon.socon.global.exception.GlobalException;
+import site.soconsocon.socon.global.exception.SoconException;
 import site.soconsocon.socon.sogon.exception.CommentNotFoundException;
 import site.soconsocon.socon.sogon.exception.SogonNotFoundException;
 import site.soconsocon.socon.sogon.domain.dto.request.AddCommentRequest;
@@ -54,7 +54,7 @@ public class SogonService {
         }
         if(!Objects.equals(socon.getMemberId(), memberRequest.getMemberId())){
             // 본인 소유 소콘이 아님
-            throw new GlobalException(ErrorCode.FORBIDDEN, "본인 소유 소콘이 아님");
+            throw new SoconException(ErrorCode.FORBIDDEN, "본인 소유 소콘이 아님");
         }
 
         LocalDateTime now = LocalDateTime.now();
@@ -115,7 +115,7 @@ public class SogonService {
                 .orElseThrow(() -> new SogonNotFoundException("" + sogonId));
 
         if(sogon.getMemberId().equals(memberRequest.getMemberId())){
-            throw new GlobalException(ErrorCode.FORBIDDEN, "본인 소유 소콘 댓글 채택");
+            throw new SoconException(ErrorCode.FORBIDDEN, "본인 소유 소콘 댓글 채택");
         }
 
         Socon socon = soconRepository.findById(sogon.getSocon().getId())

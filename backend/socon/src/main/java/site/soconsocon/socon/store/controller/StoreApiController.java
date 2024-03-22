@@ -101,7 +101,9 @@ public class StoreApiController {
             UpdateClosedPlannedRequest request,
             MemberRequest memberRequest
     ){
-        return ResponseEntity.ok().body(MessageUtils.success(storeService.updateClosedPlanned(storeId, request, memberRequest)));
+        storeService.updateClosedPlanned(storeId, request, memberRequest);
+
+        return ResponseEntity.ok().body(MessageUtils.success());
     }
 
     // 상품 정보 등록

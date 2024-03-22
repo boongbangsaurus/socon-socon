@@ -14,4 +14,8 @@ public interface IssueRepository extends JpaRepository<Issue, Integer> {
 
     @Query("SELECT i.name FROM ISSUE i WHERE i.item.store.id = :storeId AND i.isMain = true AND i.status = 'A' LIMIT 1")
     String findMainIssueNameByStoreId(Integer storeId);
+
+
+    @Query("SELECT i FROM ISSUE i WHERE i.item.store.id = :storeId AND i.status = 'A'")
+    List<Issue> findActiveIssuesByStoreId(Integer storeId);
 }

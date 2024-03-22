@@ -17,7 +17,7 @@ public enum ErrorCode implements CustomError {
     BAD_REQUEST_VALUE(HttpStatus.BAD_REQUEST, "400 INVALID_VALUE", "요청 값이 잘못되었습니다, "),
 
     // 403 FORBIDDEN
-    FORBIDDEN(HttpStatus.FORBIDDEN, "403 FORBIDDEN", "해당 memberId에 허용되지 않는 요청입니다."),
+    FORBIDDEN(HttpStatus.FORBIDDEN, "403 FORBIDDEN", "해당 memberId에 허용되지 않는 요청입니다 : "),
 
     // 500 INTERNAL SERVER ERROR
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "500 INTERNAL_SERVER_ERROR", "서버 에러 발생"),

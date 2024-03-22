@@ -3,7 +3,7 @@ package site.soconsocon.socon.store.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import site.soconsocon.socon.global.domain.ErrorCode;
-import site.soconsocon.socon.global.exception.GlobalException;
+import site.soconsocon.socon.global.exception.SoconException;
 import site.soconsocon.socon.store.domain.dto.request.AddItemRequest;
 import site.soconsocon.socon.store.domain.dto.request.MemberRequest;
 import site.soconsocon.socon.store.domain.dto.response.ItemListResponse;
@@ -42,7 +42,7 @@ public class ItemService {
             itemRepository.save(item);
         }
         else {
-            throw new GlobalException(ErrorCode.FORBIDDEN,  "점포 소유자 아님" + memberRequest.getMemberId());
+            throw new SoconException(ErrorCode.FORBIDDEN,  "점포 소유자 아님" + memberRequest.getMemberId());
         }
 
     }
@@ -58,7 +58,7 @@ public class ItemService {
         }
         else {
             // 본인 가게가 아닌 경우
-            throw new GlobalException(ErrorCode.FORBIDDEN,  "점포 소유자 아님" + memberRequest.getMemberId());
+            throw new SoconException(ErrorCode.FORBIDDEN,  "점포 소유자 아님" + memberRequest.getMemberId());
         }
     }
 
@@ -66,7 +66,7 @@ public class ItemService {
     public Item getDetailItemInfo(Integer storeId, Integer itemId, MemberRequest memberRequest) {
 
         if(memberRequest.getMemberId() != itemRepository.findMemberIdByItemId(itemId)) {
-            throw new GlobalException(ErrorCode.FORBIDDEN,  "점포 소유자 아님" + memberRequest.getMemberId());
+            throw new SoconException(ErrorCode.FORBIDDEN,  "점포 소유자 아님" + memberRequest.getMemberId());
         }
         else{
             Item item = itemRepository.findById(itemId)

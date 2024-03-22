@@ -1,40 +1,49 @@
 package site.soconsocon.socon.global.exception;
 
+import jakarta.security.auth.message.AuthException;
+import jdk.jshell.spi.ExecutionControl;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import site.soconsocon.socon.global.domain.ErrorCode;
-import site.soconsocon.socon.store.exception.StoreErrorCode;
-import site.soconsocon.utils.MessageUtils;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.Arrays;
+
+@RestControllerAdvice
 @Slf4j
-@ControllerAdvice
-public class GlobalExceptionHandler extends CustomException {
-
-
-    @ExceptionHandler(GlobalException.class)
-    public ResponseEntity<Object> handleGlobalException(GlobalException e) {
-        ErrorCode errorCode = e.getErrorCode();
-        String errorMessage = e.getErrorMessage();
-
-        // 400
-        if(errorCode == ErrorCode.BAD_REQUEST) {
-            log.error("bad request, " + ErrorCode.BAD_REQUEST.getMessage() + e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(MessageUtils.fail("" + errorCode, ErrorCode.BAD_REQUEST.getMessage() + errorMessage));
-        }
-        if(errorCode == ErrorCode.BAD_REQUEST_VALUE) {
-            log.error("bad request value, " + ErrorCode.BAD_REQUEST_VALUE.getMessage() + e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(MessageUtils.fail("" + errorCode, ErrorCode.BAD_REQUEST_VALUE.getMessage() + errorMessage));
-        }
-        if(errorCode == ErrorCode.FORBIDDEN) {
-            log.error("forbidden, " + ErrorCode.FORBIDDEN.getMessage() + e.getMessage());
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(MessageUtils.fail("" + errorCode, ErrorCode.FORBIDDEN.getMessage() + errorMessage));
-        }
-
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(MessageUtils.fail("" + errorCode, ErrorCode.INTERNAL_SERVER_ERROR.getMessage()));
-    }
+public class GlobalExceptionHandler {
+//    @ExceptionHandler(ExecutionControl.UserException.class)
+//    public ResponseEntity userExceptionHandler(ExecutionControl.UserException e){
+//        log.debug(Arrays.toString(e.getStackTrace()));
+//        return ResponseEntity.status(e.getErrorCode().getHttpStatus())
+//                .body(MessageUtils.fail(String.valueOf(e.getErrorCode()),e.getMessage()));
+//    }
+//
+//    @ExceptionHandler(AuthException.class)
+//    public ResponseEntity authExceptionHandler(AuthException e){
+//        log.debug(Arrays.toString(e.getStackTrace()));
+//        return ResponseEntity.status(e.getErrorCode().getHttpStatus())
+//                .body(MessageUtils.fail(String.valueOf(e.getErrorCode()),e.getMessage()));
+//    }
+//
+//    @ExceptionHandler(JwtException.class)
+//    public ResponseEntity jwtExceptionHandler(JwtException e){
+//        log.debug(Arrays.toString(e.getStackTrace()));
+//        return ResponseEntity.status(e.getErrorCode().getHttpStatus())
+//                .body(MessageUtils.fail(String.valueOf(e.getErrorCode()),e.getMessage()));
+//    }
+//
+//    @ExceptionHandler(CardException.class)
+//    public ResponseEntity CardExceptionHandler(CardException e){
+//        log.debug(Arrays.toString(e.getStackTrace()));
+//        return ResponseEntity.status(e.getErrorCode().getHttpStatus())
+//                .body(MessageUtils.fail(String.valueOf(e.getErrorCode()),e.getMessage()));
+//    }
+//
+//    @ExceptionHandler(CulturalHeritageException.class)
+//    public ResponseEntity CulturalHeritageExceptionHandler(CulturalHeritageException e){
+//        log.debug(Arrays.toString(e.getStackTrace()));
+//        return ResponseEntity.status(e.getErrorCode().getHttpStatus())
+//                .body(MessageUtils.fail(String.valueOf(e.getErrorCode()),e.getMessage()));
+//    }
 }
-
