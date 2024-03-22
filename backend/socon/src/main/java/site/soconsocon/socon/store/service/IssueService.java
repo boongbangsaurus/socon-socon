@@ -94,32 +94,27 @@ public class IssueService {
 
         Issue issue = issueRepository.findById(issueId)
                 .orElseThrow(() -> new StoreException(StoreErrorCode.ISSUE_NOT_FOUND, "" + issueId));
-
         if (issue.getStatus() != 'A') {
             // 발행 중 아님
             throw new SoconException(ErrorCode.BAD_REQUEST, "발행 중지/완료된 상태. status : " + issue.getStatus());
         }
-
         if (issue.getMaxQuantity() - issue.getIssuedQuantity() < request.getPurchaseQuantity()) {
             // 발행 가능 개수보다 요청한 개수가 많을 경우
             throw new SoconException(ErrorCode.BAD_REQUEST, "발행 가능 개수 초과, 남은 발행 개수 : " + (issue.getMaxQuantity() - issue.getIssuedQuantity()));
         }
-
         for (int i = 0; i < request.getPurchaseQuantity(); i++) {
-            Socon socon = new Socon();
-            socon.setPurchasedAt(LocalDateTime.now());
-            socon.setExpiredAt(LocalDateTime.now().plusDays(issue.getPeriod()));
-            socon.setUsedAt(null);
-            socon.setStatus("unused");
-            socon.setIssue(issue);
-            socon.setMemberId(memberRequest.getMemberId());
-
-            soconRepository.save(socon);
-
-            issue.setIssuedQuantity(issue.getIssuedQuantity() + request.getPurchaseQuantity());
-            issueRepository.save(issue);
-
+            LocalDateTime purchasedAt = LocalDateTime.now();
+            soconRepository.save(Socon.builder()
+                    .purchasedAt(purchasedAt)
+                    .expiredAt(purchasedAt.plusDays(issue.getPeriod()))
+                    .usedAt(null)
+                    .status("unused")
+                    .issue(issue)
+                    .memberId(memberRequest.getMemberId())
+                    .build());
         }
+        issue.setIssuedQuantity(issue.getIssuedQuantity() + request.getPurchaseQuantity());
+        issueRepository.save(issue);
     }
 
     // 발행 중지
@@ -128,19 +123,16 @@ public class IssueService {
         Issue issue = issueRepository.findById(issueId)
                 .orElseThrow(() -> new StoreException(StoreErrorCode.ISSUE_NOT_FOUND, "" + issueId));
 
-        if (!Objects.equals(issue.getItem().getStore().getMemberId(), memberRequest.getMemberId())) {
+        if (!Objects.equals(issueRepository.findMemberIdByIssueId(issueId), memberRequest.getMemberId())) {
             // 본인 점포의 상품이 아닐 경우
             throw new SoconException(ErrorCode.FORBIDDEN, "본인 점포 아님");
-        } else {
-            if (issue.getStatus() != 'A') {
-                // 발행 중 아님
-                throw new SoconException(ErrorCode.BAD_REQUEST, "발행 중지/완료된 상태. status : " + issue.getStatus());
-            } else {
-                issue.setStatus('I');
-                issue.setMaxQuantity(issue.getIssuedQuantity()); // 발행 재개 없음, 최대 발행량 현재 발행량과 일치시킴
-                issueRepository.save(issue);
-            }
         }
+        if (issue.getStatus() != 'A') {
+            // 발행 중 아님
+            throw new SoconException(ErrorCode.BAD_REQUEST, "발행 중지/완료된 상태. status : " + issue.getStatus());
+        }
+        issue.setStatus('I');
+        issueRepository.save(issue);
     }
 
     // 소콘 주문
@@ -148,8 +140,11 @@ public class IssueService {
 
         Issue issue = issueRepository.findById(issueId)
                 .orElseThrow(() -> new StoreException(StoreErrorCode.ISSUE_NOT_FOUND, "" + issueId));
+
         Store store = issue.getItem().getStore();
-        if (store.getIsClosed()) {
+
+        if (store.getClosingPlanned()!=null) {
+            // 가게 폐업 상태
             throw new StoreException(StoreErrorCode.ALREADY_SET_CLOSE_PLAN, "" + store.getId());
         }
         if (issue.getMaxQuantity() - issue.getIssuedQuantity() < request.getOrderQuantity()) {
@@ -159,25 +154,22 @@ public class IssueService {
         if (issue.getStatus() != 'A') {
             // 발행 중 아님
             throw new SoconException(ErrorCode.BAD_REQUEST, "발행 중지/완료된 상태. status : " + issue.getStatus());
-        } else {
-            // 주문번호 생성
-            String orderUid = LocalDate.now() + "-" + UUID.randomUUID().toString().replace("-", "");
-
-            // 주문 엔터티 생성
-            Order order = new Order().builder()
-                    .price(request.getPrice())
-                    .name(issue.getName())
-                    .quantity(request.getOrderQuantity())
-                    .orderUid(orderUid)
-                    .orderStatus("success")
-                    .orderTime(LocalDateTime.now())
-                    .build();
-
-            orderRepository.save(order);
-
-            // 결제 요청
-
         }
+        // 주문번호 생성
+        String orderUid = LocalDate.now() + "-" + UUID.randomUUID().toString().replace("-", "");
+
+        // 주문 엔터티 생성
+        orderRepository.save(Order.builder()
+                .price(request.getPrice())
+                .name(issue.getName())
+                .quantity(request.getOrderQuantity())
+                .orderUid(orderUid)
+                .orderStatus("success")
+                .orderTime(LocalDateTime.now())
+                .build());
+
+        // 결제 요청
+
     }
 
 }
