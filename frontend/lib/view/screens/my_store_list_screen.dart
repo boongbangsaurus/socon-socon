@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../utils/fontSizes.dart';
+
 class MyStoreListScreen extends StatefulWidget {
   const MyStoreListScreen({super.key});
 
@@ -12,7 +14,13 @@ class MyStoreListScreen extends StatefulWidget {
 class _MyStoreListScreen extends State<MyStoreListScreen> {
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    throw UnimplementedError();
+    return const Scaffold(
+      body: Center(
+        child: Text(
+          "점포 목록",
+          style: TextStyle(fontSize: FontSizes.LARGE),
+        ),
+      ),
+    );
   }
 }

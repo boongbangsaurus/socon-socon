@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../utils/fontSizes.dart';
+
 class SoconBookScreen extends StatefulWidget {
   const SoconBookScreen({super.key});
 
@@ -12,7 +14,13 @@ class SoconBookScreen extends StatefulWidget {
 class _SoconBookScreen extends State<SoconBookScreen> {
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    throw UnimplementedError();
+    return const Scaffold(
+      body: Center(
+        child: Text(
+          "소콘북",
+          style: TextStyle(fontSize: FontSizes.LARGE),
+        ),
+      ),
+    );
   }
 }

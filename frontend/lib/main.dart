@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:socon/routes/router.dart';
-import 'package:socon/view/screens/nearby_info_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,6 +12,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       routerConfig: router,
+      // routerDelegate: router.routerDelegate,
+      // routeInformationParser: router.routeInformationParser,
       debugShowCheckedModeBanner: false,
       title: 'Socon',
       theme: ThemeData(fontFamily: 'Pretendard'

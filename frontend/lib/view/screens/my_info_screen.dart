@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../utils/fontSizes.dart';
+
 class MyInfoScreen extends StatefulWidget {
   const MyInfoScreen({super.key});
 
@@ -12,7 +14,13 @@ class MyInfoScreen extends StatefulWidget {
 class _MyInfoScreen extends State<MyInfoScreen> {
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    throw UnimplementedError();
+    return const Scaffold(
+      body: Center(
+        child: Text(
+          "내 정보",
+          style: TextStyle(fontSize: FontSizes.LARGE),
+        ),
+      ),
+    );
   }
 }

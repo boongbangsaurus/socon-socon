@@ -6,13 +6,11 @@ import '../atoms/search_box.dart';
 import '../modules/place_list.dart';
 
 class NearbyInfoScreen extends StatefulWidget {
-
   @override
   State<StatefulWidget> createState() {
     return _NearbyInfoScreen();
   }
 }
-
 
 class _NearbyInfoScreen extends State<NearbyInfoScreen> {
   @override
@@ -36,9 +34,9 @@ class _NearbyInfoScreen extends State<NearbyInfoScreen> {
             SizedBox(height: ResponsiveUtils.getWidthWithPixels(context, 10.0)),
             Expanded(
                 child: SizedBox(
-                  width: ResponsiveUtils.getWidthWithPixels(context, 320),
-                  child: PlaceList(stores: stores),
-                ))
+              width: ResponsiveUtils.getWidthWithPixels(context, 320),
+              child: PlaceList(stores: stores),
+            ))
           ],
         ),
       ),
@@ -48,13 +46,13 @@ class _NearbyInfoScreen extends State<NearbyInfoScreen> {
 
 Store tempStore = Store(
     storeId: 0,
-    name: "늘솜꼬마김밥",
+    name: "오소유",
     imageUrl: "https://cataas.com/cat",
     address: "광주 광산구 장덕로40번길 13-1 1층",
     category: "음식점",
-    createdAt: "YYYY-MM-DD",
+    createdAt: "2024-03-22",
     isLike: true,
     mainSocon: "소금빵",
     distance: 15);
 
-List<Store> stores = [tempStore, tempStore, tempStore, tempStore, tempStore];
+List<Store> stores = List.generate(10, (index) => tempStore);
