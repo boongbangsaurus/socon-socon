@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// 네트워크 상 이미지를 로드하는 위젯
 class ImageLoader extends StatelessWidget {
   final String imageUrl;
   final double borderRadius;

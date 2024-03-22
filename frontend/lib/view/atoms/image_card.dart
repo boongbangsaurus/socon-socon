@@ -11,16 +11,16 @@ class ImageCard extends StatelessWidget {
   const ImageCard({super.key, required this.imgUrl, this.width = 100, this.height = 100, this.borderRadius = 10, });
 
 
-  @override
-  Widget build(BuildContext context) {
+    @override
+    Widget build(BuildContext context) {
     return Container(
-      width: width,
-      height: height,
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(borderRadius),
-        child: Image.network(
-          imgUrl,
-          fit: BoxFit.fill,
+    width: width,
+    height: height,
+    child: ClipRRect(
+    borderRadius: BorderRadius.circular(borderRadius),
+    child: Image.network(
+    imgUrl,
+    fit: BoxFit.fill,
         ),
       ),
     );
