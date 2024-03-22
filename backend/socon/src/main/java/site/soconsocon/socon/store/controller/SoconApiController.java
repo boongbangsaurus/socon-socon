@@ -9,7 +9,6 @@ import site.soconsocon.socon.store.domain.dto.response.SoconInfoResponse;
 import site.soconsocon.socon.store.service.SoconService;
 import site.soconsocon.utils.MessageUtils;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -24,7 +23,6 @@ public class SoconApiController {
     public ResponseEntity<Object> getSoconInfo(
             @PathVariable("socon_id") Integer soconId
     ) {
-
         SoconInfoResponse socon = soconService.getSoconInfo(soconId);
 
         return ResponseEntity.ok().body(MessageUtils.success(socon));
@@ -35,9 +33,7 @@ public class SoconApiController {
     public ResponseEntity<Object> soconBook(
             MemberRequest memberRequest
     ) {
-
         Map<String, Object> response = soconService.getMySoconList(memberRequest);
-
         return ResponseEntity.ok().body(MessageUtils.success(response));
     }
 

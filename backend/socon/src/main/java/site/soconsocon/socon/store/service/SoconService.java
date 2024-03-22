@@ -24,27 +24,23 @@ import java.util.*;
 public class SoconService {
 
     private final SoconRepository soconRepository;
-    private final IssueRepository issueRepository;
 
 
     // 소콘 상세 조회
     public SoconInfoResponse getSoconInfo(Integer soconId) {
 
         Socon socon = soconRepository.findById(soconId).orElseThrow(() -> new RuntimeException("NOT FOUND BY ID : " + soconId));
-
         Issue issue = socon.getIssue();
-
         Item item = issue.getItem();
 
-        SoconInfoResponse soconInfoResponse = new SoconInfoResponse();
-        soconInfoResponse.setItemName(issue.getName());
-        soconInfoResponse.setStoreName(item.getStore().getName());
-        soconInfoResponse.setPurchasedAt(socon.getPurchasedAt());
-        soconInfoResponse.setExpiredAt(socon.getExpiredAt());
-        soconInfoResponse.setDescription(item.getDescription());
-        soconInfoResponse.setImage(item.getImage());
-
-        return soconInfoResponse;
+        return SoconInfoResponse.builder()
+                .itemName(issue.getName())
+                .storeName(item.getStore().getName())
+                .purchasedAt(socon.getPurchasedAt())
+                .expiredAt(socon.getExpiredAt())
+                .description(item.getDescription())
+                .image(item.getImage())
+                .build();
     }
 
     // 소콘북 목록 조회
@@ -56,30 +52,31 @@ public class SoconService {
 
         List<Socon> unused = soconRepository.getUnusedSoconByMemberId(memberRequest.getMemberId());
         for (Socon socon : unused) {
+            Issue issue = socon.getIssue();
+            Item item = issue.getItem();
 
-            SoconListResponse soconResponse = new SoconListResponse();
-            soconResponse.setSoconId(socon.getId());
-            soconResponse.setItemName(socon.getIssue().getName());
-            soconResponse.setStoreName(socon.getIssue().getItem().getStore().getName());
-            soconResponse.setExpiredAt(socon.getExpiredAt());
-            soconResponse.setStatus(socon.getStatus());
-            soconResponse.setUsedAt(socon.getUsedAt());
-            soconResponse.setItemImage(socon.getIssue().getItem().getImage());
-
-            usableSocons.add(soconResponse);
+            usableSocons.add(SoconListResponse.builder()
+                            .soconId(socon.getId())
+                            .itemName(issue.getName())
+                            .storeName(item.getStore().getName())
+                            .expiredAt(socon.getExpiredAt())
+                            .status(socon.getStatus())
+                            .itemImage(socon.getIssue().getItem().getImage())
+                    .build());
         }
         List<Socon> used = soconRepository.getUsedSoconByMemberId(memberRequest.getMemberId());
         for (Socon socon : used) {
-            SoconListResponse soconResponse = new SoconListResponse();
-            soconResponse.setSoconId(socon.getId());
-            soconResponse.setItemName(socon.getIssue().getName());
-            soconResponse.setStoreName(socon.getIssue().getItem().getStore().getName());
-            soconResponse.setExpiredAt(socon.getExpiredAt());
-            soconResponse.setStatus(socon.getStatus());
-            soconResponse.setUsedAt(socon.getUsedAt());
-            soconResponse.setItemImage(socon.getIssue().getItem().getImage());
+            Issue issue = socon.getIssue();
+            Item item = issue.getItem();
 
-            unusableSocons.add(soconResponse);
+            unusableSocons.add(SoconListResponse.builder()
+                    .soconId(socon.getId())
+                    .itemName(issue.getName())
+                    .storeName(item.getStore().getName())
+                    .expiredAt(socon.getExpiredAt())
+                    .status(socon.getStatus())
+                    .itemImage(socon.getIssue().getItem().getImage())
+                    .build());
         }
 
         Map<String, Object> response = new HashMap<>();
