@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:socon/utils/responsive_utils.dart';
+import 'package:socon/view/atoms/bottom_sheet.dart';
 import 'package:socon/view/atoms/searchBox.dart';
 import 'package:socon/view/modules/PlaceList.dart';
 import './utils/toast_utils.dart';
@@ -57,7 +58,8 @@ class _MainScreen extends State<MainScreen> {
                 child: SizedBox(
               width: ResponsiveUtils.getWidthWithPixels(context, 320),
               child: const PlaceList(),
-            ))
+            )),
+            StickyBottomSheet()
           ],
         ),
       ),
