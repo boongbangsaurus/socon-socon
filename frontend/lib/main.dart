@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:socon/utils/responsive_utils.dart';
-import 'package:socon/view/atoms/inputs.dart';
 import 'package:socon/view/atoms/searchBox.dart';
 import 'package:socon/view/modules/PlaceList.dart';
 import './utils/toast_utils.dart';
@@ -53,26 +52,12 @@ class _MainScreen extends State<MainScreen> {
             //     ToastUtil.showCustomToast(context, "availableSocon");
             //   },
             // ),
+            SizedBox(height: ResponsiveUtils.getWidthWithPixels(context, 10.0)),
             Expanded(
                 child: SizedBox(
               width: ResponsiveUtils.getWidthWithPixels(context, 320),
               child: const PlaceList(),
-            )),
-            SizedBox(
-                height: 100,
-                width: 300,
-                child: CustomTextFormField(
-                    labelText: '아이디',
-                    onSaved: (String? val) {},
-                    validator: (String? val) {
-                      if (val!.isEmpty) {
-                        return "Please enter some text";
-                      }
-                      if (!RegExp(r'^.{5,}$').hasMatch(val)) {
-                        return ("Minimum of 5 characters Required");
-                      }
-                      return null;
-                    })),
+            ))
           ],
         ),
       ),
