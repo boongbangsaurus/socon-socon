@@ -42,7 +42,8 @@
       * 화면
       <details>
          <summary>이번주 내용 정리</summary>
-         ## 컴포넌트(위젯) 분리
+         <div markdown='1'>
+            ## 컴포넌트(위젯) 분리
 
 - 네비게이션 바
 - 이미지 카드
@@ -526,6 +527,7 @@ TagButton.SALE()
 ```
 
 간단하게 불러올 수 있게 되었다.
+         </div>
       </details>
 
 
@@ -539,11 +541,22 @@ TagButton.SALE()
 ## BE
 ![feign_client](/uploads/61771223fec7e7cc38593618eee4aaf3/feign_client.PNG){: height="500"}  
 ### 김다희
-* 역할
-*  기능
-   * **기능명 1**
-      * 기능1 상세
-      * 화면
+* 인프라
+  * 공통 라이브러리 생성
+    * [구현 과정](https://kdie44.notion.site/MSA-56cf944d100845719f3761b90376a40f?pvs=4)<br>
+    <img src="assets/nexus.png" width="400px">
+  * 시스템 구조 설계<br>
+    <img src="assets/socon-system.png" width="400px">
+  * CI/CD
+    * 젠킨스
+        * [학습 내용](https://kdie44.notion.site/Jenkins-03219c87de904357883887944e4c0b54?pvs=4)<br>
+          <img src="assets/jenkins.png" width="400px">
+* 알림
+  * FCM 
+    * 토픽 구독
+    * 개별 알림
+    * 토픽 알림
+    * 전체 알림
 
 ### 김도휘
 * Gateway, 회원, 결제 
