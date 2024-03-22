@@ -75,6 +75,7 @@ class TagButton extends StatefulWidget {
   final Color buttonColor;
   final Color buttonTextColor;
   final VoidCallback onPressed;
+  final Function(bool) onSelected;
 
   final double minWidth;
   final double minHeight;
@@ -87,6 +88,8 @@ class TagButton extends StatefulWidget {
     required this.buttonColor,
     required this.buttonTextColor,
     required this.onPressed,
+    required this.onSelected,
+
     this.minWidth = 10.0, // 최소 가로 크기
     this.minHeight = 30.0, // 최소 세로 크기
   });
@@ -125,6 +128,7 @@ class _TagButtonState extends State<TagButton> {
           _isSelected = !_isSelected;
           widget.onPressed();
         });
+        widget.onSelected(_isSelected);
       },
       style: buttonStyle,
       child: Text(
