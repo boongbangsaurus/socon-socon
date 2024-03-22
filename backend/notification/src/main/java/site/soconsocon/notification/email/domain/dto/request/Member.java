@@ -1,4 +1,4 @@
-package site.soconsocon.notification.fcm.domain.dto.request;
+package site.soconsocon.notification.email.domain.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

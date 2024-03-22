@@ -2,7 +2,6 @@ package site.soconsocon.notification.fcm.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import site.soconsocon.notification.fcm.domain.dto.request.Member;
 
 /**
  * 사용자에게 Firebase Cloud Message 알람을 송신하기 위한 엔티티
