@@ -29,17 +29,14 @@ public class EmailService {
     private final JavaMailSender mailSender;
     private final MemberFeignClient memberFeignClient;
 
-    public void sendJoinCodeMail(String email){
+    @Transactional
+    public void sendCodeMail(String email){
         //이미 가입된 이메일인지 검증
         MemberFeignResponse user = memberFeignClient.getMemberByMemberEmail(email);
         //만약 이미 가입된 사용자가 존재하는 이메일이라면 전송 거부
         if(user!=null){
             throw new EmailException(EmailErrorCode.ALREADY_JOIN_EMAIL);
         }
-        sendCodeMail(email);
-    }
-    @Transactional
-    public void sendCodeMail(String email){
         //인증번호 생성
         String number = certificationUtil.createNumber();
         log.debug("인증번호 생성 = {}", number);

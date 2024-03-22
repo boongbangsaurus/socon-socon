@@ -11,7 +11,7 @@ import site.soconsocon.utils.MessageUtils;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/v1/message/fcm")
+@RequestMapping("/fcm")
 public class FcmController {
     private final FcmService fcmService;
 

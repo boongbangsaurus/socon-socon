@@ -2,6 +2,9 @@ package site.soconsocon.notification.fcm.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import site.soconsocon.notification.global.domain.dto.request.Member;
+import site.soconsocon.notification.global.feign.MemberFeignClient;
+import site.soconsocon.notification.global.feign.dto.response.MemberFeignResponse;
 
 /**
  * 사용자에게 Firebase Cloud Message 알람을 송신하기 위한 엔티티
@@ -28,5 +31,18 @@ public class DeviceToken {
 
     @Column(name = "device_token",nullable = true, length = 256, unique = true)
     private String deviceToken;
+
+    public void memberOf(Member member){
+        this.member=member;
+    }
+    public void memberOf(MemberFeignResponse memberFeignResponse){
+        this.member=Member.builder()
+                .memberId(memberFeignResponse.getMemberId())
+                .email(memberFeignResponse.getEmail())
+                .nickname(memberFeignResponse.getNickname())
+                .soconMoney(memberFeignResponse.getSoconMoney())
+                .soconPassword(memberFeignResponse.getSoconPassword())
+                .build();
+    }
 
 }

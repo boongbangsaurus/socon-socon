@@ -13,27 +13,18 @@ import site.soconsocon.utils.MessageUtils;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/v1/email")
+@RequestMapping("/email")
 public class EmailController {
 
     private final EmailService emailService;
 
-    @PostMapping("/join-code")
-    public ResponseEntity sendCodeEmail(
-            @RequestBody EmailRequest emailRequest
-    ){
-        emailService.sendJoinCodeMail(emailRequest.getEmail());
-        return ResponseEntity.ok(MessageUtils.success());
-    }
-
     @PostMapping("/code")
-    public ResponseEntity<MessageUtils> codeEmail(
+    public ResponseEntity sendCodeEmail(
             @RequestBody EmailRequest emailRequest
     ){
         emailService.sendCodeMail(emailRequest.getEmail());
         return ResponseEntity.ok(MessageUtils.success());
     }
-
 
     @PostMapping("/confirm")
     public ResponseEntity<MessageUtils> confirmNumber(
