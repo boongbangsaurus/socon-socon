@@ -539,7 +539,7 @@ TagButton.SALE()
       * 화면
 
 ## BE
-![feign_client](/uploads/61771223fec7e7cc38593618eee4aaf3/feign_client.PNG){: height="500"}  
+![feign_client](assets/feign_client.PNG){: height="500"}  
 ### 김다희
 * 인프라
   * 공통 라이브러리 생성
@@ -613,6 +613,6 @@ TagButton.SALE()
 
 ## 설계
   ### ERD
-   ![image](/uploads/c41dffad66db8de86f43166d5fdf50ef/image.png)
+   ![image](assets/soconERD.PNG)
 
   
