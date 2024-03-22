@@ -5,7 +5,12 @@ import 'package:socon/view/atoms/icon_loader.dart';
 
 import '../../utils/colors.dart';
 
+// 종류 : 소콘소콘, 관심 가게, 내 정보
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
+  final String title;
+
+  CustomAppBar({this.title = "소콘소콘"});
+
   @override
   Widget build(BuildContext context) {
     return AppBar(
@@ -14,7 +19,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       elevation: 0,
       // automaticallyImplyLeading: false,
       title: Text(
-        "소콘소콘",
+        title,
         style: TextStyle(
             fontWeight: FontWeight.w700,
             fontSize: ResponsiveUtils.calculateResponsiveFontSize(
@@ -38,8 +43,51 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             print('알림함으로 이동');
           },
         ),
-        SizedBox(width: ResponsiveUtils.getWidthWithPixels(context, 15))
+        SizedBox(width: ResponsiveUtils.getWidthWithPixels(context, 17))
       ],
+    );
+  }
+
+  @override
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+}
+
+//
+class CustomAppBarWithArrow extends StatelessWidget
+    implements PreferredSizeWidget {
+  final String title;
+
+  CustomAppBarWithArrow({super.key, required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      shape: Border(
+        bottom: BorderSide(
+          color: AppColors.GRAY200,
+          width: 1,
+        )
+      ),
+      scrolledUnderElevation: 0,
+      // backgroundColor: Colors.transparent,
+      backgroundColor: AppColors.WHITE,
+      elevation: 0,
+      // automaticallyImplyLeading: false,
+      leading: IconLoader(
+        iconName: "arrow_back",
+        padding: ResponsiveUtils.getWidthWithPixels(context, 15),
+        onPressed: () {
+          print('이전 화면으로 이동');
+        },
+      ),
+      title: Text(
+        title,
+        style: TextStyle(
+            fontWeight: FontWeight.w500,
+            fontSize: ResponsiveUtils.calculateResponsiveFontSize(
+                context, FontSizes.SMALL)),
+      ),
+      centerTitle: true,
     );
   }
 

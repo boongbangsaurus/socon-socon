@@ -54,7 +54,8 @@ class _NearbyInfoScreen extends State<NearbyInfoScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(),
+      backgroundColor: AppColors.WHITE,
+      appBar: CustomAppBar(title : "소콘소콘"),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
