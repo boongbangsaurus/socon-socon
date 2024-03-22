@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:socon/utils/icon_paths.dart';
 
+// local에 있는 svg 아이콘을 로드하는 위젯
 class IconLoader extends StatelessWidget {
   final String iconName;
   final double width;
@@ -23,3 +24,5 @@ class IconLoader extends StatelessWidget {
     );
   }
 }
+
+// author: 김아현
