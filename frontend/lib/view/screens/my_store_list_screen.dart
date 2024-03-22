@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:socon/view/modules/store_register_view.dart';
 
 import '../../utils/fontSizes.dart';
 
@@ -14,12 +15,26 @@ class MyStoreListScreen extends StatefulWidget {
 class _MyStoreListScreen extends State<MyStoreListScreen> {
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: Text(
-          "점포 목록",
-          style: TextStyle(fontSize: FontSizes.LARGE),
-        ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('소콘소콘'),
+        actions: [],
+      ),
+      body: Column(
+        children: [
+          Text('내점포 / 점포분석'),
+          Text('내 점포 리스트'),
+
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => RegisterPage()),
+              );
+            },
+            child: Text('점포 등록하기'),
+          )
+        ],
       ),
     );
   }

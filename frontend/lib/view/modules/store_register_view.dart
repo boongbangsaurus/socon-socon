@@ -14,6 +14,20 @@ class _RegisterPageState extends State<RegisterPage> {
   final PageController _pageController = PageController();
   int _currentPageIndex = 0;
 
+  void _onBackPressed() {
+    if (_currentPageIndex == 0) {
+      // PageView의 첫 페이지에서 뒤로 가기 버튼을 누르면 이전 화면으로 돌아감
+      Navigator.pop(context);
+    } else {
+      // 그렇지 않으면 PageView 내에서 이전 페이지로 이동
+      _pageController.previousPage(
+        duration: Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<RegisterViewModel>(
@@ -25,12 +39,7 @@ class _RegisterPageState extends State<RegisterPage> {
           ),
           leading: IconButton(
             icon: Icon(Icons.arrow_back),
-            onPressed: () {
-              _pageController.previousPage(
-                duration: Duration(milliseconds: 300),
-                curve: Curves.easeInOut,
-              );
-            },
+            onPressed: _onBackPressed,
           ),
         ),
         body: Padding(
@@ -64,8 +73,6 @@ class _RegisterPageState extends State<RegisterPage> {
 
 class Step1 extends StatelessWidget {
   final PageController pageController;
-  final List<String> dropdownItems = ['항목 1', '항목 2', '항목 3', '항목 4'];
-  var selectedItem = '';
 
   Step1({required this.pageController});
 
