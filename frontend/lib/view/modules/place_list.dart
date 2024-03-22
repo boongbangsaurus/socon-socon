@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:socon/utils/colors.dart';
-import 'package:socon/utils/responsive_utils.dart';
-import 'package:socon/view/modules/placeListCard.dart';
+import 'package:socon/view/modules/place_list_card.dart';
 import '../../models/store.dart';
 
 

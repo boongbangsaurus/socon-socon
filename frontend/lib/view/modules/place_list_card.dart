@@ -5,8 +5,8 @@ import 'package:socon/models/store.dart';
 import 'package:socon/utils/colors.dart';
 import 'package:socon/utils/fontSizes.dart';
 import 'package:socon/utils/responsive_utils.dart';
-import 'package:socon/view/atoms/iconLoader.dart';
-import 'package:socon/view/atoms/imageLoader.dart';
+import 'package:socon/view/atoms/icon_loader.dart';
+import 'package:socon/view/atoms/image_loader.dart';
 import 'package:socon/view/atoms/tag_icon.dart';
 
 const imageUrl = "https://loremflickr.com/320/240";

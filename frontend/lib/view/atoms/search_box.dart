@@ -3,7 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:socon/utils/colors.dart';
 import 'package:socon/utils/fontSizes.dart';
 import 'package:socon/utils/responsive_utils.dart';
-import 'package:socon/view/atoms/iconLoader.dart';
+import 'package:socon/view/atoms/icon_loader.dart';
 
 class SearchBox extends StatefulWidget {
   const SearchBox({super.key});
