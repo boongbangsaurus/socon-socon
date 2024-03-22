@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Getter
 public class ItemListResponse {
 
-    private Integer itemId;
+    private Integer id;
     private String name;
     private String image;
     private Integer price;

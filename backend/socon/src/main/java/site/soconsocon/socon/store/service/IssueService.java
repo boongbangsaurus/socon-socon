@@ -44,7 +44,7 @@ public class IssueService {
         }
         List<Issue> issues = issueRepository.findIssueListByStoreId(storeId);
         List<IssueListResponse> issueList = new ArrayList<>();
-        for(Issue issue : issues) {
+        for (Issue issue : issues) {
             issueList.add(IssueListResponse.builder()
                     .id(issue.getId())
                     .isMain(issue.getIsMain())
@@ -66,29 +66,27 @@ public class IssueService {
                           Integer storeId,
                           Integer itemId,
                           MemberRequest memberRequest) {
-        if (!Objects.equals(memberRequest.getMemberId(), storeRepository.findById(storeId).get().getMemberId())) {
+        if (!Objects.equals(memberRequest.getMemberId(), storeRepository.findMemberIdByStoreId(storeId))) {
             throw new SoconException(ErrorCode.FORBIDDEN, "본인 점포 아님");
-        } else {
-            Item item = itemRepository.findById(itemId)
-                    .orElseThrow(() -> new StoreException(StoreErrorCode.ITEM_NOT_FOUND, "" + itemId));
-
-            Issue issue = new Issue();
-            issue.setStoreName(storeRepository.findById(storeId).get().getName());
-            issue.setName(item.getName());
-            issue.setImage(item.getImage());
-            issue.setIsMain(request.getIsMain());
-            issue.setIsDiscounted(request.getIsDiscounted());
-            issue.setDiscountedPrice(request.getDiscountedPrice());
-            issue.setMaxQuantity(request.getMaxQuantity());
-            issue.setIssuedQuantity(0);
-            issue.setUsed(0);
-            issue.setPeriod(request.getPeriod());
-            issue.setCreatedAt(LocalDateTime.now());
-            issue.setItem(item);
-            issue.setStatus('A');
-
-            issueRepository.save(issue);
         }
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new StoreException(StoreErrorCode.ITEM_NOT_FOUND, "" + itemId));
+
+        issueRepository.save(Issue.builder()
+                .storeName(storeRepository.findNameByStoreId(storeId))
+                .name(item.getName())
+                .image(item.getImage())
+                .isMain(request.getIsMain())
+                .isDiscounted(request.getIsDiscounted())
+                .discountedPrice(request.getDiscountedPrice())
+                .maxQuantity(request.getMaxQuantity())
+                .issuedQuantity(0)
+                .used(0)
+                .period(request.getPeriod())
+                .createdAt(LocalDateTime.now())
+                .item(item)
+                .status('A')
+                .build());
     }
 
     // 소콘 발행
@@ -158,7 +156,7 @@ public class IssueService {
             // 소콘 가능 개수보다 요청한 개수가 많을 경우
             throw new SoconException(ErrorCode.BAD_REQUEST, "발행 가능 개수 초과, 남은 발행 개수 : " + (issue.getMaxQuantity() - issue.getIssuedQuantity()));
         }
-        if(issue.getStatus() != 'A') {
+        if (issue.getStatus() != 'A') {
             // 발행 중 아님
             throw new SoconException(ErrorCode.BAD_REQUEST, "발행 중지/완료된 상태. status : " + issue.getStatus());
         } else {

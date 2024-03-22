@@ -5,12 +5,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import site.soconsocon.socon.store.domain.dto.request.*;
-import site.soconsocon.socon.store.domain.dto.response.FavoriteStoresListResponse;
 import site.soconsocon.socon.store.domain.dto.response.IssueListResponse;
 import site.soconsocon.socon.store.domain.dto.response.ItemListResponse;
 import site.soconsocon.socon.store.domain.dto.response.StoreInfoResponse;
-import site.soconsocon.socon.store.domain.entity.jpa.Item;
-import site.soconsocon.socon.store.domain.entity.jpa.Store;
 import site.soconsocon.socon.store.service.IssueService;
 import site.soconsocon.socon.store.service.ItemService;
 import site.soconsocon.socon.store.service.StoreService;
@@ -126,9 +123,7 @@ public class StoreApiController {
         @PathVariable("item_id") Integer itemId,
         MemberRequest memberRequest
     ){
-        Item item  = itemService.getDetailItemInfo(storeId, itemId, memberRequest);
-
-        return ResponseEntity.ok().body(MessageUtils.success(item));
+        return ResponseEntity.ok().body(MessageUtils.success(itemService.getDetailItemInfo(storeId, itemId, memberRequest)));
     }
 
     // 상품 발행 정보 등록
@@ -160,9 +155,8 @@ public class StoreApiController {
     public ResponseEntity<Object> getFavoriteList(
         MemberRequest memberRequest
     ){
-        List <FavoriteStoresListResponse> stores = storeService.getFavoriteStoreList(memberRequest);
 
-        return ResponseEntity.ok().body(MessageUtils.success(stores));
+        return ResponseEntity.ok().body(MessageUtils.success(storeService.getFavoriteStoreList(memberRequest)));
     }
 
 }

@@ -224,20 +224,19 @@ public class StoreService {
 
         Store store = storeRepository.findById(storeId)
                 .orElseThrow(() -> new StoreException(StoreErrorCode.STORE_NOT_FOUND, "" + storeId));
-        if (!store.getIsClosed()) {
-            FavStore favStore = favStoreRepository.isExist(memberRequest.getMemberId(), storeId);
-            if (favStore != null) {
-                // 이미 좋아요 한 경우
-                favStoreRepository.delete(favStore);
-            } else {
-                favStoreRepository.save(FavStore.builder()
-                        .memberId(memberRequest.getMemberId())
-                        .storeId(storeId)
-                        .build());
-            }
-        } else {
+        if (store.getIsClosed()) {
             // 폐업상태일 경우
             throw new SoconException(ErrorCode.BAD_REQUEST, "폐업 점포");
+        }
+        FavStore favStore = favStoreRepository.isExist(memberRequest.getMemberId(), storeId);
+        if (favStore != null) {
+            // 이미 좋아요 한 경우
+            favStoreRepository.delete(favStore);
+        } else {
+            favStoreRepository.save(FavStore.builder()
+                    .memberId(memberRequest.getMemberId())
+                    .storeId(storeId)
+                    .build());
         }
     }
 
@@ -251,13 +250,12 @@ public class StoreService {
         for (FavStore favStore : favStores) {
             Store store = storeRepository.findById(favStore.getStoreId())
                     .orElseThrow(() -> new StoreException(StoreErrorCode.STORE_NOT_FOUND, "" + favStore.getStoreId()));
-            FavoriteStoresListResponse res = FavoriteStoresListResponse.builder()
-                    .storeId(store.getId())
+            stores.add(FavoriteStoresListResponse.builder()
+                    .id(store.getId())
                     .name(store.getName())
                     .image(store.getImage())
                     .mainMenu(issueRepository.findMainIssueNameByStoreId(store.getId()))
-                    .build();
-            stores.add(res);
+                    .build());
         }
 
         return stores;
