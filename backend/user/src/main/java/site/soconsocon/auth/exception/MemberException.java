@@ -3,12 +3,11 @@ package site.soconsocon.auth.exception;
 import lombok.Getter;
 
 @Getter
-public class JwtException extends Exception {
+public class MemberException extends Exception{
 
     private final ErrorCode errorCode;
 
-    public JwtException(ErrorCode errorCode) {
+    public MemberException(ErrorCode errorCode) {
         this.errorCode = errorCode;
     }
-
 }
