@@ -49,4 +49,6 @@ public class EmailConfig {
         properties.put("mail.smtp.starttls.enable", starttls);
         return properties;
     }
+
+
 }

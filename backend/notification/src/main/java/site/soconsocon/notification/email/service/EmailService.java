@@ -6,12 +6,17 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import site.soconsocon.notification.email.config.EmailConfig;
 import site.soconsocon.notification.email.domain.entity.CertificationNumber;
+import site.soconsocon.notification.email.exception.EmailErrorCode;
+import site.soconsocon.notification.email.exception.EmailException;
 import site.soconsocon.notification.email.repository.redis.EmailCertificationRepository;
 import site.soconsocon.notification.email.utils.CertificationUtil;
 import site.soconsocon.notification.global.domain.dto.request.Member;
+import site.soconsocon.notification.global.feign.MemberFeignClient;
+import site.soconsocon.notification.global.feign.dto.response.MemberFeignResponse;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -19,42 +24,17 @@ import site.soconsocon.notification.global.domain.dto.request.Member;
 public class EmailService {
 
     private final EmailConfig emailConfig;
-    private final PasswordEncoder passwordEncoder;
     private final CertificationUtil certificationUtil;
     private final EmailCertificationRepository repository;
     private final JavaMailSender mailSender;
+    private final MemberFeignClient memberFeignClient;
 
-    @Transactional
-    public void sendTempPasswordMail(String email){
-        // 가입이 되어있는 회원인지 검증 ( 프론트 로직상 인증하고 들어오지만 재검증)
-        Member user=userRepository.findByEmail(email).orElseThrow(()->new UserException(NOT_EXISTS_USER));
-        //임시 비밀번호 생성
-        String tempPassword = certificationUtil.createTempPassword();
-        log.debug("임시비밀번호 생성 = {}", tempPassword);
-
-        //DB에 업데이트
-        user=user.toBuilder()
-                .password(passwordEncoder.encode(tempPassword))
-                .build();
-
-        userRepository.save(user);
-        //메일 생성 및 전송
-        try {
-            MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper messageHelper = new MimeMessageHelper(message, true);
-            messageHelper.setFrom(emailConfig.getUserName());
-            messageHelper.setTo(email);
-            messageHelper.setSubject("[경토리] 임시 비밀번호 안내 입니다.");
-            messageHelper.setText(makeTempPasswordTemplate(tempPassword),true);
-
-            mailSender.send(message);
-        } catch (MessagingException e) {
-            throw new RuntimeException("메일 생성 오류", e);
-        }
-    }
     public void sendJoinCodeMail(String email){
         //이미 가입된 이메일인지 검증
-        Member user=userRepository.findByEmail(email).orElseThrow(()->new UserException(ALREADY_IN_EMAIL));
+        MemberFeignResponse user = memberFeignClient.findMemberByMemberEmail(email);
+        if(user!=null){
+
+        }
         sendCodeMail(email);
     }
     @Transactional
@@ -75,7 +55,7 @@ public class EmailService {
             MimeMessageHelper messageHelper = new MimeMessageHelper(message, true);
             messageHelper.setFrom(emailConfig.getUserName());
             messageHelper.setTo(email);
-            messageHelper.setSubject("[경토리] 이메일 인증 번호 안내 입니다.");
+            messageHelper.setSubject("[소콘소콘] 이메일 인증 번호 안내 입니다.");
             messageHelper.setText(makeCodeTemplate(number),true);
 
             mailSender.send(message);
@@ -94,14 +74,14 @@ public class EmailService {
             repository.delete(certificationNumber);
         }else {
             //틀릴경우
-            throw new AuthException(DIFFERENT_NUMBER);
+            throw new EmailException(EmailErrorCode.DIFFERENT_NUMBER);
         }
     }
 
     private String makeCodeTemplate(String code){
         String mainColor = "#9CAF88";
         String secondaryColor = "#1E1E1E";
-        String title = "GYEONGTORI_AUTH_SERVICE";
+        String title = "SOCON-SOCON_AUTH_SERVICE";
         String template =
                 "<div style=\"font-family: 'Apple SD Gothic Neo', 'sans-serif' !important; width: 540px; height: 600px; border-top: 4px solid "+mainColor+"; margin: 100px auto; padding: 30px 0; box-sizing: border-box; color: "+secondaryColor+";\">"+
                         "\t<h1 style=\"margin: 0; padding: 0 5px; font-size: 28px; font-weight: 400;\">"+
@@ -124,36 +104,6 @@ public class EmailService {
                         "\t\t</p>"+
                         "\t</div>"+
                         "</div>";
-        return template;
-    }
-
-    private String makeTempPasswordTemplate(String tempPassword){
-        String mainColor = "#9CAF88";
-        String secondaryColor = "#1E1E1E";
-        String title = "GYEONGTORI_AUTH_SERVICE";
-        String template =
-                "<div style=\"font-family: 'Apple SD Gothic Neo', 'sans-serif' !important; width: 540px; height: 600px; border-top: 4px solid "+mainColor+"; margin: 100px auto; padding: 30px 0; box-sizing: border-box; color: "+secondaryColor+";\">"+
-                        "\t<h1 style=\"margin: 0; padding: 0 5px; font-size: 28px; font-weight: 400;\">"+
-                        "\t\t<span style=\"font-size: 15px; margin: 0 0 10px 3px;\">"+title+"</span><br />"+
-                        "\t\t<span style=\"color: "+mainColor+";\">임시 비밀번호</span> 안내입니다."+
-                        "\t</h1>"+
-                        "\t<p style=\"font-size: 16px; line-height: 26px; margin-top: 50px; padding: 0 5px;\">"+
-                        "\t\t안녕하세요.<br />"+
-                        "\t\t요청하신 임시 비밀번호가 생성되었습니다.<br />"+
-                        "\t\t아래 <b style=\"color: "+mainColor+";\">'임시 비밀번호'</b> 를 확인한 뒤, 임시 비밀번호로 로그인하세요.<br />"+
-                        "\t\t감사합니다."+
-                        "\t</p>"+
-                        "\t<p style=\"font-size: 16px; margin: 40px 5px 20px; line-height: 28px;\">"+
-                        "\t\t임시 비밀번호: <br />"+
-                        "\t\t<span style=\"font-size: 24px;\">"+tempPassword+"</span>"+
-                        "\t</p>"+
-                        "\t<div style=\"border-top: 1px solid #DDD; padding: 5px;\">"+
-                        "\t\t<p style=\"font-size: 13px; line-height: 21px; color: #555;\">"+
-                        "\t\t\t만약 정상적으로 로그인 되지 않는다면, 다시 비밀번호를 받아주세요.<br />"+
-                        "\t\t</p>"+
-                        "\t</div>"+
-                        "</div>";
-        log.debug("임시 비밀번호 발송 템플릿 작성 완료");
         return template;
     }
 }

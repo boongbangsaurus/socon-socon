@@ -3,10 +3,10 @@ import lombok.Getter;
 import site.soconsocon.notification.fcm.exception.FcmErrorCode;
 
 @Getter
-public class FcmException extends RuntimeException {
-    private final site.soconsocon.notification.fcm.exception.FcmErrorCode errorCode;
+public class EmailException extends RuntimeException {
+    private final EmailErrorCode errorCode;
 
-    public FcmException(FcmErrorCode errorCode) {
+    public EmailException(EmailErrorCode errorCode) {
         super(errorCode.getMessage());
         this.errorCode = errorCode;
     }
