@@ -7,8 +7,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class AddMySoconRequest {
+public class OrderRequest {
 
-    private Integer purchaseQuantity;
-    private Integer orderId;
+    private Integer orderQuantity;
+    private Integer price;
+
 }

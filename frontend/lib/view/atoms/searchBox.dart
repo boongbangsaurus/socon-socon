@@ -22,7 +22,7 @@ class _SearchBoxState extends State<SearchBox> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(
-          width: ResponsiveUtils.getWidthWithPixels(context, 340),
+          width: ResponsiveUtils.getWidthWithPixels(context, 320),
           child: TextField(
             controller: _textEditingController,
             decoration: InputDecoration(

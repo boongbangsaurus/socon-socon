@@ -1,16 +1,19 @@
-package site.soconsocon.socon.sogon.domain;
+package site.soconsocon.socon.sogon.domain.entity.jpa;
 
 import jakarta.persistence.*;
 import lombok.*;
 import site.soconsocon.socon.store.domain.entity.jpa.Socon;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity(name="SOGON")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
 @ToString
 public class Sogon {
 
@@ -25,19 +28,22 @@ public class Sogon {
     @Column(name = "content", nullable = false)
     private String content;
 
-    @Column(name = "created_date", nullable = false)
-    private LocalDateTime createdDate;
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
+
+    @Column(name = "expired_at", nullable = false)
+    private LocalDateTime expiredAt;
 
     @Column(name = "is_expired", nullable = false, columnDefinition = "boolean default false")
-    private LocalDateTime isExpired; // 만료 여부
+    private Boolean isExpired; // 게시 기간 만료 여부
 
     @Column(name = "is_picked", nullable = false, columnDefinition = "boolean default false")
-    private LocalDateTime isPicked; // 채택 소곤 여부
+    private Boolean isPicked; // 채택 소곤 여부
 
-    @Column(name = "image1", nullable = true)
+    @Column(name = "image1")
     private String image1; // 이미지 1
 
-    @Column(name = "image2", nullable = true)
+    @Column(name = "image2")
     private String image2; // 이미지 2
 
     @Column(name = "lat", nullable = false)
@@ -50,6 +56,10 @@ public class Sogon {
     private Integer memberId; // 멤버 id
 
     @OneToOne
-    @JoinColumn(name = "my_socon_id")
-    private Socon mySocon;
+    @JoinColumn(name = "socon_id")
+    private Socon socon;
+
+    @OneToMany(mappedBy = "comment")
+    private List<Comment> comments = new ArrayList<>();
+
 }
