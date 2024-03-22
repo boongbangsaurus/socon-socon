@@ -2,8 +2,6 @@ package site.soconsocon.socon.store.domain.entity.jpa;
 
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity(name="ISSUE")
@@ -11,6 +9,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
 @ToString
 public class Issue {
 

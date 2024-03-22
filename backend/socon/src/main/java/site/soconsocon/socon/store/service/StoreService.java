@@ -2,7 +2,12 @@ package site.soconsocon.socon.store.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import site.soconsocon.socon.global.exception.ForbiddenException;
+import site.soconsocon.socon.global.exception.StoreDuplicationException;
 import site.soconsocon.socon.global.exception.badrequest.BadRequest;
+import site.soconsocon.socon.global.exception.conflict.SetClosePlanException;
+import site.soconsocon.socon.global.exception.notfound.RegistrationNotFoundException;
+import site.soconsocon.socon.global.exception.notfound.StoreNotFoundException;
 import site.soconsocon.socon.store.domain.dto.request.AddStoreRequest;
 import site.soconsocon.socon.store.domain.dto.request.MemberRequest;
 import site.soconsocon.socon.store.domain.dto.request.UpdateClosedPlannedRequest;
@@ -13,11 +18,6 @@ import site.soconsocon.socon.store.domain.entity.jpa.BusinessHour;
 import site.soconsocon.socon.store.domain.entity.jpa.FavStore;
 import site.soconsocon.socon.store.domain.entity.jpa.RegistrationNumber;
 import site.soconsocon.socon.store.domain.entity.jpa.Store;
-import site.soconsocon.socon.global.exception.conflict.SetClosePlanException;
-import site.soconsocon.socon.global.exception.ForbiddenException;
-import site.soconsocon.socon.global.exception.notfound.RegistrationNotFoundException;
-import site.soconsocon.socon.global.exception.StoreDuplicationException;
-import site.soconsocon.socon.global.exception.notfound.StoreNotFoundException;
 import site.soconsocon.socon.store.repository.*;
 
 import java.time.LocalDateTime;
