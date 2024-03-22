@@ -8,20 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
 import site.soconsocon.notification.email.domain.dto.request.EmailConfirmRequest;
 import site.soconsocon.notification.email.domain.dto.request.EmailRequest;
 import site.soconsocon.notification.email.service.EmailService;
-import site.soconsocon.notification.fcm.domain.dto.request.FcmMessage;
-import site.soconsocon.notification.fcm.service.FcmService;
 import site.soconsocon.utils.MessageUtils;
 
-@import lombok.RequiredArgsConstructor;
-import org.jackpot.back.global.utils.MessageUtils;
-import org.jackpot.back.security.model.dto.request.EmailConfirmRequest;
-import org.jackpot.back.security.model.dto.request.EmailRequest;
-import org.jackpot.back.security.model.service.EmailService;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
@@ -46,13 +34,6 @@ public class EmailController {
         return ResponseEntity.ok(MessageUtils.success());
     }
 
-    @PostMapping("/temp-password")
-    public ResponseEntity<MessageUtils> tempPasswordEmail(
-            @RequestBody EmailRequest emailRequest
-    ){
-        emailService.sendTempPasswordMail(emailRequest.getEmail());
-        return ResponseEntity.ok(MessageUtils.success());
-    }
 
     @PostMapping("/confirm")
     public ResponseEntity<MessageUtils> confirmNumber(

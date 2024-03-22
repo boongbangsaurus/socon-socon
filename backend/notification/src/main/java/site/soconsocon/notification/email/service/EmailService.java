@@ -31,9 +31,10 @@ public class EmailService {
 
     public void sendJoinCodeMail(String email){
         //이미 가입된 이메일인지 검증
-        MemberFeignResponse user = memberFeignClient.findMemberByMemberEmail(email);
+        MemberFeignResponse user = memberFeignClient.getMemberByMemberEmail(email);
+        //만약 이미 가입된 사용자가 존재하는 이메일이라면 전송 거부
         if(user!=null){
-
+            throw new EmailException(EmailErrorCode.ALREADY_JOIN_EMAIL);
         }
         sendCodeMail(email);
     }
@@ -60,14 +61,15 @@ public class EmailService {
 
             mailSender.send(message);
         } catch (MessagingException e) {
-            throw new RuntimeException("메일 생성 오류", e);
+            throw new EmailException(EmailErrorCode.SEND_ERROR);
         }
     }
 
     @Transactional
     public void confirmCode(String email, String code){
         //email로 레디스에서 찾는다.
-        CertificationNumber certificationNumber = repository.findById(email).orElseThrow(()->new AuthException(AuthErrorCode.NOT_FOUND_CODE));
+        CertificationNumber certificationNumber = repository.findById(email)
+                .orElseThrow(()->new EmailException(EmailErrorCode.WRONG_CODE));
         //코드 확인
         if (certificationNumber.getNumber().equals(code)){
             //같을 경우
@@ -79,8 +81,8 @@ public class EmailService {
     }
 
     private String makeCodeTemplate(String code){
-        String mainColor = "#9CAF88";
-        String secondaryColor = "#1E1E1E";
+        String mainColor = "#F8D461";
+        String secondaryColor = "#B7E786";
         String title = "SOCON-SOCON_AUTH_SERVICE";
         String template =
                 "<div style=\"font-family: 'Apple SD Gothic Neo', 'sans-serif' !important; width: 540px; height: 600px; border-top: 4px solid "+mainColor+"; margin: 100px auto; padding: 30px 0; box-sizing: border-box; color: "+secondaryColor+";\">"+
