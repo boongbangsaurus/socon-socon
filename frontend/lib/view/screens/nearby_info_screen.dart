@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:socon/view/atoms/icon_loader.dart';
+import 'package:socon/view/atoms/image_card.dart';
 
 import '../../models/store.dart';
 import '../../utils/responsive_utils.dart';
@@ -25,6 +27,11 @@ class _NearbyInfoScreen extends State<NearbyInfoScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const SearchBox(),
+            ImageCard(
+              imgUrl: "https://firebasestorage.googleapis.com/v0/b/socon-socon.appspot.com/o/images%2Fbanner%2Fbanner_maratang.png?alt=media&token=c3ac6662-a3da-49f1-b02b-b7c3db771180",
+              width: ResponsiveUtils.getWidthWithPixels(context, 320),
+              height: ResponsiveUtils.getHeightWithPixels(context, 88),
+            ),
             // ElevatedButton(
             //   child: const Text("Show Toast"),
             //   onPressed: () {
@@ -34,9 +41,9 @@ class _NearbyInfoScreen extends State<NearbyInfoScreen> {
             SizedBox(height: ResponsiveUtils.getWidthWithPixels(context, 10.0)),
             Expanded(
                 child: SizedBox(
-              width: ResponsiveUtils.getWidthWithPixels(context, 320),
-              child: PlaceList(stores: stores),
-            ))
+                  width: ResponsiveUtils.getWidthWithPixels(context, 320),
+                  child: PlaceList(stores: stores),
+                ))
           ],
         ),
       ),
