@@ -5,5 +5,5 @@ const Map<String, String> iconPaths = {
   'home': 'assets/icons/home.svg',
   'notifications': 'assets/icons/notifications.svg',
   'heart_empty': 'assets/icons/heart_empty.svg',
-  'heart_fill': 'assets/icons/heart_fill.svg',
 };
+  // 'heart_fill': 'assets/icons/heart_fill.svg',
