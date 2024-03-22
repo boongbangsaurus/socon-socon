@@ -13,6 +13,7 @@ import 'package:socon/utils/fontSizes.dart';
 /// @param bool [obscureText] 민감한 정보를 입력받을 때 내용을 숨길지 여부 결정
 /// @param String? [hintText] 작성 내용을 제안
 /// @param TextInputType? [keyboardType] 사용할 키보드 타입 지정
+/// @return new TextField
 class CustomTextFormField extends StatefulWidget {
   final String labelText;
   final FormFieldSetter<String?> onSaved;
