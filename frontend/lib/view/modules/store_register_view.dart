@@ -239,28 +239,63 @@ class Step3 extends StatefulWidget {
 
 class _Step3State extends State<Step3> {
   bool isChecked = false;
-  List<String> operationTimes = ['월', '화', '수', '목', '금', '토', '일'];
-  List<String> selectedDays = [];
+  Map<String, bool> operationDaysMap = {
+    '월': false,
+    '화': false,
+    '수': false,
+    '목': false,
+    '금': false,
+    '토': false,
+    '일': false
+  };
   List<String> dropdownItems = ['09:00', '09:30', '10:00', '10:30', '11:00'];
   String selectedStartTime = '';
   String selectedEndTime = '';
+  String breaktimeStart = '';
+  String breaktimeEnd = '';
   List<Widget> selectedTimesWidgets = [];
 
-  var selectedItem = ''; // 선택된 항목
-
-
   void _addSelectedTimeWidget() {
-    for (var day in selectedDays) {
-      var widget = Padding(
-        padding: const EdgeInsets.only(top: 8.0),
-        child: Text("$day: 시작 $selectedStartTime, 종료 $selectedEndTime"),
-      );
-      setState(() {
-        selectedTimesWidgets.add(widget);
-      });
-    }
-    selectedDays.clear(); // 선택된 요일 초기화
+    operationDaysMap.forEach((day, selected) {
+      if (selected) {
+        var widget = Padding(
+          padding: const EdgeInsets.only(top: 8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+
+                children: [
+                  Text("$day: $selectedStartTime ~ $selectedEndTime"),
+                  isChecked ? Text("      $breaktimeStart ~ $breaktimeEnd 휴게시간") : Text(''),
+                ],
+              ),
+              IconButton(
+                icon: Icon(Icons.close),
+                onPressed: () {
+                  setState(() {
+                    operationDaysMap[day] = false; // 선택 해제
+                    selectedTimesWidgets.removeWhere((element) =>
+                    (element.key as ValueKey<String>).value == day);
+                  });
+                },
+              )
+            ],
+          ),
+          key: ValueKey<String>(day),
+        );
+
+        setState(() {
+          selectedTimesWidgets.add(widget);
+        operationDaysMap[day] = false; // 다시 비활성화
+        });
+      }
+    });
   }
+
+
+
   @override
   Widget build(BuildContext context) {
     final viewModel = Provider.of<RegisterViewModel>(context);
@@ -278,21 +313,18 @@ class _Step3State extends State<Step3> {
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               Wrap(
-                spacing: -2.0, // 수평 방향 자식 사이의 공간
-                children: operationTimes.map((time) {
+                spacing: -2.0,
+                children: operationDaysMap.keys.map((day) {
                   return TagButton(
-                    buttonText: time,
-                    buttonColor: selectedDays.contains(time) ? Colors.yellow : Colors.grey,
+                    buttonText: day,
+                    buttonColor: operationDaysMap[day]! ? Colors.yellow : Colors.grey,
                     buttonTextColor: Colors.white,
-                    onPressed: () {
-                      if (!selectedDays.contains(time)) {
-                        // 선택되지 않은 요일만 처리
-                        setState(() {
-                          selectedDays.add(time); // 선택된 요일 리스트에 추가
-                        });
-                      }
+                    onSelected: (day) {},
+                    onPressed: operationDaysMap[day]! ? () {} : () { // 수정된 부분
+                      setState(() {
+                        operationDaysMap[day] = true; // 선택된 요일 활성화
+                      });
                     },
-                    onSelected: (isSelected) {},
                   );
                 }).toList(),
               ),
@@ -302,7 +334,7 @@ class _Step3State extends State<Step3> {
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                    
+
                       children: [
                         Text('영업시작'),
                         Dropdown(title: '시작시간', dropdownItems: dropdownItems, onItemSelected: (item) {
@@ -351,7 +383,8 @@ class _Step3State extends State<Step3> {
                         Text('시작'),
                         Dropdown(title: '시작시간', dropdownItems: dropdownItems, onItemSelected: (item) {
                           setState(() {
-                            selectedItem = item ?? '';
+                            breaktimeStart = item ?? '';
+                            viewModel.updateBusinessHour(item ?? '00:00', openAt: selectedStartTime);
                           });
                         },)
                       ],
@@ -366,7 +399,9 @@ class _Step3State extends State<Step3> {
                         Text('종료'),
                         Dropdown(title: '종료시간', dropdownItems: dropdownItems, onItemSelected: (item) {
                           setState(() {
-                            selectedItem = item ?? '';
+                            breaktimeEnd = item ?? '';
+                            viewModel.updateBusinessHour(item ?? '00:00', openAt: selectedEndTime);
+
                           });
                         },)
                       ],
@@ -432,11 +467,31 @@ class SummaryPage extends StatelessWidget {
                   style: TextStyle(fontSize: 18)),
               Text("사업자주소: ${viewModel.address}", style: TextStyle(fontSize: 18)),
               Text("상호명: ${viewModel.name}", style: TextStyle(fontSize: 18)),
-              Text("전화번호: ${viewModel.phoneNumber}",
-                  style: TextStyle(fontSize: 18)),
-              Expanded(
-                child: Container(), // 화면의 나머지 부분을 차지하여 버튼을 아래로 밀어냄
+              Text("전화번호: ${viewModel.phoneNumber}"),
+              ListView.builder(
+                itemCount: viewModel.businessHours?.length ?? 0,
+                itemBuilder: (context, index) {
+                  final businessHour = viewModel.businessHours![index];
+                  // 운영시간 문자열 생성
+                  String operatingHoursText = "${businessHour.day}: ";
+                  if (businessHour.isWorking ?? false) {
+                    operatingHoursText += "${businessHour.openAt} - ${businessHour.closeAt}";
+                    if (businessHour.breakTime ?? false) {
+                      operatingHoursText += " (휴게시간: ${businessHour.breaktimeStart} - ${businessHour.breaktimeEnd})";
+                    }
+                  } else {
+                    operatingHoursText += "휴무";
+                  }
+
+                  return Text(
+                    operatingHoursText,
+                    style: TextStyle(fontSize: 18),
+                  );
+                },
               ),
+
+
+
               BasicButton(text: '완료', color: 'yellow',
                 onPressed: () => pageController.nextPage(
                   duration: Duration(milliseconds: 300),

@@ -73,10 +73,33 @@ class RegisterViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setBusinessHours(List<BusinessHour>? value) {
-    _registerModel.businessHours = value;
+  void updateBusinessHour(String day, {String? openAt, String? closeAt, bool? isWorking, bool? breakTime, String? breaktimeStart, String? breaktimeEnd}) {
+    if (_registerModel.businessHours == null) {
+      _registerModel.businessHours = [];
+    }
+    // 해당 요일의 BusinessHour 찾기
+    var businessHour = _registerModel.businessHours!.firstWhere(
+          (bh) => bh.day == day,
+      orElse: () => BusinessHour(day: day, isWorking: false, openAt: null, closeAt: null),
+    );
+
+    // 찾은 BusinessHour 업데이트
+    if (day != null) businessHour.day = day;
+    if (openAt != null) businessHour.openAt = openAt;
+    if (closeAt != null) businessHour.closeAt = closeAt;
+    if (isWorking != null) businessHour.isWorking = isWorking;
+    if (breakTime != null) businessHour.breakTime = breakTime;
+    if (breaktimeStart != null) businessHour.breaktimeStart = breaktimeStart;
+    if (breaktimeEnd != null) businessHour.breaktimeEnd = breaktimeEnd;
+
+    // 만약 새로운 요일이라면 리스트에 추가
+    if (!_registerModel.businessHours!.contains(businessHour)) {
+      _registerModel.businessHours!.add(businessHour);
+    }
+
     notifyListeners();
   }
+
 
 
   void register() {
