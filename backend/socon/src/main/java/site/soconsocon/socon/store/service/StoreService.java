@@ -38,7 +38,7 @@ public class StoreService {
 
         //RegistrationNumber 조회
         RegistrationNumber registrationNumber = registrationNumberRepository.findById(request.getRegistrationNumberId())
-                .orElseThrow(() -> new StoreException(StoreErrorCode.REGISTRATION_NUMBER_NOT_FOUND, "" + request.getRegistrationNumberId()));
+                .orElseThrow(() -> new StoreException(StoreErrorCode.REGISTRATION_NUMBER_NOT_FOUND));
 
         // 본인 소유의 사업자 등록 id가 아닌 경우
         if (registrationNumber.getMemberId().equals(memberRequest.getMemberId())) {
@@ -64,24 +64,22 @@ public class StoreService {
         // 중복체크 : store name, registrationNumber, lat, lng
         if (storeRepository.checkStoreDuplication(store.getName(), store.getRegistrationNumber().getId(), store.getLat(), store.getLng()) > 0) {
             throw new StoreException(StoreErrorCode.ALREADY_SAVED_STORE, "" + store.getId());
-        } else {
+        }
             storeRepository.save(store);
-            var storeId = store.getId();
 
             // businessHourList 저장
             List<BusinessHour> businessHours = request.getBusinessHours();
             for (BusinessHour businessHour : businessHours) {
-                businessHour.setStoreId(storeId);
-                businessHourRepository.save(businessHour);
+                businessHourRepository.save(BusinessHour.builder()
+                                .day(businessHour.getDay())
+                                .isWorking(businessHour.getIsWorking())
+                                .openAt(businessHour.getOpenAt())
+                                .closeAt(businessHour.getCloseAt())
+                                .breaktimeStart(businessHour.getBreaktimeStart())
+                                .breaktimeEnd(businessHour.getBreaktimeEnd())
+                                .store(store)
+                                .build());
             }
-            // 가게 정보에 businessHour 연결, 업데이트
-            List<BusinessHour> savedBusinessHours = businessHourRepository.findByStoreId(storeId);
-
-            Store savedStore = storeRepository.findById(storeId)
-                    .orElseThrow(() -> new StoreException(StoreErrorCode.STORE_NOT_FOUND, "" + storeId));
-            savedStore.setBusinessHours(savedBusinessHours);
-            storeRepository.save(savedStore);
-        }
     }
 
     // 가게 정보 목록 조회

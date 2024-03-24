@@ -40,7 +40,7 @@ public class SogonService {
         // 유효한 소콘인지 체크
         Socon socon = soconRepository.findById(request.getSoconId())
                 .orElseThrow(() -> new StoreException(StoreErrorCode.SOCON_NOT_FOUND, "" + request.getSoconId()));
-        if(socon.getIsUsed()){
+        if(!Objects.equals(socon.getStatus(), "unused")){
             // 이미 사용된 소콘
             throw new StoreException(StoreErrorCode.INVALID_SOCON, "사용된 소콘, socon_id : " + request.getSoconId());
         }
@@ -121,7 +121,7 @@ public class SogonService {
         Socon socon = soconRepository.findById(sogon.getSocon().getId())
                         .orElseThrow(() -> new StoreException(StoreErrorCode.SOCON_NOT_FOUND, "" + sogon.getSocon().getId()));
 
-        if(socon.getIsUsed()){
+        if(!Objects.equals(socon.getStatus(), "unused")){
             throw new StoreException(StoreErrorCode.INVALID_SOCON, "사용된 소콘 : " + socon.getId());
         }
 

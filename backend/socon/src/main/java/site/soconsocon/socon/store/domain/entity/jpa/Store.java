@@ -64,25 +64,5 @@ public class Store {
     @OneToMany(mappedBy = "store")
     private List<BusinessHour> businessHours = new ArrayList<>();
 
-
-    public Store
-            (String name, String category, String image, String phoneNumber, String address,
-             Double lat, Double lng, String introduction, LocalDateTime closingPlanned, Boolean isClosed,
-             LocalDateTime createdAt, RegistrationNumber registrationNumber, List<BusinessHour> businessHours) {
-
-        this.name = name;
-        this.category = category;
-        this.image = image;
-        this.phoneNumber = phoneNumber;
-        this.address = address;
-        this.lat = lat;
-        this.lng = lng;
-        this.introduction = introduction;
-        this.closingPlanned = closingPlanned;
-        this.isClosed = isClosed;
-        this.createdAt = createdAt;
-        this.registrationNumber = registrationNumber;
-        this.businessHours = businessHours;
-             }
 }
 

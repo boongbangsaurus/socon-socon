@@ -6,12 +6,11 @@ import lombok.Getter;
 public class StoreException extends RuntimeException {
 
     private final StoreErrorCode storeErrorCode;
-    private final String errorMessage;
 
-    public StoreException(StoreErrorCode storeErrorCode, String message) {
+    public StoreException(StoreErrorCode storeErrorCode) {
         super(storeErrorCode.getMessage());
         this.storeErrorCode = storeErrorCode;
-        this.errorMessage = message;
+
     }
 
 }
