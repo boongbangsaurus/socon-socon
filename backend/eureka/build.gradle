@@ -41,19 +41,3 @@ dependencyManagement {
 tasks.named('test') {
     useJUnitPlatform()
 }
-
-tasks.register('copyPrivate', Copy) {
-    copy {
-        from '../../secure-settings/back/eureka'
-        include "*.yml"
-        into 'src/main/resources'
-    }
-    copy {
-        from '../../secure-settings/back/'
-        include "*.yml"
-        into 'src/main/resources'
-    }
-}
-processResources {
-    dependsOn tasks.copyPrivate
-}
