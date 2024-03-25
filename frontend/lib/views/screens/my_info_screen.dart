@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:socon/utils/responsive_utils.dart';
 import 'package:socon/views/atoms/icon_loader.dart';
+import 'package:socon/views/atoms/tag_icon.dart';
 import 'package:socon/views/modules/app_bar.dart';
 
 import '../../utils/colors.dart';
 import '../../utils/fontSizes.dart';
 import '../../utils/icons.dart';
+import '../atoms/switch.dart';
 
 class MyInfoScreen extends StatefulWidget {
   final String userName;
@@ -21,6 +23,10 @@ class MyInfoScreen extends StatefulWidget {
 }
 
 class _MyInfoScreen extends State<MyInfoScreen> {
+  bool _enableNotification = false;
+  bool _enableWatchNotification = true;
+  bool _isOwnerVerified = true;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -210,7 +216,8 @@ class _MyInfoScreen extends State<MyInfoScreen> {
                 ),
               ],
             ),
-          ),  const SizedBox(height: 20.0),
+          ),
+          const SizedBox(height: 20.0),
         ],
       ),
     );
@@ -241,12 +248,24 @@ class _MyInfoScreen extends State<MyInfoScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                "알림",
-                style: TextStyle(
-                    fontSize: ResponsiveUtils.calculateResponsiveFontSize(
-                        context, FontSizes.MEDIUM)),
-              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "알림",
+                    style: TextStyle(
+                        fontSize: ResponsiveUtils.calculateResponsiveFontSize(
+                            context, FontSizes.MEDIUM)),
+                  ),
+                  CustomSwitch(
+                      value: _enableNotification,
+                      onChanged: (bool val) {
+                        setState(() {
+                          _enableNotification = val;
+                        });
+                      })
+                ],
+              )
             ],
           ),
           const SizedBox(height: 15.0),
@@ -254,12 +273,24 @@ class _MyInfoScreen extends State<MyInfoScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                "워치 알림",
-                style: TextStyle(
-                    fontSize: ResponsiveUtils.calculateResponsiveFontSize(
-                        context, FontSizes.MEDIUM)),
-              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "워치 알림",
+                    style: TextStyle(
+                        fontSize: ResponsiveUtils.calculateResponsiveFontSize(
+                            context, FontSizes.MEDIUM)),
+                  ),
+                  CustomSwitch(
+                      value: _enableWatchNotification,
+                      onChanged: (bool val) {
+                        setState(() {
+                          _enableWatchNotification = val;
+                        });
+                      })
+                ],
+              )
             ],
           ),
           const SizedBox(height: 15.0),
@@ -305,12 +336,27 @@ class _MyInfoScreen extends State<MyInfoScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                "사장님 인증",
-                style: TextStyle(
-                    fontSize: ResponsiveUtils.calculateResponsiveFontSize(
-                        context, FontSizes.MEDIUM)),
-              ),
+              GestureDetector(
+                onTap: () => {print("사장님 인증 클릭")},
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "사장님 인증",
+                      style: TextStyle(
+                          fontSize: ResponsiveUtils.calculateResponsiveFontSize(
+                              context, FontSizes.MEDIUM)),
+                    ),
+                    _isOwnerVerified
+                        ? const TagIcon(
+                            buttonText: "인증",
+                            buttonColor: AppColors.SUCCESS500,
+                            buttonTextColor: AppColors.WHITE,
+                          )
+                        : SizedBox.shrink(),
+                  ],
+                ),
+              )
             ],
           ),
           const SizedBox(height: 15.0),
@@ -319,7 +365,7 @@ class _MyInfoScreen extends State<MyInfoScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "사장님 인증",
+                "개인정보 관리",
                 style: TextStyle(
                     fontSize: ResponsiveUtils.calculateResponsiveFontSize(
                         context, FontSizes.MEDIUM)),
@@ -365,7 +411,6 @@ class _MyInfoScreen extends State<MyInfoScreen> {
               ),
             ],
           ),
-
         ],
       ),
     );
