@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import site.soconsocon.socon.store.domain.dto.request.MemberRequest;
-import site.soconsocon.socon.store.domain.dto.request.SoconApprovalRequest;
 import site.soconsocon.socon.store.domain.dto.response.SoconInfoResponse;
 import site.soconsocon.socon.store.service.SoconService;
 import site.soconsocon.utils.MessageUtils;
@@ -38,12 +37,12 @@ public class SoconApiController {
     }
 
     // 소콘 사용 승인
-    @PostMapping("/approval")
+    @PostMapping("/{socon_id}/approval")
     public ResponseEntity<Object> soconApproval(
-            SoconApprovalRequest request,
+            @PathVariable("socon_id") Integer soconId,
             MemberRequest memberRequest) {
 
-        soconService.soconApproval(request, memberRequest);
+        soconService.soconApproval(soconId, memberRequest);
 
         return ResponseEntity.ok().body(MessageUtils.success());
     }

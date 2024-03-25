@@ -166,6 +166,7 @@ public class IssueService {
                 .orderUid(orderUid)
                 .orderStatus("success")
                 .orderTime(LocalDateTime.now())
+                .memberId(memberRequest.getMemberId())
                 .build());
 
         // 결제 요청

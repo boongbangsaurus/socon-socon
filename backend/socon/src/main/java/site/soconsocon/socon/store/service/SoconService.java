@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import site.soconsocon.socon.global.domain.ErrorCode;
 import site.soconsocon.socon.global.exception.SoconException;
 import site.soconsocon.socon.store.domain.dto.request.MemberRequest;
-import site.soconsocon.socon.store.domain.dto.request.SoconApprovalRequest;
 import site.soconsocon.socon.store.domain.dto.response.SoconListResponse;
 import site.soconsocon.socon.store.domain.dto.response.SoconInfoResponse;
 import site.soconsocon.socon.store.domain.entity.jpa.Issue;
@@ -87,10 +86,10 @@ public class SoconService {
 
     // 소콘 사용 승인
     public void soconApproval(
-            SoconApprovalRequest request,
+            Integer soconId,
             MemberRequest memberRequest
     ) {
-        Socon socon = soconRepository.findById(request.getSoconId())
+        Socon socon = soconRepository.findById(soconId)
                 .orElseThrow(() -> new StoreException(StoreErrorCode.SOCON_NOT_FOUND));
 
         if (!Objects.equals(socon.getIssue().getItem().getStore().getId(), memberRequest.getMemberId())) {

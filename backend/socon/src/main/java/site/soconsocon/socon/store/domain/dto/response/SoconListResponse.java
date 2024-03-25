@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Builder
-public class UnusableSoconListResponse {
+public class SoconListResponse {
 
     private Integer soconId;
     private String itemName;
