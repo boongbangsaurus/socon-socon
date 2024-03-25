@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:socon/utils/responsive_utils.dart';
-import 'package:socon/view/atoms/inputs.dart';
-import 'package:socon/view/atoms/tab.dart';
-import 'package:socon/view/atoms/tag_icon.dart';
-import 'package:socon/view/modules/store_register_view.dart';
-import 'package:socon/view/atoms/image_loader.dart';
+import 'package:socon/views/atoms/inputs.dart';
+import 'package:socon/views/atoms/tab.dart';
+import 'package:socon/views/atoms/tag_icon.dart';
+import 'package:socon/views/modules/store_register_view.dart';
+import 'package:socon/views/atoms/image_loader.dart';
 
 import '../../utils/fontSizes.dart';
 

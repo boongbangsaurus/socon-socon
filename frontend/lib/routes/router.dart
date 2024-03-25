@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:socon/routes/tab_routes.dart';
-import 'package:socon/view/atoms/bottom_bar.dart';
+import 'package:socon/views/atoms/bottom_bar.dart';
 
 final bool isOwner = true; // 상태 관리로 처리할 예정
 

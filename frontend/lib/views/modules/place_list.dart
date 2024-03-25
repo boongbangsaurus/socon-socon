@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:socon/view/modules/place_list_card.dart';
+import 'package:socon/views/modules/place_list_card.dart';
 import '../../models/store.dart';
 
 

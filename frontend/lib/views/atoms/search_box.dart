@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:socon/utils/colors.dart';
 import 'package:socon/utils/fontSizes.dart';
 import 'package:socon/utils/responsive_utils.dart';
-import 'package:socon/view/atoms/icon_loader.dart';
+import 'package:socon/views/atoms/icon_loader.dart';
 
 // 검색 상자 위젯 클래스
 class SearchBox extends StatefulWidget {

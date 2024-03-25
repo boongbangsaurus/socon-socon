@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:socon/view/atoms/buttons.dart';
-import 'package:socon/view/atoms/checkbox.dart';
-import 'package:socon/view/atoms/dropdown.dart';
-import 'package:socon/view/atoms/tag_icon.dart';
+import 'package:socon/views/atoms/buttons.dart';
+import 'package:socon/views/atoms/checkbox.dart';
+import 'package:socon/views/atoms/dropdown.dart';
+import 'package:socon/views/atoms/tag_icon.dart';
 import 'package:provider/provider.dart';
 import 'package:socon/viewmodel/store_register_viewmodel.dart';
 
