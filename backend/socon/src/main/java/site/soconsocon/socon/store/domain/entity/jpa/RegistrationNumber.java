@@ -1,5 +1,6 @@
 package site.soconsocon.socon.store.domain.entity.jpa;
 
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
