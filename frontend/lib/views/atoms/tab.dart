@@ -45,7 +45,7 @@ class _TabBarScreenState extends State<TabBarScreen>
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Container(
-          margin: EdgeInsets.fromLTRB(0, 80, 0, 0),
+          // margin: EdgeInsets.fromLTRB(0, 80, 0, 0),
           child: TabBar(
             overlayColor: MaterialStateProperty.all(Colors.transparent),
             indicatorColor: AppColors.YELLOW,
