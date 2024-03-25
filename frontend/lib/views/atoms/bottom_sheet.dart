@@ -3,6 +3,7 @@ import 'package:socon/utils/colors.dart';
 import 'package:socon/utils/fontSizes.dart';
 
 /// BottomSheet - https://mookypoo.medium.com/flutter-custom-draggable-bottom-sheet-2-da64694b706e
+/// 사용자 스크롤에 따른 바텀 시트 위치 변경
 /// if header height != 0.0, then assert header is null (and vice versa)
 class CustomBottomSheet extends StatefulWidget {
   CustomBottomSheet({
