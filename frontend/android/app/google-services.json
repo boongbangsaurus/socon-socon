@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:327490215150:android:5e07c4adffbb0839dda7ff",
         "android_client_info": {
-          "package_name": "com.example.frontend"
+          "package_name": "site.boongbang.socon"
         }
       },
       "oauth_client": [],

@@ -39,3 +39,4 @@ out/
 .vscode/
 
 backend/**/gradle.properties
+google-services.json
