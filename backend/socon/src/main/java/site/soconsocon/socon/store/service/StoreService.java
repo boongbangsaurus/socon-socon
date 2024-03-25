@@ -42,7 +42,7 @@ public class StoreService {
 
         // 본인 소유의 사업자 등록 id가 아닌 경우
         if (registrationNumber.getMemberId().equals(memberRequest.getMemberId())) {
-            throw new SoconException(ErrorCode.FORBIDDEN, "본인 사업자 등록 번호 아님");
+            throw new SoconException(ErrorCode.FORBIDDEN);
         }
 
         Store store = Store.builder()
@@ -63,7 +63,7 @@ public class StoreService {
 
         // 중복체크 : store name, registrationNumber, lat, lng
         if (storeRepository.checkStoreDuplication(store.getName(), store.getRegistrationNumber().getId(), store.getLat(), store.getLng()) > 0) {
-            throw new StoreException(StoreErrorCode.ALREADY_SAVED_STORE, "" + store.getId());
+            throw new StoreException(StoreErrorCode.ALREADY_SAVED_STORE);
         }
             storeRepository.save(store);
 
@@ -104,7 +104,7 @@ public class StoreService {
     public StoreInfoResponse getStoreInfo(Integer storeId) {
 
         Store store = storeRepository.findById(storeId)
-                .orElseThrow(() -> new StoreException(StoreErrorCode.STORE_NOT_FOUND, "" + storeId));
+                .orElseThrow(() -> new StoreException(StoreErrorCode.STORE_NOT_FOUND));
 
         RegistrationNumber registrationNumber = store.getRegistrationNumber();
         Integer favoriteCount = favStoreRepository.countByStoreId(storeId);
@@ -131,11 +131,11 @@ public class StoreService {
     public void updateStoreInfo(Integer storeId, UpdateStoreInfoRequest request, MemberRequest memberRequest) {
 
         var store = storeRepository.findById(storeId)
-                .orElseThrow(() -> new StoreException(StoreErrorCode.STORE_NOT_FOUND, "" + storeId));
+                .orElseThrow(() -> new StoreException(StoreErrorCode.STORE_NOT_FOUND));
 
         if (store.getMemberId().equals(memberRequest.getMemberId())) {
             // 본인 가게 아닐 경우
-            throw new SoconException(ErrorCode.FORBIDDEN, "점포 소유자 아님");
+            throw new SoconException(ErrorCode.FORBIDDEN);
         } else {
             // 영업시간 수정
             List<BusinessHour> requestBusinessHours = request.getBusinessHours();
@@ -144,13 +144,13 @@ public class StoreService {
             if (savedBusinessHours.isEmpty()) {
                 // 저장된 값이 없을 경우
                 for (BusinessHour businessHour : requestBusinessHours) {
-                    businessHour.setStoreId(storeId);
+                    businessHour.setStore(storeRepository.findById(storeId).get());
                     businessHourRepository.save(businessHour);
                 }
                 List<BusinessHour> newBusinessHours = businessHourRepository.findByStoreId(storeId);
 
                 Store savedStore = storeRepository.findById(storeId)
-                        .orElseThrow(() -> new StoreException(StoreErrorCode.STORE_NOT_FOUND, "" + storeId));
+                        .orElseThrow(() -> new StoreException(StoreErrorCode.STORE_NOT_FOUND));
                 savedStore.setBusinessHours(newBusinessHours);
                 storeRepository.save(savedStore);
             } else {
@@ -184,15 +184,15 @@ public class StoreService {
     // 가게 폐업 정보 수정
     public void updateClosedPlanned(Integer storeId, UpdateClosedPlannedRequest request, MemberRequest memberRequest) {
         var store = storeRepository.findById(storeId)
-                .orElseThrow(() -> new StoreException(StoreErrorCode.STORE_NOT_FOUND, "" + storeId));
+                .orElseThrow(() -> new StoreException(StoreErrorCode.STORE_NOT_FOUND));
 
         if (!Objects.equals(memberRequest.getMemberId(), store.getMemberId())) {
             // 요청자의 memberId와 store의 memberId가 다를 경우
-            throw new SoconException(ErrorCode.FORBIDDEN, "점포 소유주 아님" + memberRequest.getMemberId());
+            throw new SoconException(ErrorCode.FORBIDDEN);
         }
         if (store.getClosingPlanned() != null) {
             // 이미 폐업 신고가 되어 있는 경우
-            throw new StoreException(StoreErrorCode.ALREADY_SET_CLOSE_PLAN, "" + storeId);
+            throw new StoreException(StoreErrorCode.ALREADY_SET_CLOSE_PLAN);
         }
         LocalDateTime closingPlannedAt = LocalDateTime.now().plusDays(request.getCloseAfter());
 
@@ -221,10 +221,10 @@ public class StoreService {
     public void favoriteStore(Integer storeId, MemberRequest memberRequest) {
 
         Store store = storeRepository.findById(storeId)
-                .orElseThrow(() -> new StoreException(StoreErrorCode.STORE_NOT_FOUND, "" + storeId));
+                .orElseThrow(() -> new StoreException(StoreErrorCode.STORE_NOT_FOUND));
         if (store.getIsClosed()) {
             // 폐업상태일 경우
-            throw new SoconException(ErrorCode.BAD_REQUEST, "폐업 점포");
+            throw new SoconException(ErrorCode.BAD_REQUEST);
         }
         FavStore favStore = favStoreRepository.isExist(memberRequest.getMemberId(), storeId);
         if (favStore != null) {
@@ -247,7 +247,7 @@ public class StoreService {
 
         for (FavStore favStore : favStores) {
             Store store = storeRepository.findById(favStore.getStoreId())
-                    .orElseThrow(() -> new StoreException(StoreErrorCode.STORE_NOT_FOUND, "" + favStore.getStoreId()));
+                    .orElseThrow(() -> new StoreException(StoreErrorCode.STORE_NOT_FOUND));
             stores.add(FavoriteStoresListResponse.builder()
                     .id(store.getId())
                     .name(store.getName())

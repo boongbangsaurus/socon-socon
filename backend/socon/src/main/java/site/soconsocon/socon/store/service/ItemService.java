@@ -26,11 +26,11 @@ public class ItemService {
     public void saveItem(AddItemRequest request, Integer storeId, MemberRequest memberRequest) {
 
         Store savedStore = storeRepository.findById(storeId)
-                .orElseThrow(() -> new StoreException(StoreErrorCode.STORE_NOT_FOUND, "" + storeId));
+                .orElseThrow(() -> new StoreException(StoreErrorCode.STORE_NOT_FOUND));
 
         if (Objects.equals(savedStore.getMemberId(), memberRequest.getMemberId())){
             // 점포 소유주 불일치
-            throw new SoconException(ErrorCode.FORBIDDEN,  "점포 소유주 아님" + memberRequest.getMemberId());
+            throw new SoconException(ErrorCode.FORBIDDEN);
         }
         itemRepository.save(Item.builder()
                 .name(request.getName())
@@ -48,7 +48,7 @@ public class ItemService {
 
         if(!Objects.equals(storeMemberId, memberRequest.getMemberId())){
             // 점포 소유주 불일치
-            throw new SoconException(ErrorCode.FORBIDDEN,  "점포 소유자 아님" + memberRequest.getMemberId());
+            throw new SoconException(ErrorCode.FORBIDDEN);
         }
         return itemRepository.findItemsByStoreId(StoreId);
     }
@@ -57,9 +57,9 @@ public class ItemService {
     public Item getDetailItemInfo(Integer storeId, Integer itemId, MemberRequest memberRequest) {
 
         if(!Objects.equals(memberRequest.getMemberId(), storeRepository.findMemberIdByStoreId(storeId))) {
-            throw new SoconException(ErrorCode.FORBIDDEN,  "점포 소유자 아님" + memberRequest.getMemberId());
+            throw new SoconException(ErrorCode.FORBIDDEN);
         }
             return itemRepository.findById(itemId)
-                    .orElseThrow(() -> new StoreException(StoreErrorCode.ITEM_NOT_FOUND, "" + itemId));
+                    .orElseThrow(() -> new StoreException(StoreErrorCode.ITEM_NOT_FOUND));
     }
 }

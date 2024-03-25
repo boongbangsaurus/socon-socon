@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import site.soconsocon.socon.global.domain.ErrorCode;
 import site.soconsocon.socon.global.exception.SoconException;
+import site.soconsocon.socon.sogon.exception.SogonErrorCode;
+import site.soconsocon.socon.sogon.exception.SogonException;
 import site.soconsocon.socon.store.domain.dto.request.AddIssueRequest;
 import site.soconsocon.socon.store.domain.dto.request.AddMySoconRequest;
 import site.soconsocon.socon.store.domain.dto.request.MemberRequest;
@@ -40,7 +42,7 @@ public class IssueService {
 
         if (!Objects.equals(storeMemberId, memberRequest.getMemberId())) {
             // 본인 가게 아닐 경우
-            throw new SoconException(ErrorCode.FORBIDDEN, "점포 소유주 아님");
+            throw new SoconException(ErrorCode.FORBIDDEN);
         }
         List<Issue> issues = issueRepository.findIssueListByStoreId(storeId);
         List<IssueListResponse> issueList = new ArrayList<>();
@@ -67,10 +69,10 @@ public class IssueService {
                           Integer itemId,
                           MemberRequest memberRequest) {
         if (!Objects.equals(memberRequest.getMemberId(), storeRepository.findMemberIdByStoreId(storeId))) {
-            throw new SoconException(ErrorCode.FORBIDDEN, "본인 점포 아님");
+            throw new SoconException(ErrorCode.FORBIDDEN);
         }
         Item item = itemRepository.findById(itemId)
-                .orElseThrow(() -> new StoreException(StoreErrorCode.ITEM_NOT_FOUND, "" + itemId));
+                .orElseThrow(() -> new StoreException(StoreErrorCode.ITEM_NOT_FOUND));
 
         issueRepository.save(Issue.builder()
                 .storeName(storeRepository.findNameByStoreId(storeId))
@@ -93,14 +95,14 @@ public class IssueService {
     public void saveMySocon(Integer issueId, AddMySoconRequest request, MemberRequest memberRequest) {
 
         Issue issue = issueRepository.findById(issueId)
-                .orElseThrow(() -> new StoreException(StoreErrorCode.ISSUE_NOT_FOUND, "" + issueId));
+                .orElseThrow(() -> new StoreException(StoreErrorCode.ISSUE_NOT_FOUND));
         if (issue.getStatus() != 'A') {
             // 발행 중 아님
-            throw new SoconException(ErrorCode.BAD_REQUEST, "발행 중지/완료된 상태. status : " + issue.getStatus());
+            throw new StoreException(StoreErrorCode.INVALID_ISSUE);
         }
         if (issue.getMaxQuantity() - issue.getIssuedQuantity() < request.getPurchaseQuantity()) {
             // 발행 가능 개수보다 요청한 개수가 많을 경우
-            throw new SoconException(ErrorCode.BAD_REQUEST, "발행 가능 개수 초과, 남은 발행 개수 : " + (issue.getMaxQuantity() - issue.getIssuedQuantity()));
+            throw new StoreException(StoreErrorCode.ISSUE_MAX_QUANTITY);
         }
         for (int i = 0; i < request.getPurchaseQuantity(); i++) {
             LocalDateTime purchasedAt = LocalDateTime.now();
@@ -121,15 +123,15 @@ public class IssueService {
     public void stopIssue(Integer issueId, MemberRequest memberRequest) {
 
         Issue issue = issueRepository.findById(issueId)
-                .orElseThrow(() -> new StoreException(StoreErrorCode.ISSUE_NOT_FOUND, "" + issueId));
+                .orElseThrow(() -> new StoreException(StoreErrorCode.ISSUE_NOT_FOUND));
 
         if (!Objects.equals(issueRepository.findMemberIdByIssueId(issueId), memberRequest.getMemberId())) {
             // 본인 점포의 상품이 아닐 경우
-            throw new SoconException(ErrorCode.FORBIDDEN, "본인 점포 아님");
+            throw new SoconException(ErrorCode.FORBIDDEN);
         }
         if (issue.getStatus() != 'A') {
             // 발행 중 아님
-            throw new SoconException(ErrorCode.BAD_REQUEST, "발행 중지/완료된 상태. status : " + issue.getStatus());
+            throw new SoconException(ErrorCode.BAD_REQUEST);
         }
         issue.setStatus('I');
         issueRepository.save(issue);
@@ -139,21 +141,21 @@ public class IssueService {
     public void order(Integer issueId, OrderRequest request, MemberRequest memberRequest) {
 
         Issue issue = issueRepository.findById(issueId)
-                .orElseThrow(() -> new StoreException(StoreErrorCode.ISSUE_NOT_FOUND, "" + issueId));
+                .orElseThrow(() -> new StoreException(StoreErrorCode.ISSUE_NOT_FOUND));
 
         Store store = issue.getItem().getStore();
 
         if (store.getClosingPlanned()!=null) {
             // 가게 폐업 상태
-            throw new StoreException(StoreErrorCode.ALREADY_SET_CLOSE_PLAN, "" + store.getId());
+            throw new StoreException(StoreErrorCode.ALREADY_SET_CLOSE_PLAN);
         }
         if (issue.getMaxQuantity() - issue.getIssuedQuantity() < request.getOrderQuantity()) {
             // 소콘 가능 개수보다 요청한 개수가 많을 경우
-            throw new SoconException(ErrorCode.BAD_REQUEST, "발행 가능 개수 초과, 남은 발행 개수 : " + (issue.getMaxQuantity() - issue.getIssuedQuantity()));
+            throw new SoconException(ErrorCode.BAD_REQUEST);
         }
         if (issue.getStatus() != 'A') {
             // 발행 중 아님
-            throw new SoconException(ErrorCode.BAD_REQUEST, "발행 중지/완료된 상태. status : " + issue.getStatus());
+            throw new SoconException(ErrorCode.BAD_REQUEST);
         }
         // 주문번호 생성
         String orderUid = LocalDate.now() + "-" + UUID.randomUUID().toString().replace("-", "");

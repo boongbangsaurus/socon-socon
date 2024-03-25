@@ -13,7 +13,6 @@ import site.soconsocon.socon.store.domain.entity.jpa.Item;
 import site.soconsocon.socon.store.domain.entity.jpa.Socon;
 import site.soconsocon.socon.store.exception.StoreErrorCode;
 import site.soconsocon.socon.store.exception.StoreException;
-import site.soconsocon.socon.store.repository.IssueRepository;
 import site.soconsocon.socon.store.repository.SoconRepository;
 
 import java.time.LocalDateTime;
@@ -29,7 +28,7 @@ public class SoconService {
     // 소콘 상세 조회
     public SoconInfoResponse getSoconInfo(Integer soconId) {
 
-        Socon socon = soconRepository.findById(soconId).orElseThrow(() -> new RuntimeException("NOT FOUND BY ID : " + soconId));
+        Socon socon = soconRepository.findById(soconId).orElseThrow(() -> new StoreException(StoreErrorCode.SOCON_NOT_FOUND));
         Issue issue = socon.getIssue();
         Item item = issue.getItem();
 
@@ -92,28 +91,22 @@ public class SoconService {
             MemberRequest memberRequest
     ){
         Socon socon = soconRepository.findById(request.getSoconId())
-                .orElseThrow(()-> new StoreException(StoreErrorCode.SOCON_NOT_FOUND, ""+ request.getSoconId()));
+                .orElseThrow(()-> new StoreException(StoreErrorCode.SOCON_NOT_FOUND));
 
-        if(socon.getIssue().getItem().getStore().getId() != memberRequest.getMemberId()){
+        if(!Objects.equals(socon.getIssue().getItem().getStore().getId(), memberRequest.getMemberId())){
             // 요청자가 해당 점포 주인이 아닌 경우
-            throw  new SoconException(ErrorCode.FORBIDDEN,  "점포 소유자 아님" + memberRequest.getMemberId());
+            throw  new SoconException(ErrorCode.FORBIDDEN);
         }
 
-        if(socon.getStatus() == "usused" && socon.getExpiredAt().isAfter(LocalDateTime.now())){
+        if(Objects.equals(socon.getStatus(), "usused") && socon.getExpiredAt().isAfter(LocalDateTime.now())){
             socon.setStatus("used");
             socon.setUsedAt(LocalDateTime.now());
             soconRepository.save(socon);
         }
         else{
-            if(socon.getStatus() == "used"){
-                // 이미 사용된 소콘
-                throw new StoreException(StoreErrorCode.INVALID_SOCON, "사용된 소콘. 사용일시 : " + socon.getUsedAt().toString());
-            }
-            else{
-                // 만료된 소콘
-                throw new StoreException(StoreErrorCode.INVALID_SOCON, "만료된 소콘. 만료일시 : " + socon.getExpiredAt().toString());
-            }
+            throw new StoreException(StoreErrorCode.INVALID_SOCON);
         }
+
     }
 
     // 소콘북 검색
@@ -129,7 +122,7 @@ public class SoconService {
             return soconRepository.getSoconByMemberIdAndItemName(memberRequest.getMemberId(), keyword);
         }
         else{
-            throw new SoconException(ErrorCode.BAD_REQUEST, "");
+            throw new SoconException(ErrorCode.BAD_REQUEST);
         }
     }
 }
