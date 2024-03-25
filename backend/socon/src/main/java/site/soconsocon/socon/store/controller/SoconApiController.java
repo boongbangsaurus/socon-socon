@@ -41,7 +41,7 @@ public class SoconApiController {
     @PostMapping("/approval")
     public ResponseEntity<Object> soconApproval(
             SoconApprovalRequest request,
-            MemberRequest memberRequest){
+            MemberRequest memberRequest) {
 
         soconService.soconApproval(request, memberRequest);
 
@@ -54,11 +54,10 @@ public class SoconApiController {
             @PathVariable("category") String category,
             @PathVariable("keyword") String keyword,
             MemberRequest memberRequest
-    ){
+    ) {
 
 
-
-        return ResponseEntity.ok().body(MessageUtils.success());
+        return ResponseEntity.ok().body(MessageUtils.success(soconService.searchSocon(category, keyword, memberRequest)));
     }
 
 

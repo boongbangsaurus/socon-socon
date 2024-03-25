@@ -40,28 +40,27 @@ public class SogonService {
         // 유효한 소콘인지 체크
         Socon socon = soconRepository.findById(request.getSoconId())
                 .orElseThrow(() -> new StoreException(StoreErrorCode.SOCON_NOT_FOUND));
-        if(!Objects.equals(socon.getStatus(), "unused")){
+        if (!Objects.equals(socon.getStatus(), "unused")) {
             // 이미 사용된 소콘
             throw new StoreException(StoreErrorCode.INVALID_SOCON);
         }
-        if(socon.getExpiredAt().isBefore(LocalDateTime.now())){
+        if (socon.getExpiredAt().isBefore(LocalDateTime.now())) {
             // 이미 만료된 소콘
             throw new StoreException(StoreErrorCode.INVALID_SOCON);
         }
-        if(sogonRepository.countBySoconId(request.getSoconId()) > 0){
+        if (sogonRepository.countBySoconId(request.getSoconId()) > 0) {
             // 이미 소곤에 등록된 소콘
             throw new StoreException(StoreErrorCode.INVALID_SOCON);
         }
-        if(!Objects.equals(socon.getMemberId(), memberRequest.getMemberId())){
+        if (!Objects.equals(socon.getMemberId(), memberRequest.getMemberId())) {
             // 본인 소유 소콘이 아님
             throw new SoconException(ErrorCode.FORBIDDEN);
         }
 
         LocalDateTime now = LocalDateTime.now();
-        if(now.isAfter(socon.getExpiredAt())){
+        if (now.isAfter(socon.getExpiredAt())) {
             now = socon.getExpiredAt();
-        }
-        else{
+        } else {
             now = now.plusHours(24);
         }
 
@@ -88,7 +87,7 @@ public class SogonService {
         Sogon sogon = sogonRepository.findById(sogonId)
                 .orElseThrow(() -> new SogonException(SogonErrorCode.SOGON_NOT_FOUND));
 
-        if(!sogon.getIsExpired()){
+        if (!sogon.getIsExpired()) {
             throw new StoreException(StoreErrorCode.INVALID_SOCON);
         }
 
@@ -110,14 +109,14 @@ public class SogonService {
         Sogon sogon = sogonRepository.findById(sogonId)
                 .orElseThrow(() -> new SogonException(SogonErrorCode.SOGON_NOT_FOUND));
 
-        if(sogon.getMemberId().equals(memberRequest.getMemberId())){
+        if (sogon.getMemberId().equals(memberRequest.getMemberId())) {
             throw new SoconException(ErrorCode.FORBIDDEN);
         }
 
         Socon socon = soconRepository.findById(sogon.getSocon().getId())
-                        .orElseThrow(() -> new StoreException(StoreErrorCode.SOCON_NOT_FOUND));
+                .orElseThrow(() -> new StoreException(StoreErrorCode.SOCON_NOT_FOUND));
 
-        if(!Objects.equals(socon.getStatus(), "unused")){
+        if (!Objects.equals(socon.getStatus(), "unused")) {
             throw new StoreException(StoreErrorCode.INVALID_SOCON);
         }
 
@@ -142,7 +141,7 @@ public class SogonService {
 
         List<CommentResponse> commentRepsonses = new ArrayList<>();
         List<Comment> comments = commentRepository.findAllBySogonId(id);
-        for(Comment comment : comments){
+        for (Comment comment : comments) {
             commentRepsonses.add(CommentResponse.builder()
                     .id(comment.getId())
                     .content(comment.getContent())
@@ -153,18 +152,18 @@ public class SogonService {
         }
 
         return Map.of("sogon", SogonResponse.builder()
-                .id(sogon.getId())
-                .title(sogon.getTitle())
-                .memberName("수정필요")
-                .memberImg("수정필요")
-                .content(sogon.getContent())
-                .image1(sogon.getImage1())
-                .image2(sogon.getImage2())
-                .soconImg(socon.getIssue().getImage())
-                .createdAt(sogon.getCreatedAt())
-                .expiredAt(sogon.getExpiredAt())
-                .isExpired(sogon.getIsExpired())
-                .build(),
+                        .id(sogon.getId())
+                        .title(sogon.getTitle())
+                        .memberName("수정필요")
+                        .memberImg("수정필요")
+                        .content(sogon.getContent())
+                        .image1(sogon.getImage1())
+                        .image2(sogon.getImage2())
+                        .soconImg(socon.getIssue().getImage())
+                        .createdAt(sogon.getCreatedAt())
+                        .expiredAt(sogon.getExpiredAt())
+                        .isExpired(sogon.getIsExpired())
+                        .build(),
                 "comments", commentRepsonses);
     }
 
@@ -173,7 +172,7 @@ public class SogonService {
 
         List<Sogon> sogons = sogonRepository.findAllByMemberId(memberRequest.getMemberId());
         List<SogonListResponse> sogonListResponses = new ArrayList<>();
-        for(Sogon sogon : sogons){
+        for (Sogon sogon : sogons) {
             Socon socon = soconRepository.findById(sogon.getSocon().getId())
                     .orElseThrow(() -> new StoreException(StoreErrorCode.SOCON_NOT_FOUND));
 
@@ -195,7 +194,7 @@ public class SogonService {
 
         List<Comment> comments = commentRepository.findAllByMemberId(memberRequest.getMemberId());
         List<CommentListResponse> commentListResponses = new ArrayList<>();
-        for(Comment comment : comments ){
+        for (Comment comment : comments) {
 
             commentListResponses.add(CommentListResponse.builder()
                     .title(comment.getSogon().getTitle())
@@ -236,7 +235,7 @@ public class SogonService {
 
         List<GetSogonListResponse> sogonListResponses = new ArrayList<>();
 
-        for(Sogon sogon: sogons){
+        for (Sogon sogon : sogons) {
 
             LocalDateTime createdAt = sogon.getCreatedAt();
             LocalDateTime expiredAt = sogon.getExpiredAt();
@@ -246,7 +245,7 @@ public class SogonService {
             sogonListResponses.add(GetSogonListResponse.builder()
                     .id(sogon.getId())
                     .title(sogon.getTitle())
-                    .lastTime((int)duration.toHours())
+                    .lastTime((int) duration.toHours())
                     .memberName("수정필요")
                     .commentCount(commentRepository.countBySogonId(sogon.getId()))
                     .soconImg(sogon.getSocon().getIssue().getImage())

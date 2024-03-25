@@ -55,12 +55,12 @@ public class SoconService {
             Item item = issue.getItem();
 
             usableSocons.add(SoconListResponse.builder()
-                            .soconId(socon.getId())
-                            .itemName(issue.getName())
-                            .storeName(item.getStore().getName())
-                            .expiredAt(socon.getExpiredAt())
-                            .status(socon.getStatus())
-                            .itemImage(socon.getIssue().getItem().getImage())
+                    .soconId(socon.getId())
+                    .itemName(issue.getName())
+                    .storeName(item.getStore().getName())
+                    .expiredAt(socon.getExpiredAt())
+                    .status(socon.getStatus())
+                    .itemImage(socon.getIssue().getItem().getImage())
                     .build());
         }
         List<Socon> used = soconRepository.getUsedSoconByMemberId(memberRequest.getMemberId());
@@ -89,21 +89,20 @@ public class SoconService {
     public void soconApproval(
             SoconApprovalRequest request,
             MemberRequest memberRequest
-    ){
+    ) {
         Socon socon = soconRepository.findById(request.getSoconId())
-                .orElseThrow(()-> new StoreException(StoreErrorCode.SOCON_NOT_FOUND));
+                .orElseThrow(() -> new StoreException(StoreErrorCode.SOCON_NOT_FOUND));
 
-        if(!Objects.equals(socon.getIssue().getItem().getStore().getId(), memberRequest.getMemberId())){
+        if (!Objects.equals(socon.getIssue().getItem().getStore().getId(), memberRequest.getMemberId())) {
             // 요청자가 해당 점포 주인이 아닌 경우
-            throw  new SoconException(ErrorCode.FORBIDDEN);
+            throw new SoconException(ErrorCode.FORBIDDEN);
         }
 
-        if(Objects.equals(socon.getStatus(), "usused") && socon.getExpiredAt().isAfter(LocalDateTime.now())){
+        if (Objects.equals(socon.getStatus(), "usused") && socon.getExpiredAt().isAfter(LocalDateTime.now())) {
             socon.setStatus("used");
             socon.setUsedAt(LocalDateTime.now());
             soconRepository.save(socon);
-        }
-        else{
+        } else {
             throw new StoreException(StoreErrorCode.INVALID_SOCON);
         }
 
@@ -114,14 +113,12 @@ public class SoconService {
             String category,
             String keyword,
             MemberRequest memberRequest
-    ){
-        if(Objects.equals(category, "store")){
+    ) {
+        if (Objects.equals(category, "store")) {
             return soconRepository.getSoconByMemberIdAndStoreName(memberRequest.getMemberId(), keyword);
-        }
-        else if(Objects.equals(category, "item")){
+        } else if (Objects.equals(category, "item")) {
             return soconRepository.getSoconByMemberIdAndItemName(memberRequest.getMemberId(), keyword);
-        }
-        else{
+        } else {
             throw new SoconException(ErrorCode.BAD_REQUEST);
         }
     }

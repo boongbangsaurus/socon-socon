@@ -22,13 +22,14 @@ import java.util.Objects;
 public class ItemService {
     private final StoreRepository storeRepository;
     private final ItemRepository itemRepository;
+
     // 상품 정보 등록
     public void saveItem(AddItemRequest request, Integer storeId, MemberRequest memberRequest) {
 
         Store savedStore = storeRepository.findById(storeId)
                 .orElseThrow(() -> new StoreException(StoreErrorCode.STORE_NOT_FOUND));
 
-        if (Objects.equals(savedStore.getMemberId(), memberRequest.getMemberId())){
+        if (Objects.equals(savedStore.getMemberId(), memberRequest.getMemberId())) {
             // 점포 소유주 불일치
             throw new SoconException(ErrorCode.FORBIDDEN);
         }
@@ -41,12 +42,13 @@ public class ItemService {
                 .store(savedStore)
                 .build());
     }
+
     // 점주 가게 상품 목록 조회
     public List<ItemListResponse> getItemList(Integer StoreId, MemberRequest memberRequest) {
 
         Integer storeMemberId = storeRepository.findMemberIdByStoreId(StoreId);
 
-        if(!Objects.equals(storeMemberId, memberRequest.getMemberId())){
+        if (!Objects.equals(storeMemberId, memberRequest.getMemberId())) {
             // 점포 소유주 불일치
             throw new SoconException(ErrorCode.FORBIDDEN);
         }
@@ -56,10 +58,10 @@ public class ItemService {
     // 상품 정보 상세 조회
     public Item getDetailItemInfo(Integer storeId, Integer itemId, MemberRequest memberRequest) {
 
-        if(!Objects.equals(memberRequest.getMemberId(), storeRepository.findMemberIdByStoreId(storeId))) {
+        if (!Objects.equals(memberRequest.getMemberId(), storeRepository.findMemberIdByStoreId(storeId))) {
             throw new SoconException(ErrorCode.FORBIDDEN);
         }
-            return itemRepository.findById(itemId)
-                    .orElseThrow(() -> new StoreException(StoreErrorCode.ITEM_NOT_FOUND));
+        return itemRepository.findById(itemId)
+                .orElseThrow(() -> new StoreException(StoreErrorCode.ITEM_NOT_FOUND));
     }
 }

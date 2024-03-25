@@ -5,8 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import site.soconsocon.socon.global.domain.ErrorCode;
 import site.soconsocon.socon.global.exception.SoconException;
-import site.soconsocon.socon.sogon.exception.SogonErrorCode;
-import site.soconsocon.socon.sogon.exception.SogonException;
 import site.soconsocon.socon.store.domain.dto.request.AddIssueRequest;
 import site.soconsocon.socon.store.domain.dto.request.AddMySoconRequest;
 import site.soconsocon.socon.store.domain.dto.request.MemberRequest;
@@ -145,7 +143,7 @@ public class IssueService {
 
         Store store = issue.getItem().getStore();
 
-        if (store.getClosingPlanned()!=null) {
+        if (store.getClosingPlanned() != null) {
             // 가게 폐업 상태
             throw new StoreException(StoreErrorCode.ALREADY_SET_CLOSE_PLAN);
         }

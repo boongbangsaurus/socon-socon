@@ -65,21 +65,21 @@ public class StoreService {
         if (storeRepository.checkStoreDuplication(store.getName(), store.getRegistrationNumber().getId(), store.getLat(), store.getLng()) > 0) {
             throw new StoreException(StoreErrorCode.ALREADY_SAVED_STORE);
         }
-            storeRepository.save(store);
+        storeRepository.save(store);
 
-            // businessHourList 저장
-            List<BusinessHour> businessHours = request.getBusinessHours();
-            for (BusinessHour businessHour : businessHours) {
-                businessHourRepository.save(BusinessHour.builder()
-                                .day(businessHour.getDay())
-                                .isWorking(businessHour.getIsWorking())
-                                .openAt(businessHour.getOpenAt())
-                                .closeAt(businessHour.getCloseAt())
-                                .breaktimeStart(businessHour.getBreaktimeStart())
-                                .breaktimeEnd(businessHour.getBreaktimeEnd())
-                                .store(store)
-                                .build());
-            }
+        // businessHourList 저장
+        List<BusinessHour> businessHours = request.getBusinessHours();
+        for (BusinessHour businessHour : businessHours) {
+            businessHourRepository.save(BusinessHour.builder()
+                    .day(businessHour.getDay())
+                    .isWorking(businessHour.getIsWorking())
+                    .openAt(businessHour.getOpenAt())
+                    .closeAt(businessHour.getCloseAt())
+                    .breaktimeStart(businessHour.getBreaktimeStart())
+                    .breaktimeEnd(businessHour.getBreaktimeEnd())
+                    .store(store)
+                    .build());
+        }
     }
 
     // 가게 정보 목록 조회
@@ -144,7 +144,7 @@ public class StoreService {
             if (savedBusinessHours.isEmpty()) {
                 // 저장된 값이 없을 경우
                 for (BusinessHour businessHour : requestBusinessHours) {
-                    businessHour.setStore(storeRepository.findById(storeId).get());
+                    businessHour.setStore(store);
                     businessHourRepository.save(businessHour);
                 }
                 List<BusinessHour> newBusinessHours = businessHourRepository.findByStoreId(storeId);
@@ -200,12 +200,12 @@ public class StoreService {
 
         // 발행 중 소콘 발행 중지
         List<Issue> issues = issueRepository.findActiveIssuesByStoreId(storeId);
-        for(Issue issue : issues) {
+        for (Issue issue : issues) {
             issue.setStatus('I');
             issueRepository.save(issue);
             // 발행 된 소콘 중 사용되지 않은 소콘 마감기한 업데이트
             List<Socon> socons = soconRepository.getUnusedSoconByIssueId(issue.getId());
-            for(Socon socon : socons){
+            for (Socon socon : socons) {
                 socon.setExpiredAt(closingPlannedAt);
                 soconRepository.save(socon);
             }
