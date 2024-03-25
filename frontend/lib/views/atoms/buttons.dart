@@ -12,11 +12,11 @@ import 'package:socon/utils/responsive_utils.dart';
 /// author: 탁하윤
 ///
 /// [BasicButton]
-/// @param String [text]: 버튼 텍스트 지정
-/// @param voidCallback? [onPressed]: 버튼 onPressed 함수, null: disable 상태
-/// @param String? [color]: 버튼 색상 지정 null: yellow, yellow, gray, gray600 입력 가능
-/// @param String? [textColor]: 버튼 텍스트 색상 지정 null: white, black, white입력 가능
-/// @param String? [btnSize]: 버튼 사이즈 지정 null: 320x60, xs:70x30 s:150x60 m: l:320x60
+/// @param String [text] : 버튼 텍스트 지정
+/// @param voidCallback? [onPressed] : 버튼 onPressed 함수, null: disable 상태
+/// @param String? [color] : 버튼 색상 지정 null: yellow, yellow, gray, gray600 입력 가능
+/// @param String? [textColor] : 버튼 텍스트 색상 지정 null: white, black, white입력 가능
+/// @param String? [btnSize] : 버튼 사이즈 지정 null: 320x60, xs:70x30 s:150x60 m: l:320x60
 /// @returns The new custom button
 class BasicButton extends StatefulWidget {
   BasicButton({
