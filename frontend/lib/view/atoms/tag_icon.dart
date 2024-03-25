@@ -8,12 +8,18 @@ class TagIcon extends StatelessWidget {
   final String buttonText;
   final Color buttonColor;
   final Color buttonTextColor;
+  final double? fontSize;
+  final double? width;
+  final double? height;
 
   const TagIcon({
     super.key,
     required this.buttonText,
     required this.buttonColor,
     required this.buttonTextColor,
+    this.fontSize = 10,
+    this.width,
+    this.height,
   });
 
 
@@ -39,6 +45,7 @@ class TagIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+
       margin: EdgeInsets.only(right: 3),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -49,13 +56,17 @@ class TagIcon extends StatelessWidget {
               borderRadius: BorderRadius.circular(50),
             ),
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 1),
-              child: Text(
-                buttonText,
-                style: TextStyle(
-                  color: buttonTextColor,
-                  fontSize: 8,
-                  fontWeight: FontWeight.bold,
+              width: width,
+              height: height,
+              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+              child: Center(
+                child: Text(
+                  buttonText,
+                  style: TextStyle(
+                    color: buttonTextColor,
+                    fontSize: fontSize,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),
