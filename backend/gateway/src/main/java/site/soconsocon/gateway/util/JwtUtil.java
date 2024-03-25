@@ -86,6 +86,7 @@ public class JwtUtil {
         result.put("role", parseInfo.get("role", List.class));
         return result;
     }
+
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token);
