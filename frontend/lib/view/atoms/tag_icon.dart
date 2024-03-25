@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:socon/utils/colors.dart';
+import 'package:socon/utils/fontSizes.dart';
 
 
 // 지정값 : 세로 크기, 텍스트 크기, 텍스트 굵기
@@ -19,8 +21,8 @@ class TagIcon extends StatelessWidget {
   factory TagIcon.NEW() {
     return TagIcon(
       buttonText: 'NEW',
-      buttonColor: Color(0xffFBBC05),
-      buttonTextColor: Colors.white,
+      buttonColor: AppColors.WARNING25,
+      buttonTextColor: AppColors.WHITE,
     );
   }
 
@@ -29,7 +31,7 @@ class TagIcon extends StatelessWidget {
     return TagIcon(
       buttonText: 'SALE',
       buttonColor: Color(0xffFEF4444),
-      buttonTextColor: Colors.white,
+      buttonTextColor: AppColors.WHITE,
     );
   }
 
@@ -75,6 +77,7 @@ class TagButton extends StatefulWidget {
   final Color buttonColor;
   final Color buttonTextColor;
   final VoidCallback onPressed;
+  final Function(bool) onSelected;
 
   final double minWidth;
   final double minHeight;
@@ -87,6 +90,8 @@ class TagButton extends StatefulWidget {
     required this.buttonColor,
     required this.buttonTextColor,
     required this.onPressed,
+    required this.onSelected,
+
     this.minWidth = 10.0, // 최소 가로 크기
     this.minHeight = 30.0, // 최소 세로 크기
   });
@@ -125,11 +130,12 @@ class _TagButtonState extends State<TagButton> {
           _isSelected = !_isSelected;
           widget.onPressed();
         });
+        widget.onSelected(_isSelected);
       },
       style: buttonStyle,
       child: Text(
           widget.buttonText,
-          style: TextStyle( color: _isSelected ? widget.buttonTextColor : Colors.grey, fontSize: 12, fontWeight: FontWeight.bold)),
+          style: TextStyle( color: _isSelected ? widget.buttonTextColor : AppColors.GRAY, fontSize: FontSizes.XXXSMALL, fontWeight: FontWeight.bold)),
     );
   }
 }
