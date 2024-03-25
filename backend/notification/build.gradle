@@ -36,6 +36,7 @@ ext {
 
 dependencies {
 	implementation 'site.socon-socon:utils:1.0'
+	implementation 'org.springframework.cloud:spring-cloud-config-client'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 	compileOnly 'org.projectlombok:lombok'
