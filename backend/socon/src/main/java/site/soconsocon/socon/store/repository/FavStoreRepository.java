@@ -12,10 +12,10 @@ public interface FavStoreRepository extends JpaRepository<FavStore, Integer> {
     Integer countByStoreId(Integer storeId);
 
 
-    @Query("SELECT s FROM FAV_STORE s WHERE s.memberId = :memberId")
+    @Query("SELECT s FROM FAV_STORE s WHERE s.memberId = :member_id AND s.storeId = :store_id")
+    FavStore findByMemberIdAndStoreId(Integer memberId, Integer storeId);
+
+
+    @Query("SELECT s FROM FAV_STORE s WHERE s.memberId = :member_id")
     List<FavStore> findByMemberId(Integer memberId);
-
-    @Query("SELECT s FROM FAV_STORE s WHERE s.memberId = :memberId AND s.storeId = :storeId")
-    FavStore isExist(Integer memberId, Integer storeId);
-
 }

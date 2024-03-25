@@ -35,7 +35,7 @@ pipeline {
         }
         stage("Build & Run") {
             steps {
-                dir("backend/gateway"){
+                dir("infra/jenkins/back/gateway"){
                     script {
                         try {
                             sh "docker build -t kimdahui/gateway ."

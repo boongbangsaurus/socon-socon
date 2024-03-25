@@ -10,5 +10,4 @@ import lombok.NoArgsConstructor;
 public class AddMySoconRequest {
 
     private Integer purchaseQuantity;
-    private Integer orderId;
 }

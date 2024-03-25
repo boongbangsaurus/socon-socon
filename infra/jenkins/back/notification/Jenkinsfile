@@ -35,7 +35,7 @@ pipeline {
         }
         stage("Build & Run") {
             steps {
-                dir("backend/notification"){
+                dir("infra/jenkins/back/notification"){
                     script {
                         try {
                             sh "docker build -t kimdahui/notification ."
@@ -44,7 +44,6 @@ pipeline {
                             --network jenkins-project_socon-net \\
                             --restart unless-stopped \\
                             -e "SPRING_PROFILES_ACTIVE=prod,notification_prod" \\
-                            -e "SERVER_PORT=8010" \\
                             -p 8010:8010 kimdahui/notification
                             '''
                         }catch (Exception e) {
