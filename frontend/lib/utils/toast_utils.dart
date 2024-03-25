@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import '../view/atoms/toast.dart';
+import '../views/atoms/toast.dart';
 
 Map<String, String> toastMsgList = {
   "answerAccepted" : "댓글이 채택되었어요!",
