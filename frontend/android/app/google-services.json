@@ -1,0 +1,49 @@
+{
+  "project_info": {
+    "project_number": "327490215150",
+    "firebase_url": "https://socon-socon-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "socon-socon",
+    "storage_bucket": "socon-socon.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:327490215150:android:5e07c4adffbb0839dda7ff",
+        "android_client_info": {
+          "package_name": "com.example.frontend"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBCye1zH-79fDMeVn3xnNdd5M-UxPgVzPU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:327490215150:android:c7b6ccd533536942dda7ff",
+        "android_client_info": {
+          "package_name": "site.boongbang.socon"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBCye1zH-79fDMeVn3xnNdd5M-UxPgVzPU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
