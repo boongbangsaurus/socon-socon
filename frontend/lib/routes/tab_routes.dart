@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
-import 'package:socon/view/screens/my_info_screen.dart';
-import 'package:socon/view/screens/my_store_list_screen.dart';
-import 'package:socon/view/screens/socon_book_screen.dart';
-import 'package:socon/view/screens/sogon_main_screen.dart';
-import '../view/screens/nearby_info_screen.dart';
+import 'package:socon/views/screens/my_info_screen.dart';
+import 'package:socon/views/screens/my_store_list_screen.dart';
+import 'package:socon/views/screens/socon_book_screen.dart';
+import 'package:socon/views/screens/sogon_main_screen.dart';
+import '../views/screens/nearby_info_screen.dart';
 
 class TabRoutes {
   static RouteBase getNearbyRoute() {

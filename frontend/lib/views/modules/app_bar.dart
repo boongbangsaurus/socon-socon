@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:socon/utils/fontSizes.dart';
 import 'package:socon/utils/responsive_utils.dart';
-import 'package:socon/view/atoms/icon_loader.dart';
+import 'package:socon/views/atoms/icon_loader.dart';
 
 import '../../utils/colors.dart';
 

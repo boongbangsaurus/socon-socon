@@ -5,9 +5,9 @@ import 'package:socon/models/store.dart';
 import 'package:socon/utils/colors.dart';
 import 'package:socon/utils/fontSizes.dart';
 import 'package:socon/utils/responsive_utils.dart';
-import 'package:socon/view/atoms/icon_loader.dart';
-import 'package:socon/view/atoms/image_loader.dart';
-import 'package:socon/view/atoms/tag_icon.dart';
+import 'package:socon/views/atoms/icon_loader.dart';
+import 'package:socon/views/atoms/image_loader.dart';
+import 'package:socon/views/atoms/tag_icon.dart';
 
 // 상수 정의: imageUrl, borderRadius, 이미지 컨테이너 너비
 const imageUrl = "https://cataas.com/cat";
