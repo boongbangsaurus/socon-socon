@@ -244,7 +244,7 @@ public class StoreService {
     }
         }
 
-    public void addFavoriteStore(Integer storeId, MemberRequest memberRequest) {
+    public void favoriteStore(Integer storeId, MemberRequest memberRequest) {
 
         Store store = storeRepository.findById(storeId)
                 .orElseThrow(() -> new StoreException(StoreErrorCode.STORE_NOT_FOUND));
