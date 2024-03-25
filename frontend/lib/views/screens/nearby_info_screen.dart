@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:socon/utils/colors.dart';
 import 'package:socon/utils/fontSizes.dart';
-import 'package:socon/view/atoms/image_card.dart';
-import 'package:socon/view/modules/app_bar.dart';
+import 'package:socon/views/atoms/image_card.dart';
+import 'package:socon/views/modules/app_bar.dart';
 
 import '../../models/store.dart';
 import '../../utils/responsive_utils.dart';
