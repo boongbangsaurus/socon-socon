@@ -9,6 +9,7 @@ import '../../utils/responsive_utils.dart';
 import '../atoms/search_box.dart';
 import '../modules/place_list.dart';
 
+// 주변 장소 조회 페이지
 class NearbyInfoScreen extends StatefulWidget {
   final String userName = "도휘리릭";
   final int number = 100;
