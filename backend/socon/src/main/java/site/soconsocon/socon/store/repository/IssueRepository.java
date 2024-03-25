@@ -11,7 +11,7 @@ public interface IssueRepository extends JpaRepository<Issue, Integer> {
     @Query("SELECT i FROM ISSUE i WHERE i.item.store.id = :storeId")
     List<Issue> findIssueListByStoreId(Integer storeId);
 
-    @Query("SELECT i.name FROM ISSUE i WHERE i.item.store.id = :storeId AND i.isMain = true AND i.status = 'A' LIMIT 1")
+    @Query("SELECT i.name FROM ISSUE i WHERE i.item.store.id = :storeId AND i.isMain = true AND i.status = 'A'")
     String findMainIssueNameByStoreId(Integer storeId);
 
     @Query("SELECT i.item.store.memberId FROM ISSUE i WHERE i.id = :issueId")

@@ -12,7 +12,7 @@ public enum StoreErrorCode implements CustomError {
     // 400 BAD REQUEST
     INVALID_SOCON(HttpStatus.BAD_REQUEST, "400 INVALID_SOCON", "사용 불가능한 소콘입니다"),
     INVALID_ISSUE(HttpStatus.BAD_REQUEST, "400 INVALID_ISSUE", "발행 가능 상태가 아닙니다"),
-    ALREADY_SAVED_STORE(HttpStatus.BAD_REQUEST, "400 ALREADY_SAVED_STORE", "동일한 이름, 좌표, 사업자등록번호의 가게 존재입니다"),
+    ALREADY_SAVED_STORE(HttpStatus.BAD_REQUEST, "400 ALREADY_SAVED_STORE", "이미 등록된 가게입니다"),
     ALREADY_SAVED_REGISTRATION_NUMBER(HttpStatus.BAD_REQUEST, "400 ALREADY_SAVED_REGISTRATION_NUMBER", "이미 등록된 사업자번호입니다"),
     ALREADY_SET_CLOSE_PLAN(HttpStatus.BAD_REQUEST, "400 ALREADY_SET_CLOSE_PLAN", "이미 폐업신고 된 가게입니다"),
     ISSUE_MAX_QUANTITY(HttpStatus.BAD_REQUEST, "400 ISSUE_MAX_QUANTITY", "발행 요청 가능 개수를 초과했습니다"),

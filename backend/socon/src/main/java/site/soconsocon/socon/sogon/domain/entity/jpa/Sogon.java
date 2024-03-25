@@ -59,7 +59,7 @@ public class Sogon {
     @JoinColumn(name = "socon_id")
     private Socon socon;
 
-    @OneToMany(mappedBy = "comment")
+    @OneToMany(mappedBy = "sogon")
     private List<Comment> comments = new ArrayList<>();
 
 }

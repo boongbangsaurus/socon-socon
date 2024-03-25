@@ -5,7 +5,7 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Entity(name="FAV_STORE")
+@Entity(name="ORDER")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter

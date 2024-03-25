@@ -230,7 +230,7 @@ public class SogonService {
         double maxLongitude = Math.toDegrees(centerYInRadians + radiusInRadians / Math.cos(centerXInRadians));
 
         // 중심 좌표를 중심으로 반경 1.5km 이내에 있는 sogon을 조회
-        List<Sogon> sogons = sogonRepository.findByLatitudeBetweenAndLongitudeBetween(
+        List<Sogon> sogons = sogonRepository.findByLatBetweenAndLngBetween(
                 minLatitude, maxLatitude, minLongitude, maxLongitude);
 
         List<GetSogonListResponse> sogonListResponses = new ArrayList<>();

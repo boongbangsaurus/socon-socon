@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity(name="BUSINESS_HOUR")
+@Entity(name="REGISTRATION_NUMBER")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter

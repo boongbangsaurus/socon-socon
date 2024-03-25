@@ -1,6 +1,7 @@
 package site.soconsocon.socon.global.exception;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -13,15 +14,6 @@ import java.util.Arrays;
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
-
-    @ExceptionHandler(SoconException.class)
-    public ResponseEntity<Object> SoconExceptionHandler(SoconException e) {
-        log.debug(Arrays.toString(e.getStackTrace()));
-        return ResponseEntity.status(e.getErrorCode().getHttpStatus())
-                .body(MessageUtils.fail(String.valueOf(e.getErrorCode()), e.getMessage()));
-
-    }
-
     @ExceptionHandler(StoreException.class)
     public ResponseEntity<Object> StoreExceptionHandler(StoreException e) {
         log.debug(Arrays.toString(e.getStackTrace()));
@@ -36,6 +28,21 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(e.getErrorCode().getHttpStatus())
                 .body(MessageUtils.fail(String.valueOf(e.getErrorCode()), e.getMessage()));
 
+    }
+
+    @ExceptionHandler(SoconException.class)
+    public ResponseEntity<Object> SoconExceptionHandler(SoconException e) {
+        log.debug(Arrays.toString(e.getStackTrace()));
+        return ResponseEntity.status(e.getErrorCode().getHttpStatus())
+                .body(MessageUtils.fail(String.valueOf(e.getErrorCode()), e.getMessage()));
+
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Object> handleOtherExceptions(Exception e) {
+        log.error("An unexpected error occurred", e);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(MessageUtils.fail("INTERNAL_SERVER_ERROR", "An unexpected error occurred"));
     }
 
 }

@@ -5,6 +5,8 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity(name="ISSUE")
 @AllArgsConstructor
@@ -65,5 +67,8 @@ public class Issue {
 
     @Column(name = "order_id", nullable = false)
     private Integer orderId;
+
+    @OneToMany(mappedBy = "issue")
+    private List<Socon> socons = new ArrayList<>();
 
 }

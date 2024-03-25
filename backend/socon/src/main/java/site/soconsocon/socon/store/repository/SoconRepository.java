@@ -9,13 +9,13 @@ import java.util.List;
 
 public interface SoconRepository extends JpaRepository<Socon, Integer> {
 
-    @Query("SELECT s FROM SOCON s WHERE s.memberId = :memberId AND s.isUsed = false")
+    @Query("SELECT s FROM SOCON s WHERE s.memberId = :memberId AND s.status = 'unused' OR s.status = 'sogon'")
     List<Socon> getUnusedSoconByMemberId(Integer memberId);
 
-    @Query("SELECT s FROM SOCON s WHERE s.memberId = :memberId AND s.isUsed = true")
+    @Query("SELECT s FROM SOCON s WHERE s.memberId = :memberId AND s.status = 'used' OR s.status = 'expired'")
     List<Socon> getUsedSoconByMemberId(Integer memberId);
 
-    @Query("SELECT s.id, s.issue.name, s.issue.storeName, s.expiredAt, s.isUsed, s.usedAt, s.issue.image FROM SOCON s WHERE s.memberId = :memberId AND s.issue.storeName = :storeName")
+    @Query("SELECT s.id, s.issue.name, s.issue.storeName, s.expiredAt, s.status, s.usedAt, s.issue.image FROM SOCON s WHERE s.memberId = :memberId AND s.issue.storeName = :storeName")
     List<SoconListResponse> getSoconByMemberIdAndStoreName(Integer memberId, String storeName);
 
     @Query("SELECT s FROM SOCON s WHERE s.memberId = :memberId AND s.issue.name = :itemName")

@@ -3,6 +3,9 @@ package site.soconsocon.socon.store.domain.entity.jpa;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity(name="ITEM")
 @AllArgsConstructor
 @NoArgsConstructor
@@ -35,5 +38,8 @@ public class Item {
     @ManyToOne
     @JoinColumn(name = "store_id")
     private Store store;
+
+    @OneToMany(mappedBy = "item")
+    private List<Issue> issues = new ArrayList<>();
 
 }

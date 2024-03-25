@@ -15,5 +15,5 @@ public interface SogonRepository extends JpaRepository<Sogon, Integer> {
     List<Sogon> findAllByMemberId(Integer memberId);
 
 
-    List<Sogon> findByLatitudeBetweenAndLongitudeBetween(double minLatitude, double maxLatitude, double minLongitude, double maxLongitude);
+    List<Sogon> findByLatBetweenAndLngBetween(double minLatitude, double maxLatitude, double minLongitude, double maxLongitude);
 }
