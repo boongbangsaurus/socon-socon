@@ -8,10 +8,10 @@ import 'package:socon/views/atoms/buttons.dart';
 import 'package:socon/views/atoms/icon_loader.dart';
 import 'package:fluentui_emoji_icon/fluentui_emoji_icon.dart';
 
-class SuccessCard extends StatelessWidget {
+class FailCard extends StatelessWidget {
   final Message resultMsg;
   final VoidCallback onPressed;
-  SuccessCard({required this.resultMsg, required this.onPressed});
+  FailCard({required this.resultMsg, required this.onPressed});
 
 
 
@@ -32,7 +32,7 @@ class SuccessCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 FluentUiEmojiIcon(
-                  fl: AppIcons.PARTY, // 클래스명.변수명
+                  fl: AppIcons.FAIL, // 클래스명.변수명
                   w: ResponsiveUtils.getWidthWithPixels(context, 60),
                   h: ResponsiveUtils.getHeightWithPixels(context, 60),
                 ),
@@ -40,7 +40,7 @@ class SuccessCard extends StatelessWidget {
                   height: 10.0,
                 ),
                 Text(
-                  resultMsg.successTitle,
+                  resultMsg.failTitle,
                   style: TextStyle(
                     fontSize: ResponsiveUtils.calculateResponsiveFontSize(
                         context, FontSizes.XXLARGE),
@@ -55,7 +55,7 @@ class SuccessCard extends StatelessWidget {
                   width: ResponsiveUtils.getWidthWithPixels(context, 235),
                   // 너비를 원하는 값으로 지정합니다.
                   child: Text(
-                    resultMsg.successComment,
+                    resultMsg.failComment,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: ResponsiveUtils.calculateResponsiveFontSize(

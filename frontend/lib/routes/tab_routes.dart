@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
+import 'package:socon/views/screens/contact/contact_fail_screen.dart';
 import 'package:socon/views/screens/contact/contact_sucess_screen.dart';
 import 'package:socon/views/screens/my_info_screen.dart';
 import 'package:socon/views/screens/my_store_list_screen.dart';
@@ -40,15 +41,25 @@ class TabRoutes {
         builder: (BuildContext context, GoRouterState state) {
           return MyInfoScreen();
         },
-        routes: [getContactRoute()]);
+        routes: [getContactSuccessRoute(), getContactFailRoute()]);
   }
 
-  static RouteBase getContactRoute() {
+  static RouteBase getContactSuccessRoute() {
     return GoRoute(
       name: "contact",
-      path: "contact",
+      path: "success",
       builder: (BuildContext context, GoRouterState state) {
         return ContactSuccessScreen();
+      },
+    );
+  }
+
+  static RouteBase getContactFailRoute() {
+    return GoRoute(
+      name: "contactFail",
+      path: "fail",
+      builder: (BuildContext context, GoRouterState state) {
+        return ContactFailScreen();
       },
     );
   }

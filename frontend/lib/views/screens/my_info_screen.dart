@@ -339,7 +339,7 @@ class _MyInfoScreen extends State<MyInfoScreen> {
             children: [
               GestureDetector(
                 onTap: () =>
-                    {print("사장님 인증 클릭"), GoRouter.of(context).go('/info/contact')},
+                    {print("사장님 인증 클릭"), GoRouter.of(context).go('/info/fail')},
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
