@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
+import 'package:socon/views/screens/bossVerification/boss_verification.dart';
 import 'package:socon/views/screens/contact/contact_fail_screen.dart';
 import 'package:socon/views/screens/contact/contact_sucess_screen.dart';
 import 'package:socon/views/screens/my_info_screen.dart';
@@ -41,7 +42,7 @@ class TabRoutes {
         builder: (BuildContext context, GoRouterState state) {
           return MyInfoScreen();
         },
-        routes: [getContactSuccessRoute(), getContactFailRoute()]);
+        routes: [getContactSuccessRoute(), getContactFailRoute(), getBossVerification(),]);
   }
 
   static RouteBase getContactSuccessRoute() {
@@ -70,5 +71,15 @@ class TabRoutes {
         builder: (BuildContext context, GoRouterState state) {
           return MyStoreListScreen();
         });
+  }
+
+  static RouteBase getBossVerification() {
+    return GoRoute(
+      name: "bossVerification",
+      path: "verification",
+      builder: (BuildContext context, GoRouterState state) {
+        return BossVerification();
+      },
+    );
   }
 }

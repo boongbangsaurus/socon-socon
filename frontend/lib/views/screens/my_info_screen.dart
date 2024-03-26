@@ -338,8 +338,10 @@ class _MyInfoScreen extends State<MyInfoScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               GestureDetector(
-                onTap: () =>
-                    {print("사장님 인증 클릭"), GoRouter.of(context).go('/info/success')},
+                onTap: () => {
+                  print("사장님 인증 클릭"),
+                  GoRouter.of(context).go('/info/verification')
+                },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -392,12 +394,18 @@ class _MyInfoScreen extends State<MyInfoScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                "문의하기",
-                style: TextStyle(
-                    fontSize: ResponsiveUtils.calculateResponsiveFontSize(
-                        context, FontSizes.MEDIUM)),
-              ),
+              GestureDetector(
+                onTap: () => {
+                  print("문의하기 클릭"),
+                  GoRouter.of(context).go('/info/success')
+                },
+                child: Text(
+                  "문의하기",
+                  style: TextStyle(
+                      fontSize: ResponsiveUtils.calculateResponsiveFontSize(
+                          context, FontSizes.MEDIUM)),
+                ),
+              )
             ],
           ),
           const SizedBox(height: 15.0),

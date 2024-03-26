@@ -36,16 +36,19 @@ final GoRouter router = GoRouter(initialLocation: "/", routes: <RouteBase>[
 
 Widget _bottomNavBar(StatefulNavigationShell navigationShell) {
   final currentRoute = navigationShell.shellRouteContext.routeMatchList;
-  final bool showBottomNavBar = currentRoute.uri.toString() == "/info/contact";
+  final bool showBottomNavBar =
+      currentRoute.uri.toString() == "/info/contact" ||
+          currentRoute.uri.toString() == "/info/verification" ||
+          currentRoute.uri.toString() == "/info/success";
 
   // print(currentRoute.uri.toString().runtimeType); // 타입 확인
   print(currentRoute.uri.toString());
   print(showBottomNavBar);
   // /info/contact
 
-  if(showBottomNavBar){
+  if (showBottomNavBar) {
     return SizedBox.shrink();
-  }else{
+  } else {
     return BottomNavBar(
       currentIndex: navigationShell.currentIndex,
       onTap: (int index) {
