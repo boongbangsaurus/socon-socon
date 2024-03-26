@@ -38,4 +38,5 @@ out/
 ### VS Code ###
 .vscode/
 
-gradle.properties
+backend/**/gradle.properties
+google-services.json

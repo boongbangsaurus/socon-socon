@@ -15,6 +15,7 @@ class AppColors {
 
   // GRAY
   static const Color BACKGRAY = Color(0XFF818181);
+  static const Color ToastGray = Color(0XFF404040);
   static const Color GRAY25 = Color(0XFFFCFCFD);
   static const Color GRAY50 = Color(0XFFF9FAFB);
   static const Color GRAY100 = Color(0XFFF2F4F7);
