@@ -1,0 +1,26 @@
+  docker run -d --name config \
+    --network jenkins-project_socon-net \
+    --restart unless-stopped \
+    -e "ADMIN_USERNAME=${CONFIG_USERNAME}" \
+    -e "ADMIN_PASSWORD=${CONFIG_USERNAME}" \
+
+version: '3.3'
+
+services:
+  nginx:
+    container_name: config
+    image: kimdahui/config
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "8761:8761"
+    environment:
+      - "ADMIN_USERNAME={CONFIG_USERNAME}"
+    networks:
+      - jenkins-project_socon-net
+
+networks:
+  jenkins-project_socon-net:
+    external: true

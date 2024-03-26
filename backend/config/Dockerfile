@@ -1,7 +1,7 @@
 # 빌드 스테이지
 FROM amazoncorretto:17.0.7-alpine AS builder
 USER root
-WORKDIR /eureka
+WORKDIR /config
 COPY gradlew .
 COPY gradle gradle
 COPY build.gradle .
@@ -14,6 +14,6 @@ RUN ./gradlew bootJar
 
 # 실행 스테이지
 FROM openjdk:17
-WORKDIR /eureka
-COPY --from=builder /eureka/build/libs/*.jar app.jar
+WORKDIR /config
+COPY --from=builder /config/build/libs/*.jar app.jar
 ENTRYPOINT ["java", "-jar", "app.jar"]

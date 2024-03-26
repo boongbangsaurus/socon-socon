@@ -16,37 +16,38 @@ pipeline {
         stage('Move .env File') {
             steps {
                 script{
-                    sh 'cp secure-settings/back/.env .env'
-                    sh "mkdir -p backend/eureka/src/resources"
+                    sh 'cp ../.env .env'
+                    sh "mkdir -p backend/config/src/resources"
                     // find 명령어를 사용하여 .yml 파일을 찾고, 각 파일에 대해 cp 명령어를 실행
-                    sh "find secure-settings/back/eureka -name '*.yml' -exec cp {} backend/eureka/src/resources \\;"
+                    sh "find secure-settings/back/config -name '*.yml' -exec cp {} backend/config/src/resources \\;"
                     // 동일한 디렉토리 내 모든 .yml 파일을 복사
-                    sh "find secure-settings/back -maxdepth 1 -name '*.yml' -exec cp {} backend/eureka/src/resources \\;"
+                    sh "find secure-settings/back -maxdepth 1 -name '*.yml' -exec cp {} backend/config/src/resources \\;"
                 }
             }
         }
         stage('Setup Environment') {
             steps {
                 script{
-                    sh "chmod +x ./backend/eureka/gradlew"
+                    sh "chmod +x ./backend/config/gradlew"
                 }
             }
         }
         stage("Build & Run") {
             steps {
-                dir("infra/jenkins/back/eureka"){
+                dir("backend/config"){
                     script {
                         try {
-                            sh "docker build -t kimdahui/eureka ."
+                            sh "docker build -t kimdahui/config ."
                             sh '''
-                            docker run -d --name eureka \\
+                            docker run -d --name config \\
                             --network jenkins-project_socon-net \\
                             --restart unless-stopped \\
-                            -e "SPRING_PROFILES_ACTIVE=prod,eureka_prod" \\
-                            -p 8761:8761 kimdahui/eureka
+                            -e "ADMIN_USERNAME=${CONFIG_USERNAME}" \\
+                            -e "ADMIN_PASSWORD=${CONFIG_USERNAME}" \\
+                            -p 8761:8761 kimdahui/config
                             '''
                         }catch (Exception e) {
-                            sh "docker restart eureka"
+                            sh "docker restart config"
                         }
                     }
                 }
