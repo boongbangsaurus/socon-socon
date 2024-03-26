@@ -35,7 +35,7 @@ pipeline {
         }
         stage("Build & Run") {
             steps {
-                dir("backend/user"){
+                dir("infra/jenkins/back/user"){
                     script {
                         try {
                             sh "docker build -t kimdahui/user ."
@@ -44,7 +44,6 @@ pipeline {
                             --network jenkins-project_user-net \\
                             --restart unless-stopped \\
                             -e "SPRING_PROFILES_ACTIVE=prod,user_prod" \\
-                            -e "SERVER_PORT=8040" \\
                             -p 8040:8040 kimdahui/user
                             '''
                         }catch (Exception e) {

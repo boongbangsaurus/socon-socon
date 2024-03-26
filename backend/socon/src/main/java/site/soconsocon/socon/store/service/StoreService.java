@@ -2,26 +2,24 @@ package site.soconsocon.socon.store.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import site.soconsocon.socon.global.exception.ForbiddenException;
-import site.soconsocon.socon.global.exception.StoreDuplicationException;
 import site.soconsocon.socon.global.exception.badrequest.BadRequest;
-import site.soconsocon.socon.global.exception.conflict.SetClosePlanException;
-import site.soconsocon.socon.global.exception.notfound.RegistrationNotFoundException;
-import site.soconsocon.socon.global.exception.notfound.StoreNotFoundException;
 import site.soconsocon.socon.store.domain.dto.request.AddStoreRequest;
 import site.soconsocon.socon.store.domain.dto.request.MemberRequest;
 import site.soconsocon.socon.store.domain.dto.request.UpdateClosedPlannedRequest;
 import site.soconsocon.socon.store.domain.dto.request.UpdateStoreInfoRequest;
-import site.soconsocon.socon.store.domain.dto.response.FavoriteStoresListResponse;
 import site.soconsocon.socon.store.domain.dto.response.StoreInfoResponse;
 import site.soconsocon.socon.store.domain.entity.jpa.BusinessHour;
 import site.soconsocon.socon.store.domain.entity.jpa.FavStore;
 import site.soconsocon.socon.store.domain.entity.jpa.RegistrationNumber;
 import site.soconsocon.socon.store.domain.entity.jpa.Store;
+import site.soconsocon.socon.global.exception.conflict.SetClosePlanException;
+import site.soconsocon.socon.global.exception.ForbiddenException;
+import site.soconsocon.socon.global.exception.notfound.RegistrationNotFoundException;
+import site.soconsocon.socon.global.exception.StoreDuplicationException;
+import site.soconsocon.socon.global.exception.notfound.StoreNotFoundException;
 import site.soconsocon.socon.store.repository.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -33,17 +31,16 @@ public class StoreService {
     private final RegistrationNumberRepository registrationNumberRepository;
     private final BusinessHourRepository businessHourRepository;
     private final FavStoreRepository favStoreRepository;
-    private final IssueRepository issueRepository;
 
     // 가게 정보 등록
-    public void saveStore(AddStoreRequest request, MemberRequest memberRequest) {
+    public Store saveStore(AddStoreRequest request, MemberRequest memberRequest) {
 
         //RegistrationNumber 조회
         RegistrationNumber registrationNumber = registrationNumberRepository.findById(request.getRegistrationNumberId())
                 .orElseThrow(() -> new RegistrationNotFoundException("Registration not found, registration_number_id : " + request.getRegistrationNumberId()));
 
         // 본인 소유의 사업자 등록 id가 아닌 경우
-        if(registrationNumber.getMemberId().equals(memberRequest.getMemberId())){
+        if(registrationNumber.getMemberId() != memberRequest.getMemberId()){
             throw new ForbiddenException("Forbidden, registration_number_id : " + request.getRegistrationNumberId() + ", member_id : " + memberRequest.getMemberId());
         }
 
@@ -84,7 +81,11 @@ public class StoreService {
                    .orElseThrow(() -> new RuntimeException("Store not found, store_id : " + storeId));
            savedStore.setBusinessHours(savedBusinessHours);
            storeRepository.save(savedStore);
+
+           return savedStore;
+
        }
+
     }
 
     // 가게 정보 목록 조회
@@ -133,11 +134,11 @@ public class StoreService {
     }
 
     // 가게 정보 수정
-    public void updateStoreInfo(Integer storeId, UpdateStoreInfoRequest request, MemberRequest memberRequest) {
+    public Store updateStoreInfo(Integer storeId, UpdateStoreInfoRequest request, MemberRequest memberRequest) {
 
         var store = storeRepository.findById(storeId).orElseThrow(() -> new StoreNotFoundException("Store not found, store_id : " + storeId));
 
-        if(store.getMemberId().equals(memberRequest.getMemberId())){
+        if(store.getMemberId() != memberRequest.getMemberId()){
             // 본인 가게 아닐 경우
             throw new ForbiddenException("Forbidden, storeId : " + storeId + ", memberId : " + memberRequest.getMemberId());
         }
@@ -145,7 +146,7 @@ public class StoreService {
             // 영업시간 수정
             List<BusinessHour> requestBusinessHours = request.getBusinessHours();
             List<BusinessHour> savedBusinessHours = businessHourRepository.findByStoreId(storeId);
-            if(savedBusinessHours.isEmpty()){
+            if(requestBusinessHours.isEmpty()){
                // 저장된 값이 없을 경우
                 for (BusinessHour businessHour : requestBusinessHours) {
                     businessHour.setStoreId(storeId);
@@ -185,6 +186,7 @@ public class StoreService {
 
             storeRepository.save(store);
 
+            return store;
         }
     }
 
@@ -192,7 +194,7 @@ public class StoreService {
     public Store updateClosedPlanned(Integer storeId, UpdateClosedPlannedRequest request, MemberRequest memberRequest) {
         var store = storeRepository.findById(storeId).orElseThrow(() -> new RuntimeException("NOT FOUND BY ID : " + storeId));
 
-        if (memberRequest.getMemberId().equals(store.getMemberId())) {
+        if (memberRequest.getMemberId() == store.getMemberId()) {
              if(store.getClosingPlanned()!= null){
                  // 이미 폐업 신고가 되어 있는 경우
                  throw new SetClosePlanException("Set close plan exception, storeId : " + storeId + ", memberId : " + memberRequest.getMemberId());
@@ -209,49 +211,19 @@ public class StoreService {
         }
     }
 
-    // 관심 가게 추가, 취소
-    public void favoriteStore(Integer storeId, MemberRequest memberRequest) {
+    public void addFavoriteStore(Integer storeId, MemberRequest memberRequest) {
 
         Store store = storeRepository.findById(storeId)
                         .orElseThrow(() -> new StoreNotFoundException("Store not found, store_id : " + storeId));
         if(!store.getIsClosed()){
-            FavStore favStore = favStoreRepository.isExist(memberRequest.getMemberId(), storeId);
-            if(favStore != null){
-                // 이미 좋아요 한 경우
-                favStoreRepository.delete(favStore);
-            }
-            else {
-                favStoreRepository.save(FavStore.builder()
-                        .memberId(memberRequest.getMemberId())
-                        .storeId(storeId)
-                        .build());
-            }
+            favStoreRepository.save(FavStore.builder()
+                    .memberId(memberRequest.getMemberId())
+                    .storeId(storeId)
+                    .build());
         }
         else{
-            // 폐업상태일 경우
-            throw new BadRequest("Bad request, storeId : " + storeId + ", memberId : " + memberRequest.getMemberId());
-        }
-    }
-
-    // 관심 가게 목록 조회
-    public List<FavoriteStoresListResponse> getFavoriteStoreList(MemberRequest memberRequest) {
-
-        List<FavoriteStoresListResponse> stores = new ArrayList<>();
-
-        List<FavStore> favStores = favStoreRepository.findByMemberId(memberRequest.getMemberId());
-
-        for (FavStore favStore : favStores) {
-            Store store = storeRepository.findById(favStore.getStoreId())
-                    .orElseThrow(() -> new StoreNotFoundException("Store not found, store_id : " + favStore.getStoreId()));
-            FavoriteStoresListResponse res = FavoriteStoresListResponse.builder()
-                    .storeId(store.getId())
-                    .name(store.getName())
-                    .image(store.getImage())
-                    .mainMenu(issueRepository.findMainIssueNameByStoreId(store.getId()))
-                    .build();
-            stores.add(res);
+            throw new BadRequest("Bad Request, store is closed, store_id : " + storeId);
         }
 
-        return stores;
     }
 }

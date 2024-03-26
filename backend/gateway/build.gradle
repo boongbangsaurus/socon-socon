@@ -87,3 +87,4 @@ tasks.register('copyPrivate', Copy) {
 processResources {
     dependsOn tasks.copyPrivate
 }
+
