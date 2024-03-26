@@ -47,7 +47,7 @@ class _MyInfoScreen extends State<MyInfoScreen> {
                 const SizedBox(
                   height: 20.0,
                 ),
-                serviceSetting(),
+                serviceSetting(context),
                 const SizedBox(
                   height: 10.0,
                 ),
@@ -312,7 +312,7 @@ class _MyInfoScreen extends State<MyInfoScreen> {
     );
   }
 
-  Widget serviceSetting() {
+  Widget serviceSetting(BuildContext context) {
     return Container(
       padding: EdgeInsets.fromLTRB(
           ResponsiveUtils.getWidthWithPixels(context, 20),
@@ -356,6 +356,8 @@ class _MyInfoScreen extends State<MyInfoScreen> {
                             buttonText: "인증",
                             buttonColor: AppColors.SUCCESS500,
                             buttonTextColor: AppColors.WHITE,
+                            width: 50,
+                            height: 25,
                           )
                         : SizedBox.shrink(),
                   ],
