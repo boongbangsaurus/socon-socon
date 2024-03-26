@@ -83,7 +83,7 @@ public class IssueService {
                 .issuedQuantity(0)
                 .used(0)
                 .period(request.getPeriod())
-                .createdAt(LocalDateTime.now())
+                .createdAt(LocalDate.now())
                 .item(item)
                 .status('A')
                 .build());
