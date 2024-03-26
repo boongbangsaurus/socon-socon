@@ -1,4 +1,4 @@
-package com.example.frontend;
+package site.boongbang.socon;
 
 import io.flutter.embedding.android.FlutterActivity;
 

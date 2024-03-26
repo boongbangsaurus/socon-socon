@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:socon/firebase_options.dart';
 import 'package:socon/routes/router.dart';
 import 'package:socon/utils/colors.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
-void main() {
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized(); // runApp을 호출하기 전 위젯 바인딩 초기화
+  await Firebase.initializeApp(
+    options : DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
 }
 

@@ -19,6 +19,8 @@ dependencies:
   flutter_feather_icons: ^2.0.0
   fluentui_emoji_icon: ^0.0.2
   go_router: ^13.2.1
+  firebase_core: ^2.27.1
+  firebase_messaging: ^14.7.20
 
 
 dev_dependencies:
@@ -29,6 +31,8 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+
   fonts:
     - family: Pretendard
       fonts:

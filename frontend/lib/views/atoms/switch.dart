@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:socon/utils/colors.dart';
 
-/// [CustomSwitch] Class
+/// [CustomSwitch]
 /// 사용자 스위치(토글) 클래스
 /// @author 탁하윤
 /// @param bool [value] 초기 switch 값
