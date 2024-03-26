@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:socon/routes/tab_routes.dart';
 import 'package:socon/views/atoms/bottom_bar.dart';
 
-final bool isOwner = true; // 상태 관리로 처리할 예정
+final bool isOwner = false; // 상태 관리로 처리할 예정
 
 final GoRouter router = GoRouter(initialLocation: "/", routes: <RouteBase>[
   StatefulShellRoute.indexedStack(
@@ -12,13 +12,14 @@ final GoRouter router = GoRouter(initialLocation: "/", routes: <RouteBase>[
           StatefulNavigationShell navigationShell) {
         return Scaffold(
           body: navigationShell,
-          bottomNavigationBar: BottomNavBar(
-            currentIndex: navigationShell.currentIndex,
-            onTap: (int index) {
-              navigationShell.goBranch(index);
-            },
-            isOwner: isOwner,
-          ),
+          // bottomNavigationBar: BottomNavBar(
+          //   currentIndex: navigationShell.currentIndex,
+          //   onTap: (int index) {
+          //     navigationShell.goBranch(index);
+          //   },
+          //   isOwner: isOwner,
+          // ),
+          bottomNavigationBar: _bottomNavBar(navigationShell),
         );
       },
       branches: <StatefulShellBranch>[
@@ -32,3 +33,25 @@ final GoRouter router = GoRouter(initialLocation: "/", routes: <RouteBase>[
         ]),
       ])
 ]);
+
+Widget _bottomNavBar(StatefulNavigationShell navigationShell) {
+  final currentRoute = navigationShell.shellRouteContext.routeMatchList;
+  final bool showBottomNavBar = currentRoute.uri.toString() == "/info/contact";
+
+  // print(currentRoute.uri.toString().runtimeType); // 타입 확인
+  print(currentRoute.uri.toString());
+  print(showBottomNavBar);
+  // /info/contact
+
+  if(showBottomNavBar){
+    return SizedBox.shrink();
+  }else{
+    return BottomNavBar(
+      currentIndex: navigationShell.currentIndex,
+      onTap: (int index) {
+        navigationShell.goBranch(index);
+      },
+      isOwner: isOwner,
+    );
+  }
+}

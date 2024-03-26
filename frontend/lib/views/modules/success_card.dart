@@ -9,8 +9,8 @@ import 'package:fluentui_emoji_icon/fluentui_emoji_icon.dart';
 
 class SuccessCard extends StatelessWidget {
   final String type;
-
-  SuccessCard({required this.type});
+  final VoidCallback onPressed;
+  SuccessCard({required this.type, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -68,9 +68,10 @@ class SuccessCard extends StatelessWidget {
           Expanded(
             child: Align(
               alignment: Alignment.bottomCenter,
-              child: BasicButton(text: '완료'),
+              child: BasicButton(text: '완료', color: "yellow", onPressed : onPressed),
             ),
           ),
+          SizedBox(height: 25.0),
         ],
       ),
     );
