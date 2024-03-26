@@ -5,22 +5,15 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Builder
-public class IssueListResponse {
+public class FavoriteStoresListResponse {
 
     private Integer id;
-    private Boolean isMain;
     private String name;
     private String image;
-    private Integer issuedQuantity;
-    private Integer leftQuantity;
-    private Boolean isDiscounted;
-    private Integer price;
-    private Integer discountedPrice;
-    private LocalDate createdAt;
+    private String mainMenu;
+
 }

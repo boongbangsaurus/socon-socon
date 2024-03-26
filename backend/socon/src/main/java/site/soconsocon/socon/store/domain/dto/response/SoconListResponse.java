@@ -9,13 +9,12 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Builder
-public class UnusableSoconListResponse {
+public class SoconListResponse {
 
     private Integer soconId;
     private String itemName;
     private String storeName;
     private LocalDateTime expiredAt;
-    private Boolean isUsed;
-    private LocalDateTime usedAt;
+    private String status;
     private String itemImage;
 }

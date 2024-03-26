@@ -1,4 +1,5 @@
-package site.soconsocon.socon.store.domain.dto.response;
+package site.soconsocon.socon.store.domain.dto.request;
+
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,10 +8,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class ItemListResponse {
+public class OrderRequest {
 
-    private Integer id;
-    private String name;
-    private String image;
     private Integer price;
+    private Integer orderQuantity;
+
 }

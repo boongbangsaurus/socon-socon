@@ -4,13 +4,15 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity(name="ISSUE")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
 @ToString
 public class Issue {
 
@@ -53,7 +55,7 @@ public class Issue {
     private Integer period; // 사용 기간
 
     @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt; // 등록 일자
+    private LocalDate createdAt; // 등록 일자
 
     @Column(name = "status", nullable = false, columnDefinition = "char default 'A'")
     private Character status; // 발행 상태. a:active i:inactive c:closed
@@ -64,5 +66,8 @@ public class Issue {
 
     @Column(name = "order_id", nullable = false)
     private Integer orderId;
+
+    @OneToMany(mappedBy = "issue")
+    private List<Socon> socons = new ArrayList<>();
 
 }
