@@ -4,6 +4,7 @@ import 'package:socon/utils/responsive_utils.dart';
 import 'package:socon/views/atoms/checkbox.dart';
 import 'package:socon/views/atoms/search_box.dart';
 
+// type : "nearby" | "soconbook" | "like"
 class SearchModule extends StatelessWidget {
   final String type;
 
