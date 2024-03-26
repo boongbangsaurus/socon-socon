@@ -3,6 +3,7 @@ import 'package:socon/utils/colors.dart';
 import 'package:socon/utils/fontSizes.dart';
 import 'package:socon/views/atoms/image_card.dart';
 import 'package:socon/views/modules/app_bar.dart';
+import 'package:socon/views/modules/search_module.dart';
 
 import '../../models/store.dart';
 import '../../utils/responsive_utils.dart';
@@ -74,7 +75,7 @@ class _NearbyInfoScreen extends State<NearbyInfoScreen> {
               height: ResponsiveUtils.getHeightWithPixels(context, 88),
             ),
             const SizedBox(height: 15.0),
-            const SearchBox(),
+            SearchModule(type: "soconbook"),
             SizedBox(height: 10.0),
             Expanded(
                 child: SizedBox(
