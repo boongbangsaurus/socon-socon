@@ -19,5 +19,8 @@ public interface StoreRepository extends JpaRepository<Store, Integer> {
     @Query("SELECT COUNT(s) FROM STORE s WHERE s.name = :name AND s.registrationNumber.id = :registrationNumberId AND s.lat = :lat AND s.lng = :lng")
     Integer checkStoreDuplication(String name, Integer registrationNumberId, Double lat, Double lng);
 
+
+    @Query("SELECT s FROM STORE s WHERE s.closingPlanned != null AND s.isClosed = false")
+    List<Store> storesScheduledToClose();
 }
 

@@ -18,4 +18,7 @@ public interface FavStoreRepository extends JpaRepository<FavStore, Integer> {
 
     @Query("SELECT s FROM FAV_STORE s WHERE s.memberId = :memberId")
     List<FavStore> findByMemberId(Integer memberId);
+
+    @Query("DELETE FROM FAV_STORE s WHERE s.storeId = :id")
+    void deleteByStoreId(Integer id);
 }

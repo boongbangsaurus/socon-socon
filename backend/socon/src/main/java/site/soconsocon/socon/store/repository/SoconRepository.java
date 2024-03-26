@@ -23,4 +23,5 @@ public interface SoconRepository extends JpaRepository<Socon, Integer> {
 
     @Query("SELECT s FROM SOCON s WHERE s.id = :issueId AND (s.status = 'unused' OR s.status = 'sogon')")
     List<Socon> getUnusedSoconByIssueId(Integer issueId);
+
 }

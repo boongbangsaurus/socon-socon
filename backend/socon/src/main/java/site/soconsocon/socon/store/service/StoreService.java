@@ -24,6 +24,8 @@ import site.soconsocon.socon.store.domain.entity.jpa.RegistrationNumber;
 import site.soconsocon.socon.store.domain.entity.jpa.Store;
 import site.soconsocon.socon.store.repository.*;
 
+import java.sql.Time;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +59,7 @@ public class StoreService {
             throw new SoconException(ErrorCode.FORBIDDEN);
         }
 
-        Store store = Store.builder().name(request.getName()).category(request.getCategory()).image(request.getImage()).phoneNumber(request.getPhoneNumber()).address(request.getAddress()).lat(request.getLat()).lng(request.getLng()).introduction(request.getIntroduction()).closingPlanned(null).isClosed(false).createdAt(LocalDateTime.now()).memberId(memberRequest.getMemberId()).registrationNumber(registrationNumber).build();
+        Store store = Store.builder().name(request.getName()).category(request.getCategory()).image(request.getImage()).phoneNumber(request.getPhoneNumber()).address(request.getAddress()).lat(request.getLat()).lng(request.getLng()).introduction(request.getIntroduction()).closingPlanned(null).isClosed(false).createdAt(LocalDate.now()).memberId(memberRequest.getMemberId()).registrationNumber(registrationNumber).build();
 
         // 중복체크 : store name, registrationNumber, lat, lng
         if (storeRepository.checkStoreDuplication(store.getName(), store.getRegistrationNumber().getId(), store.getLat(), store.getLng()) > 0) {
@@ -128,6 +130,7 @@ public class StoreService {
                 for (BusinessHour businessHour : requestBusinessHours) {
                     BusinessHour matchedBusinessHour = savedBusinessHours.stream().filter(savedBusinessHour -> savedBusinessHour.getDay().equals(businessHour.getDay())).findFirst().orElse(null); // null일 경우
 
+
                     matchedBusinessHour.setIsWorking(businessHour.getIsWorking());
                     matchedBusinessHour.setOpenAt(businessHour.getOpenAt());
                     matchedBusinessHour.setCloseAt(businessHour.getCloseAt());
@@ -135,9 +138,10 @@ public class StoreService {
                     matchedBusinessHour.setBreaktimeEnd(businessHour.getBreaktimeEnd());
 
                     businessHourRepository.save(matchedBusinessHour);
+
                 }
             }
-            store.setImage(request.getImage());
+
             store.setPhoneNumber(request.getPhoneNumber());
             store.setAddress(request.getAddress());
             store.setLat(request.getLat());
@@ -160,7 +164,7 @@ public class StoreService {
                     // 이미 폐업 신고가 되어 있는 경우
                     throw new StoreException(StoreErrorCode.ALREADY_SET_CLOSE_PLAN);
                 } else {
-                    store.setClosingPlanned(LocalDateTime.now().plusDays(request.getCloseAfter()));
+                    store.setClosingPlanned(LocalDate.now().plusDays(request.getCloseAfter()));
                     storeRepository.save(store);
                 }
             } else {
@@ -172,7 +176,7 @@ public class StoreService {
                 // 이미 폐업 신고가 되어 있는 경우
                 throw new StoreException(StoreErrorCode.ALREADY_SET_CLOSE_PLAN);
             }
-            LocalDateTime closingPlannedAt = LocalDateTime.now().plusDays(request.getCloseAfter());
+            LocalDate closingPlannedAt = LocalDate.now().plusDays(request.getCloseAfter());
 
             store.setClosingPlanned(closingPlannedAt);
 
@@ -184,7 +188,7 @@ public class StoreService {
                 // 발행 된 소콘 중 사용되지 않은 소콘 마감기한 업데이트
                 List<Socon> socons = soconRepository.getUnusedSoconByIssueId(issue.getId());
                 for (Socon socon : socons) {
-                    socon.setExpiredAt(closingPlannedAt);
+                    socon.setExpiredAt(closingPlannedAt.atTime(23, 59, 59));
                     soconRepository.save(socon);
                 }
             }
@@ -196,10 +200,27 @@ public class StoreService {
         }
     }
 
+    // 폐업 상태 업데이트
+    public void updateCloseStore(){
+        // 폐업 예정일 지정되어있지만 폐업하지 않은 가게 리스트
+        List<Store> stores = storeRepository.storesScheduledToClose();
+
+        for(Store store : stores){
+            if(store.getClosingPlanned().isEqual(LocalDate.now())){
+                // 오늘 일자와 같다면 폐업 처리
+                store.setIsClosed(true);
+                storeRepository.save(store);
+
+                // 관심 가게 목록에서 삭제
+                favStoreRepository.deleteByStoreId(store.getId());
+            }
+        }
+    }
+
     public void favoriteStore(Integer storeId, MemberRequest memberRequest) {
 
         Store store = storeRepository.findById(storeId).orElseThrow(() -> new StoreException(StoreErrorCode.STORE_NOT_FOUND));
-        if (store.getIsClosed()) {
+        if (Boolean.TRUE.equals(store.getIsClosed())) {
             // 폐업상태일 경우
             throw new SoconException(ErrorCode.BAD_REQUEST);
         }
