@@ -29,7 +29,7 @@ import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/member-service")
+@RequestMapping("/api/v1/members")
 @Log4j2
 public class MemberController {
 
@@ -135,13 +135,13 @@ public class MemberController {
     }
 
 
-    @GetMapping
+    @GetMapping("/id")
     public MemberFeignResponse getMemberByMemberId(@RequestHeader("X-Authorization-Id") int memberId) {
         log.info("open feign communication success!");
         return memberService.findMemberByMemberId(memberId);
     }
 
-    @GetMapping("")
+    @GetMapping("/email")
     public ResponseEntity getMemberByEmail(@RequestParam("email") String email) throws MemberException {
         return ResponseEntity.ok().body(MessageUtils.success(memberService.getMemberByEmail(email)));
     }
