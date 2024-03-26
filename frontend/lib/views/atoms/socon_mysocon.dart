@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:socon/utils/colors.dart';
+import 'package:socon/utils/fontSizes.dart';
 import 'image_card.dart';
 
 class MySocon extends StatelessWidget {
@@ -41,9 +43,9 @@ class MySocon extends StatelessWidget {
           Text(
             soconName,
             style: TextStyle(
-                fontSize: 22,
+                fontSize: FontSizes.LARGE,
                 fontWeight: FontWeight.bold,
-                color: Colors.black,
+                color: AppColors.BLACK,
                 height: 2.5),
             textAlign: TextAlign.center,
           ),
@@ -52,8 +54,8 @@ class MySocon extends StatelessWidget {
               child: Text(
                 'from. $storeName',
                 style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.black,
+                  fontSize: FontSizes.XXXSMALL,
+                  color: AppColors.BLACK,
                 ),
                 textAlign: TextAlign.right,
               )),
@@ -63,9 +65,10 @@ class MySocon extends StatelessWidget {
             child: Text(
               '$dueDate 까지',
               style: TextStyle(
-                  fontSize: 13,
+                  fontSize: FontSizes.XXXSMALL,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black),
+                  color: AppColors.BLACK,
+                  ),
               textAlign: TextAlign.right,
             ),
           ),

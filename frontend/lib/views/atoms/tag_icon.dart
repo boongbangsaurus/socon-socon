@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:socon/utils/colors.dart';
+import 'package:socon/utils/fontSizes.dart';
 
 
 // 지정값 : 세로 크기, 텍스트 크기, 텍스트 굵기
@@ -6,12 +8,18 @@ class TagIcon extends StatelessWidget {
   final String buttonText;
   final Color buttonColor;
   final Color buttonTextColor;
+  final double? fontSize;
+  final double? width;
+  final double? height;
 
   const TagIcon({
     super.key,
     required this.buttonText,
     required this.buttonColor,
     required this.buttonTextColor,
+    this.fontSize = 10,
+    this.width,
+    this.height,
   });
 
 
@@ -19,8 +27,8 @@ class TagIcon extends StatelessWidget {
   factory TagIcon.NEW() {
     return TagIcon(
       buttonText: 'NEW',
-      buttonColor: Color(0xffFBBC05),
-      buttonTextColor: Colors.white,
+      buttonColor: AppColors.WARNING25,
+      buttonTextColor: AppColors.WHITE,
     );
   }
 
@@ -29,7 +37,7 @@ class TagIcon extends StatelessWidget {
     return TagIcon(
       buttonText: 'SALE',
       buttonColor: Color(0xffFEF4444),
-      buttonTextColor: Colors.white,
+      buttonTextColor: AppColors.WHITE,
     );
   }
 
@@ -37,6 +45,7 @@ class TagIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+
       margin: EdgeInsets.only(right: 3),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -47,13 +56,17 @@ class TagIcon extends StatelessWidget {
               borderRadius: BorderRadius.circular(50),
             ),
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 1),
-              child: Text(
-                buttonText,
-                style: TextStyle(
-                  color: buttonTextColor,
-                  fontSize: 8,
-                  fontWeight: FontWeight.bold,
+              width: width,
+              height: height,
+              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+              child: Center(
+                child: Text(
+                  buttonText,
+                  style: TextStyle(
+                    color: buttonTextColor,
+                    fontSize: fontSize,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),
@@ -75,6 +88,7 @@ class TagButton extends StatefulWidget {
   final Color buttonColor;
   final Color buttonTextColor;
   final VoidCallback onPressed;
+  final Function(bool) onSelected;
 
   final double minWidth;
   final double minHeight;
@@ -87,6 +101,8 @@ class TagButton extends StatefulWidget {
     required this.buttonColor,
     required this.buttonTextColor,
     required this.onPressed,
+    required this.onSelected,
+
     this.minWidth = 10.0, // 최소 가로 크기
     this.minHeight = 30.0, // 최소 세로 크기
   });
@@ -125,11 +141,12 @@ class _TagButtonState extends State<TagButton> {
           _isSelected = !_isSelected;
           widget.onPressed();
         });
+        widget.onSelected(_isSelected);
       },
       style: buttonStyle,
       child: Text(
           widget.buttonText,
-          style: TextStyle( color: _isSelected ? widget.buttonTextColor : Colors.grey, fontSize: 12, fontWeight: FontWeight.bold)),
+          style: TextStyle( color: _isSelected ? widget.buttonTextColor : AppColors.GRAY, fontSize: FontSizes.XXXSMALL, fontWeight: FontWeight.bold)),
     );
   }
 }
