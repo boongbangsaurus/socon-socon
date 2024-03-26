@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:socon/utils/responsive_utils.dart';
 import 'package:socon/views/atoms/icon_loader.dart';
 import 'package:socon/views/atoms/tag_icon.dart';
@@ -337,7 +338,8 @@ class _MyInfoScreen extends State<MyInfoScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               GestureDetector(
-                onTap: () => {print("사장님 인증 클릭")},
+                onTap: () =>
+                    {print("사장님 인증 클릭"), GoRouter.of(context).go('/info/contact')},
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
