@@ -80,15 +80,16 @@ public class JwtUtil {
 
 
     public Map<String, Object> getUserParseInfo(String token) {
-        Claims parseInfo = Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token).getBody();
+        Claims parseInfo = Jwts.parserBuilder().setSigningKey(getSigningKey(secretKey)).build().parseClaimsJws(token).getBody();
         Map<String, Object> result = new HashMap<>();
         result.put("memberId", parseInfo.get("memberId"));
         result.put("role", parseInfo.get("role", List.class));
         return result;
     }
+
     public boolean validateToken(String token) {
         try {
-            Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token);
+            Jwts.parserBuilder().setSigningKey(getSigningKey(secretKey)).build().parseClaimsJws(token);
             return true;
         } catch (SecurityException | MalformedJwtException e) {
             log.info("Invalid JWT token", e);

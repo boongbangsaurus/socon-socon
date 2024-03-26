@@ -1,8 +1,11 @@
 package site.soconsocon.gateway.filter;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.security.SecurityException;
 import lombok.extern.slf4j.Slf4j;
-import org.aspectj.weaver.patterns.IToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
@@ -18,7 +21,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import site.soconsocon.gateway.util.JwtUtil;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -26,14 +28,15 @@ import static java.nio.charset.StandardCharsets.*;
 
 @Component
 @Slf4j
-public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<AuthorizationHeaderFilter.Config> {
+public class AuthorizationHeaderFilterFactory extends AbstractGatewayFilterFactory<AuthorizationHeaderFilterFactory.Config> {
 
     @Autowired
     private JwtUtil jwtUtil;
     Environment env;
 
-    public AuthorizationHeaderFilter() {
+    public AuthorizationHeaderFilterFactory(Environment env) {
         super(Config.class);
+        this.env = env;
     }
 
     public static class Config {
@@ -63,7 +66,7 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
             String jwt = authorizationHeader.replace("Bearer ", "");
             log.info(jwt);
 
-            if (!isJwtValid(jwt)) {
+            if (!jwtUtil.validateToken(jwt)) {
                 return onError(exchange, "JWT token is not valid", HttpStatus.UNAUTHORIZED);
             }
 
@@ -81,6 +84,7 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
     private void addAuthorizationHeaders(ServerHttpRequest request, Map<String, Object> userInfo) {
         request.mutate()
                 .header("X-Authorization-Id", userInfo.get("memberId").toString())
+                .header("X-Authorization-Role", userInfo.get("role").toString())
                 .build();
     }
 
@@ -104,11 +108,13 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
 
         try {
             subject = Jwts
-                    .parser()
+                    .parserBuilder()
                     .setSigningKey(env.getProperty("jwt.secret"))
-                    .parseClaimsJws(jwt).getBody()
-                    .getSubject();
+                    .build()
+                    .parseClaimsJws(jwt).getBody().getSubject();
+            log.info(subject);
         } catch (Exception ex) {
+            log.info(subject);
             log.info("[JwtTokenProvider] validateToken, 토큰 유효성 체크 예외 발생");
             returnValue = false;
         }
@@ -116,8 +122,8 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
         if (subject == null || subject.isEmpty()) {
             returnValue = false;
         }
-
         return returnValue;
+
     }
 
 }
