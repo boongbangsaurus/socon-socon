@@ -3,7 +3,7 @@ package site.soconsocon.socon.store.domain.entity.jpa;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,7 +55,7 @@ public class Issue {
     private Integer period; // 사용 기간
 
     @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt; // 등록 일자
+    private LocalDate createdAt; // 등록 일자
 
     @Column(name = "status", nullable = false, columnDefinition = "char default 'A'")
     private Character status; // 발행 상태. a:active i:inactive c:closed

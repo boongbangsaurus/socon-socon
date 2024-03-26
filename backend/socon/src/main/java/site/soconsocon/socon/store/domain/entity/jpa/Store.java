@@ -3,7 +3,7 @@ package site.soconsocon.socon.store.domain.entity.jpa;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,13 +46,13 @@ public class Store {
     private String introduction; // 가게 설명
 
     @Column(name = "closing_planned", nullable = true)
-    private LocalDateTime closingPlanned; // 폐업 예정 일자
+    private LocalDate closingPlanned; // 폐업 예정 일자
 
     @Column(name = "is_closed", nullable = false, columnDefinition = "boolean default false")
     private Boolean isClosed; // 폐업 여부
 
     @Column(name = "createdAt", nullable = false)
-    private LocalDateTime createdAt; // 등록일
+    private LocalDate createdAt; // 등록일
 
     @Column(name = "member_id", nullable = false)
     private Integer memberId; // 멤버 id

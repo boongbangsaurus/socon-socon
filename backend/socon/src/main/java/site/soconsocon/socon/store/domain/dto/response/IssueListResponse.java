@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -22,5 +22,5 @@ public class IssueListResponse {
     private Boolean isDiscounted;
     private Integer price;
     private Integer discountedPrice;
-    private LocalDateTime createdAt;
+    private LocalDate createdAt;
 }

@@ -1,6 +1,5 @@
 package site.soconsocon.socon.store.domain.entity.jpa;
 
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,10 +19,10 @@ public class RegistrationNumber {
     private Integer id;
 
     @Column(name = "registration_number", nullable = false)
-    private String RegistrationNumber;
+    private String registrationNumber;
 
     @Column(name = "registration_adress", nullable = false)
-    private String RegistrationAddress;
+    private String registrationAddress;
 
     @Column(name = "member_id", nullable = false)
     private Integer memberId; // 멤버 id

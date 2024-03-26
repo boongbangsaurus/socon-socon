@@ -3,7 +3,7 @@ package site.soconsocon.socon.store.domain.dto.response;
 import lombok.*;
 import site.soconsocon.socon.store.domain.entity.jpa.BusinessHour;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @AllArgsConstructor
@@ -20,9 +20,9 @@ public class StoreInfoResponse {
     private String phoneNumber;
     private List<BusinessHour> businessHours;
     private String introduction;
-    private LocalDateTime closingPlanned;
+    private LocalDate closingPlanned;
     private Integer favoriteCount;
-    private LocalDateTime createdAt;
+    private LocalDate createdAt;
 
 
     private String registrationNumber;
