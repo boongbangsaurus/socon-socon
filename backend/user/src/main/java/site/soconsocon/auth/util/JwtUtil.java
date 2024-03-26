@@ -59,7 +59,7 @@ public class JwtUtil {
     }
 
     public String getUsername(String token) {
-        return extractAllClaims(token).get("username", String.class);
+        return extractAllClaims(token).get("memberId", String.class);
     }
 
     public Boolean isTokenExpired(String token) {
@@ -89,9 +89,9 @@ public class JwtUtil {
         return doGenerateToken(String.valueOf(member.getId()), refreshExpiration);
     }
 
-    public String doGenerateToken(String username, long expireTime) {
+    public String doGenerateToken(String memberId, long expireTime) {
         Claims claims = Jwts.claims();
-        claims.put("memberId", username); //memberId
+        claims.put("memberId", memberId); //memberId
 
         String jwt = Jwts.builder()
                 .setClaims(claims)
