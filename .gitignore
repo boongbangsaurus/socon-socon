@@ -18,7 +18,10 @@ bin/
 !**/src/main/**/bin/
 !**/src/test/**/bin/
 application*.yml
-
+*-common.yml
+*-dev.yml
+*-prod.yml
+backend/**/**/wrapper
 ### IntelliJ IDEA ###
 .idea
 *.iws
@@ -38,11 +41,9 @@ out/
 ### VS Code ###
 .vscode/
 
-<<<<<<< Updated upstream
 backend/**/gradle.properties
 google-services.json
-=======
 /backend/**/gradle.properties
 gradlew
 gradlew.bat
->>>>>>> Stashed changes
+/lib
