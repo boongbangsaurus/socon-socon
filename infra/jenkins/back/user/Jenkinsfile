@@ -7,22 +7,22 @@ pipeline {
         stage('Checkout') {
             steps {
                 checkout scmGit(
-                        branches: [[name: 'develop']],
+                        branches: [[name: 'release-test']],
                         extensions: [submodule(parentCredentials: true, trackingSubmodules: true)],
-                        userRemoteConfigs: [[credentialsId: 'github-access-token', url: 'https://github.com/boongbangsaurus/boongbang-settings']]
+                        userRemoteConfigs: [
+                                [credentialsId: 'github-access-token', url: 'https://github.com/boongbangsaurus/boongbang-settings']]
                 )
             }
         }
         stage('Move .env File') {
             steps {
                 script{
-                    sh 'cp secure-settings/back/.env .env'
-                    sh "cp secure-settings/back/user/gradle.properties backend/user/gradle.properties"
-                    sh "mkdir -p backend/user/src/resources"
+                    sh 'cp ../environments/.env .env'
+                    sh 'cp ../environments/gradle.properties backend/user/gradle.properties'
+                    sh "mkdir -p backend/user/src/main/resources"
+                    sh "ls -al secure-settings/back/user"
                     // find 명령어를 사용하여 .yml 파일을 찾고, 각 파일에 대해 cp 명령어를 실행
-                    sh "find secure-settings/back/user -name '*.yml' -exec cp {} backend/user/src/resources \\;"
-                    // 동일한 디렉토리 내 모든 .yml 파일을 복사
-                    sh "find secure-settings/back -maxdepth 1 -name '*.yml' -exec cp {} backend/user/src/resources \\;"
+                    sh "cp secure-settings/back/user/user-service-default.yml backend/user/src/main/resources/application.yml"
                 }
             }
         }
@@ -35,19 +35,15 @@ pipeline {
         }
         stage("Build & Run") {
             steps {
-                dir("infra/jenkins/back/user"){
+                dir("backend/user"){
                     script {
                         try {
-                            sh "docker build -t kimdahui/user ."
-                            sh '''
-                            docker run -d --name user \\
-                            --network jenkins-project_user-net \\
-                            --restart unless-stopped \\
-                            -e "SPRING_PROFILES_ACTIVE=prod,user_prod" \\
-                            -p 8040:8040 kimdahui/user
-                            '''
+                            sh "docker-compose -p user-project build --no-cache"
+                            sh "docker-compose -p user-project up -d"
                         }catch (Exception e) {
-                            sh "docker restart user"
+                            sh "docker-compose down"
+                            sh "docker-compose -p user-project build --no-cache"
+                            sh "docker-compose -p user-project up -d"
                         }
                     }
                 }

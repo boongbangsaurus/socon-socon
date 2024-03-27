@@ -7,22 +7,22 @@ pipeline {
         stage('Checkout') {
             steps {
                 checkout scmGit(
-                        branches: [[name: 'develop']],
+                        branches: [[name: 'release-test']],
                         extensions: [submodule(parentCredentials: true, trackingSubmodules: true)],
-                        userRemoteConfigs: [[credentialsId: 'github-access-token', url: 'https://github.com/boongbangsaurus/boongbang-settings']]
+                        userRemoteConfigs: [
+                                [credentialsId: 'github-access-token', url: 'https://github.com/boongbangsaurus/boongbang-settings']]
                 )
             }
         }
         stage('Move .env File') {
             steps {
                 script{
-                    sh 'cp secure-settings/back/.env .env'
-                    sh "cp secure-settings/back/notification/gradle.properties backend/notification/gradle.properties"
-                    sh "mkdir -p backend/notification/src/resources"
+                    sh 'cp ../environments/.env .env'
+                    sh 'cp ../environments/gradle.properties backend/notification/gradle.properties'
+                    sh "mkdir -p backend/notification/src/main/resources"
+                    sh "ls -al secure-settings/back/notification"
                     // find 명령어를 사용하여 .yml 파일을 찾고, 각 파일에 대해 cp 명령어를 실행
-                    sh "find secure-settings/back/notification -name '*.yml' -exec cp {} backend/notification/src/resources \\;"
-                    // 동일한 디렉토리 내 모든 .yml 파일을 복사
-                    sh "find secure-settings/back -maxdepth 1 -name '*.yml' -exec cp {} backend/notification/src/resources \\;"
+                    sh "cp secure-settings/back/notification/notification-service-default.yml backend/notification/src/main/resources/application.yml"
                 }
             }
         }
@@ -35,15 +35,15 @@ pipeline {
         }
         stage("Build & Run") {
             steps {
-                dir("infra/jenkins/back/notification"){
+                dir("backend/notification"){
                     script {
                         try {
-                            sh "docker build -t kimdahui/notification ."
-                            sh '''
-                            
-                            '''
+                            sh "docker-compose -p notification-project build --no-cache"
+                            sh "docker-compose -p notification-project up -d"
                         }catch (Exception e) {
-                            sh "docker restart notification"
+                            sh "docker-compose down"
+                            sh "docker-compose -p notification-project build --no-cache"
+                            sh "docker-compose -p notification-project up -d"
                         }
                     }
                 }
