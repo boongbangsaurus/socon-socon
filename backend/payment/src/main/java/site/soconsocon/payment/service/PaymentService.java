@@ -115,7 +115,7 @@ public class PaymentService {
                     .purchasedQuantity(order.getQuantity())
                     .build();
 
-            soconFeignClient.saveMySocon(order.getIssueId(), addMysoconRequest); //feign을 통해 사용자의 쿠폰북에 저장
+            soconFeignClient.saveMySocon(addMysoconRequest); //feign을 통해 사용자의 쿠폰북에 저장
 
             return iamportResponse;
 
