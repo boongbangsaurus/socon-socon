@@ -72,7 +72,6 @@ class _BasicButtonState extends State<BasicButton> {
     }
     // 버튼 크기 지정
     // 기본 320x60
-    print(widget.btnSize);
     final btnSize = widget.btnSize ?? 'l';
     double buttonWidth =
         ResponsiveUtils.getWidthWithPixels(context, widget.sizes[btnSize]![0]);
