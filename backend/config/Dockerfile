@@ -7,7 +7,7 @@ COPY gradle gradle
 COPY build.gradle .
 COPY settings.gradle .
 COPY src src
-COPY rsa_key .
+COPY rsa_key.pem .
 # gradlew 실행 권한 부여
 RUN chmod +x ./gradlew
 RUN ./gradlew bootJar
