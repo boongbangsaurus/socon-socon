@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../atoms/image_card.dart';
-import '../atoms/tag_icon.dart';
+import 'image_card.dart';
+import 'tag_icon.dart';
 
 class StoreSoconLists extends StatelessWidget {
   final String soconName;

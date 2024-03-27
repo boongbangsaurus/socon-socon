@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:socon/views/atoms/tab.dart';
-import 'package:socon/views/modules/my_store_analysis.dart';
 import 'package:socon/views/modules/my_store_lists.dart';
+import 'package:socon/views/modules/my_store_analysis.dart';
 
 
 class MyStoreListScreen extends StatefulWidget {
