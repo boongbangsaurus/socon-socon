@@ -96,7 +96,7 @@ public class MemberController {
 
     //마이페이지
     @GetMapping("/mypage")
-    public ResponseEntity getUserInfo(@RequestHeader("X-Authorization-Id") int memberId) {
+    public ResponseEntity getUserInfo(@RequestHeader("X-Authorization-Id") int memberId) throws MemberException {
         return ResponseEntity.ok().body(MessageUtils.success(memberService.getUserInfo(memberId)));
 
     }
@@ -124,24 +124,10 @@ public class MemberController {
 
     }
 
-    @GetMapping("/user")
-    public ResponseEntity<Member> getCurrentUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-
-        Optional<Member> member = memberRepository.findMemberById(Integer.parseInt(username));
-        if (member.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        return ResponseEntity.ok(member.get());
-    }
-
-
-    @GetMapping("/id")
-    public MemberFeignResponse getMemberByMemberId(@RequestHeader("X-Authorization-Id") int memberId) {
+    @GetMapping("/me")
+    public ResponseEntity getMemberByMemberId(@RequestHeader("X-Authorization-Id") int memberId) throws MemberException {
         log.info("open feign communication success!");
-        return memberService.findMemberByMemberId(memberId);
+        return ResponseEntity.ok().body(MessageUtils.success(memberService.findMemberByMemberId(memberId)));
     }
 
     @GetMapping("/email")
