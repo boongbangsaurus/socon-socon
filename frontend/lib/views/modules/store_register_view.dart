@@ -6,7 +6,7 @@ import 'package:socon/views/atoms/checkbox.dart';
 import 'package:socon/views/atoms/dropdown.dart';
 import 'package:socon/views/atoms/tag_icon.dart';
 import 'package:provider/provider.dart';
-import 'package:socon/viewmodels/store_register_viewmodel.dart';
+import 'package:socon/viewmodels/store_register_view_model.dart';
 
 
 class RegisterPage extends StatefulWidget {

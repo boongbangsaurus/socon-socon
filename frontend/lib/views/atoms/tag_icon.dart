@@ -29,6 +29,7 @@ class TagIcon extends StatelessWidget {
       buttonText: 'NEW',
       buttonColor: AppColors.WARNING25,
       buttonTextColor: AppColors.WHITE,
+      fontSize: 8,
     );
   }
 
@@ -38,6 +39,7 @@ class TagIcon extends StatelessWidget {
       buttonText: 'SALE',
       buttonColor: Color(0xffFEF4444),
       buttonTextColor: AppColors.WHITE,
+      fontSize: 8,
     );
   }
 
