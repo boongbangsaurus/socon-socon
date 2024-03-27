@@ -110,7 +110,7 @@ public class StoreService {
 
             List<BusinessHour> savedBusinessHours = businessHourRepository.findByStoreId(storeId);
 
-            if (requestBusinessHours.isEmpty()) {
+            if (savedBusinessHours.isEmpty()) {
                 // 저장된 값이 없을 경우
                 for (BusinessHour businessHour : requestBusinessHours) {
                     businessHour.setStore(store);
