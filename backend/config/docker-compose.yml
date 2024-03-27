@@ -11,9 +11,9 @@ services:
     ports:
       - "9000:9000"
     environment:
-      - CONFIG_PRIVATE_KEY=${CONFIG_PRIVATE_KEY}
-      - CONFIG_USERNAME=${CONFIG_USERNAME}
       - CONFIG_PASSWORD=${CONFIG_PASSWORD}
+      - CONFIG_USERNAME=${CONFIG_USERNAME}
+      - CONFIG_PRIVATE_KEY=${CONFIG_PRIVATE_KEY}
     networks:
       - jenkins-project_socon-net
     env_file:
