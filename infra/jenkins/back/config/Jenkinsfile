@@ -37,10 +37,10 @@ pipeline {
                 dir("backend/config"){
                     script {
                         try {
-                            sh "docker-compose -p nginx-project up -d --build --no-cache"
+                            sh "docker-compose -p nginx-project up -d --build --no-cache --force-recreate"
                         }catch (Exception e) {
                             sh "docker-compose down"
-                            sh "docker-compose -p nginx-project up -d --build --no-cache"
+                            sh "docker-compose -p nginx-project up -d --build --no-cache --force-recreate"
                         }
                     }
                 }
