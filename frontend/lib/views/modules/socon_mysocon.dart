@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:socon/utils/colors.dart';
 import 'package:socon/utils/fontSizes.dart';
-import 'image_card.dart';
+import '../atoms/image_card.dart';
 
 class MySocon extends StatelessWidget {
   final String soconName;

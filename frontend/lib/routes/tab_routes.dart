@@ -69,7 +69,7 @@ class TabRoutes {
     return GoRoute(
         path: "/stores",
         builder: (BuildContext context, GoRouterState state) {
-          return MyStoreListScreen();
+          return const MyStoreListScreen();
         });
   }
 
