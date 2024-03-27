@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:socon/utils/fontSizes.dart';
 import 'package:socon/utils/responsive_utils.dart';
 import 'package:socon/views/atoms/icon_loader.dart';
@@ -78,6 +79,7 @@ class CustomAppBarWithArrow extends StatelessWidget
         padding: ResponsiveUtils.getWidthWithPixels(context, 15),
         onPressed: () {
           print('이전 화면으로 이동');
+          GoRouter.of(context).pop();
         },
       ),
       title: Text(
