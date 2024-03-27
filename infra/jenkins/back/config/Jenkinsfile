@@ -37,11 +37,11 @@ pipeline {
                 dir("backend/config"){
                     script {
                         try {
-                            sh "docker-compose -p config-project build"
+                            sh "docker-compose -p config-project build --no-cache"
                             sh "docker-compose -p config-project up -d"
                         }catch (Exception e) {
                             sh "docker stop config"
-                            sh "docker-compose -p config-project build"
+                            sh "docker-compose -p config-project build --no-cache"
                             sh "docker-compose -p config-project up -d"
                         }
                     }

@@ -38,11 +38,11 @@ pipeline {
                 dir("backend/gateway"){
                     script {
                         try {
-                            sh "docker-compose -p gateway-project build"
+                            sh "docker-compose -p gateway-project build --no-cache"
                             sh "docker-compose -p gateway-project up -d"
                         }catch (Exception e) {
                             sh "docker stop gateway"
-                            sh "docker-compose -p gateway-project build"
+                            sh "docker-compose -p gateway-project build --no-cache"
                             sh "docker-compose -p gateway-project up -d"
                         }
                     }

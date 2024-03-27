@@ -38,11 +38,11 @@ pipeline {
                 dir("backend/payment"){
                     script {
                         try {
-                            sh "docker-compose -p payment-project build"
+                            sh "docker-compose -p payment-project build --no-cache"
                             sh "docker-compose -p payment-project up -d"
                         }catch (Exception e) {
                             sh "docker stop payment"
-                            sh "docker-compose -p payment-project build"
+                            sh "docker-compose -p payment-project build --no-cache"
                             sh "docker-compose -p payment-project up -d"
                         }
                     }

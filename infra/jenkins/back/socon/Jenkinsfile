@@ -38,11 +38,11 @@ pipeline {
                 dir("backend/socon"){
                     script {
                         try {
-                            sh "docker-compose -p socon-project build"
+                            sh "docker-compose -p socon-project build --no-cache"
                             sh "docker-compose -p socon-project up -d"
                         }catch (Exception e) {
                             sh "docker stop socon"
-                            sh "docker-compose -p socon-project build"
+                            sh "docker-compose -p socon-project build --no-cache"
                             sh "docker-compose -p socon-project up -d"
                         }
                     }

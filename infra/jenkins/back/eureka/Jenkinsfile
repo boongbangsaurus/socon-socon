@@ -38,11 +38,11 @@ pipeline {
                 dir("backend/eureka"){
                     script {
                         try {
-                            sh "docker-compose -p eureka-project build"
+                            sh "docker-compose -p eureka-project build --no-cache"
                             sh "docker-compose -p eureka-project up -d"
                         }catch (Exception e) {
                             sh "docker stop eureka"
-                            sh "docker-compose -p eureka-project build"
+                            sh "docker-compose -p eureka-project build --no-cache"
                             sh "docker-compose -p eureka-project up -d"
                         }
                     }
