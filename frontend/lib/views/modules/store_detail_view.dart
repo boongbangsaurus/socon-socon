@@ -31,13 +31,14 @@ class StoreDetailPage extends StatelessWidget {
                         width: ResponsiveUtils.getWidthPercent(context, 100)
                     ),
                   ),
-                SizedBox(height: 170),
+                SizedBox(height: 170, ),
                 Expanded(
                   child: Container(
                     padding: EdgeInsets.symmetric(horizontal: 0),
                     child: TabBarScreen(
+                        marginTop: 0,
                         contents: {
-                          '메뉴 관리': MenuManagement(),
+                          '메뉴 관리': MenuManagement(storeId: storeId),
                           '발행 소콘': RegisteredMenu(),
                         }
                       ),

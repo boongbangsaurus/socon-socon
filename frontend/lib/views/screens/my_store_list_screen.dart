@@ -27,11 +27,15 @@ class _MyStoreListScreen extends State<MyStoreListScreen> {
       body: SafeArea(
         child: Container(
           margin: EdgeInsets.symmetric(horizontal: 20),
+
           child: Container(
-            child: TabBarScreen(contents: {
-                      '내 점포': MyStoreLists(),
-                      '점포 분석': MyStoreAnalysis(),
-                    }),
+            child: TabBarScreen(
+                    marginTop: 0,
+                    contents: {
+                          '내 점포': MyStoreLists(),
+                          '점포 분석': MyStoreAnalysis(),
+                        }
+                      ),
           ),
         ),
       )

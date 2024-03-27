@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:socon/models/socon_card.dart';
-import 'package:socon/views/atoms//socon_storesocon.dart';
+import 'package:socon/views/modules/socon_storesocon.dart';
 
 
 class RegisteredMenu extends StatelessWidget {
@@ -11,8 +11,8 @@ class RegisteredMenu extends StatelessWidget {
     return Container(
       padding: EdgeInsets.only(top: 10),
         child: GridView.builder(
-          shrinkWrap: true, // child 위젯의 크기를 정해주지 않은 경우 true로 지정해야됨
-          itemCount: socons.length, //item 개수
+          shrinkWrap: true,
+          itemCount: socons.length,
           padding: EdgeInsets.symmetric(horizontal: 20),
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2, //1 개의 행에 보여줄 item 개수

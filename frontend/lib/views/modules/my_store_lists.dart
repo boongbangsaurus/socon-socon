@@ -7,7 +7,7 @@ import 'package:socon/utils/fontSizes.dart';
 import 'package:socon/utils/responsive_utils.dart';
 import 'package:socon/views/atoms/tag_icon.dart';
 import 'package:socon/views/modules/store_detail_view.dart';
-import 'package:socon/views/modules/store_register_view.dart';
+import 'package:socon/views/screens/myStore/store_register_view.dart';
 import 'package:socon/views/atoms/image_loader.dart';
 import 'package:socon/models/my_store.dart';
 

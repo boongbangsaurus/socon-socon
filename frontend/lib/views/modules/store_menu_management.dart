@@ -2,24 +2,27 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:socon/models/socon_card.dart';
 import 'package:socon/views/modules/socon_storesocon.dart';
+import 'package:socon/views/screens/myStore/store_product_register.dart';
 
 
 class MenuManagement extends StatelessWidget {
-  const MenuManagement({super.key});
+  final int storeId;
+
+  const MenuManagement({super.key, required this.storeId, });
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         Container(
-          width: double.infinity, // 부모 컨테이너의 전체 너비 사용
+          width: double.infinity,
           padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           child: ElevatedButton(
 
             onPressed: () {
-              // '상품추가' 버튼이 클릭되었을 때의 로직
+              Navigator.push(context, MaterialPageRoute(builder: (context) => ProductRegister(storeId: storeId)));
             },
-            child: Text('상품추가'),
+            child: Text('상품 등록'),
           ),
         ),
         Expanded(
