@@ -1,16 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:go_router/go_router.dart';
 import 'package:socon/utils/responsive_utils.dart';
 import 'package:socon/utils/toast_utils.dart';
-
-import '../../utils/colors.dart';
-import '../../utils/fontSizes.dart';
-import '../../viewmodels/notification_view_model.dart';
-import '../atoms/tab.dart';
-import '../modules/app_bar.dart';
-import '../modules/search_module.dart';
-import '../modules/socon_mysocon.dart';
+import '../../../utils/colors.dart';
+import '../../../utils/fontSizes.dart';
+import '../../../viewmodels/notification_view_model.dart';
+import '../../atoms/tab.dart';
+import '../../modules/app_bar.dart';
+import '../../modules/search_module.dart';
+import '../../modules/socon_mysocon.dart';
 
 class SoconBookScreen extends StatefulWidget {
   const SoconBookScreen({super.key});
@@ -143,6 +143,9 @@ class _SoconBookScreenState extends State<SoconBookScreen> {
                     storeName: storeNames[index],
                     dueDate: dueDate[index],
                     imageUrl: imageUrl[index],
+                    onPressed:() {
+                      GoRouter.of(context).go("/soconbook/detail");
+                    },
                   );
                 },
               ),
