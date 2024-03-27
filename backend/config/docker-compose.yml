@@ -16,7 +16,10 @@ services:
       - CONFIG_PRIVATE_KEY=${CONFIG_PRIVATE_KEY}
     networks:
       - jenkins-project_socon-net
+    env_file:
+      - .env
 
 networks:
   jenkins-project_socon-net:
     external: true
+
