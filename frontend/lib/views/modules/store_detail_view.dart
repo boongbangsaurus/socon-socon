@@ -9,6 +9,7 @@ import 'package:socon/views/atoms/tab.dart';
 import 'package:socon/views/atoms/tag_icon.dart';
 import 'package:socon/views/modules/store_menu_management.dart';
 import 'package:socon/views/modules/store_rigister_menu_lists.dart';
+import 'package:socon/views/screens/my_store_list_screen.dart';
 
 class StoreDetailPage extends StatelessWidget {
   final int storeId;
@@ -53,7 +54,9 @@ class StoreDetailPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   IconButton(
-                      onPressed: (){Navigator.pop(context);},
+                      onPressed: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => MyStoreListScreen()));
+                      },
                       icon: Icon(
                       AppIcons.LEADING, // 클래스명.변수명
                       color: AppColors.WHITE,
