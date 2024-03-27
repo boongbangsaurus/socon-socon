@@ -18,8 +18,13 @@ public interface MemberRepository extends JpaRepository<Member, Integer> {
     @Query("select m from Member m where m.nickname = :nickname")
     Optional<Member> findMemberByNickname(String nickname); //닉네임으로 유저찾기
 
-    @Query("select m from Member m where m.nickname = :nickname")
-    int findByNickname(@Param("nickname") String nickname);
+    //소콘머니 충전
+    @Query("update Member m set m.soconMoney = m.soconMoney + :money where m.id = :memberId")
+    void chargeSoconMoney(int memberId, int money);
+
+    //소콘머니 출금
+    @Query("update Member m set m.soconMoney = m.soconMoney - :money where m.id = :memberId")
+    void withdrawSoconMoney(int memberId, int money);
 
 
 

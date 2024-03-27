@@ -15,8 +15,12 @@ public enum ErrorCode implements CustomError {
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "404", "사용자를 찾을 수 없습니다."),
     DUPLE_EMAIL(HttpStatus.BAD_REQUEST, "400", "이미 존재하는 이메일입니다."),
     DUPLE_NICK(HttpStatus.BAD_REQUEST, "400", "중복된 닉네임 입니다."),
+
     //FCM
 //    NOT_FOUND_FCM_TOKEN(HttpStatus.NOT_FOUND, "404", "FCM 토큰이 없습니다"),
+
+    //소콘머니
+    NO_MONEY(HttpStatus.BAD_REQUEST, "400", "잔액이 모자릅니다."),
 
 
     ;
