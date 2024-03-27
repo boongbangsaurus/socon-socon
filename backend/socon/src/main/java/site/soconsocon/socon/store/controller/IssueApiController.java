@@ -14,7 +14,8 @@ public class IssueApiController {
 
     private final IssueService issueService;
 
-    // 소콘 발행(생성)
+    // 소콘북 저장
+    @PostMapping("socon")
     public ResponseEntity<Object> saveMySocon(
             AddMySoconRequest request
     ){

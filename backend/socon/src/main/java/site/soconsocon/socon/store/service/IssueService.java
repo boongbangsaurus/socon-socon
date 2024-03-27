@@ -84,7 +84,7 @@ public class IssueService {
                 .build());
     }
 
-    // 소콘 발행
+    // 소콘북 저장
     public void saveMySocon(AddMySoconRequest request) {
 
         Issue issue = issueRepository.findById(request.getIssueId())
