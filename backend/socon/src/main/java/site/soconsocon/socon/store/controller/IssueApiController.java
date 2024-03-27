@@ -4,10 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import site.soconsocon.socon.store.domain.dto.request.AddMySoconRequest;
-import site.soconsocon.socon.store.domain.dto.request.MemberRequest;
 import site.soconsocon.socon.store.service.IssueService;
-import site.soconsocon.socon.store.service.ItemService;
-import site.soconsocon.socon.store.service.StoreService;
 import site.soconsocon.utils.MessageUtils;
 
 @RestController
@@ -15,19 +12,14 @@ import site.soconsocon.utils.MessageUtils;
 @RequiredArgsConstructor
 public class IssueApiController {
 
-    private StoreService storeService;
-    private IssueService issueService;
-    private ItemService itemService;
+    private final IssueService issueService;
 
-    // 소콘 발행(생성)
-    @PostMapping("/{issue_id}")
+    // 소콘북 저장
+    @PostMapping("socon")
     public ResponseEntity<Object> saveMySocon(
-            @PathVariable("issue_id") Integer issueId,
-            AddMySoconRequest request,
-            MemberRequest memberRequest
+            AddMySoconRequest request
     ){
-
-        issueService.saveMySocon(issueId, request, memberRequest);
+        issueService.saveMySocon(request);
 
         return ResponseEntity.ok().body(MessageUtils.success(null));
     }
@@ -36,9 +28,9 @@ public class IssueApiController {
     @PutMapping("/{issue_id}")
     public ResponseEntity<Object> stopIssue(
             @PathVariable("issue_id") Integer issueId,
-            MemberRequest memberRequest
+            @RequestHeader("X-Authorization-Id") int memberId
     ){
-        issueService.stopIssue(issueId, memberRequest);
+        issueService.stopIssue(issueId, memberId);
 
         return ResponseEntity.ok().body(MessageUtils.success(null));
     }

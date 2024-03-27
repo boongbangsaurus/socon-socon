@@ -17,6 +17,7 @@ configurations {
     }
 }
 
+
 repositories {
     mavenCentral()
 }
@@ -28,8 +29,20 @@ ext {
 dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-server'
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+
+    implementation 'org.springframework.cloud:spring-cloud-config-client'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
 }
 
 dependencyManagement {
@@ -42,18 +55,3 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
-tasks.register('copyPrivate', Copy) {
-    copy {
-        from '../../secure-settings/back/eureka'
-        include "*.yml"
-        into 'src/main/resources'
-    }
-    copy {
-        from '../../secure-settings/back/'
-        include "*.yml"
-        into 'src/main/resources'
-    }
-}
-processResources {
-    dependsOn tasks.copyPrivate
-}

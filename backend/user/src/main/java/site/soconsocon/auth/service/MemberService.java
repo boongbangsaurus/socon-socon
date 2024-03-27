@@ -13,6 +13,7 @@ import site.soconsocon.auth.exception.ErrorCode;
 import site.soconsocon.auth.exception.MemberException;
 import site.soconsocon.auth.repository.MemberRepository;
 import site.soconsocon.auth.repository.RefreshTokenRepository;
+import site.soconsocon.auth.security.MemberDetails;
 import site.soconsocon.auth.util.JwtUtil;
 import site.soconsocon.utils.MessageUtils;
 
@@ -71,11 +72,13 @@ public class MemberService {
     /**
      * 액세스 토큰 재발급
      *
-     * @param memberId     :현재 접속한 멤버 PK
+     * @param memberDetails
      * @param refreshToken
      * @return
+     * @throws IOException
      */
-    public String createAccessToken(int memberId, String refreshToken) throws IOException{
+    public String createAccessToken(MemberDetails memberDetails, String refreshToken) throws IOException {
+        int memberId = memberDetails.getMember().getId();
         //Redis에 저장된 리프레시 토큰 가져오기
         RefreshToken refreshToken1 = refreshTokenRepository.findRefreshTokenByMemberId(memberId);
         String rt = refreshToken1.getRefreshToken();
@@ -87,7 +90,7 @@ public class MemberService {
             if (rt.equals(refreshToken)) {
                 //리프레시 토큰의 유효시간이 남아있다면
                 if (!jwtUtil.isRefreshTokenExpired(String.valueOf(memberId))) {
-                    return jwtUtil.generateToken(member);
+                    return jwtUtil.generateToken(memberDetails);
                 }
             }
         }
@@ -97,20 +100,17 @@ public class MemberService {
     /**
      * 리프레시 토큰 재발급
      *
-     * @param memberId
+     * @param memberDetails
      * @return
      */
-    public String createRefreshToken(int memberId) {
-        Optional<Member> result = memberRepository.findMemberById(memberId);
-        if (result.isPresent()) {
-            Member member = result.get();
-            //리프레시 토큰의 유효시간이 남아있다면
-            if (!jwtUtil.isRefreshTokenExpired(String.valueOf(memberId))) {
-                return jwtUtil.generateRefreshToken(member);
-            }
+    public String createRefreshToken(MemberDetails memberDetails) {
+        String memberId = memberDetails.getMember().getId().toString();
+        if (!jwtUtil.isRefreshTokenExpired(memberId)) {
+            return jwtUtil.generateRefreshToken(memberDetails);
         }
         return null;
     }
+
 
     public MemberResponseDto getUserInfo(int memberId) {
         Optional<Member> result = memberRepository.findMemberById(memberId);
