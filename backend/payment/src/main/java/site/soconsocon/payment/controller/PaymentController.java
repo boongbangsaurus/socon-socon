@@ -23,12 +23,22 @@ import java.io.IOException;
 public class PaymentController {
 
     private final PaymentService paymentService;
+    private IamportClient iamportClient;
 
-    @PostMapping("/payment")
-    public ResponseEntity<IamportResponse<Payment>> validationPayment(@RequestBody PaymentCallbackRequestDto request) {
-        IamportResponse<Payment> iamportResponse = paymentService.paymentByCallback(request);
+    /**
+     * imp_uid(결제 고유 ID) 값을 받아 결제 상세 내역을 조회
+     *
+     * @param impUid
+     * @return
+     * @throws IamportResponseException
+     * @throws IOException
+     */
+    @PostMapping("/validate/{impUid}")
+    public ResponseEntity<IamportResponse<Payment>> validationPayment(@PathVariable String impUid) throws IamportResponseException, IOException {
+        IamportResponse<Payment> iamportResponse = iamportClient.paymentByImpUid(impUid);
 
         log.info("결제 응답: {}", iamportResponse.getResponse().toString());
+        log.info("결제 요청 응답. 결제 내역 - 주문 번호: {}", iamportResponse.getResponse().getMerchantUid());
 
         return new ResponseEntity<>(iamportResponse, HttpStatus.OK);
     }

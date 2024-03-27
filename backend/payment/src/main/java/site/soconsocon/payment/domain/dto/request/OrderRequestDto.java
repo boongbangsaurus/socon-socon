@@ -9,6 +9,8 @@ public class OrderRequestDto {
 
     private String itemName;
 
+    private String orderUid;
+
     private int price;
 
     private int quantity; //주문 수량

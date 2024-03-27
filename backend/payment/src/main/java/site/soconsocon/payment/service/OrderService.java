@@ -18,7 +18,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final PaymentRepository paymentRepository;
 
-    public Order order(int memberId, OrderRequestDto orderRequestDto) {
+    public Order saveOrder(int memberId, OrderRequestDto orderRequestDto) {
         Payment payment = Payment.builder()
                 .price(orderRequestDto.getPrice())
                 .status(PaymentStatus.READY)
