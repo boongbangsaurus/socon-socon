@@ -74,6 +74,7 @@ class _NearbyInfoScreen extends State<NearbyInfoScreen> {
               width: ResponsiveUtils.getWidthWithPixels(context, 320),
               height: ResponsiveUtils.getHeightWithPixels(context, 88),
             ),
+
             const SizedBox(height: 15.0),
             SearchModule(type: "nearby"),
             SizedBox(height: 10.0),

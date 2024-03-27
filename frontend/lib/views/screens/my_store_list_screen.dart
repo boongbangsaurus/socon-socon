@@ -39,9 +39,3 @@ class _MyStoreListScreen extends State<MyStoreListScreen> {
   }
 }
 
-
-
-
-
-
-

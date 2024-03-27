@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:socon/models/socon_card.dart';
-import 'package:socon/views/atoms/socon_storesocon.dart';
+import 'package:socon/views/atoms//socon_storesocon.dart';
 
 
 class RegisteredMenu extends StatelessWidget {

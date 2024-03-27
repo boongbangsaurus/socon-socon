@@ -5,7 +5,8 @@ import 'package:socon/views/screens/contact/contact_fail_screen.dart';
 import 'package:socon/views/screens/contact/contact_sucess_screen.dart';
 import 'package:socon/views/screens/my_info_screen.dart';
 import 'package:socon/views/screens/my_store_list_screen.dart';
-import 'package:socon/views/screens/socon_book_screen.dart';
+import 'package:socon/views/screens/soconBook/socon_book_detail_screen.dart';
+import 'package:socon/views/screens/soconBook/socon_book_screen.dart';
 import 'package:socon/views/screens/sogon_main_screen.dart';
 import '../views/screens/nearby_info_screen.dart';
 
@@ -41,6 +42,18 @@ class TabRoutes {
         path: "/soconbook",
         builder: (BuildContext context, GoRouterState state) {
           return SoconBookScreen();
+        },
+        routes: [
+          getMySoconDetailRoute(),
+        ]);
+  }
+
+  static RouteBase getMySoconDetailRoute() {
+    return GoRoute(
+        name: "soconbookDetail",
+        path: "detail",
+        builder: (BuildContext context, GoRouterState state) {
+          return SoconBookDetailScreen();
         });
   }
 
@@ -51,7 +64,11 @@ class TabRoutes {
         builder: (BuildContext context, GoRouterState state) {
           return MyInfoScreen();
         },
-        routes: [getContactSuccessRoute(), getContactFailRoute(), getBossVerification(),]);
+        routes: [
+          getContactSuccessRoute(),
+          getContactFailRoute(),
+          getBossVerification(),
+        ]);
   }
 
   static RouteBase getContactSuccessRoute() {
@@ -78,7 +95,7 @@ class TabRoutes {
     return GoRoute(
         path: "/stores",
         builder: (BuildContext context, GoRouterState state) {
-          return MyStoreListScreen();
+          return const MyStoreListScreen();
         });
   }
 
