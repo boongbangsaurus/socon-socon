@@ -19,7 +19,7 @@ pipeline {
                 script{
                     sh 'cp ../environments/.env .env'
                     sh "mkdir -p backend/config/src/resources"
-                    sh "ls -al secure-settings/config"
+                    sh "ls -al secure-settings/back/config"
                     // find 명령어를 사용하여 .yml 파일을 찾고, 각 파일에 대해 cp 명령어를 실행
                     sh "find secure-settings/back/config -name '*.yml' -exec cp {} backend/config/src/resources/application.yml\\;"
                 }
