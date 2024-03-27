@@ -18,6 +18,7 @@ services:
       - jenkins-project_socon-net
     env_file:
       - ../../.env
+    command: env
 
 networks:
   jenkins-project_socon-net:
