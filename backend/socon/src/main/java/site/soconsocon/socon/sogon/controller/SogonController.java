@@ -7,7 +7,6 @@ import site.soconsocon.socon.sogon.domain.dto.request.AddCommentRequest;
 import site.soconsocon.socon.sogon.domain.dto.request.AddSogonRequest;
 import site.soconsocon.socon.sogon.domain.dto.request.GetSogonListRequest;
 import site.soconsocon.socon.sogon.service.SogonService;
-import site.soconsocon.socon.store.domain.dto.request.MemberRequest;
 import site.soconsocon.utils.MessageUtils;
 
 @RestController
@@ -21,10 +20,10 @@ public class SogonController {
     @PostMapping("")
     public ResponseEntity<Object> saveSogon(
             AddSogonRequest request,
-            MemberRequest memberRequest
+            @RequestHeader("X-Authorization-Id") int memberId
     ){
 
-        sogonService.addSogon(request, memberRequest);
+        sogonService.addSogon(request, memberId);
 
         return ResponseEntity.ok().body(MessageUtils.success());
     }
@@ -34,9 +33,9 @@ public class SogonController {
     public ResponseEntity<Object> addSogonComment(
         @PathVariable ("sogon_id") Integer sogonId,
         AddCommentRequest request,
-        MemberRequest memberRequest
+        @RequestHeader("X-Authorization-Id") int memberId
     ){
-        sogonService.addSogonComment(sogonId, request, memberRequest);
+        sogonService.addSogonComment(sogonId, request, memberId);
 
         return ResponseEntity.ok().body(MessageUtils.success());
     }
@@ -46,9 +45,9 @@ public class SogonController {
     public ResponseEntity<Object> pickSogonComment(
             @PathVariable ("sogon_id") Integer sogonId,
             @PathVariable ("comment_id") Integer commentId,
-            MemberRequest memberRequest
+            @RequestHeader("X-Authorization-Id") int memberId
     ){
-        sogonService.pickSogonComment(sogonId, commentId, memberRequest);
+        sogonService.pickSogonComment(sogonId, commentId, memberId);
 
         return ResponseEntity.ok().body(MessageUtils.success());
     }
@@ -64,17 +63,17 @@ public class SogonController {
     // 작성 소곤 목록 조회
     @GetMapping("/mine")
     public ResponseEntity<Object> getMySogons(
-        MemberRequest memberRequest
+            @RequestHeader("X-Authorization-Id") int memberId
     ){
-        return ResponseEntity.ok().body(MessageUtils.success(sogonService.getMySogons(memberRequest)));
+        return ResponseEntity.ok().body(MessageUtils.success(sogonService.getMySogons(memberId)));
     }
 
     // 작성 댓글 목록 조회
     @GetMapping("/mine/comments")
     public ResponseEntity<Object> getMyComments(
-        MemberRequest memberRequest
+            @RequestHeader("X-Authorization-Id") int memberId
     ){
-        return ResponseEntity.ok().body(MessageUtils.success(sogonService.getMyComments(memberRequest)));
+        return ResponseEntity.ok().body(MessageUtils.success(sogonService.getMyComments(memberId)));
     }
 
     // 반경 내 소곤 목록 조회

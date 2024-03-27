@@ -13,7 +13,6 @@ import site.soconsocon.socon.sogon.exception.SogonErrorCode;
 import site.soconsocon.socon.sogon.exception.SogonException;
 import site.soconsocon.socon.sogon.repository.CommentRepository;
 import site.soconsocon.socon.sogon.repository.SogonRepository;
-import site.soconsocon.socon.store.domain.dto.request.MemberRequest;
 import site.soconsocon.socon.store.domain.entity.jpa.Socon;
 import site.soconsocon.socon.store.exception.StoreErrorCode;
 import site.soconsocon.socon.store.exception.StoreException;
@@ -35,7 +34,7 @@ public class SogonService {
     private final CommentRepository commentRepository;
 
 
-    public void addSogon(AddSogonRequest request, MemberRequest memberRequest) {
+    public void addSogon(AddSogonRequest request, int memberId) {
 
         // 유효한 소콘인지 체크
         Socon socon = soconRepository.findById(request.getSoconId())
@@ -52,7 +51,7 @@ public class SogonService {
             // 이미 소곤에 등록된 소콘
             throw new StoreException(StoreErrorCode.INVALID_SOCON);
         }
-        if (!Objects.equals(socon.getMemberId(), memberRequest.getMemberId())) {
+        if (!Objects.equals(socon.getMemberId(), memberId)) {
             // 본인 소유 소콘이 아님
             throw new SoconException(ErrorCode.FORBIDDEN);
         }
@@ -73,7 +72,7 @@ public class SogonService {
                 .isPicked(false)
                 .image1(request.getImage1())
                 .image2(request.getImage2())
-                .memberId(memberRequest.getMemberId())
+                .memberId(memberId)
                 .lat(request.getLat())
                 .lng(request.getLng())
                 .socon(socon)
@@ -82,7 +81,7 @@ public class SogonService {
 
     public void addSogonComment(Integer sogonId,
                                 AddCommentRequest request,
-                                MemberRequest memberRequest) {
+                                int memberId) {
 
         Sogon sogon = sogonRepository.findById(sogonId)
                 .orElseThrow(() -> new SogonException(SogonErrorCode.SOGON_NOT_FOUND));
@@ -96,12 +95,12 @@ public class SogonService {
                 .createdAt(LocalDateTime.now())
                 .isPicked(false)
                 .sogon(sogon)
-                .memberId(memberRequest.getMemberId())
+                .memberId(memberId)
                 .build());
     }
 
     // 소곤 댓글 채택
-    public void pickSogonComment(Integer sogonId, Integer commentId, MemberRequest memberRequest) {
+    public void pickSogonComment(Integer sogonId, Integer commentId, int memberId) {
 
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new SogonException(SogonErrorCode.COMMENT_NOT_FOUND));
@@ -109,7 +108,7 @@ public class SogonService {
         Sogon sogon = sogonRepository.findById(sogonId)
                 .orElseThrow(() -> new SogonException(SogonErrorCode.SOGON_NOT_FOUND));
 
-        if (sogon.getMemberId().equals(memberRequest.getMemberId())) {
+        if (sogon.getMemberId().equals(memberId)) {
             throw new SoconException(ErrorCode.FORBIDDEN);
         }
 
@@ -168,9 +167,9 @@ public class SogonService {
     }
 
     // 작성 소곤 목록 조회
-    public List<SogonListResponse> getMySogons(MemberRequest memberRequest) {
+    public List<SogonListResponse> getMySogons(int memberId) {
 
-        List<Sogon> sogons = sogonRepository.findAllByMemberId(memberRequest.getMemberId());
+        List<Sogon> sogons = sogonRepository.findAllByMemberId(memberId);
         List<SogonListResponse> sogonListResponses = new ArrayList<>();
         for (Sogon sogon : sogons) {
             Socon socon = soconRepository.findById(sogon.getSocon().getId())
@@ -190,9 +189,9 @@ public class SogonService {
     }
 
     // 작성 댓글 목록 조회
-    public List<CommentListResponse> getMyComments(MemberRequest memberRequest) {
+    public List<CommentListResponse> getMyComments(int memberId) {
 
-        List<Comment> comments = commentRepository.findAllByMemberId(memberRequest.getMemberId());
+        List<Comment> comments = commentRepository.findAllByMemberId(memberId);
         List<CommentListResponse> commentListResponses = new ArrayList<>();
         for (Comment comment : comments) {
 

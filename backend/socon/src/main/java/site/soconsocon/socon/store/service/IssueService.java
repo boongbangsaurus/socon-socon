@@ -7,8 +7,6 @@ import site.soconsocon.socon.global.domain.ErrorCode;
 import site.soconsocon.socon.global.exception.SoconException;
 import site.soconsocon.socon.store.domain.dto.request.AddIssueRequest;
 import site.soconsocon.socon.store.domain.dto.request.AddMySoconRequest;
-import site.soconsocon.socon.store.domain.dto.request.MemberRequest;
-import site.soconsocon.socon.store.domain.dto.request.OrderRequest;
 import site.soconsocon.socon.store.domain.dto.response.IssueListResponse;
 import site.soconsocon.socon.store.domain.entity.jpa.*;
 import site.soconsocon.socon.store.exception.StoreErrorCode;
@@ -16,11 +14,9 @@ import site.soconsocon.socon.store.exception.StoreException;
 import site.soconsocon.socon.store.repository.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
@@ -30,15 +26,14 @@ public class IssueService {
     private final ItemRepository itemRepository;
     private final SoconRepository soconRepository;
     private final StoreRepository storeRepository;
-    private final OrderRepository orderRepository;
 
 
     // 발행 목록 조회
-    public List<IssueListResponse> getIssueList(Integer storeId, MemberRequest memberRequest) {
+    public List<IssueListResponse> getIssueList(Integer storeId, int memberId) {
 
         Integer storeMemberId = storeRepository.findMemberIdByStoreId(storeId);
 
-        if (!Objects.equals(storeMemberId, memberRequest.getMemberId())) {
+        if (!Objects.equals(storeMemberId, memberId)) {
             // 본인 가게 아닐 경우
             throw new SoconException(ErrorCode.FORBIDDEN);
         }
@@ -65,8 +60,8 @@ public class IssueService {
     public void saveIssue(AddIssueRequest request,
                           Integer storeId,
                           Integer itemId,
-                          MemberRequest memberRequest) {
-        if (!Objects.equals(memberRequest.getMemberId(), storeRepository.findMemberIdByStoreId(storeId))) {
+                          int memberId) {
+        if (!Objects.equals(memberId, storeRepository.findMemberIdByStoreId(storeId))) {
             throw new SoconException(ErrorCode.FORBIDDEN);
         }
         Item item = itemRepository.findById(itemId)
@@ -90,40 +85,41 @@ public class IssueService {
     }
 
     // 소콘 발행
-    public void saveMySocon(Integer issueId, AddMySoconRequest request, MemberRequest memberRequest) {
+    public void saveMySocon(AddMySoconRequest request) {
 
-        Issue issue = issueRepository.findById(issueId)
+        Issue issue = issueRepository.findById(request.getIssueId())
                 .orElseThrow(() -> new StoreException(StoreErrorCode.ISSUE_NOT_FOUND));
         if (issue.getStatus() != 'A') {
             // 발행 중 아님
             throw new StoreException(StoreErrorCode.INVALID_ISSUE);
         }
-        if (issue.getMaxQuantity() - issue.getIssuedQuantity() < request.getPurchaseQuantity()) {
+        if (issue.getMaxQuantity() - issue.getIssuedQuantity() < request.getPurchasedQuantity()) {
             // 발행 가능 개수보다 요청한 개수가 많을 경우
             throw new StoreException(StoreErrorCode.ISSUE_MAX_QUANTITY);
         }
-        for (int i = 0; i < request.getPurchaseQuantity(); i++) {
-            LocalDateTime purchasedAt = LocalDateTime.now();
+
+        issue.setIssuedQuantity(issue.getIssuedQuantity() + request.getPurchasedQuantity());
+        issueRepository.save(issue);
+
+        for (int i = 0; i < request.getPurchasedQuantity(); i++) {
             soconRepository.save(Socon.builder()
-                    .purchasedAt(purchasedAt)
-                    .expiredAt(purchasedAt.plusDays(issue.getPeriod()))
-                    .usedAt(null)
-                    .status("unused")
+                    .purchasedAt(request.getPurchaseAt())
+                    .expiredAt(request.getExpiredAt())
+                    .usedAt(request.getUsedAt())
+                    .status(request.getStatus())
                     .issue(issue)
-                    .memberId(memberRequest.getMemberId())
+                    .memberId(request.getMemberId())
                     .build());
         }
-        issue.setIssuedQuantity(issue.getIssuedQuantity() + request.getPurchaseQuantity());
-        issueRepository.save(issue);
     }
 
     // 발행 중지
-    public void stopIssue(Integer issueId, MemberRequest memberRequest) {
+    public void stopIssue(Integer issueId, int memberId) {
 
         Issue issue = issueRepository.findById(issueId)
                 .orElseThrow(() -> new StoreException(StoreErrorCode.ISSUE_NOT_FOUND));
 
-        if (!Objects.equals(issueRepository.findMemberIdByIssueId(issueId), memberRequest.getMemberId())) {
+        if (!Objects.equals(issueRepository.findMemberIdByIssueId(issueId), memberId)) {
             // 본인 점포의 상품이 아닐 경우
             throw new SoconException(ErrorCode.FORBIDDEN);
         }
@@ -133,44 +129,6 @@ public class IssueService {
         }
         issue.setStatus('I');
         issueRepository.save(issue);
-    }
-
-    // 소콘 주문
-    public void order(Integer issueId, OrderRequest request, MemberRequest memberRequest) {
-
-        Issue issue = issueRepository.findById(issueId)
-                .orElseThrow(() -> new StoreException(StoreErrorCode.ISSUE_NOT_FOUND));
-
-        Store store = issue.getItem().getStore();
-
-        if (store.getClosingPlanned() != null) {
-            // 가게 폐업 상태
-            throw new StoreException(StoreErrorCode.ALREADY_SET_CLOSE_PLAN);
-        }
-        if (issue.getMaxQuantity() - issue.getIssuedQuantity() < request.getOrderQuantity()) {
-            // 소콘 가능 개수보다 요청한 개수가 많을 경우
-            throw new SoconException(ErrorCode.BAD_REQUEST);
-        }
-        if (issue.getStatus() != 'A') {
-            // 발행 중 아님
-            throw new SoconException(ErrorCode.BAD_REQUEST);
-        }
-        // 주문번호 생성
-        String orderUid = LocalDate.now() + "-" + UUID.randomUUID().toString().replace("-", "");
-
-        // 주문 엔터티 생성
-        orderRepository.save(Order.builder()
-                .price(request.getPrice())
-                .name(issue.getName())
-                .quantity(request.getOrderQuantity())
-                .orderUid(orderUid)
-                .orderStatus("success")
-                .orderTime(LocalDateTime.now())
-                .memberId(memberRequest.getMemberId())
-                .build());
-
-        // 결제 요청
-
     }
 
 }

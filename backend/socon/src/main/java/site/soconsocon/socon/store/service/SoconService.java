@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import site.soconsocon.socon.global.domain.ErrorCode;
 import site.soconsocon.socon.global.exception.SoconException;
-import site.soconsocon.socon.store.domain.dto.request.MemberRequest;
 import site.soconsocon.socon.store.domain.dto.response.SoconListResponse;
 import site.soconsocon.socon.store.domain.dto.response.SoconInfoResponse;
 import site.soconsocon.socon.store.domain.entity.jpa.Issue;
@@ -43,12 +42,12 @@ public class SoconService {
 
     // 소콘북 목록 조회
     public Map<String, Object> getMySoconList(
-            MemberRequest memberRequest
+            int memberId
     ) {
         List<SoconListResponse> usableSocons = new ArrayList<>();
         List<SoconListResponse> unusableSocons = new ArrayList<>();
 
-        List<Socon> unused = soconRepository.getUnusedSoconByMemberId(memberRequest.getMemberId());
+        List<Socon> unused = soconRepository.getUnusedSoconByMemberId(memberId);
         for (Socon socon : unused) {
             Issue issue = socon.getIssue();
             Item item = issue.getItem();
@@ -62,7 +61,7 @@ public class SoconService {
                     .itemImage(socon.getIssue().getItem().getImage())
                     .build());
         }
-        List<Socon> used = soconRepository.getUsedSoconByMemberId(memberRequest.getMemberId());
+        List<Socon> used = soconRepository.getUsedSoconByMemberId(memberId);
         for (Socon socon : used) {
             Issue issue = socon.getIssue();
             Item item = issue.getItem();
@@ -87,12 +86,12 @@ public class SoconService {
     // 소콘 사용 승인
     public void soconApproval(
             Integer soconId,
-            MemberRequest memberRequest
+            int memberId
     ) {
         Socon socon = soconRepository.findById(soconId)
                 .orElseThrow(() -> new StoreException(StoreErrorCode.SOCON_NOT_FOUND));
 
-        if (!Objects.equals(socon.getIssue().getItem().getStore().getId(), memberRequest.getMemberId())) {
+        if (!Objects.equals(socon.getIssue().getItem().getStore().getId(), memberId)) {
             // 요청자가 해당 점포 주인이 아닌 경우
             throw new SoconException(ErrorCode.FORBIDDEN);
         }
@@ -111,12 +110,12 @@ public class SoconService {
     public List<SoconListResponse> searchSocon(
             String category,
             String keyword,
-            MemberRequest memberRequest
+            int memberId
     ) {
         if (Objects.equals(category, "store")) {
-            return soconRepository.getSoconByMemberIdAndStoreName(memberRequest.getMemberId(), keyword);
+            return soconRepository.getSoconByMemberIdAndStoreName(memberId, keyword);
         } else if (Objects.equals(category, "item")) {
-            return soconRepository.getSoconByMemberIdAndItemName(memberRequest.getMemberId(), keyword);
+            return soconRepository.getSoconByMemberIdAndItemName(memberId, keyword);
         } else {
             throw new SoconException(ErrorCode.BAD_REQUEST);
         }
