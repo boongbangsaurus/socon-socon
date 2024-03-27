@@ -39,7 +39,8 @@ Widget _bottomNavBar(StatefulNavigationShell navigationShell) {
   final bool showBottomNavBar =
       currentRoute.uri.toString() == "/info/contact" ||
           currentRoute.uri.toString() == "/info/verification" ||
-          currentRoute.uri.toString() == "/info/success";
+          currentRoute.uri.toString() == "/info/success" ||
+          currentRoute.uri.toString() == "/soconbook/detail";
 
   // print(currentRoute.uri.toString().runtimeType); // 타입 확인
   print(currentRoute.uri.toString());
