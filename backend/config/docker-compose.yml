@@ -11,7 +11,7 @@ services:
     ports:
       - "9000:9000"
     environment:
-      - SPRING_CLOUD_SERVER_GIT_PRIVATE_KEY=${CONFIG_PRIVATE_KEY}
+      - CONFIG_PRIVATE_KEY=${CONFIG_PRIVATE_KEY}
       - CONFIG_USERNAME=${CONFIG_USERNAME}
       - CONFIG_PASSWORD=${CONFIG_PASSWORD}
     networks:
