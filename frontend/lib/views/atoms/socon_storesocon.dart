@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'image_card.dart';
 import 'tag_icon.dart';
 
+// 안쓰지만 충돌날거같으니까 일단 남겨놔요
 class StoreSoconLists extends StatelessWidget {
   final String soconName;
   final bool isMain;
