@@ -7,6 +7,14 @@ import 'package:socon/views/atoms/qr_code.dart';
 import '../../utils/colors.dart';
 
 class SoconCoupon extends StatelessWidget {
+  final VoidCallback onPressed;
+
+  SoconCoupon({ this.onPressed = _defaultOnPressed})
+
+  static void _defaultOnPressed() {
+    print("mySocon입니다.");
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
