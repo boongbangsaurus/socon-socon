@@ -7,16 +7,13 @@ import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestHeader;
 import site.soconsocon.payment.domain.dto.request.PaymentCallbackRequestDto;
 import site.soconsocon.payment.domain.entity.jpa.Order;
-import site.soconsocon.payment.feign.SoconFeignClient;
-import site.soconsocon.payment.feign.request.MySoconFeignRequest;
-import site.soconsocon.payment.feign.response.OrderFeignResponse;
+import site.soconsocon.payment.service.feign.SoconFeignClient;
+import site.soconsocon.payment.service.feign.request.AddMySoconRequest;
 import site.soconsocon.payment.domain.entity.jpa.PaymentStatus;
-import site.soconsocon.payment.feign.MemberFeignClient;
-import site.soconsocon.payment.feign.OrderFeignClient;
-import site.soconsocon.payment.feign.PaymentOrderFeignClient;
+import site.soconsocon.payment.service.feign.MemberFeignClient;
+import site.soconsocon.payment.service.feign.PaymentOrderFeignClient;
 import site.soconsocon.payment.repository.OrderRepository;
 import site.soconsocon.payment.repository.PaymentRepository;
 
@@ -106,7 +103,7 @@ public class PaymentService {
             payment.changePaymentBySuccess(PaymentStatus.PAID, iamportResponse.getResponse().getImpUid());
             orderRepository.updateOrderStatus(request.getOrderUid(), "SUCCESS"); //Success 변경
 
-            MySoconFeignRequest mySoconFeignRequest = MySoconFeignRequest.builder()
+            AddMySoconRequest mySoconFeignRequest = AddMySoconRequest.builder()
                     .purchaseAt(LocalDateTime.now())
                     .expiredAt(LocalDateTime.now().plusDays(30))
                     .usedAt(null)

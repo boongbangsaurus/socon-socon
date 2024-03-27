@@ -1,9 +1,9 @@
-package site.soconsocon.payment.feign;
+package site.soconsocon.payment.service.feign;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
-import site.soconsocon.payment.feign.response.MemberFeignResponse;
+import site.soconsocon.payment.service.feign.response.MemberFeignResponse;
 
 @FeignClient(name = "user-service", path = "/api/members")
 public interface MemberFeignClient {

@@ -1,4 +1,4 @@
-package site.soconsocon.payment.feign.request;
+package site.soconsocon.payment.service.feign.request;
 
 import lombok.Builder;
 import lombok.Data;
@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 @Data
 @Builder
-public class MySoconFeignRequest {
+public class AddMySoconRequest {
 
     private LocalDateTime purchaseAt; //구매 일시
 
@@ -20,5 +20,7 @@ public class MySoconFeignRequest {
     private int memberId; //회원 번호
 
     private int issueId; //발행 번호
+
+    private int purchasedQuantity; //구매 수량
 
 }
