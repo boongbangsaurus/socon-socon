@@ -5,7 +5,7 @@ class User {
   String password; // 비밀번호
   String name; // 이름
   String nickname; // 닉네임
-  int phoneNumber; // 전화번호
+  String phoneNumber; // 전화번호
   bool isAgreed; // 개인정보동의
 
   User({
@@ -36,4 +36,10 @@ class User {
         'phoneNumber': phoneNumber,
         'isAgreed': isAgreed,
       };
+
+  // User 객체의 상태를 문자열로 반환
+  @override
+  String toString() {
+    return 'User{email: $email, password: $password, name: $name, nickname: $nickname, phoneNumber: $phoneNumber, isAgreed: $isAgreed}';
+  }
 }
