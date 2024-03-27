@@ -111,7 +111,7 @@ public class StoreApiController {
 
         itemService.saveItem(request, storeId, memberId);
 
-        return ResponseEntity.ok().body(MessageUtils.success(null));
+        return ResponseEntity.ok().body(MessageUtils.success(null, "201 CREATED", null));
     }
 
     // 상품 정보 상세 조회

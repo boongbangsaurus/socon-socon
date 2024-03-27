@@ -199,46 +199,33 @@ public class StoreService {
 
     // 가게 폐업 정보 수정
     public void updateClosedPlanned(Integer storeId, UpdateClosedPlannedRequest request, int memberId) {
-        var store = storeRepository.findById(storeId).orElseThrow(() -> new StoreException(StoreErrorCode.STORE_NOT_FOUND));
+        var store = storeRepository.findById(storeId)
+                .orElseThrow(() -> new StoreException(StoreErrorCode.STORE_NOT_FOUND));
 
         if (!Objects.equals(memberId, store.getMemberId())) {
+            // 점포 소유주의 요청이 아닐 경우
+            throw new SoconException(ErrorCode.FORBIDDEN);
+        }
+        if (store.getClosingPlanned() != null) {
+            // 이미 폐업 신고가 되어 있는 경우
+            throw new StoreException(StoreErrorCode.ALREADY_SET_CLOSE_PLAN);
+        }
+        LocalDate closedAt = LocalDate.now().plusDays(request.getCloseAfter());
+        store.setClosingPlanned(closedAt);
+        storeRepository.save(store);
 
-            if (Objects.equals(memberId, store.getMemberId())) {
-                if (store.getClosingPlanned() != null) {
-                    // 이미 폐업 신고가 되어 있는 경우
-                    throw new StoreException(StoreErrorCode.ALREADY_SET_CLOSE_PLAN);
-                } else {
-                    store.setClosingPlanned(LocalDate.now().plusDays(request.getCloseAfter()));
-                    storeRepository.save(store);
-                }
-            } else {
-
-                // 요청자의 memberId와 store의 memberId가 다를 경우
-                throw new SoconException(ErrorCode.FORBIDDEN);
+        // 발행 중 소콘 발행 중지
+        List<Issue> issues = issueRepository.findActiveIssuesByStoreId(storeId);
+        for (Issue issue : issues) {
+            issue.setStatus('I');
+            issueRepository.save(issue);
+            // 발행 된 소콘 중 사용되지 않은 소콘 마감기한 업데이트
+            List<Socon> socons = soconRepository.getUnusedSoconByIssueId(issue.getId());
+            for (Socon socon : socons) {
+                socon.setExpiredAt(closedAt.atTime(23, 59, 59));
+                soconRepository.save(socon);
             }
-            if (store.getClosingPlanned() != null) {
-                // 이미 폐업 신고가 되어 있는 경우
-                throw new StoreException(StoreErrorCode.ALREADY_SET_CLOSE_PLAN);
-            }
-            LocalDate closingPlannedAt = LocalDate.now().plusDays(request.getCloseAfter());
-
-            store.setClosingPlanned(closingPlannedAt);
-
-            // 발행 중 소콘 발행 중지
-            List<Issue> issues = issueRepository.findActiveIssuesByStoreId(storeId);
-            for (Issue issue : issues) {
-                issue.setStatus('I');
-                issueRepository.save(issue);
-                // 발행 된 소콘 중 사용되지 않은 소콘 마감기한 업데이트
-                List<Socon> socons = soconRepository.getUnusedSoconByIssueId(issue.getId());
-                for (Socon socon : socons) {
-                    socon.setExpiredAt(closingPlannedAt.atTime(23, 59, 59));
-                    soconRepository.save(socon);
-                }
-            }
-
             // 폐업신고 시 알림 발송
-
             storeRepository.save(store);
 
         }
@@ -257,13 +244,18 @@ public class StoreService {
 
                 // 관심 가게 목록에서 삭제
                 favStoreRepository.deleteByStoreId(store.getId());
+
+                // 사용되지 않은 소콘 상태 업데이트
+                soconRepository.updateUnusedSoconByStoreId(store.getId());
             }
         }
     }
 
+    // 관심가게 추가,취소
     public void favoriteStore(Integer storeId, int memberId) {
 
-        Store store = storeRepository.findById(storeId).orElseThrow(() -> new StoreException(StoreErrorCode.STORE_NOT_FOUND));
+        Store store = storeRepository.findById(storeId)
+                .orElseThrow(() -> new StoreException(StoreErrorCode.STORE_NOT_FOUND));
         if (Boolean.TRUE.equals(store.getIsClosed())) {
             // 폐업상태일 경우
             throw new SoconException(ErrorCode.BAD_REQUEST);
@@ -287,8 +279,15 @@ public class StoreService {
         List<FavStore> favStores = favStoreRepository.findByMemberId(memberId);
 
         for (FavStore favStore : favStores) {
-            Store store = storeRepository.findById(favStore.getStoreId()).orElseThrow(() -> new StoreException(StoreErrorCode.STORE_NOT_FOUND));
-            stores.add(FavoriteStoresListResponse.builder().id(store.getId()).name(store.getName()).image(store.getImage()).mainMenu(issueRepository.findMainIssueNameByStoreId(store.getId())).build());
+            Store store = storeRepository.findById(favStore.getStoreId())
+                    .orElseThrow(() -> new StoreException(StoreErrorCode.STORE_NOT_FOUND));
+
+            stores.add(FavoriteStoresListResponse.builder()
+                    .id(store.getId())
+                    .name(store.getName())
+                    .image(store.getImage())
+                    .mainMenu(issueRepository.findMainIssueNameByStoreId(store.getId()))
+                    .build());
 
         }
         return stores;
