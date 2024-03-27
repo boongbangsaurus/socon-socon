@@ -17,13 +17,13 @@ class RegisteredMenu extends StatelessWidget {
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2, //1 개의 행에 보여줄 item 개수
             childAspectRatio: 1 / 1.2, //item 의 가로 세로의 비율
-            mainAxisSpacing: 5, //수평 Padding
-            crossAxisSpacing: 5, //수직 Padding
+            mainAxisSpacing: 7, //수평 Padding
+            crossAxisSpacing: 7, //수직 Padding
           ),
           itemBuilder: (BuildContext context, index) {
             final socon = socons[index];
             return StoreSoconLists(
-              soconName: socon.soconName!, // null 체크 추가
+              soconName: socon.soconName!,
               isMain: socon.isMain!,
               maxQuantity: socon.maxQuantity!,
               issuedQuantity: socon.issuedQuantity!,

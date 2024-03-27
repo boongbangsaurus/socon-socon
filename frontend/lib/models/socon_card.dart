@@ -35,4 +35,9 @@ final List<Socon> socons = [
   Socon(soconName : '마카롱', imageUrl:'https://cataas.com/cat', price: 5000, isMain: false, maxQuantity: 20, issuedQuantity: 5, isDiscounted: false, discountedPrice: 4400, createdAt: DateTime.parse('2024-05-23')),
   Socon(soconName : '콜라', imageUrl:'https://cataas.com/cat', price: 7000, isMain: false, maxQuantity: 10, issuedQuantity: 2, isDiscounted: true, discountedPrice: 1000, createdAt: DateTime.parse('2024-05-23')),
   Socon(soconName : '치킨', imageUrl:'https://cataas.com/cat', price: 30000, isMain: false, maxQuantity: 10, issuedQuantity: 9, isDiscounted: false, discountedPrice: 20000, createdAt: DateTime.parse('2024-05-23')),
+  Socon(soconName : '치킨', imageUrl:'https://cataas.com/cat', price: 30000, isMain: false, maxQuantity: 10, issuedQuantity: 9, isDiscounted: false, discountedPrice: 20000, createdAt: DateTime.parse('2024-05-23')),
+  Socon(soconName : '치킨', imageUrl:'https://cataas.com/cat', price: 30000, isMain: false, maxQuantity: 10, issuedQuantity: 9, isDiscounted: false, discountedPrice: 20000, createdAt: DateTime.parse('2024-05-23')),
+  Socon(soconName : '치킨', imageUrl:'https://cataas.com/cat', price: 30000, isMain: false, maxQuantity: 10, issuedQuantity: 9, isDiscounted: false, discountedPrice: 20000, createdAt: DateTime.parse('2024-05-23')),
+  Socon(soconName : '치킨', imageUrl:'https://cataas.com/cat', price: 30000, isMain: false, maxQuantity: 10, issuedQuantity: 9, isDiscounted: false, discountedPrice: 20000, createdAt: DateTime.parse('2024-05-23')),
+  Socon(soconName : '치킨', imageUrl:'https://cataas.com/cat', price: 30000, isMain: false, maxQuantity: 10, issuedQuantity: 9, isDiscounted: false, discountedPrice: 20000, createdAt: DateTime.parse('2024-05-23')),
 ];

@@ -7,6 +7,7 @@ import 'package:socon/utils/responsive_utils.dart';
 import 'package:socon/utils/icons.dart';
 import 'package:socon/views/atoms/tab.dart';
 import 'package:socon/views/atoms/tag_icon.dart';
+import 'package:socon/views/modules/store_menu_management.dart';
 import 'package:socon/views/modules/store_rigister_menu_lists.dart';
 
 class StoreDetailPage extends StatelessWidget {
@@ -36,7 +37,7 @@ class StoreDetailPage extends StatelessWidget {
                     padding: EdgeInsets.symmetric(horizontal: 0),
                     child: TabBarScreen(
                         contents: {
-                          '메뉴 관리': RegisterMenu(),
+                          '메뉴 관리': MenuManagement(),
                           '발행 소콘': RegisteredMenu(),
                         }
                       ),
@@ -134,7 +135,8 @@ class StoreDetailPage extends StatelessWidget {
             ),
           ],
         ),
-      )
+      ),
+      bottomNavigationBar: null,
     );
   }
 }
@@ -142,24 +144,3 @@ class StoreDetailPage extends StatelessWidget {
 
 
 
-class RegisterMenu extends StatelessWidget {
-  const RegisterMenu({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          width: double.infinity, // 부모 컨테이너의 전체 너비 사용
-          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          child: ElevatedButton(
-            onPressed: () {
-              // '상품추가' 버튼이 클릭되었을 때의 로직
-            },
-            child: Text('상품추가'),
-          ),
-        ),
-      ],
-    );
-  }
-}
