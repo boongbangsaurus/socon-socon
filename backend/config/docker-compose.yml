@@ -13,10 +13,10 @@ services:
     environment:
       - CONFIG_PASSWORD=${CONFIG_PASSWORD}
       - CONFIG_USERNAME=${CONFIG_USERNAME}
-      - CONFIG_PRIVATE_KEY=${CONFIG_PRIVATE_KEY}
+      - GIT_USERNAME=${GIT_USERNAME}
+      - GIT_PASSWORD=${GIT_PASSWORD}
     networks:
       - jenkins-project_socon-net
-    command: env
 
 networks:
   jenkins-project_socon-net:
