@@ -21,7 +21,7 @@ public class AddStoreRequest {
     private Double lat;
     private Double lng;
     private String introduction;
-    private List<BusinessHour> businessHours;
+    private List<BusinessHourRequest> businessHours;
     private Integer memberId;
     private Integer registrationNumberId;
 

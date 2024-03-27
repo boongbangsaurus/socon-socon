@@ -49,11 +49,10 @@ public class StoreApiController {
     // 가게 정보 상세 조회
     @GetMapping("/{store_id}/info")
     public ResponseEntity<Object> getStoreInfo(
-            @PathVariable("store_id") Integer storeId,
-            @RequestHeader("X-Authorization-Id") int memberId
+            @PathVariable("store_id") Integer storeId
     ) {
         StoreInfoResponse store = storeService.getStoreInfo(storeId);
-        List<IssueListResponse> issues = issueService.getIssueList(storeId, memberId);
+        List<IssueListResponse> issues = issueService.getIssueList(storeId);
         Map<String, Object> response = new HashMap<>();
 
         response.put("store", store);
@@ -69,7 +68,7 @@ public class StoreApiController {
             @RequestHeader("X-Authorization-Id") int memberId
     ) {
         List<ItemListResponse> items = itemService.getItemList(storeId, memberId);
-        List<IssueListResponse> issues = issueService.getIssueList(storeId, memberId);
+        List<IssueListResponse> issues = issueService.getIssueList(storeId);
 
         Map<String, Object> response = new HashMap<>();
         response.put("items", items);

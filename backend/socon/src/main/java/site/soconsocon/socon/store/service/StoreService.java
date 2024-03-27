@@ -8,6 +8,7 @@ import site.soconsocon.socon.global.domain.ErrorCode;
 import site.soconsocon.socon.global.exception.SoconException;
 
 import site.soconsocon.socon.store.domain.dto.request.AddStoreRequest;
+import site.soconsocon.socon.store.domain.dto.request.BusinessHourRequest;
 import site.soconsocon.socon.store.domain.dto.request.UpdateClosedPlannedRequest;
 import site.soconsocon.socon.store.domain.dto.request.UpdateStoreInfoRequest;
 import site.soconsocon.socon.store.domain.dto.response.FavoriteStoresListResponse;
@@ -56,7 +57,18 @@ public class StoreService {
             throw new SoconException(ErrorCode.FORBIDDEN);
         }
 
-        Store store = Store.builder().name(request.getName()).category(request.getCategory()).image(request.getImage()).phoneNumber(request.getPhoneNumber()).address(request.getAddress()).lat(request.getLat()).lng(request.getLng()).introduction(request.getIntroduction()).closingPlanned(null).isClosed(false).createdAt(LocalDate.now()).memberId(memberId).registrationNumber(registrationNumber).build();
+        Store store = Store.builder()
+                .name(request.getName())
+                .category(request.getCategory())
+                .image(request.getImage())
+                .phoneNumber(request.getPhoneNumber())
+                .address(request.getAddress())
+                .lat(request.getLat())
+                .lng(request.getLng())
+                .introduction(request.getIntroduction())
+                .closingPlanned(null).isClosed(false).createdAt(LocalDate.now())
+                .memberId(memberId)
+                .registrationNumber(registrationNumber).build();
 
         // 중복체크 : store name, registrationNumber, lat, lng
         if (storeRepository.checkStoreDuplication(store.getName(), store.getRegistrationNumber().getId(), store.getLat(), store.getLng()) > 0) {
@@ -65,11 +77,18 @@ public class StoreService {
         storeRepository.save(store);
 
         // businessHourList 저장
-        List<BusinessHour> businessHours = request.getBusinessHours();
-        for (BusinessHour businessHour : businessHours) {
-            businessHourRepository.save(BusinessHour.builder().day(businessHour.getDay()).isWorking(businessHour.getIsWorking()).openAt(businessHour.getOpenAt()).closeAt(businessHour.getCloseAt()).breaktimeStart(businessHour.getBreaktimeStart()).breaktimeEnd(businessHour.getBreaktimeEnd()).store(store).build());
+        List<BusinessHourRequest> businessHours = request.getBusinessHours();
+        for (BusinessHourRequest businessHour : businessHours) {
+            businessHourRepository.save(BusinessHour.builder()
+                    .day(businessHour.getDay())
+                    .isWorking(businessHour.getIsWorking())
+                    .openAt(businessHour.getOpenAt())
+                    .closeAt(businessHour.getCloseAt())
+                    .breaktimeStart(businessHour.getBreaktimeStart())
+                    .breaktimeEnd(businessHour.getBreaktimeEnd())
+                    .store(store)
+                    .build());
         }
-
     }
 
     // 가게 정보 목록 조회
@@ -78,7 +97,13 @@ public class StoreService {
         List<Store> stores = storeRepository.findStoresByMemberId(memberId);
         List<StoreListResponse> storeList = new ArrayList<>();
         for (Store store : stores) {
-            storeList.add(StoreListResponse.builder().id(store.getId()).name(store.getName()).category(store.getCategory()).image(store.getImage()).createdAt(store.getCreatedAt()).build());
+            storeList.add(StoreListResponse.builder()
+                    .id(store.getId())
+                    .name(store.getName())
+                    .category(store.getCategory())
+                    .image(store.getImage())
+                    .createdAt(store.getCreatedAt())
+                    .build());
         }
         return storeList;
     }
@@ -91,7 +116,21 @@ public class StoreService {
         RegistrationNumber registrationNumber = store.getRegistrationNumber();
         Integer favoriteCount = favStoreRepository.countByStoreId(storeId);
 
-        return StoreInfoResponse.builder().storeId(storeId).name(store.getName()).category(store.getCategory()).image(store.getImage()).address(store.getAddress()).phoneNumber(store.getPhoneNumber()).businessHours(store.getBusinessHours()).introduction(store.getIntroduction()).closingPlanned(store.getClosingPlanned()).favoriteCount(favoriteCount).createdAt(store.getCreatedAt()).registrationNumber(registrationNumber.getRegistrationNumber()).registrationAddress(registrationNumber.getRegistrationAddress()).owner("temp_user") // 사업자 나중에 수정
+        return StoreInfoResponse.builder()
+                .storeId(storeId)
+                .name(store.getName())
+                .category(store.getCategory())
+                .image(store.getImage())
+                .address(store.getAddress())
+                .phoneNumber(store.getPhoneNumber())
+                .businessHours(businessHourRepository.findBusinessHourResponseByStoreId(storeId))
+                .introduction(store.getIntroduction())
+                .closingPlanned(store.getClosingPlanned())
+                .favoriteCount(favoriteCount)
+                .createdAt(store.getCreatedAt())
+                .registrationNumber(registrationNumber.getRegistrationNumber())
+                .registrationAddress(registrationNumber.getRegistrationAddress())
+                .owner("temp_user") // 사업자 나중에 수정
                 .build();
     }
 
