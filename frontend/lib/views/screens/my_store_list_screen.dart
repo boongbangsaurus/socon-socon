@@ -47,10 +47,6 @@ class _MyStoreListScreen extends State<MyStoreListScreen> {
   }
 }
 
-
-
-
-
 class MyStoreLists extends StatefulWidget {
   const MyStoreLists({super.key});
 
@@ -61,8 +57,6 @@ class MyStoreLists extends StatefulWidget {
 class _MyStoreListsState extends State<MyStoreLists> {
   String _userInput = '';
 
-
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -70,41 +64,52 @@ class _MyStoreListsState extends State<MyStoreLists> {
         Container(
           margin: EdgeInsets.symmetric(vertical: 10),
           child: Row(
-          children: [
-            Flexible(
-              flex: 1,
-              child: Container(
-                height: 80,
-                width: 80,
-                child: ImageLoader(
-                  imageUrl: "https://cataas.com/cat",
-                  borderRadius: 15.0,
-                ),
-              ),
-            ),
-            SizedBox(width: 10),
-            Flexible(
-              flex: 2,
-              child: Row(
-                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    children: [
-                      Text('오소유', style: TextStyle(fontSize: FontSizes.LARGE, fontWeight: FontWeight.bold),),
-                      TagIcon(buttonText: '빵집', buttonColor: Colors.amber, buttonTextColor: Colors.white,)
-                    ],
+            children: [
+              Flexible(
+                flex: 1,
+                child: Container(
+                  height: 80,
+                  width: 80,
+                  child: ImageLoader(
+                    imageUrl: "https://cataas.com/cat",
+                    borderRadius: 15.0,
                   ),
-                ],
-              ),
-            ),
-            Icon(Icons.arrow_forward_ios),
-          ],
                 ),
+              ),
+              SizedBox(width: 10),
+              Flexible(
+                flex: 2,
+                child: Row(
+                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      children: [
+                        Text(
+                          '오소유',
+                          style: TextStyle(
+                              fontSize: FontSizes.LARGE,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        TagIcon(
+                          buttonText: '빵집',
+                          buttonColor: Colors.amber,
+                          buttonTextColor: Colors.white,
+                        )
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              Icon(Icons.arrow_forward_ios),
+            ],
+          ),
         ),
         Container(
           margin: EdgeInsets.all(20),
-          width: double.infinity, // 화면 너비에 맞춤
-          height: 48.0, // 적당한 높이
+          width: double.infinity,
+          // 화면 너비에 맞춤
+          height: 48.0,
+          // 적당한 높이
           decoration: BoxDecoration(
             // 그림자 추가
             boxShadow: [
@@ -125,7 +130,7 @@ class _MyStoreListsState extends State<MyStoreLists> {
             },
             style: ButtonStyle(
               backgroundColor: MaterialStateProperty.resolveWith<Color?>(
-                    (Set<MaterialState> states) {
+                (Set<MaterialState> states) {
                   if (states.contains(MaterialState.pressed)) {
                     return Color(0xFFF8D461); // 클릭 시 배경색
                   }
@@ -133,14 +138,13 @@ class _MyStoreListsState extends State<MyStoreLists> {
                 },
               ),
               foregroundColor: MaterialStateProperty.resolveWith<Color?>(
-                    (Set<MaterialState> states) {
+                (Set<MaterialState> states) {
                   if (states.contains(MaterialState.pressed)) {
                     return Colors.black; // 클릭 시 글자색
                   }
                   return Colors.black; // 기본 글자색
                 },
               ),
-
               shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                 RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(0),
@@ -148,7 +152,7 @@ class _MyStoreListsState extends State<MyStoreLists> {
                 ),
               ),
               elevation: MaterialStateProperty.resolveWith<double>(
-                    (Set<MaterialState> states) {
+                (Set<MaterialState> states) {
                   if (states.contains(MaterialState.pressed)) {
                     return 0; // 클릭 시 그림자 제거
                   }
@@ -159,13 +163,10 @@ class _MyStoreListsState extends State<MyStoreLists> {
             child: Text('점포 등록하기'),
           ),
         ),
-
       ],
     );
   }
 }
-
-
 
 class MyStoreAnalysis extends StatelessWidget {
   const MyStoreAnalysis({super.key});

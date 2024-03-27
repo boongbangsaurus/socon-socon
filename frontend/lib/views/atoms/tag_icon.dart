@@ -45,8 +45,7 @@ class TagIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-
-      margin: EdgeInsets.only(right: 3),
+      // margin: EdgeInsets.only(right: 3),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
