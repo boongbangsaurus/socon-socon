@@ -87,8 +87,8 @@ class _SoconBookScreenState extends State<SoconBookScreen> {
                 Expanded(
                   child: TabBarScreen(
                     contents: {
-                      '사용가능': mySoconList(),
-                      '사용완료': mySoconList(),
+                      '사용가능': availableMySoconList(),
+                      '사용완료': usedMySoconList(),
                     },
                     marginTop: 0,
                   ),
@@ -98,7 +98,7 @@ class _SoconBookScreenState extends State<SoconBookScreen> {
   }
 
   // 소콘 리스트
-  Widget mySoconList() {
+  Widget availableMySoconList() {
     return SingleChildScrollView(
       child: Container(
           color: AppColors.WHITE,
@@ -138,6 +138,61 @@ class _SoconBookScreenState extends State<SoconBookScreen> {
                 ),
                 itemBuilder: (BuildContext context, index) {
                   return MySocon(
+                    available: true,
+                    soconName: soconNames[index],
+                    storeName: storeNames[index],
+                    dueDate: dueDate[index],
+                    imageUrl: imageUrl[index],
+                  );
+                },
+              ),
+            ],
+          )),
+    );
+  }
+
+
+  Widget usedMySoconList() {
+    return SingleChildScrollView(
+      child: Container(
+          color: AppColors.WHITE,
+          width: ResponsiveUtils.getWidthPercent(context, 100),
+          margin: const EdgeInsets.only(top: 10.0),
+          // alignment: Alignment.center,
+          // margin: EdgeInsets.symmetric(
+          //     horizontal: ResponsiveUtils.getWidthWithPixels(context, 20)),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(
+                height: 5.0,
+              ),
+              Text(
+                "각 기프티콘은 구매하신 가게에서만 사용하실 수 있습니다.",
+                style: TextStyle(
+                  fontSize: ResponsiveUtils.calculateResponsiveFontSize(
+                      context, FontSizes.XXXSMALL),
+                  fontWeight: FontWeight.w400,
+                  color: AppColors.GRAY400,
+                ),
+                textAlign: TextAlign.start,
+              ),
+              const SizedBox(
+                height: 10.0,
+              ),
+              GridView.builder(
+                shrinkWrap: true, // child 위젯의 크기를 정해주지 않은 경우 true로 지정해야됨
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: soconNames.length, //item 개수
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2, //1 개의 행에 보여줄 item 개수
+                  childAspectRatio: 1 / 1.2, //item 의 가로 세로의 비율
+                  mainAxisSpacing: 5, //수평 Padding
+                  crossAxisSpacing: 5, //수직 Padding
+                ),
+                itemBuilder: (BuildContext context, index) {
+                  return MySocon(
+                    available : false,
                     soconName: soconNames[index],
                     storeName: storeNames[index],
                     dueDate: dueDate[index],
