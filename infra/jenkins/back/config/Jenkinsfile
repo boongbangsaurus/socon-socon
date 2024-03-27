@@ -9,7 +9,8 @@ pipeline {
                 checkout scmGit(
                         branches: [[name: 'develop']],
                         extensions: [submodule(parentCredentials: true, trackingSubmodules: true)],
-                        userRemoteConfigs: [[credentialsId: 'github-access-token', url: 'https://github.com/boongbangsaurus/boongbang-settings']]
+                        userRemoteConfigs: [
+                                [credentialsId: 'github-access-token', url: 'https://github.com/boongbangsaurus/boongbang-settings']]
                 )
             }
         }
@@ -18,10 +19,9 @@ pipeline {
                 script{
                     sh 'cp ../.env .env'
                     sh "mkdir -p backend/config/src/resources"
+                    sh "ls -al secure-settings/config"
                     // find 명령어를 사용하여 .yml 파일을 찾고, 각 파일에 대해 cp 명령어를 실행
-                    sh "find secure-settings/back/config -name '*.yml' -exec cp {} backend/config/src/resources \\;"
-                    // 동일한 디렉토리 내 모든 .yml 파일을 복사
-                    sh "find secure-settings/back -maxdepth 1 -name '*.yml' -exec cp {} backend/config/src/resources \\;"
+                    sh "find secure-settings/back/config -name '*.yml' -exec cp {} backend/config/src/resources/application.yml\\;"
                 }
             }
         }
@@ -37,17 +37,10 @@ pipeline {
                 dir("backend/config"){
                     script {
                         try {
-                            sh "docker build -t kimdahui/config ."
-                            sh '''
-                            docker run -d --name config \\
-                            --network jenkins-project_socon-net \\
-                            --restart unless-stopped \\
-                            -e "ADMIN_USERNAME=${CONFIG_USERNAME}" \\
-                            -e "ADMIN_PASSWORD=${CONFIG_USERNAME}" \\
-                            -p 8761:8761 kimdahui/config
-                            '''
+                            sh "docker-compose -p nginx-project up -d --build"
                         }catch (Exception e) {
-                            sh "docker restart config"
+                            sh "docker-compose down"
+                            sh "docker-compose -p nginx-project up -d --build"
                         }
                     }
                 }

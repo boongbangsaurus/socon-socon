@@ -1,19 +1,18 @@
 version: '3.3'
 
 services:
-  config:
-    container_name: config
-    image: kimdahui/config
+  gateway:
+    container_name: gateway
+    image: kimdahui/gateway
     build:
       context: .
       dockerfile: Dockerfile
     restart: unless-stopped
     ports:
-      - "9000:9000"
+      - "8000:8000"
     environment:
       - CONFIG_USERNAME=${CONFIG_USERNAME}
       - CONFIG_PASSWORD=${CONFIG_PASSWORD}
-      - CONFIG_PRIVATE_KEY=${CONFIG_PRIVATE_KEY}
     networks:
       - jenkins-project_socon-net
 
