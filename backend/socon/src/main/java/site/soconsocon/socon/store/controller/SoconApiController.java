@@ -7,7 +7,6 @@ import site.soconsocon.socon.store.domain.dto.response.SoconInfoResponse;
 import site.soconsocon.socon.store.service.SoconService;
 import site.soconsocon.utils.MessageUtils;
 
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/socons")
