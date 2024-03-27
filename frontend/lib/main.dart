@@ -29,6 +29,8 @@ class MyApp extends StatelessWidget {
           primaryColor: AppColors.WHITE,
           // useMaterial3: true, // 이 줄을 주석 처리하거나 삭제하여 사용하시는 버전에 맞게 설정하세요.
           ),
+
+
     );
   }
 }

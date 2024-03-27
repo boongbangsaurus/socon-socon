@@ -6,7 +6,8 @@ import 'package:socon/views/atoms/icon_loader.dart';
 
 // 검색 상자 위젯 클래스
 class SearchBox extends StatefulWidget {
-  const SearchBox({super.key});
+  final Widget filterAppliedWidget;
+  const SearchBox({super.key, required this.filterAppliedWidget });
 
   @override
   _SearchBoxState createState() => _SearchBoxState();
@@ -80,17 +81,7 @@ class _SearchBoxState extends State<SearchBox> {
         ),
         const SizedBox(height: 10),
         if (isFilterApplied) // 필터가 적용되었을 때만 텍스트 표시
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            child: Text(
-              '필터가 적용되었습니다!',
-              style: TextStyle(
-                fontSize: FontSizes.SMALL,
-                fontWeight: FontWeight.w900,
-                color: AppColors.SUCCESS500,
-              ),
-            ),
-          ),
+          widget.filterAppliedWidget,
       ],
     );
   }
