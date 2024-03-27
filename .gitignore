@@ -44,6 +44,4 @@ out/
 backend/**/gradle.properties
 google-services.json
 /backend/**/gradle.properties
-gradlew
-gradlew.bat
 /lib
