@@ -145,15 +145,24 @@ public class StoreService {
             throw new SoconException(ErrorCode.FORBIDDEN);
         } else {
             // 영업시간 수정
-            List<BusinessHour> requestBusinessHours = request.getBusinessHours();
+            List<BusinessHourRequest> requestBusinessHours = request.getBusinessHours();
 
             List<BusinessHour> savedBusinessHours = businessHourRepository.findByStoreId(storeId);
 
             if (savedBusinessHours.isEmpty()) {
                 // 저장된 값이 없을 경우
-                for (BusinessHour businessHour : requestBusinessHours) {
-                    businessHour.setStore(store);
-                    businessHourRepository.save(businessHour);
+                for (BusinessHourRequest businessHour : requestBusinessHours) {
+
+                    businessHourRepository.save(BusinessHour.builder()
+                                    .day(businessHour.getDay())
+                                    .isWorking(businessHour.getIsWorking())
+                                    .openAt(businessHour.getOpenAt())
+                                    .closeAt(businessHour.getCloseAt())
+                                    .isBreaktime(businessHour.getIsBreaktime())
+                                    .breaktimeStart(businessHour.getBreaktimeStart())
+                                    .breaktimeEnd(businessHour.getBreaktimeEnd())
+                                    .store(store)
+                                    .build());
                 }
                 List<BusinessHour> newBusinessHours = businessHourRepository.findByStoreId(storeId);
 
@@ -162,12 +171,13 @@ public class StoreService {
                 storeRepository.save(savedStore);
             } else {
                 // 저장된 값이 있을 경우
-                for (BusinessHour businessHour : requestBusinessHours) {
+                for (BusinessHourRequest businessHour : requestBusinessHours) {
                     BusinessHour matchedBusinessHour = savedBusinessHours.stream().filter(savedBusinessHour -> savedBusinessHour.getDay().equals(businessHour.getDay())).findFirst().orElse(null); // null일 경우
 
                     matchedBusinessHour.setIsWorking(businessHour.getIsWorking());
                     matchedBusinessHour.setOpenAt(businessHour.getOpenAt());
                     matchedBusinessHour.setCloseAt(businessHour.getCloseAt());
+                    matchedBusinessHour.setIsBreaktime(businessHour.getIsBreaktime());
                     matchedBusinessHour.setBreaktimeStart(businessHour.getBreaktimeStart());
                     matchedBusinessHour.setBreaktimeEnd(businessHour.getBreaktimeEnd());
 
