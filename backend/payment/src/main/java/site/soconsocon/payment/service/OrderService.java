@@ -28,10 +28,9 @@ public class OrderService {
 
         Order order = Order.builder()
                 .orderUid(UUID.randomUUID().toString())
-                .name(orderRequestDto.getName())
+                .itemName(orderRequestDto.getItemName())
                 .price(orderRequestDto.getPrice())
-                .memberId(orderRequestDto.getMemberId())
-                .orderStatus(orderRequestDto.getOrderStatus())
+                .memberId(memberId)
                 .issueId(orderRequestDto.getIssueId())
                 .paymentId(payment.getId())
                 .build();

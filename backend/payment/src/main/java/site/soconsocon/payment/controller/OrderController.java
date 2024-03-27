@@ -11,7 +11,7 @@ import site.soconsocon.utils.MessageUtils;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/orders")
+@RequestMapping("/api/v1/orders")
 @Log4j2
 public class OrderController {
 

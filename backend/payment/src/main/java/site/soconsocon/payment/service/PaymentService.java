@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import site.soconsocon.payment.domain.dto.request.PaymentCallbackRequestDto;
 import site.soconsocon.payment.domain.entity.jpa.Order;
+import site.soconsocon.payment.exception.ErrorCode;
+import site.soconsocon.payment.exception.PaymentException;
 import site.soconsocon.payment.service.feign.SoconFeignClient;
 import site.soconsocon.payment.service.feign.request.AddMySoconRequest;
 import site.soconsocon.payment.domain.entity.jpa.PaymentStatus;
@@ -60,12 +62,12 @@ public class PaymentService {
             // 결제 단건 조회(아임포트)
             // 결제 ImpUid Check
             IamportResponse<Payment> iamportResponse = iamportClient.paymentByImpUid(request.getPaymentUid());
-            // 주문내역 조회
 
+            // 주문내역 조회
             site.soconsocon.payment.domain.entity.jpa.Payment payment = paymentRepository.findPaymentByPaymentUid(request.getPaymentUid());
 
             Order order = orderRepository.findOrderAndPayment(request.getOrderUid())
-                    .orElseThrow(() -> new IllegalArgumentException("주문 내역이 없습니다."));
+                    .orElseThrow(() -> new PaymentException(ErrorCode.ORDER_NOT_FOUND));
 
             // 결제 완료가 아니면
             if (!iamportResponse.getResponse().getStatus().equals("paid")) {
@@ -81,7 +83,6 @@ public class PaymentService {
 
             // DB에 저장된 결제 금액
             int price = order.getPrice();
-//            int price = order.getPayment().getPrice();
             // 실 결제 금액
             int iamportPrice = iamportResponse.getResponse().getAmount().intValue();
 
@@ -96,6 +97,7 @@ public class PaymentService {
 
                 throw new RuntimeException("결제금액 위변조 의심");
             }
+
             //결제 성공 로직
 
             // 결제 상태 변경
@@ -103,21 +105,22 @@ public class PaymentService {
             payment.changePaymentBySuccess(PaymentStatus.PAID, iamportResponse.getResponse().getImpUid());
             orderRepository.updateOrderStatus(request.getOrderUid(), "SUCCESS"); //Success 변경
 
-            AddMySoconRequest mySoconFeignRequest = AddMySoconRequest.builder()
+            AddMySoconRequest addMysoconRequest = AddMySoconRequest.builder()
                     .purchaseAt(LocalDateTime.now())
                     .expiredAt(LocalDateTime.now().plusDays(30))
                     .usedAt(null)
                     .status("unused")
                     .memberId(order.getMemberId())
                     .issueId(order.getIssueId())
+                    .purchasedQuantity(order.getQuantity())
                     .build();
 
-            soconFeignClient.saveMySocon(mySoconFeignRequest); //feign을 통해 사용자의 쿠폰북에 저장
+            soconFeignClient.saveMySocon(order.getIssueId(), addMysoconRequest); //feign을 통해 사용자의 쿠폰북에 저장
 
             return iamportResponse;
 
 
-        } catch (IamportResponseException e) {
+        } catch (IamportResponseException | PaymentException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {
             throw new RuntimeException(e);

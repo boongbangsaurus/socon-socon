@@ -7,13 +7,11 @@ import java.time.LocalDateTime;
 @Data
 public class OrderRequestDto {
 
-    private String orderUid; //주문 고유번호
-
-    private String name;
+    private String itemName;
 
     private int price;
 
-    private String orderStatus;
+    private int quantity; //주문 수량
 
     private int memberId; //회원 아이디
 

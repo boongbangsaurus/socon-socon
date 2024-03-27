@@ -20,7 +20,7 @@ public class Order {
 
     private String orderUid; //주문 고유번호
 
-    private String name;
+    private String itemName;
 
     private int price;
 
@@ -33,5 +33,7 @@ public class Order {
     private int issueId; // 발행 아이디
 
     private int paymentId; //주문 PK
+
+    private int quantity; //주문 수량
 
 }

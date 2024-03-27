@@ -32,7 +32,4 @@ public class PaymentController {
 
         return new ResponseEntity<>(iamportResponse, HttpStatus.OK);
     }
-
-
-
 }
