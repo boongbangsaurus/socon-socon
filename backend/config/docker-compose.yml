@@ -12,8 +12,8 @@ services:
       - "9000:9000"
     environment:
       - SPRING_CLOUD_SERVER_GIT_PRIVATE_KEY=${CONFIG_PRIVATE_KEY}
-      - ADMIN_USERNAME=${CONFIG_USERNAME}
-      - ADMIN_PASSWORD=${CONFIG_PASSWORD}
+      - CONFIG_USERNAME=${CONFIG_USERNAME}
+      - CONFIG_PASSWORD=${CONFIG_PASSWORD}
     networks:
       - jenkins-project_socon-net
     env_file:

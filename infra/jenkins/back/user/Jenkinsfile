@@ -42,6 +42,7 @@ pipeline {
                             sh "docker-compose -p user-project up -d"
                         }catch (Exception e) {
                             sh "docker-compose down"
+                            sh "yes | docker system prune"
                             sh "docker-compose -p user-project build --no-cache"
                             sh "docker-compose -p user-project up -d"
                         }
