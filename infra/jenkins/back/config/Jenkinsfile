@@ -17,7 +17,7 @@ pipeline {
         stage('Move .env File') {
             steps {
                 script{
-                    sh 'cp ../.env .env'
+                    sh 'cp ../environments/.env .env'
                     sh "mkdir -p backend/config/src/resources"
                     sh "ls -al secure-settings/config"
                     // find 명령어를 사용하여 .yml 파일을 찾고, 각 파일에 대해 cp 명령어를 실행
