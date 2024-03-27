@@ -17,11 +17,11 @@ pipeline {
         stage('Move .env File') {
             steps {
                 script{
-                    sh 'cp ../environments/.env .env'
+                    sh 'cp ../environments/.env backend/user/.env'
                     sh 'cp ../environments/gradle.properties backend/user/gradle.properties'
                     sh "mkdir -p backend/user/src/main/resources"
                     sh "ls -al secure-settings/back/user"
-                    // find 명령어를 사용하여 .yml 파일을 찾고, 각 파일에 대해 cp 명령어를 실행
+                    // find 명령어를 사용하여 .yml 파일을  찾고, 각 파일에 대해 cp 명령어를 실행
                     sh "cp secure-settings/back/user/user-service-default.yml backend/user/src/main/resources/application.yml"
                 }
             }
@@ -38,12 +38,11 @@ pipeline {
                 dir("backend/user"){
                     script {
                         try {
-                            sh "docker-compose -p user-project build --no-cache"
+                            sh "docker-compose -p user-project build"
                             sh "docker-compose -p user-project up -d"
                         }catch (Exception e) {
-                            sh "docker-compose down"
-                            sh "yes | docker system prune"
-                            sh "docker-compose -p user-project build --no-cache"
+                            sh "docker stop user"
+                            sh "docker-compose -p user-project build"
                             sh "docker-compose -p user-project up -d"
                         }
                     }

@@ -11,11 +11,10 @@ services:
     ports:
       - "8010:8010"
     environment:
-      - SPRING_CONFIG_IMPORT=optional:configserver:http://${CONFIG_USERNAME}:${CONFIG_PASSWORD}@config:9000
+      - CONFIG_PASSWORD=${CONFIG_PASSWORD}
+      - CONFIG_USERNAME=${CONFIG_USERNAME}
     networks:
       - jenkins-project_socon-net
-    env_file:
-      - ../../.env
 
 networks:
   jenkins-project_socon-net:

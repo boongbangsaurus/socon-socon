@@ -17,11 +17,11 @@ pipeline {
         stage('Move .env File') {
             steps {
                 script{
-                    sh 'cp ../environments/.env .env'
+                    sh 'cp ../environments/.env backend/eureka/.env'
                     sh 'cp ../environments/gradle.properties backend/eureka/gradle.properties'
                     sh "mkdir -p backend/eureka/src/main/resources"
                     sh "ls -al secure-settings/back/eureka"
-                    // find 명령어를 사용하여 .yml 파일을 찾고, 각 파일에 대해 cp 명령어를 실행
+                    // find 명령어를 사용하여 .yml 파일을  찾고, 각 파일에 대해 cp 명령어를 실행
                     sh "cp secure-settings/back/eureka/eureka-service-default.yml backend/eureka/src/main/resources/application.yml"
                 }
             }
@@ -38,11 +38,11 @@ pipeline {
                 dir("backend/eureka"){
                     script {
                         try {
-                            sh "docker-compose -p eureka-project build --no-cache"
+                            sh "docker-compose -p eureka-project build"
                             sh "docker-compose -p eureka-project up -d"
                         }catch (Exception e) {
-                            sh "docker-compose down"
-                            sh "docker-compose -p eureka-project build --no-cache"
+                            sh "docker stop eureka"
+                            sh "docker-compose -p eureka-project build"
                             sh "docker-compose -p eureka-project up -d"
                         }
                     }

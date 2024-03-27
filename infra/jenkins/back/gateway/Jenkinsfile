@@ -17,11 +17,11 @@ pipeline {
         stage('Move .env File') {
             steps {
                 script{
-                    sh 'cp ../environments/.env .env'
+                    sh 'cp ../environments/.env backend/gateway/.env'
                     sh 'cp ../environments/gradle.properties backend/gateway/gradle.properties'
                     sh "mkdir -p backend/gateway/src/main/resources"
                     sh "ls -al secure-settings/back/gateway"
-                    // find 명령어를 사용하여 .yml 파일을 찾고, 각 파일에 대해 cp 명령어를 실행
+                    // find 명령어를 사용하여 .yml 파일을  찾고, 각 파일에 대해 cp 명령어를 실행
                     sh "cp secure-settings/back/gateway/gateway-service-default.yml backend/gateway/src/main/resources/application.yml"
                 }
             }
@@ -38,11 +38,11 @@ pipeline {
                 dir("backend/gateway"){
                     script {
                         try {
-                            sh "docker-compose -p gateway-project build --no-cache"
+                            sh "docker-compose -p gateway-project build"
                             sh "docker-compose -p gateway-project up -d"
                         }catch (Exception e) {
-                            sh "docker-compose down"
-                            sh "docker-compose -p gateway-project build --no-cache"
+                            sh "docker stop gateway"
+                            sh "docker-compose -p gateway-project build"
                             sh "docker-compose -p gateway-project up -d"
                         }
                     }
