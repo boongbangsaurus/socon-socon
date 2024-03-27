@@ -22,7 +22,7 @@ pipeline {
                     sh "ls -al secure-settings/back/config"
                     // find 명령어를 사용하여 .yml 파일을  찾고, 각 파일에 대해 cp 명령어를 실행
                     sh "cp secure-settings/back/config/config-service-default.yml backend/config/src/main/resources/application.yml"
-                    sh 'cp ../environments/rsa_key backend/config/src/main/resources/rsa_key'
+                    sh 'cp ../environments/rsa_key.pem backend/config/src/main/resources/rsa_key.pem'
                 }
             }
         }
