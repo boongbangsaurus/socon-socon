@@ -21,7 +21,6 @@ application*.yml
 *-common.yml
 *-dev.yml
 *-prod.yml
-backend/**/**/wrapper
 ### IntelliJ IDEA ###
 .idea
 *.iws
