@@ -21,7 +21,7 @@ public class IssueApiController {
     ){
         issueService.saveMySocon(request);
 
-        return ResponseEntity.ok().body(MessageUtils.success(null));
+        return ResponseEntity.ok().body(MessageUtils.success(null, "201 CREATED", null));
     }
 
     // 소콘 발행 중지
@@ -32,6 +32,6 @@ public class IssueApiController {
     ){
         issueService.stopIssue(issueId, memberId);
 
-        return ResponseEntity.ok().body(MessageUtils.success(null));
+        return ResponseEntity.ok().body(MessageUtils.success(null, "204 NO CONTENT", null));
     }
 }

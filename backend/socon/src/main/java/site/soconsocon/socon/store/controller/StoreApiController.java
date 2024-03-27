@@ -134,7 +134,7 @@ public class StoreApiController {
     ) {
         issueService.saveIssue(request, storeId, itemId, memberId);
 
-        return ResponseEntity.ok().body(MessageUtils.success(null));
+        return ResponseEntity.ok().body(MessageUtils.success(null, "201 CREATED", null));
     }
 
     // 관심 가게 추가, 취소

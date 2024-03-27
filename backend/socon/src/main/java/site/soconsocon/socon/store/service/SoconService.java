@@ -35,6 +35,7 @@ public class SoconService {
                 .storeName(item.getStore().getName())
                 .purchasedAt(socon.getPurchasedAt())
                 .expiredAt(socon.getExpiredAt())
+                .status(socon.getStatus())
                 .description(item.getDescription())
                 .image(item.getImage())
                 .build();
@@ -52,15 +53,22 @@ public class SoconService {
             Issue issue = socon.getIssue();
             Item item = issue.getItem();
 
-            usableSocons.add(SoconListResponse.builder()
-                    .soconId(socon.getId())
-                    .itemName(issue.getName())
-                    .storeName(item.getStore().getName())
-                    .expiredAt(socon.getExpiredAt())
-                    .status(socon.getStatus())
-                    .itemImage(socon.getIssue().getItem().getImage())
-                    .build());
-        }
+            if(socon.getExpiredAt().isAfter(LocalDateTime.now())) {
+                socon.setStatus("expired");
+                soconRepository.save(socon);
+            }
+            else{
+                usableSocons.add(SoconListResponse.builder()
+                        .soconId(socon.getId())
+                        .itemName(issue.getName())
+                        .storeName(item.getStore().getName())
+                        .expiredAt(socon.getExpiredAt())
+                        .status(socon.getStatus())
+                        .itemImage(socon.getIssue().getItem().getImage())
+                        .build());
+                }
+            }
+
         List<Socon> used = soconRepository.getUsedSoconByMemberId(memberId);
         for (Socon socon : used) {
             Issue issue = socon.getIssue();
@@ -77,8 +85,8 @@ public class SoconService {
         }
 
         Map<String, Object> response = new HashMap<>();
-        response.put("usableSocons", usableSocons);
-        response.put("unusableSocons", unusableSocons);
+        response.put("usable", usableSocons);
+        response.put("unusable", unusableSocons);
 
         return response;
     }
@@ -101,23 +109,34 @@ public class SoconService {
             socon.setUsedAt(LocalDateTime.now());
             soconRepository.save(socon);
         } else {
+            // 소곤에 등록된 경우, 만료 기간이 지난 경우, 사용된 상태인 경우 등등.
             throw new StoreException(StoreErrorCode.INVALID_SOCON);
         }
 
     }
 
     // 소콘북 검색
-    public List<SoconListResponse> searchSocon(
-            String category,
-            String keyword,
-            int memberId
-    ) {
+    public List<SoconListResponse> searchSocon(String category, String keyword, int memberId) {
+        List<Socon> socons;
         if (Objects.equals(category, "store")) {
-            return soconRepository.getSoconByMemberIdAndStoreName(memberId, keyword);
+            socons = soconRepository.getSoconByMemberIdAndStoreName(memberId, keyword);
         } else if (Objects.equals(category, "item")) {
-            return soconRepository.getSoconByMemberIdAndItemName(memberId, keyword);
+            socons = soconRepository.getSoconByMemberIdAndItemName(memberId, keyword);
         } else {
             throw new SoconException(ErrorCode.BAD_REQUEST);
         }
+
+        List<SoconListResponse> soconListResponses = new ArrayList<>();
+        for (Socon socon : socons) {
+            soconListResponses.add(SoconListResponse.builder()
+                    .soconId(socon.getId())
+                    .itemImage(socon.getIssue().getName())
+                    .storeName(socon.getIssue().getStoreName())
+                    .expiredAt(socon.getExpiredAt())
+                    .status(socon.getStatus())
+                    .itemImage(socon.getIssue().getImage())
+                    .build());
+        }
+        return soconListResponses;
     }
 }

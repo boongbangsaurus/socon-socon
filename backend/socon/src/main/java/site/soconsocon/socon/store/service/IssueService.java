@@ -91,7 +91,6 @@ public class IssueService {
             // 발행 가능 개수보다 요청한 개수가 많을 경우
             throw new StoreException(StoreErrorCode.ISSUE_MAX_QUANTITY);
         }
-
         issue.setIssuedQuantity(issue.getIssuedQuantity() + request.getPurchasedQuantity());
         issueRepository.save(issue);
 
