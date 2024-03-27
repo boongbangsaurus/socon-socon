@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:socon/viewmodels/sign_up_view_model.dart';
 import 'package:socon/views/atoms/checkbox.dart';
+import 'package:socon/views/atoms/icon_loader.dart';
 import 'package:socon/views/atoms/inputs.dart';
 import 'package:socon/views/modules/app_bar.dart';
 
@@ -29,89 +30,43 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    CustomTextFormField(
-                      labelText: '아이디(이메일)',
-                      keyboardType: TextInputType.emailAddress,
-                      onSaved: (String? val) {
-                        return null;
-                      },
-                      validator: (String? val) {
-                        if (val!.isEmpty) {
-                          debugPrint('email is null $val');
-                          return '이메일을 입력해주세요.';
-                        }
-                        return null;
-                      },
-                    ),
-                    CustomTextFormField(
-                      labelText: '비밀번호',
-                      keyboardType: TextInputType.emailAddress,
-                      onSaved: (String? val) {
-                        return null;
-                      },
-                      validator: (String? val) {
-                        if (val!.isEmpty) {
-                          debugPrint('비밀번호 is null $val');
-                          return '비밀번호를 입력해주세요.';
-                        }
-                        return null;
-                      },
-                    ),
-                    CustomTextFormField(
-                      labelText: '이름',
-                      keyboardType: TextInputType.emailAddress,
-                      onSaved: (String? val) {
-                        return null;
-                      },
-                      validator: (String? val) {
-                        if (val!.isEmpty) {
-                          debugPrint('이름 is null $val');
-                          return '이름을 입력해주세요.';
-                        }
-                        return null;
-                      },
-                    ),
-                    CustomTextFormField(
-                      labelText: '닉네임',
-                      keyboardType: TextInputType.emailAddress,
-                      onSaved: (String? val) {
-                        return null;
-                      },
-                      validator: (String? val) {
-                        if (val!.isEmpty) {
-                          debugPrint('닉네임 is null $val');
-                          return '닉네임을 입력해주세요.';
-                        }
-                        return null;
-                      },
-                    ),
-                    CustomTextFormField(
-                      labelText: '전화번호',
-                      keyboardType: TextInputType.phone,
-                      onSaved: (String? val) {
-                        return null;
-                      },
-                      validator: (String? val) {
-                        if (val!.isEmpty) {
-                          debugPrint('전화번호 is null $val');
-                          return '전화번호를 입력해주세요.';
-                        }
-                        return null;
-                      },
-                    ),
-                    CustomTextFormField(
-                      labelText: '인증번호',
-                      keyboardType: TextInputType.emailAddress,
-                      onSaved: (String? val) {
-                        return null;
-                      },
-                      validator: (String? val) {
-                        if (val!.isEmpty) {
-                          debugPrint('인증번호 is null $val');
-                          return '인증번호를 입력해주세요.';
-                        }
-                        return null;
-                      },
+                    SizedBox(
+                      child: Column(
+                        children: [
+                          CustomTextFormField.setCustomTextFormField(
+                              labelText: '비밀번호',
+                              helperText: '비밀번호를 입력해주세요.',
+                              textFormField: TextFormField(
+                                decoration: CustomTextFormField.getDecoration(
+                                    suffixs: const IconLoader(
+                                  iconName: 'calendar',
+                                  width: 20,
+                                  height: 20,
+                                )),
+                                style: CustomTextFormField.getTextStyle(),
+                                cursorColor:
+                                    CustomTextFormField.getCursorColor(),
+                                cursorErrorColor:
+                                    CustomTextFormField.getCursorErrorColor(),
+                                onTapOutside:
+                                    CustomTextFormField.onTapOutsideHandler,
+                                obscureText: true, // 비밀번호 같은 민감한 정보는 true처리
+                                autovalidateMode: AutovalidateMode
+                                    .onUserInteraction, // 실시간 검사
+                                keyboardType: TextInputType.emailAddress,
+                                onSaved: (String? val) {
+                                  return null;
+                                },
+                                validator: (String? val) {
+                                  if (val!.isEmpty) {
+                                    debugPrint('비밀번호 is null $val');
+                                    return '비밀번호를 입력해주세요.';
+                                  }
+                                  return null;
+                                },
+                              ))
+                        ],
+                      ),
                     ),
                     SizedBox(
                       child: Column(
