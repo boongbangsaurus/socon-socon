@@ -7,7 +7,7 @@ import site.soconsocon.socon.global.exception.SoconException;
 import site.soconsocon.socon.sogon.domain.dto.request.AddCommentRequest;
 import site.soconsocon.socon.sogon.domain.dto.request.AddSogonRequest;
 import site.soconsocon.socon.sogon.domain.dto.response.*;
-import site.soconsocon.socon.sogon.domain.entity.feign.Member;
+import site.soconsocon.socon.store.domain.entity.feign.Member;
 import site.soconsocon.socon.sogon.domain.entity.jpa.Comment;
 import site.soconsocon.socon.sogon.domain.entity.jpa.Sogon;
 import site.soconsocon.socon.sogon.exception.SogonErrorCode;
@@ -17,7 +17,7 @@ import site.soconsocon.socon.sogon.repository.SogonRepository;
 import site.soconsocon.socon.store.domain.entity.jpa.Socon;
 import site.soconsocon.socon.store.exception.StoreErrorCode;
 import site.soconsocon.socon.store.exception.StoreException;
-import site.soconsocon.socon.store.feign.MemberServiceClient;
+import site.soconsocon.socon.store.feign.FeignServiceClient;
 import site.soconsocon.socon.store.repository.SoconRepository;
 
 import java.time.Duration;
@@ -34,7 +34,7 @@ public class SogonService {
     private final SoconRepository soconRepository;
     private final SogonRepository sogonRepository;
     private final CommentRepository commentRepository;
-    private final MemberServiceClient memberServiceClient;
+    private final FeignServiceClient feignServiceClient;
 
 
     // 소곤 작성
@@ -138,17 +138,22 @@ public class SogonService {
         Sogon sogon = sogonRepository.findById(id)
                 .orElseThrow(() -> new SogonException(SogonErrorCode.SOGON_NOT_FOUND));
 
+        if(sogon.getExpiredAt().isAfter(LocalDateTime.now())){
+            sogon.setIsExpired(true);
+            sogonRepository.save(sogon);
+        }
+
         Socon socon = soconRepository.findById(sogon.getSocon().getId())
                 .orElseThrow(() -> new StoreException(StoreErrorCode.SOCON_NOT_FOUND));
 
 
-        Member sogonOwner = memberServiceClient.getMemberInfo(sogon.getMemberId());
+        Member sogonOwner = feignServiceClient.getMemberInfo(sogon.getMemberId());
 
         List<CommentResponse> commentRepsonses = new ArrayList<>();
         List<Comment> comments = commentRepository.findAllBySogonId(id);
         for (Comment comment : comments) {
 
-            Member commentOwner = memberServiceClient.getMemberInfo(comment.getMemberId());
+            Member commentOwner = feignServiceClient.getMemberInfo(comment.getMemberId());
 
             commentRepsonses.add(CommentResponse.builder()
                     .id(comment.getId())
@@ -184,6 +189,10 @@ public class SogonService {
             Socon socon = soconRepository.findById(sogon.getSocon().getId())
                     .orElseThrow(() -> new StoreException(StoreErrorCode.SOCON_NOT_FOUND));
 
+            if(sogon.getExpiredAt().isAfter(LocalDateTime.now())){
+                sogon.setIsExpired(true);
+                sogonRepository.save(sogon);
+            }
             sogonListResponses.add(SogonListResponse.builder()
                     .title(sogon.getTitle())
                     .soconImg(socon.getIssue().getImage())
@@ -250,7 +259,7 @@ public class SogonService {
 
             Duration duration = Duration.between(createdAt, expiredAt);
 
-            Member member = memberServiceClient.getMemberInfo(sogon.getMemberId());
+            Member member = feignServiceClient.getMemberInfo(sogon.getMemberId());
 
             sogonListResponses.add(GetSogonListResponse.builder()
                     .id(sogon.getId())

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import site.soconsocon.socon.global.domain.ErrorCode;
 import site.soconsocon.socon.global.exception.SoconException;
 
-import site.soconsocon.socon.sogon.domain.entity.feign.Member;
+import site.soconsocon.socon.store.domain.entity.feign.Member;
 import site.soconsocon.socon.store.domain.dto.request.*;
 import site.soconsocon.socon.store.domain.dto.response.FavoriteStoresListResponse;
 import site.soconsocon.socon.store.domain.dto.response.StoreInfoResponse;
@@ -20,7 +20,7 @@ import site.soconsocon.socon.store.domain.entity.jpa.BusinessHour;
 import site.soconsocon.socon.store.domain.entity.jpa.FavStore;
 import site.soconsocon.socon.store.domain.entity.jpa.BusinessRegistration;
 import site.soconsocon.socon.store.domain.entity.jpa.Store;
-import site.soconsocon.socon.store.feign.MemberServiceClient;
+import site.soconsocon.socon.store.feign.FeignServiceClient;
 import site.soconsocon.socon.store.repository.*;
 
 import java.time.LocalDate;
@@ -40,7 +40,7 @@ public class StoreService {
     private final FavStoreRepository favStoreRepository;
     private final IssueRepository issueRepository;
     private final SoconRepository soconRepository;
-    private final MemberServiceClient memberServiceClient;
+    private final FeignServiceClient feignServiceClient;
 
 
     // 사업자 번호 등록
@@ -119,7 +119,7 @@ public class StoreService {
         BusinessRegistration businessRegistration = store.getBusinessRegistration();
         Integer favoriteCount = favStoreRepository.countByStoreId(storeId);
 
-        Member member = memberServiceClient.getMemberInfo(store.getMemberId());
+        Member member = feignServiceClient.getMemberInfo(store.getMemberId());
 
         return StoreInfoResponse.builder()
                 .storeId(storeId)

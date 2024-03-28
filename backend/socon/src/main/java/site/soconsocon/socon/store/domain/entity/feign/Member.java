@@ -1,4 +1,4 @@
-package site.soconsocon.socon.sogon.domain.entity.feign;
+package site.soconsocon.socon.store.domain.entity.feign;
 
 import lombok.*;
 
