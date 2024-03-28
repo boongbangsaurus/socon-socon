@@ -337,7 +337,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                                       builder: (context) =>
                                                           const WebViewScreen(
                                                             url:
-                                                                "https://www.google.com",
+                                                                "https://www.socon-socon.site/",
                                                             title: '서비스 이용 약관',
                                                           )),
                                                 );
@@ -393,9 +393,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                                       builder: (context) =>
                                                           const WebViewScreen(
                                                             url:
-                                                                "https://www.google.com",
-                                                            title:
-                                                                '개인정보 수집 이용 약관',
+                                                                "https://www.socon-socon.site/",
+                                                            title: '개인정보처리방침',
                                                           )),
                                                 );
                                               },
@@ -441,7 +440,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                                       BasicButton(
                                                         text: '확인',
                                                         onPressed: () {
-                                                          context.go('/');
+                                                          context.go('/signin');
                                                         },
                                                       )
                                                     ]));
