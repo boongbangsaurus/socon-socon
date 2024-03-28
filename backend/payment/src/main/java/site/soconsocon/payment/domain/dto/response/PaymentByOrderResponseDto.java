@@ -12,11 +12,11 @@ public class PaymentByOrderResponseDto {
 
     private int id;
 
-    private String paymentUid;
+    private String impUid; //결제 고유번호
 
-    private int price;
+    private int amount;
 
-    private String orderUid;
+    private String orderUid; //주문 고유번호
 
     private String itemName;
 

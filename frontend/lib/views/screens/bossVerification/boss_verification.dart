@@ -60,7 +60,7 @@ class _BossVerificationState extends State<BossVerification> {
                       text: '완료',
                       color: "yellow",
                       onPressed: () =>
-                          {GoRouter.of(context).go("/info/success")}),
+                      {GoRouter.of(context).go("/info/success")}),
                 ),
               ),
               SizedBox(height: 25.0),
@@ -72,7 +72,7 @@ class _BossVerificationState extends State<BossVerification> {
 
 class BossInput extends StatelessWidget {
   final GlobalKey<FormState> formKey =
-      GlobalKey<FormState>(); // TextFormField를 사용하기 위한 globalkey
+  GlobalKey<FormState>(); // TextFormField를 사용하기 위한 globalkey
   late bool validationResult; //  (예시) 유효성 통과 여부를 저장할 변수
   final String labelText;
   final String hintText;
@@ -88,28 +88,28 @@ class BossInput extends StatelessWidget {
           child: SizedBox(
             // (선택/예시) sizeBox로 textformfield의 너비와 높이를 지정할 수 있다.
             width: ResponsiveUtils.getWidthWithPixels(context, 320),
-            child: CustomTextFormField(
-              // CustomTextFormField 호출
-              labelText: labelText,
-              // labelText
-              hintText: hintText,
-              // 작성 내용 제안
-              // keyboardType: TextInputType.emailAddress, // keyboardtype (number, ...)
-              // obscureText: true, // 민감한 정보 동그라미 표시
-              onSaved: (String? val) {},
-              // Form이 저장될 때 호출되는 콜백 함수
-              validator: (String? val) {
-                if (val!.isEmpty) {
-                  debugPrint('val!.isEmpty $val');
-                  return "Please enter some text";
-                }
-                if (!RegExp(r'^.{5,}$').hasMatch(val)) {
-                  debugPrint('RegExp $val');
-                  return "Minimum of 5 characters Required";
-                }
-                return null;
-              },
-            ),
+            // child: CustomTextFormField(
+            //   // CustomTextFormField 호출
+            //   labelText: labelText,
+            //   // labelText
+            //   hintText: hintText,
+            //   // 작성 내용 제안
+            //   // keyboardType: TextInputType.emailAddress, // keyboardtype (number, ...)
+            //   // obscureText: true, // 민감한 정보 동그라미 표시
+            //   onSaved: (String? val) {},
+            //   // Form이 저장될 때 호출되는 콜백 함수
+            //   validator: (String? val) {
+            //     if (val!.isEmpty) {
+            //       debugPrint('val!.isEmpty $val');
+            //       return "Please enter some text";
+            //     }
+            //     if (!RegExp(r'^.{5,}$').hasMatch(val)) {
+            //       debugPrint('RegExp $val');
+            //       return "Minimum of 5 characters Required";
+            //     }
+            //     return null;
+            //   },
+            // ),
           ),
         ),
       ],

@@ -16,4 +16,11 @@ public class ApiExceptionHandler extends RuntimeException {
         return ResponseEntity.status(e.getErrorCode().getHttpStatus())
                 .body(MessageUtils.fail(String.valueOf(e.getErrorCode()), e.getMessage()));
     }
+
+    @ExceptionHandler(AccountException.class)
+    public ResponseEntity accountExceptionHandler(AccountException e) {
+        ErrorCode code = e.getErrorCode();
+        return ResponseEntity.status(e.getErrorCode().getHttpStatus())
+                .body(MessageUtils.fail(String.valueOf(e.getErrorCode()), e.getMessage()));
+    }
 }

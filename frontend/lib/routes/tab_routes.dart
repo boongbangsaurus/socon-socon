@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
+import 'package:socon/views/atoms/qr_code.dart';
 import 'package:socon/views/screens/bossVerification/boss_verification.dart';
 import 'package:socon/views/screens/contact/contact_fail_screen.dart';
 import 'package:socon/views/screens/contact/contact_sucess_screen.dart';
@@ -15,6 +16,15 @@ class TabRoutes {
     return GoRoute(
         // path: "/",
         path: "/",
+        builder: (BuildContext context, GoRouterState state) {
+          return NearbyInfoScreen();
+        });
+  }
+
+  static RouteBase getStoreDetailRoute() {
+    return GoRoute(
+      // path: "/",
+        path: "store",
         builder: (BuildContext context, GoRouterState state) {
           return NearbyInfoScreen();
         });
