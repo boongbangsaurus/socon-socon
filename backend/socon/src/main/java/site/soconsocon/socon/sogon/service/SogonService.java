@@ -7,6 +7,7 @@ import site.soconsocon.socon.global.exception.SoconException;
 import site.soconsocon.socon.sogon.domain.dto.request.AddCommentRequest;
 import site.soconsocon.socon.sogon.domain.dto.request.AddSogonRequest;
 import site.soconsocon.socon.sogon.domain.dto.response.*;
+import site.soconsocon.socon.sogon.domain.entity.feign.Member;
 import site.soconsocon.socon.sogon.domain.entity.jpa.Comment;
 import site.soconsocon.socon.sogon.domain.entity.jpa.Sogon;
 import site.soconsocon.socon.sogon.exception.SogonErrorCode;
@@ -16,6 +17,7 @@ import site.soconsocon.socon.sogon.repository.SogonRepository;
 import site.soconsocon.socon.store.domain.entity.jpa.Socon;
 import site.soconsocon.socon.store.exception.StoreErrorCode;
 import site.soconsocon.socon.store.exception.StoreException;
+import site.soconsocon.socon.store.feign.MemberServiceClient;
 import site.soconsocon.socon.store.repository.SoconRepository;
 
 import java.time.Duration;
@@ -32,6 +34,7 @@ public class SogonService {
     private final SoconRepository soconRepository;
     private final SogonRepository sogonRepository;
     private final CommentRepository commentRepository;
+    private final MemberServiceClient memberServiceClient;
 
 
     // 소곤 작성
@@ -57,6 +60,7 @@ public class SogonService {
         if (now.isAfter(socon.getExpiredAt())) {
             now = socon.getExpiredAt();
         }
+
         socon.setStatus("sogon"); // 소콘의 상태를 "sogon"으로 업데이트
         soconRepository.save(socon);
 
@@ -137,14 +141,20 @@ public class SogonService {
         Socon socon = soconRepository.findById(sogon.getSocon().getId())
                 .orElseThrow(() -> new StoreException(StoreErrorCode.SOCON_NOT_FOUND));
 
+
+        Member sogonOwner = memberServiceClient.getMemberInfo(sogon.getMemberId());
+
         List<CommentResponse> commentRepsonses = new ArrayList<>();
         List<Comment> comments = commentRepository.findAllBySogonId(id);
         for (Comment comment : comments) {
+
+            Member commentOwner = memberServiceClient.getMemberInfo(comment.getMemberId());
+
             commentRepsonses.add(CommentResponse.builder()
                     .id(comment.getId())
                     .content(comment.getContent())
-                    .memberName("수정필요")
-                    .memberImg("수정필요")
+                    .memberName(commentOwner.getNickname())
+                    .memberImg(commentOwner.getProfileUrl())
                     .isPicked(comment.getIsPicked())
                     .build());
         }
@@ -152,8 +162,8 @@ public class SogonService {
         return Map.of("sogon", SogonResponse.builder()
                         .id(sogon.getId())
                         .title(sogon.getTitle())
-                        .memberName("수정필요")
-                        .memberImg("수정필요")
+                        .memberName(sogonOwner.getNickname())
+                        .memberImg(sogonOwner.getProfileUrl())
                         .content(sogon.getContent())
                         .image1(sogon.getImage1())
                         .image2(sogon.getImage2())
@@ -240,11 +250,13 @@ public class SogonService {
 
             Duration duration = Duration.between(createdAt, expiredAt);
 
+            Member member = memberServiceClient.getMemberInfo(sogon.getMemberId());
+
             sogonListResponses.add(GetSogonListResponse.builder()
                     .id(sogon.getId())
                     .title(sogon.getTitle())
                     .lastTime((int) duration.toHours())
-                    .memberName("수정필요")
+                    .memberName(member.getNickname())
                     .commentCount(commentRepository.countBySogonId(sogon.getId()))
                     .soconImg(sogon.getSocon().getIssue().getImage())
                     .isPicked(sogon.getIsPicked())

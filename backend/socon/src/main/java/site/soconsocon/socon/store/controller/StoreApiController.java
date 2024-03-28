@@ -157,4 +157,17 @@ public class StoreApiController {
         return ResponseEntity.ok().body(MessageUtils.success(storeService.getFavoriteStoreList(memberId)));
     }
 
+    // 사업자 번호 등록
+    @PostMapping("/business")
+    public ResponseEntity<Object> saveBusinessNumvber(
+            @Valid
+            @RequestBody
+            AddBusinessNumberRequest request,
+            @RequestHeader("X-Authorization-Id") int memberId
+    ){
+
+        storeService.saveBusinessNumber(request, memberId);
+
+        return ResponseEntity.ok().body(MessageUtils.success(null));
+    }
 }

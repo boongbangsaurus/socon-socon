@@ -7,10 +7,8 @@ import org.springframework.stereotype.Service;
 import site.soconsocon.socon.global.domain.ErrorCode;
 import site.soconsocon.socon.global.exception.SoconException;
 
-import site.soconsocon.socon.store.domain.dto.request.AddStoreRequest;
-import site.soconsocon.socon.store.domain.dto.request.BusinessHourRequest;
-import site.soconsocon.socon.store.domain.dto.request.UpdateClosedPlannedRequest;
-import site.soconsocon.socon.store.domain.dto.request.UpdateStoreInfoRequest;
+import site.soconsocon.socon.sogon.domain.entity.feign.Member;
+import site.soconsocon.socon.store.domain.dto.request.*;
 import site.soconsocon.socon.store.domain.dto.response.FavoriteStoresListResponse;
 import site.soconsocon.socon.store.domain.dto.response.StoreInfoResponse;
 import site.soconsocon.socon.store.domain.dto.response.StoreListResponse;
@@ -20,8 +18,9 @@ import site.soconsocon.socon.store.exception.StoreException;
 
 import site.soconsocon.socon.store.domain.entity.jpa.BusinessHour;
 import site.soconsocon.socon.store.domain.entity.jpa.FavStore;
-import site.soconsocon.socon.store.domain.entity.jpa.RegistrationNumber;
+import site.soconsocon.socon.store.domain.entity.jpa.BusinessRegistration;
 import site.soconsocon.socon.store.domain.entity.jpa.Store;
+import site.soconsocon.socon.store.feign.MemberServiceClient;
 import site.soconsocon.socon.store.repository.*;
 
 import java.time.LocalDate;
@@ -36,11 +35,15 @@ import java.util.Objects;
 public class StoreService {
 
     private final StoreRepository storeRepository;
-    private final RegistrationNumberRepository registrationNumberRepository;
+    private final BusinessRegistrationRepository businessRegistrationRepository;
     private final BusinessHourRepository businessHourRepository;
     private final FavStoreRepository favStoreRepository;
     private final IssueRepository issueRepository;
     private final SoconRepository soconRepository;
+    private final MemberServiceClient memberServiceClient;
+
+
+    // 사업자 번호 등록
 
 
     // 가게 정보 등록
@@ -49,11 +52,11 @@ public class StoreService {
         log.info(request.toString());
 
         //RegistrationNumber 조회
-        RegistrationNumber registrationNumber = registrationNumberRepository.findById(request.getRegistrationNumberId()).orElseThrow(() -> new StoreException(StoreErrorCode.REGISTRATION_NUMBER_NOT_FOUND));
+        BusinessRegistration businessRegistration = businessRegistrationRepository.findById(request.getRegistrationNumberId()).orElseThrow(() -> new StoreException(StoreErrorCode.REGISTRATION_NUMBER_NOT_FOUND));
 
         // 본인 소유의 사업자 등록 id가 아닌 경우
 
-        if (registrationNumber.getMemberId().equals(memberId)) {
+        if (businessRegistration.getMemberId().equals(memberId)) {
             throw new SoconException(ErrorCode.FORBIDDEN);
         }
 
@@ -68,10 +71,10 @@ public class StoreService {
                 .introduction(request.getIntroduction())
                 .closingPlanned(null).isClosed(false).createdAt(LocalDate.now())
                 .memberId(memberId)
-                .registrationNumber(registrationNumber).build();
+                .businessRegistration(businessRegistration).build();
 
         // 중복체크 : store name, registrationNumber, lat, lng
-        if (storeRepository.checkStoreDuplication(store.getName(), store.getRegistrationNumber().getId(), store.getLat(), store.getLng()) > 0) {
+        if (storeRepository.checkStoreDuplication(store.getName(), store.getBusinessRegistration().getId(), store.getLat(), store.getLng()) > 0) {
             throw new StoreException(StoreErrorCode.ALREADY_SAVED_STORE);
         }
         storeRepository.save(store);
@@ -113,8 +116,10 @@ public class StoreService {
 
         Store store = storeRepository.findById(storeId).orElseThrow(() -> new StoreException(StoreErrorCode.STORE_NOT_FOUND));
 
-        RegistrationNumber registrationNumber = store.getRegistrationNumber();
+        BusinessRegistration businessRegistration = store.getBusinessRegistration();
         Integer favoriteCount = favStoreRepository.countByStoreId(storeId);
+
+        Member member = memberServiceClient.getMemberInfo(store.getMemberId());
 
         return StoreInfoResponse.builder()
                 .storeId(storeId)
@@ -128,9 +133,9 @@ public class StoreService {
                 .closingPlanned(store.getClosingPlanned())
                 .favoriteCount(favoriteCount)
                 .createdAt(store.getCreatedAt())
-                .registrationNumber(registrationNumber.getRegistrationNumber())
-                .registrationAddress(registrationNumber.getRegistrationAddress())
-                .owner("temp_user") // 사업자 나중에 수정
+                .registrationNumber(businessRegistration.getRegistrationNumber())
+                .registrationAddress(businessRegistration.getRegistrationAddress())
+                .owner(member.getName()) // 사업자 나중에 수정
                 .build();
     }
 
@@ -288,8 +293,17 @@ public class StoreService {
                     .image(store.getImage())
                     .mainMenu(issueRepository.findMainIssueNameByStoreId(store.getId()))
                     .build());
-
         }
         return stores;
+    }
+
+    // 사업자 등록
+    public void saveBusinessNumber(AddBusinessNumberRequest request, int memberId) {
+
+        businessRegistrationRepository.save(BusinessRegistration.builder()
+                .registrationNumber(request.getNumber())
+                .registrationAddress(request.getAddress())
+                .memberId(memberId)
+                .build());
     }
 }

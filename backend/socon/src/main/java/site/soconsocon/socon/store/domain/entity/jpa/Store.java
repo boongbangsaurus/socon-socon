@@ -59,7 +59,7 @@ public class Store {
 
     @ManyToOne
     @JoinColumn(name = "registration_number_id")
-    private RegistrationNumber registrationNumber;
+    private BusinessRegistration businessRegistration;
 
     @OneToMany(mappedBy = "store")
     private List<BusinessHour> businessHours = new ArrayList<>();
