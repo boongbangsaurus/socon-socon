@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import site.soconsocon.payment.domain.dto.request.OrderRequestDto;
 import site.soconsocon.payment.domain.entity.jpa.Order;
+import site.soconsocon.payment.exception.PaymentException;
 import site.soconsocon.payment.service.OrderService;
 import site.soconsocon.utils.MessageUtils;
 
@@ -25,19 +26,27 @@ public class OrderController {
      * @param orderRequestDto
      * @return
      */
-    @PostMapping("/success")
+    @PostMapping("")
     public ResponseEntity order(@RequestHeader("X-Authorization-Id") int memberId, @RequestBody OrderRequestDto orderRequestDto) {
         try {
-            orderService.saveOrder(memberId, orderRequestDto);
-            log.info("결제 성공 : 주문 번호 {}", orderRequestDto.getOrderUid());
-            return ResponseEntity.ok().body(MessageUtils.success());
+            log.info("주문 성공 : 주문 번호 {}", orderRequestDto.getOrderUid());
+            return ResponseEntity.ok().body(MessageUtils.success(orderService.saveOrder(memberId, orderRequestDto)));
+
         } catch (RuntimeException e) {
-            log.info("주문 상품 환불 진행 : 주문 번호 {}", orderRequestDto.getOrderUid());
-//            String token = refundService.getToken(apiKey, secretKey);
-//            refundService.refundWithToken(token, orderNumber, e.getMessage());
+            log.info("주문 실패 : 주문 번호 {}", orderRequestDto.getOrderUid());
             return ResponseEntity.status(400).body(MessageUtils.fail("400", "주문을 실패하였습니다."));
         }
+    }
 
-        return ResponseEntity.ok().body(MessageUtils.success();
+    /**
+     * 결제 고유번호로 주문 조회
+     *
+     * @param impUid
+     * @return
+     * @throws PaymentException
+     */
+    @GetMapping("/{impUid}")
+    public ResponseEntity getOrderByImpUid(@PathVariable String impUid) throws PaymentException {
+        return ResponseEntity.ok().body(MessageUtils.success(orderService.findOrderByImpUid(impUid)));
     }
 }

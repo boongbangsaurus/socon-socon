@@ -9,7 +9,7 @@ public class OrderRequestDto {
 
     private String itemName;
 
-    private String orderUid;
+    private String orderUid; //주문 고유번호
 
     private int price;
 
@@ -18,5 +18,6 @@ public class OrderRequestDto {
     private int memberId; //회원 아이디
 
     private int issueId; // 발행 아이디
+
 
 }
