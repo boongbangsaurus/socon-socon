@@ -1,8 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
+
 import 'package:socon/utils/colors.dart';
 import 'package:socon/utils/fontSizes.dart';
+import 'package:socon/utils/icons.dart';
+import 'package:socon/utils/responsive_utils.dart';
 import 'package:socon/views/atoms/buttons.dart';
 import 'package:socon/views/atoms/checkbox.dart';
 import 'package:socon/views/atoms/dropdown.dart';
@@ -89,48 +94,53 @@ class Step1 extends StatelessWidget {
     return Scaffold(
       body: Container(
         padding: EdgeInsets.all(20.0),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                '대표자',
-                style: TextStyle(fontSize: FontSizes.SMALL, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 10),
-              Text('김싸피',
-                  style: TextStyle(fontSize: 18)),
-              SizedBox(height: 40),
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '대표자',
+                      style: TextStyle(fontSize: FontSizes.SMALL, fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: 10),
+                    Text('김싸피',
+                        style: TextStyle(fontSize: 18)),
+                    SizedBox(height: 40),
 
-              CustomInputField(
-                labelText: '사업자 등록 번호',
-                onChanged: (value) => viewModel.setRegistrationNumber(value),
-              ),
+                    CustomInputField(
+                      labelText: '사업자 등록 번호',
+                      onChanged: (value) => viewModel.setRegistrationNumber(value),
+                    ),
 
-              CustomInputField(
-                labelText: '사업자 주소',
-                onChanged: (value) => viewModel.setAddress(value),
-              ),
+                    CustomInputField(
+                      labelText: '사업자 주소',
+                      onChanged: (value) => viewModel.setAddress(value),
+                    ),
 
-              Text(
-                '점포 등록 유의사항',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              Text('점포 폐업신고는 폐업일 최소 7일 이전에 신고해 주세요'),
+                    Text(
+                      '점포 등록 유의사항',
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                    Text('점포 폐업신고는 폐업일 최소 7일 이전에 신고해 주세요'),
 
-              // Spacer(),
-              SizedBox(height: 100),
-              BasicButton(
-                text: '다음',
-                color: 'yellow',
-                onPressed: () => pageController.nextPage(
-                  duration: Duration(milliseconds: 300),
-                  curve: Curves.easeInOut,
+                  ],
                 ),
               ),
-            ],
-          ),
-        ),
+            ),
+            SizedBox(height: 10),
+            BasicButton(
+              text: '다음',
+              color: 'yellow',
+              onPressed: () => pageController.nextPage(
+                duration: Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+              ),
+            ),
+          ],
+        )
       ),
     );
   }
@@ -150,11 +160,14 @@ class Step2 extends StatefulWidget {
 }
 
 class _Step2State extends State<Step2> {
+  var userImage;
+
   @override
   Widget build(BuildContext context) {
     final viewModel = Provider.of<RegisterViewModel>(context);
     return Scaffold(
       body: SingleChildScrollView(
+        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -223,23 +236,77 @@ class _Step2State extends State<Step2> {
             ),
             SizedBox(height: 40,),
             CustomInputField(
-              labelText: '업체 주소를 입력해 주세요',
+              labelText: '가게 주소를 입력해 주세요',
               onChanged: (value) => viewModel.setAddress(value),
-              // hintText: '서울시 강남구 역삼동'
+              hintText: '도로명, 건물명 또는 지번으로 검색'
             ),
 
             CustomInputField(
-              labelText: '업체 소개를 입력해 주세요',
+              labelText: '가게 소개를 입력해 주세요',
               onChanged: (value) => viewModel.setIntroduction(value),
             ),
 
-            Text(
-              '업체 사진을 추가해 주세요',
-              style: TextStyle(fontSize: FontSizes.SMALL, fontWeight: FontWeight.bold),
+            Text('가게 사진을 추가해 주세요',
+              style: TextStyle(fontSize: FontSizes.SMALL, fontWeight: FontWeight.bold),),
+            Row(
+              children: [
+                // 이미지를 보여줄 box
+                Container(
+                  margin: EdgeInsets.symmetric(vertical: 20),
+                  width: 80, // 이미지 박스의 너비 설정
+                  height: 80, // 이미지 박스의 높이 설정
+                  decoration: BoxDecoration(
+                    color: AppColors.GRAY200,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: userImage != null
+                      ? Stack(
+                    // alignment: Alignment.topRight,
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: Image.file(
+                          userImage,
+                          width: 80,
+                          height: 80,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      Positioned(
+                        top: -10,
+                        right: -10,
+                        child:
+                        IconButton(
+                          icon: Icon(Icons.close, color: Colors.white, size: 15,),
+                          onPressed: () {
+                            setState(() {
+                              userImage = null;
+                            });
+                          },
+                        ),
+                      ),
+                    ],
+                  )
+                      : IconButton(
+                    onPressed: () async {
+                      var picker = ImagePicker();
+                      var image = await picker.pickImage(source: ImageSource.gallery);
+                      if (image != null) {
+                        setState(() {
+                          userImage = File(image.path); // 이미지 선택
+                        });
+                      }
+                    },
+                    icon: Icon(Icons.add),
+                    color: Colors.black,
+                  ),
+                ),
+
+              ],
             ),
 
 
-            SizedBox(height: 50),
+            SizedBox(height: 10),
 
             BasicButton(
               text: '다음',
@@ -488,6 +555,10 @@ class _Step3State extends State<Step3> {
   }
 }
 
+
+
+
+
 class SummaryPage extends StatelessWidget {
   final PageController pageController;
 
@@ -499,92 +570,115 @@ class SummaryPage extends StatelessWidget {
     final viewModel = Provider.of<RegisterViewModel>(context);
 
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Container(
-          padding: EdgeInsets.all(20.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text("가게 등록 요약",
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
-              Divider(),
-              Text("대표자: ", style: TextStyle(fontSize: 18)),
-              Text("사업자등록번호: ${viewModel.registrationNumber}",
-                  style: TextStyle(fontSize: 18)),
-              Text("사업자주소: ${viewModel.address}",
-                  style: TextStyle(fontSize: 18)),
-              Text("상호명: ${viewModel.name}", style: TextStyle(fontSize: 18)),
-              Text("전화번호: ${viewModel.phoneNumber}"),
-              ListView.builder(
-                shrinkWrap: true, // 추가
-                physics: NeverScrollableScrollPhysics(),
-
-                itemCount: viewModel.businessHours?.length ?? 0,
-                itemBuilder: (context, index) {
-                  final businessHour = viewModel.businessHours![index];
-                  // 운영시간 문자열 생성
-                  String operatingHoursText = "${businessHour.day}: ";
-                  if (businessHour.isWorking ?? false) {
-                    operatingHoursText +=
-                        "${businessHour.openAt} - ${businessHour.closeAt}";
-                    if (businessHour.breakTime ?? false) {
-                      operatingHoursText +=
-                          " (휴게시간: ${businessHour.breaktimeStart} - ${businessHour.breaktimeEnd})";
-                    }
-                  } else {
-                    operatingHoursText += "휴무";
-                  }
-
-                  return Text(
-                    operatingHoursText,
-                    style: TextStyle(fontSize: 18),
-                  );
-                },
-              ),
-
-              BasicButton(
-                text: '완료',
-                color: 'yellow',
-                onPressed: () => pageController.nextPage(
-                  duration: Duration(milliseconds: 300),
-                  curve: Curves.easeInOut,
+      body: SafeArea(
+        child: Stack(
+          children: [
+            Column(
+              children: [
+                Container(
+                  child: Image.network(
+                      'https://cataas.com/cat',
+                      fit: BoxFit.cover,
+                      height: 160,
+                      width: ResponsiveUtils.getWidthPercent(context, 100)
+                  ),
                 ),
-              ),
 
-              // Spacer(),
-              // ElevatedButton(
-              //   onPressed: () {
-              //     // 서버에 데이터를 전송하는 로직을 구현할 수 있습니다.
-              //     // 이 예제에서는 단순히 완료 메시지를 보여주는 것으로 대체합니다.
-              //     showDialog(
-              //       context: context,
-              //       builder: (context) => AlertDialog(
-              //         title: Text("등록 완료"),
-              //         content: Text("가게 등록이 성공적으로 완료되었습니다."),
-              //         actions: [
-              //           TextButton(
-              //             onPressed: () {
-              //               Navigator.of(context).pop();
-              //             },
-              //             child: Text("확인"),
-              //           ),
-              //         ],
-              //       ),
-              //     );
-              //   },
-              //   child: Text('등록 완료'),
-              //   style: ElevatedButton.styleFrom(
-              //     backgroundColor: Colors.green,
-              //     foregroundColor: Colors.white,
-              //   ),
-              // ),
-            ],
-          ),
+              ],
+            ),
+
+            // 매장정보 카드
+            Container(
+              alignment: Alignment.topCenter,
+              padding: EdgeInsets.only(
+                top: 80,
+                right: 16.0,
+                left: 16.0,
+              ),
+              width: ResponsiveUtils.getWidthPercent(context, 100),
+
+              child: Column(
+                children: [
+                  Container(
+                      width: ResponsiveUtils.getWidthPercent(context, 100),
+                      height: 500.0,
+
+                      padding: EdgeInsets.fromLTRB(20, 20, 20, 0),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.3),
+                            spreadRadius: 1, // 그림자 범위
+                            blurRadius: 7, // 그림자 흐림 정도
+                            offset: Offset(0, 3), // 그림자 위치 조정
+                          ),
+                        ],
+                        borderRadius: BorderRadius.circular(20), // 모서리 곡률을 10으로 설정
+                      ),
+                      // elevation: 4.0,   // Card 일때
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text('가게정보',
+                            style: TextStyle(fontSize: FontSizes.XLARGE, fontWeight: FontWeight.bold),),
+                          SizedBox(height: 20,),
+                          Row(
+                            children: [
+                              Expanded(
+                                flex: 2,
+                                child: Text('전화번호',
+                                  style: TextStyle(),),
+                              ),
+                              Expanded(
+                                flex: 3,
+                                child: Text('010-2345-6789',
+                                  style: TextStyle(),),
+                              ),
+                            ],
+                          ),
+
+                          SizedBox(height: 20,),
+                          Row(
+                            children: [
+                              Expanded(
+                                flex: 2,
+                                child: Text('위치',
+                                  style: TextStyle(),),
+                              ),
+                              Expanded(
+                                flex: 3,
+                                child: Text('010-2345-6789',
+                                  style: TextStyle(),),
+                              ),
+                            ],
+                          ),
+
+                        ],
+                      ),
+                    ),
+
+                  Container(
+                    child: Column(
+                      children: [
+                        Text('testttt'),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
+
+          ],
         ),
       ),
+      bottomNavigationBar: null,
     );
   }
 }
+
+
+
 
 class RegisterComplete extends StatelessWidget {
   final PageController pageController;

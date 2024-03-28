@@ -43,7 +43,7 @@ class _MyStoreListsState extends State<MyStoreLists> {
                 overlayColor: MaterialStateProperty.resolveWith<Color?>(
                       (Set<MaterialState> states) {
                     if (states.contains(MaterialState.pressed)) return AppColors.YELLOW;
-                    return null; // 기본 상태에서는 변경 없음
+                    return null;
                   },
                 ),
               ),
