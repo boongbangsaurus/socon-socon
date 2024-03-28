@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:socon/utils/fontSizes.dart';
 import 'package:socon/utils/icons.dart';
 import 'package:socon/utils/responsive_utils.dart';
+import 'package:socon/viewmodels/socon_coupon_view_model.dart';
 import 'package:socon/views/atoms/qr_code.dart';
 
 import '../../utils/colors.dart';
@@ -118,6 +119,7 @@ class SoconCouponCard extends StatelessWidget {
 class SoconCoupon extends StatelessWidget {
   final VoidCallback onPressed;
   final GlobalKey _repaintBoundaryKey = GlobalKey();
+  final SoconCouponViewModel _soconCouponViewModel = SoconCouponViewModel();
 
   SoconCoupon({this.onPressed = _defaultOnPressed});
 
@@ -137,12 +139,15 @@ class SoconCoupon extends StatelessWidget {
             RepaintBoundary(
               key: _repaintBoundaryKey,
               child: SoconCouponCard(),
-            )
+            ),
             SizedBox(
               height: ResponsiveUtils.getHeightWithPixels(context, 15),
             ),
             GestureDetector(
-              onTap: () => {print("소곤 교환권 저장")},
+              onTap: () => {
+                print("소곤 교환권 저장"),
+                _soconCouponViewModel.captureAndSaveImage(_repaintBoundaryKey),
+              },
               child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(5.0),
