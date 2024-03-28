@@ -25,7 +25,7 @@ public class SogonController {
 
         sogonService.addSogon(request, memberId);
 
-        return ResponseEntity.ok().body(MessageUtils.success());
+        return ResponseEntity.ok().body(MessageUtils.success(null, "201 CREATED", null));
     }
 
     // 소곤 댓글 추가

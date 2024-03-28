@@ -15,6 +15,7 @@ public class SoconInfoResponse {
     private String storeName;
     private LocalDateTime purchasedAt;
     private LocalDateTime expiredAt;
+    private String status;
     private String description;
     private String image;
 

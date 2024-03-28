@@ -34,34 +34,31 @@ public class SogonService {
     private final CommentRepository commentRepository;
 
 
+    // 소곤 작성
     public void addSogon(AddSogonRequest request, int memberId) {
 
         // 유효한 소콘인지 체크
         Socon socon = soconRepository.findById(request.getSoconId())
                 .orElseThrow(() -> new StoreException(StoreErrorCode.SOCON_NOT_FOUND));
-        if (!Objects.equals(socon.getStatus(), "unused")) {
-            // 이미 사용된 소콘
+        if (!Objects.equals(socon.getStatus(), "unused") || // 사용가능한 소콘이 아닐 경우
+                socon.getExpiredAt().isBefore(LocalDateTime.now()) // 만료된 소콘일 경우
+        ) {
             throw new StoreException(StoreErrorCode.INVALID_SOCON);
         }
-        if (socon.getExpiredAt().isBefore(LocalDateTime.now())) {
-            // 이미 만료된 소콘
-            throw new StoreException(StoreErrorCode.INVALID_SOCON);
-        }
-        if (sogonRepository.countBySoconId(request.getSoconId()) > 0) {
-            // 이미 소곤에 등록된 소콘
-            throw new StoreException(StoreErrorCode.INVALID_SOCON);
-        }
+
         if (!Objects.equals(socon.getMemberId(), memberId)) {
             // 본인 소유 소콘이 아님
             throw new SoconException(ErrorCode.FORBIDDEN);
         }
 
         LocalDateTime now = LocalDateTime.now();
+        now = now.plusHours(24);
+
         if (now.isAfter(socon.getExpiredAt())) {
             now = socon.getExpiredAt();
-        } else {
-            now = now.plusHours(24);
         }
+        socon.setStatus("sogon"); // 소콘의 상태를 "sogon"으로 업데이트
+        soconRepository.save(socon);
 
         sogonRepository.save(Sogon.builder()
                 .title(request.getTitle())
@@ -79,6 +76,8 @@ public class SogonService {
                 .build());
     }
 
+
+    // 댓글 작성
     public void addSogonComment(Integer sogonId,
                                 AddCommentRequest request,
                                 int memberId) {
@@ -86,8 +85,8 @@ public class SogonService {
         Sogon sogon = sogonRepository.findById(sogonId)
                 .orElseThrow(() -> new SogonException(SogonErrorCode.SOGON_NOT_FOUND));
 
-        if (!sogon.getIsExpired()) {
-            throw new StoreException(StoreErrorCode.INVALID_SOCON);
+        if (sogon.getIsExpired()) {
+            throw new SogonException(SogonErrorCode.INVALID_SOGON);
         }
 
         commentRepository.save(Comment.builder()

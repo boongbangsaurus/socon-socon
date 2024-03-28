@@ -7,7 +7,6 @@ import site.soconsocon.socon.store.domain.dto.response.SoconInfoResponse;
 import site.soconsocon.socon.store.service.SoconService;
 import site.soconsocon.utils.MessageUtils;
 
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/socons")
@@ -31,8 +30,7 @@ public class SoconApiController {
     public ResponseEntity<Object> soconBook(
             @RequestHeader("X-Authorization-Id") int memberId
     ) {
-        Map<String, Object> response = soconService.getMySoconList(memberId);
-        return ResponseEntity.ok().body(MessageUtils.success(response));
+        return ResponseEntity.ok().body(MessageUtils.success(soconService.getMySoconList(memberId)));
     }
 
     // 소콘 사용 승인
