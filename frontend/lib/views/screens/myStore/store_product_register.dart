@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 import 'dart:io';
 
 import 'package:socon/utils/colors.dart';
@@ -10,6 +11,8 @@ import 'package:socon/utils/toast_utils.dart';
 import 'package:socon/views/atoms/buttons.dart';
 import 'package:socon/views/atoms/input_form.dart';
 import 'package:socon/views/screens/myStore/product_register_toast.dart';
+import 'package:socon/viewmodels/store_product_view_model.dart';
+
 
 
 
@@ -23,6 +26,17 @@ class ProductRegister extends StatefulWidget {
 }
 
 class _ProductRegisterState extends State<ProductRegister> {
+  ProductViewModel? productViewModel;
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController priceController = TextEditingController();
+
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // productViewModel을 초기화합니다.
+    productViewModel = Provider.of<ProductViewModel>(context, listen: false);
+  }
+
+
   var userImage;
   String menuName = '';
   String introLine = '';
