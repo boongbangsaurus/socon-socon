@@ -23,16 +23,16 @@ public class Item {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "image", nullable = true)
+    @Column(name = "image")
     private String image;
 
     @Column(name = "price", nullable = false)
     private Integer price;
 
-    @Column(name = "summary", nullable = true)
+    @Column(name = "summary")
     private String summary;
 
-    @Column(name = "description", nullable = true)
+    @Column(name = "description")
     private String description;
 
     @ManyToOne
