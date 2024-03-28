@@ -33,9 +33,6 @@ public class Sogon {
     @Column(name = "expired_at", nullable = false)
     private LocalDateTime expiredAt;
 
-    @Column(name = "is_expired", nullable = false, columnDefinition = "boolean default false")
-    private Boolean isExpired; // 게시 기간 만료 여부
-
     @Column(name = "is_picked", nullable = false, columnDefinition = "boolean default false")
     private Boolean isPicked; // 채택 소곤 여부
 

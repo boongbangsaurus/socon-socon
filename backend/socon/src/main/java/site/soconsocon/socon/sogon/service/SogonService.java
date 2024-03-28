@@ -69,7 +69,6 @@ public class SogonService {
                 .content(request.getContent())
                 .createdAt(LocalDateTime.now())
                 .expiredAt(now)
-                .isExpired(false)
                 .isPicked(false)
                 .image1(request.getImage1())
                 .image2(request.getImage2())
@@ -88,10 +87,6 @@ public class SogonService {
 
         Sogon sogon = sogonRepository.findById(sogonId)
                 .orElseThrow(() -> new SogonException(SogonErrorCode.SOGON_NOT_FOUND));
-
-        if (sogon.getIsExpired()) {
-            throw new SogonException(SogonErrorCode.INVALID_SOGON);
-        }
 
         commentRepository.save(Comment.builder()
                 .content(request.getContent())
@@ -138,11 +133,6 @@ public class SogonService {
         Sogon sogon = sogonRepository.findById(id)
                 .orElseThrow(() -> new SogonException(SogonErrorCode.SOGON_NOT_FOUND));
 
-        if(sogon.getExpiredAt().isAfter(LocalDateTime.now())){
-            sogon.setIsExpired(true);
-            sogonRepository.save(sogon);
-        }
-
         Socon socon = soconRepository.findById(sogon.getSocon().getId())
                 .orElseThrow(() -> new StoreException(StoreErrorCode.SOCON_NOT_FOUND));
 
@@ -175,7 +165,7 @@ public class SogonService {
                         .soconImg(socon.getIssue().getImage())
                         .createdAt(sogon.getCreatedAt())
                         .expiredAt(sogon.getExpiredAt())
-                        .isExpired(sogon.getIsExpired())
+                        .isExpired(sogon.getExpiredAt().isAfter(LocalDateTime.now()))
                         .build(),
                 "comments", commentRepsonses);
     }
@@ -189,15 +179,11 @@ public class SogonService {
             Socon socon = soconRepository.findById(sogon.getSocon().getId())
                     .orElseThrow(() -> new StoreException(StoreErrorCode.SOCON_NOT_FOUND));
 
-            if(sogon.getExpiredAt().isAfter(LocalDateTime.now())){
-                sogon.setIsExpired(true);
-                sogonRepository.save(sogon);
-            }
             sogonListResponses.add(SogonListResponse.builder()
                     .title(sogon.getTitle())
                     .soconImg(socon.getIssue().getImage())
                     .createdAt(sogon.getCreatedAt())
-                    .isExpired(sogon.getIsExpired())
+                    .isExpired(sogon.getExpiredAt().isAfter(LocalDateTime.now()))
                     .isPicked(sogon.getIsPicked())
                     .build());
         }
