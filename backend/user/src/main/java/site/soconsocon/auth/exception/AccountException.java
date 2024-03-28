@@ -3,11 +3,12 @@ package site.soconsocon.auth.exception;
 import lombok.Getter;
 
 @Getter
-public class MemberException extends Exception {
+public class AccountException extends Exception {
 
     private final ErrorCode errorCode;
 
-    public MemberException(ErrorCode errorCode) {
+    public AccountException(ErrorCode errorCode) {
         this.errorCode = errorCode;
     }
+
 }

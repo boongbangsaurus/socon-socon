@@ -14,6 +14,8 @@ public class PaymentRequestDto {
 
     private int paymentPrice;
 
+    private String paymentStatus;
+
     @Builder
     public PaymentRequestDto(String orderUid, String itemName, String buyerName, int paymentPrice) {
         this.orderUid = orderUid;

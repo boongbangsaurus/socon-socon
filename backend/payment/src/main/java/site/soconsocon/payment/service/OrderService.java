@@ -3,9 +3,11 @@ package site.soconsocon.payment.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import site.soconsocon.payment.domain.dto.request.OrderRequestDto;
+import site.soconsocon.payment.domain.dto.response.PaymentByOrderResponseDto;
 import site.soconsocon.payment.domain.entity.jpa.Order;
 import site.soconsocon.payment.domain.entity.jpa.Payment;
-import site.soconsocon.payment.domain.entity.jpa.PaymentStatus;
+import site.soconsocon.payment.exception.ErrorCode;
+import site.soconsocon.payment.exception.PaymentException;
 import site.soconsocon.payment.repository.OrderRepository;
 import site.soconsocon.payment.repository.PaymentRepository;
 
@@ -18,24 +20,41 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final PaymentRepository paymentRepository;
 
-    public Order order(int memberId, OrderRequestDto orderRequestDto) {
-        Payment payment = Payment.builder()
-                .price(orderRequestDto.getPrice())
-                .status(PaymentStatus.READY)
-                .build();
-
-        paymentRepository.save(payment);
+    public String saveOrder(int memberId, OrderRequestDto orderRequestDto) {
 
         Order order = Order.builder()
                 .orderUid(UUID.randomUUID().toString())
                 .itemName(orderRequestDto.getItemName())
                 .price(orderRequestDto.getPrice())
                 .memberId(memberId)
+                .quantity(orderRequestDto.getQuantity())
                 .issueId(orderRequestDto.getIssueId())
-                .paymentId(payment.getId())
                 .build();
 
-        return orderRepository.save(order);
+        orderRepository.save(order);
+        String orderUid = order.getOrderUid();
+
+        return orderUid;
+    }
+
+    public PaymentByOrderResponseDto findOrderByImpUid(String impUid) throws PaymentException {
+        //결제 정보 가져오기
+        site.soconsocon.payment.domain.entity.jpa.Payment payment = paymentRepository.findPaymentByImpUid(impUid).orElseThrow(
+                () -> new PaymentException(ErrorCode.PAYMENT_NOT_FOUND)
+        );
+        //주문내역 조회
+        Order order = orderRepository.findOrderByImpUid(impUid)
+                .orElseThrow(() -> new PaymentException(ErrorCode.ORDER_NOT_FOUND));
+
+        PaymentByOrderResponseDto paymentByOrderResponseDto = PaymentByOrderResponseDto.builder()
+                .id(payment.getId())
+                .impUid(payment.getImpUid())
+                .amount(payment.getAmount())
+                .orderUid(payment.getOrderUid())
+                .itemName(payment.getItemName())
+                .build();
+
+        return paymentByOrderResponseDto;
     }
 
 }
