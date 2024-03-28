@@ -20,6 +20,15 @@ class TabRoutes {
         });
   }
 
+  static RouteBase getStoreDetailRoute() {
+    return GoRoute(
+      // path: "/",
+        path: "store",
+        builder: (BuildContext context, GoRouterState state) {
+          return NearbyInfoScreen();
+        });
+  }
+
   static RouteBase getSogonMainRoute() {
     return GoRoute(
         path: "/sogon",

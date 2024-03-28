@@ -23,7 +23,6 @@ class Store {
 }
 
 
-
 // 더미데이터
 // {
 //   "store_id": 0,
