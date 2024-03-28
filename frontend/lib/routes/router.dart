@@ -44,10 +44,12 @@ final GoRouter router =
 
 Widget _bottomNavBar(StatefulNavigationShell navigationShell) {
   final currentRoute = navigationShell.shellRouteContext.routeMatchList;
+
+  final regExp = RegExp(r'^/info/.*/success$');
   final bool showBottomNavBar =
       currentRoute.uri.toString() == "/info/contact" ||
-          currentRoute.uri.toString() == "/info/verification" ||
-          currentRoute.uri.toString() == "/info/success" ||
+          currentRoute.uri.toString() == "/info/verify" ||
+          regExp.hasMatch(currentRoute.uri.toString())  ||
           currentRoute.uri.toString() == "/soconbook/detail";
 
   // print(currentRoute.uri.toString().runtimeType); // 타입 확인
