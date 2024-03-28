@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:go_router/go_router.dart";
+import "package:socon/models/business_owner.dart";
 import "package:socon/utils/fontSizes.dart";
 import "package:socon/utils/responsive_utils.dart";
 import "package:socon/views/atoms/inputs.dart";
@@ -19,12 +20,20 @@ class BossVerification extends StatefulWidget {
 }
 
 class _BossVerificationState extends State<BossVerification> {
-  Message bossVerificationMessage =
-      ResultMessages.getMessage('bossVerification');
   final _formKey = GlobalKey<FormState>();
+  final businessOwner = BusinessOwner(
+    owner: '',
+    registrationNumberId: '',
+    registrationNumber: '',
+    registrationAddress: '',
+    startDate: '',
+  );
 
   @override
   Widget build(BuildContext context) {
+    final bossVerificationMessage =
+        ResultMessages.getMessage('bossVerification');
+
     return Scaffold(
       backgroundColor: AppColors.WHITE,
       appBar: CustomAppBarWithArrow(title: bossVerificationMessage.name),
@@ -34,10 +43,9 @@ class _BossVerificationState extends State<BossVerification> {
           children: [
             Expanded(
               child: SingleChildScrollView(
-                // SingleChildScrollView 추가
                 child: Container(
-                  padding: EdgeInsets.fromLTRB(
-                      0, ResponsiveUtils.getHeightWithPixels(context, 40), 0, 0),
+                  padding: EdgeInsets.fromLTRB(0,
+                      ResponsiveUtils.getHeightWithPixels(context, 40), 0, 0),
                   alignment: Alignment.topCenter,
                   child: Form(
                     key: _formKey,
@@ -47,21 +55,31 @@ class _BossVerificationState extends State<BossVerification> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           BossInput(
-                              labelText: "대표자",
-                              helperText: "외국인 사업자의 경우에는 영문명을 입력해주세요.",
-                              emptyText: "대표자 성함을 입력해주세요."),
+                            type: "owner",
+                            labelText: "대표자",
+                            helperText: "외국인 사업자의 경우에는 영문명을 입력해주세요.",
+                            emptyText: "대표자 성함을 입력해주세요.",
+                            onSaved: (val) => businessOwner.owner = val ?? '',
+                          ),
                           const SizedBox(height: 15),
                           BossInput(
-                              labelText: "사업자 등록 번호",
-                              helperText: "123-45-6789 형태로 사업자 등록 번호를 입력해주세요.",
-                              emptyText: "사업자 등록 번호를 입력해주세요."),
+                            type: "registrationNumber",
+                            labelText: "사업자 등록 번호",
+                            helperText: "123-45-6789 형태로 사업자 등록 번호를 입력해주세요.",
+                            emptyText: "사업자 등록 번호를 입력해주세요.",
+                            onSaved: (val) =>
+                                businessOwner.registrationNumber = val ?? '',
+                          ),
                           const SizedBox(height: 15),
                           BossInput(
-                              labelText: "개업일",
-                              helperText: "달력 아이콘을 선택하여 사업자 등록증에 표기된 개업일을 입력해주세요",
-                              emptyText: "개업일을 입력해주세요.",
-                              showIcon: true),
-                          // 여기에 필요한 만큼 입력 필드 추가
+                            type: "startDate",
+                            labelText: "개업일",
+                            helperText: "달력 아이콘을 선택하여 사업자 등록증에 표기된 개업일을 입력해주세요",
+                            emptyText: "개업일을 입력해주세요.",
+                            showIcon: true,
+                            onSaved: (val) =>
+                                businessOwner.startDate = val ?? '',
+                          ),
                         ],
                       ),
                     ),
@@ -72,32 +90,39 @@ class _BossVerificationState extends State<BossVerification> {
             BasicButton(
               text: "인증하기",
               btnSize: 'l',
-              onPressed: () async {
+              onPressed: () {
                 if (_formKey.currentState?.validate() ?? false) {
-                  // 인증 로직
+                  _formKey.currentState!.save();
+                  debugPrint("사업자 등록 정보 입력: ${businessOwner.toJson()}");
+                  
+                  GoRouter.of(context).go("/info/verify/success");
                 }
               },
             ),
           ],
         ),
-      )
+      ),
     );
   }
 }
 
 class BossInput extends StatelessWidget {
   late bool validationResult; //  (예시) 유효성 통과 여부를 저장할 변수
+  final String type;
   final String labelText;
   final String helperText;
   final String emptyText;
   final bool showIcon;
+  final Function(String?) onSaved;
 
   BossInput({
     super.key,
+    required this.type,
     required this.labelText,
     required this.helperText,
     required this.emptyText,
     this.showIcon = false,
+    required this.onSaved,
   });
 
   @override
@@ -129,7 +154,7 @@ class BossInput extends StatelessWidget {
             autovalidateMode: AutovalidateMode.onUserInteraction,
             // 실시간 검사
             keyboardType: TextInputType.name,
-            onSaved: (String? val) {},
+            onSaved: onSaved,
             validator: (String? val) {
               if (val == null || val.isEmpty) {
                 return emptyText;

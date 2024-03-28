@@ -9,6 +9,7 @@ import 'package:socon/views/screens/my_store_list_screen.dart';
 import 'package:socon/views/screens/soconBook/socon_book_detail_screen.dart';
 import 'package:socon/views/screens/soconBook/socon_book_screen.dart';
 import 'package:socon/views/screens/sogon_main_screen.dart';
+import '../views/screens/bossVerification/boss_verification_success_screen.dart';
 import '../views/screens/nearby_info_screen.dart';
 
 class TabRoutes {
@@ -103,9 +104,21 @@ class TabRoutes {
   static RouteBase getBossVerification() {
     return GoRoute(
       name: "bossVerification",
-      path: "verification",
+      path: "verify",
       builder: (BuildContext context, GoRouterState state) {
         return BossVerification();
+      },
+      routes: [
+        getVerifySuccessRoute(),
+      ]
+    );
+  }
+  static RouteBase getVerifySuccessRoute() {
+    return GoRoute(
+      name: "verify",
+      path: "success",
+      builder: (BuildContext context, GoRouterState state) {
+        return BossVerificationSuccessScreen();
       },
     );
   }
