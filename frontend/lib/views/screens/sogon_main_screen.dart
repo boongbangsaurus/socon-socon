@@ -13,12 +13,16 @@ class SogonMainScreen extends StatefulWidget {
 class _SogonMainScreen extends State<SogonMainScreen> {
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: Text(
-          "소곤",
-          style: TextStyle(fontSize: FontSizes.LARGE),
-        ),
+    return Scaffold(
+      body: Column(
+        children: [
+          Center(
+            child: Text(
+              "소곤",
+              style: TextStyle(fontSize: FontSizes.LARGE),
+            ),
+          ),
+        ],
       ),
     );
   }

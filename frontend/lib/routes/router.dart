@@ -6,20 +6,20 @@ import 'package:socon/views/atoms/bottom_bar.dart';
 
 final bool isOwner = false; // 상태 관리로 처리할 예정
 
-final GoRouter router =
-    GoRouter(initialLocation: "/nearby", routes: <RouteBase>[
+final GoRouter router = GoRouter(initialLocation: "/", routes: <RouteBase>[
   StatefulShellRoute.indexedStack(
       builder: (BuildContext context, GoRouterState state,
           StatefulNavigationShell navigationShell) {
         return Scaffold(
           body: navigationShell,
-          bottomNavigationBar: BottomNavBar(
-            currentIndex: navigationShell.currentIndex,
-            onTap: (int index) {
-              navigationShell.goBranch(index);
-            },
-            isOwner: isOwner,
-          ),
+          // bottomNavigationBar: BottomNavBar(
+          //   currentIndex: navigationShell.currentIndex,
+          //   onTap: (int index) {
+          //     navigationShell.goBranch(index);
+          //   },
+          //   isOwner: isOwner,
+          // ),
+          bottomNavigationBar: _bottomNavBar(navigationShell),
         );
       },
       branches: <StatefulShellBranch>[
@@ -28,6 +28,34 @@ final GoRouter router =
         if (isOwner)
           StatefulShellBranch(routes: [TabRoutes.getMyStoreListRoute()]),
         StatefulShellBranch(routes: [TabRoutes.getSoconBookRoute()]),
-        StatefulShellBranch(routes: [TabRoutes.getMyInfoRoute()]),
+        StatefulShellBranch(routes: [
+          TabRoutes.getMyInfoRoute(),
+        ]),
       ])
 ]);
+
+Widget _bottomNavBar(StatefulNavigationShell navigationShell) {
+  final currentRoute = navigationShell.shellRouteContext.routeMatchList;
+  final bool showBottomNavBar =
+      currentRoute.uri.toString() == "/info/contact" ||
+          currentRoute.uri.toString() == "/info/verification" ||
+          currentRoute.uri.toString() == "/info/success" ||
+          currentRoute.uri.toString() == "/soconbook/detail";
+
+  // print(currentRoute.uri.toString().runtimeType); // 타입 확인
+  print(currentRoute.uri.toString());
+  print(showBottomNavBar);
+  // /info/contact
+
+  if (showBottomNavBar) {
+    return SizedBox.shrink();
+  } else {
+    return BottomNavBar(
+      currentIndex: navigationShell.currentIndex,
+      onTap: (int index) {
+        navigationShell.goBranch(index);
+      },
+      isOwner: isOwner,
+    );
+  }
+}

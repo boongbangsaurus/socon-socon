@@ -1,22 +1,28 @@
 package site.soconsocon.payment.domain.entity.jpa;
 
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
 
+@Entity
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 @Builder
 public class Order {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "order_id")
     private int id;
 
     private String orderUid; //주문 고유번호
 
-    private String name;
+    private String itemName;
+
+    private int price;
 
     private String orderStatus;
 
@@ -25,5 +31,9 @@ public class Order {
     private int memberId; //회원 아이디
 
     private int issueId; // 발행 아이디
+
+    private int paymentId; //주문 PK
+
+    private int quantity; //주문 수량
 
 }

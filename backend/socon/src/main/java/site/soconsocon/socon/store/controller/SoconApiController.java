@@ -3,12 +3,10 @@ package site.soconsocon.socon.store.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import site.soconsocon.socon.store.domain.dto.request.MemberRequest;
 import site.soconsocon.socon.store.domain.dto.response.SoconInfoResponse;
 import site.soconsocon.socon.store.service.SoconService;
 import site.soconsocon.utils.MessageUtils;
 
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/socons")
@@ -30,19 +28,18 @@ public class SoconApiController {
     // 소콘북 목록 조회
     @GetMapping("/book")
     public ResponseEntity<Object> soconBook(
-            MemberRequest memberRequest
+            @RequestHeader("X-Authorization-Id") int memberId
     ) {
-        Map<String, Object> response = soconService.getMySoconList(memberRequest);
-        return ResponseEntity.ok().body(MessageUtils.success(response));
+        return ResponseEntity.ok().body(MessageUtils.success(soconService.getMySoconList(memberId)));
     }
 
     // 소콘 사용 승인
     @PostMapping("/{socon_id}/approval")
     public ResponseEntity<Object> soconApproval(
             @PathVariable("socon_id") Integer soconId,
-            MemberRequest memberRequest) {
+            @RequestHeader("X-Authorization-Id") int memberId) {
 
-        soconService.soconApproval(soconId, memberRequest);
+        soconService.soconApproval(soconId, memberId);
 
         return ResponseEntity.ok().body(MessageUtils.success());
     }
@@ -52,11 +49,11 @@ public class SoconApiController {
     public ResponseEntity<Object> soconBookSearch(
             @PathVariable("category") String category,
             @PathVariable("keyword") String keyword,
-            MemberRequest memberRequest
+            @RequestHeader("X-Authorization-Id") int memberId
     ) {
 
 
-        return ResponseEntity.ok().body(MessageUtils.success(soconService.searchSocon(category, keyword, memberRequest)));
+        return ResponseEntity.ok().body(MessageUtils.success(soconService.searchSocon(category, keyword, memberId)));
     }
 
 

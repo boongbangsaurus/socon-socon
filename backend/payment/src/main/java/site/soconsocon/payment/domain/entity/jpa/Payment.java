@@ -1,12 +1,14 @@
 package site.soconsocon.payment.domain.entity.jpa;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
+@Builder
 public class Payment {
 
     @Id

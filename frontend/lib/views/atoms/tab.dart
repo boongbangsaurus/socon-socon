@@ -5,8 +5,8 @@ import 'package:socon/utils/colors.dart';
 // 탭 바 화면 위젯
 class TabBarScreen extends StatefulWidget {
   final Map<String, Widget> contents;
-
-  const TabBarScreen({super.key, required this.contents});
+  final double marginTop;
+  const TabBarScreen({super.key, required this.contents, this.marginTop =80.0, });
 
   @override
   State<TabBarScreen> createState() => _TabBarScreenState();
@@ -45,7 +45,8 @@ class _TabBarScreenState extends State<TabBarScreen>
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Container(
-          margin: EdgeInsets.fromLTRB(0, 80, 0, 0),
+
+          margin: EdgeInsets.fromLTRB(0, widget.marginTop, 0, 0),
           child: TabBar(
             overlayColor: MaterialStateProperty.all(Colors.transparent),
             indicatorColor: AppColors.YELLOW,

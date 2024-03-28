@@ -32,29 +32,27 @@ public class StoreApiController {
             @Valid
             @RequestBody
             AddStoreRequest request,
-            MemberRequest memberRequest
+            @RequestHeader("X-Authorization-Id") int memberId
     ) {
-        storeService.saveStore(request, memberRequest);
+        storeService.saveStore(request, memberId);
 
         return ResponseEntity.ok().body(MessageUtils.success(null));
     }
 
     // 점주 등록 가게 정보 목록 조회
     @GetMapping("")
-    public ResponseEntity<Object> getStoreList(MemberRequest memberRequest) {
+    public ResponseEntity<Object> getStoreList(@RequestHeader("X-Authorization-Id") int memberId) {
 
-
-        return ResponseEntity.ok().body(MessageUtils.success(storeService.getStoreList(memberRequest)));
+        return ResponseEntity.ok().body(MessageUtils.success(storeService.getStoreList(memberId)));
     }
 
     // 가게 정보 상세 조회
     @GetMapping("/{store_id}/info")
     public ResponseEntity<Object> getStoreInfo(
-            @PathVariable("store_id") Integer storeId,
-            MemberRequest memberRequest
+            @PathVariable("store_id") Integer storeId
     ) {
         StoreInfoResponse store = storeService.getStoreInfo(storeId);
-        List<IssueListResponse> issues = issueService.getIssueList(storeId, memberRequest);
+        List<IssueListResponse> issues = issueService.getIssueList(storeId);
         Map<String, Object> response = new HashMap<>();
 
         response.put("store", store);
@@ -67,10 +65,10 @@ public class StoreApiController {
     @GetMapping("/stores/{store_id}/manage/info")
     public ResponseEntity<Object> getDetailStoreInfo(
             @PathVariable("store_id") Integer storeId,
-            MemberRequest memberRequest
+            @RequestHeader("X-Authorization-Id") int memberId
     ) {
-        List<ItemListResponse> items = itemService.getItemList(storeId, memberRequest);
-        List<IssueListResponse> issues = issueService.getIssueList(storeId, memberRequest);
+        List<ItemListResponse> items = itemService.getItemList(storeId, memberId);
+        List<IssueListResponse> issues = issueService.getIssueList(storeId);
 
         Map<String, Object> response = new HashMap<>();
         response.put("items", items);
@@ -84,9 +82,9 @@ public class StoreApiController {
     public ResponseEntity<Object> updateStoreInfo(
             UpdateStoreInfoRequest request,
             @PathVariable("store_id") Integer storeId,
-            MemberRequest memberRequest
+            @RequestHeader("X-Authorization-Id") int memberId
     ) {
-        storeService.updateStoreInfo(storeId, request, memberRequest);
+        storeService.updateStoreInfo(storeId, request, memberId);
 
         return ResponseEntity.ok().body(MessageUtils.success(null));
     }
@@ -96,9 +94,9 @@ public class StoreApiController {
     public ResponseEntity<Object> updateClosedPlanned(
             @PathVariable("store_id") Integer storeId,
             UpdateClosedPlannedRequest request,
-            MemberRequest memberRequest
+            @RequestHeader("X-Authorization-Id") int memberId
     ) {
-        storeService.updateClosedPlanned(storeId, request, memberRequest);
+        storeService.updateClosedPlanned(storeId, request, memberId);
 
         return ResponseEntity.ok().body(MessageUtils.success());
     }
@@ -108,12 +106,12 @@ public class StoreApiController {
     public ResponseEntity<Object> saveStoreItem(
             @PathVariable("store_id") Integer storeId,
             @RequestBody AddItemRequest request,
-            MemberRequest memberRequest
+            @RequestHeader("X-Authorization-Id") int memberId
     ) {
 
-        itemService.saveItem(request, storeId, memberRequest);
+        itemService.saveItem(request, storeId, memberId);
 
-        return ResponseEntity.ok().body(MessageUtils.success(null));
+        return ResponseEntity.ok().body(MessageUtils.success(null, "201 CREATED", null));
     }
 
     // 상품 정보 상세 조회
@@ -121,9 +119,9 @@ public class StoreApiController {
     public ResponseEntity<Object> getDetailItemInfo(
             @PathVariable("store_id") Integer storeId,
             @PathVariable("item_id") Integer itemId,
-            MemberRequest memberRequest
+            @RequestHeader("X-Authorization-Id") int memberId
     ) {
-        return ResponseEntity.ok().body(MessageUtils.success(itemService.getDetailItemInfo(storeId, itemId, memberRequest)));
+        return ResponseEntity.ok().body(MessageUtils.success(itemService.getDetailItemInfo(storeId, itemId, memberId)));
     }
 
     // 상품 발행 정보 등록
@@ -132,20 +130,20 @@ public class StoreApiController {
             @PathVariable("store_id") Integer storeId,
             @PathVariable("item_id") Integer itemId,
             @RequestBody AddIssueRequest request,
-            MemberRequest memberRequest
+            @RequestHeader("X-Authorization-Id") int memberId
     ) {
-        issueService.saveIssue(request, storeId, itemId, memberRequest);
+        issueService.saveIssue(request, storeId, itemId, memberId);
 
-        return ResponseEntity.ok().body(MessageUtils.success(null));
+        return ResponseEntity.ok().body(MessageUtils.success(null, "201 CREATED", null));
     }
 
     // 관심 가게 추가, 취소
     @PostMapping("/favorite/{store_id}")
     public ResponseEntity<Object> favoriteStore(
             @PathVariable("store_id") Integer storeId,
-            MemberRequest memberRequest
+            @RequestHeader("X-Authorization-Id") int memberId
     ) {
-        storeService.favoriteStore(storeId, memberRequest);
+        storeService.favoriteStore(storeId, memberId);
 
         return ResponseEntity.ok().body(MessageUtils.success(null));
     }
@@ -153,10 +151,10 @@ public class StoreApiController {
     // 관심 가게 목록 조회
     @GetMapping("/favorite")
     public ResponseEntity<Object> getFavoriteList(
-            MemberRequest memberRequest
+            @RequestHeader("X-Authorization-Id") int memberId
     ) {
 
-        return ResponseEntity.ok().body(MessageUtils.success(storeService.getFavoriteStoreList(memberRequest)));
+        return ResponseEntity.ok().body(MessageUtils.success(storeService.getFavoriteStoreList(memberId)));
     }
 
 }
