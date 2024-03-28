@@ -119,6 +119,7 @@ public class SogonService {
 
         // 소콘 소유권 이전
         socon.setMemberId(comment.getMemberId());
+        socon.setStatus("unused");
         comment.setIsPicked(true);
         sogon.setIsPicked(true);
 
