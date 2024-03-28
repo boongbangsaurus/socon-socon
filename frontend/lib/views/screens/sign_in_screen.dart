@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:socon/models/user.dart';
-import 'package:socon/services/auth_service.dart';
 import 'package:socon/utils/colors.dart';
 import 'package:socon/utils/fontSizes.dart';
 import 'package:socon/viewmodels/sign_in_view_model.dart';
@@ -10,6 +9,7 @@ import 'package:socon/views/atoms/buttons.dart';
 import 'package:socon/views/atoms/inputs.dart';
 import 'package:socon/views/atoms/modal.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:socon/views/screens/sign_up_screen.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -24,6 +24,7 @@ class _SignInScreenState extends State<SignInScreen> {
     email: '',
     password: '',
   );
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<SignInViewModel>(
@@ -187,10 +188,11 @@ class _SignInScreenState extends State<SignInScreen> {
                                           ? () async {
                                               _formKey.currentState!.save();
                                               debugPrint('$user');
-                                              AuthService authService =
-                                                  AuthService();
-                                              bool isSuccess = await authService
-                                                  .signIn(user);
+                                              SignInViewModel signInViewModel =
+                                                  SignInViewModel();
+                                              bool isSuccess =
+                                                  await signInViewModel
+                                                      .signIn(user);
                                               if (isSuccess) {
                                                 // 메인 페이지로 이동
                                                 context.go('/');
@@ -224,6 +226,11 @@ class _SignInScreenState extends State<SignInScreen> {
                                       child: TextButton(
                                           onPressed: () {
                                             print('router signup');
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        SignUpScreen()));
                                           },
                                           child: const Text(
                                             '처음 오셨나요? 회원가입 하러 가기',

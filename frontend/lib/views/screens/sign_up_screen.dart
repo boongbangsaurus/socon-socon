@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:socon/models/user.dart';
-import 'package:socon/services/auth_service.dart';
 import 'package:socon/utils/colors.dart';
 import 'package:socon/utils/fontSizes.dart';
 import 'package:socon/viewmodels/sign_up_view_model.dart';
@@ -425,9 +424,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                       _formKey.currentState!.save();
                                       user.isAgreed = true;
                                       debugPrint('$user');
-                                      AuthService authService = AuthService();
+                                      SignUpViewModel signUpViewModel =
+                                          SignUpViewModel();
                                       bool isSuccess =
-                                          await authService.signUp(user);
+                                          await signUpViewModel.signUp(user);
                                       if (isSuccess) {
                                         // 성공 알림 표시 및 로그인 페이지로 이동
                                         return showDialog(
