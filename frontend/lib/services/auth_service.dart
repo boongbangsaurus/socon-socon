@@ -24,4 +24,24 @@ class AuthService {
       return false;
     }
   }
+
+  // 로그인 요청 api
+  Future<bool> signIn(User user) async {
+    print(jsonEncode(user.toJsonSignIn()));
+    final res = await http.post(
+      Uri.parse('$baseUrl/api/v1/members/auth'),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(user.toJsonSignIn()),
+    );
+
+    if (res.statusCode == 200) {
+      print(res);
+      print(jsonDecode(res.body));
+      return true;
+    } else {
+      return false;
+    }
+  }
 }

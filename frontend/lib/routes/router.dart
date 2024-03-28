@@ -3,13 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:socon/routes/tab_routes.dart';
 import 'package:socon/views/atoms/bottom_bar.dart';
+import 'package:socon/views/screens/sign_in_screen.dart';
 import 'package:socon/views/screens/sign_up_screen.dart';
 
 final bool isOwner = false; // 상태 관리로 처리할 예정
-final bool isLoggined = true; // 상태 관리로 처리할 예정
+final bool isLoggined = false; // 상태 관리로 처리할 예정
 
 final GoRouter router =
-    GoRouter(initialLocation: isLoggined ? "/" : "/signup", routes: <RouteBase>[
+    GoRouter(initialLocation: isLoggined ? "/" : "/signin", routes: <RouteBase>[
   StatefulShellRoute.indexedStack(
       builder: (BuildContext context, GoRouterState state,
           StatefulNavigationShell navigationShell) {
@@ -36,9 +37,9 @@ final GoRouter router =
         ]),
       ]),
   GoRoute(
-      path: '/signup',
+      path: '/signin',
       builder: (BuildContext context, GoRouterState state) {
-        return SignUpScreen();
+        return SignInScreen();
       })
 ]);
 
