@@ -1,8 +1,11 @@
 import "package:flutter/material.dart";
 import "package:go_router/go_router.dart";
+import "package:provider/provider.dart";
 import "package:socon/models/business_owner.dart";
 import "package:socon/utils/fontSizes.dart";
 import "package:socon/utils/responsive_utils.dart";
+import "package:socon/utils/string_utils.dart";
+import "package:socon/viewmodels/boss_verification_view_model.dart";
 import "package:socon/views/atoms/inputs.dart";
 import "package:socon/views/modules/app_bar.dart";
 import "package:socon/views/modules/success_card.dart";
@@ -20,6 +23,8 @@ class BossVerification extends StatefulWidget {
 }
 
 class _BossVerificationState extends State<BossVerification> {
+  // final BossVerificationViewModel _bossVerificationViewModel = BossVerificationViewModel();
+  late String formattedValue;
   final _formKey = GlobalKey<FormState>();
   final businessOwner = BusinessOwner(
     owner: '',
@@ -63,13 +68,17 @@ class _BossVerificationState extends State<BossVerification> {
                           ),
                           const SizedBox(height: 15),
                           BossInput(
-                            type: "registrationNumber",
-                            labelText: "사업자 등록 번호",
-                            helperText: "123-45-6789 형태로 사업자 등록 번호를 입력해주세요.",
-                            emptyText: "사업자 등록 번호를 입력해주세요.",
-                            onSaved: (val) =>
-                                businessOwner.registrationNumber = val ?? '',
-                          ),
+                              type: "registrationNumber",
+                              labelText: "사업자 등록 번호",
+                              helperText: "123-45-6789 형태로 사업자 등록 번호를 입력해주세요.",
+                              emptyText: "사업자 등록 번호를 입력해주세요.",
+                              onSaved: (val) => {
+                                    formattedValue =
+                                        StringUtils.extractWithoutHyphen(val.toString()),
+                                    print("보정 처리한 사업자 등록번호 $formattedValue"),
+                                    businessOwner.registrationNumber =
+                                        "1208765763",
+                                  }),
                           const SizedBox(height: 15),
                           BossInput(
                             type: "startDate",
@@ -90,12 +99,22 @@ class _BossVerificationState extends State<BossVerification> {
             BasicButton(
               text: "인증하기",
               btnSize: 'l',
-              onPressed: () {
+              onPressed: () async {
                 if (_formKey.currentState?.validate() ?? false) {
                   _formKey.currentState!.save();
                   debugPrint("사업자 등록 정보 입력: ${businessOwner.toJson()}");
-                  
-                  GoRouter.of(context).go("/info/verify/success");
+
+                  var _bossVerificationViewModel =
+                      Provider.of<BossVerificationViewModel>(context,
+                          listen: false);
+                  await _bossVerificationViewModel
+                      .verifyBoss(businessOwner.registrationNumber);
+
+                  if (_bossVerificationViewModel.isVerified) {
+                    GoRouter.of(context).go("/info/verify/success");
+                  } else {
+                    GoRouter.of(context).go("/info/verify/fail");
+                  }
                 }
               },
             ),

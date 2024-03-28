@@ -40,7 +40,7 @@ class _BossVerificationSuccessScreen
           bottom: ResponsiveUtils.getHeightWithPixels(context, 20)),
       child: ConfettiWidget(
         confettiController: confettiController,
-        shouldLoop: true,
+        shouldLoop: false,
         blastDirection: -pi / 2,
         blastDirectionality: BlastDirectionality.explosive,
         numberOfParticles: 12,
