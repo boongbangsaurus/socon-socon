@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:socon/models/user.dart';
 import 'package:socon/services/auth_service.dart';
@@ -6,9 +7,10 @@ import 'package:socon/utils/colors.dart';
 import 'package:socon/utils/fontSizes.dart';
 import 'package:socon/viewmodels/sign_up_view_model.dart';
 import 'package:socon/views/atoms/buttons.dart';
-import 'package:socon/views/atoms/checkbox.dart';
 import 'package:socon/views/atoms/inputs.dart';
+import 'package:socon/views/atoms/modal.dart';
 import 'package:socon/views/modules/app_bar.dart';
+import 'package:socon/views/screens/webView/web_view_screen.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -328,7 +330,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                           ),
                                           Text('이용약관에 동의합니다.'),
                                           TextButton(
-                                              onPressed: () {},
+                                              onPressed: () {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          const WebViewScreen(
+                                                            url:
+                                                                "https://www.google.com",
+                                                            title: '서비스 이용 약관',
+                                                          )),
+                                                );
+                                              },
                                               child: const Text(
                                                 '본문보기',
                                                 style: TextStyle(
@@ -373,7 +386,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                           ),
                                           Text('개인정보 수집 및 이용에 동의합니다.'),
                                           TextButton(
-                                              onPressed: () {},
+                                              onPressed: () {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          const WebViewScreen(
+                                                            url:
+                                                                "https://www.google.com",
+                                                            title:
+                                                                '개인정보 수집 이용 약관',
+                                                          )),
+                                                );
+                                              },
                                               child: const Text(
                                                 '본문보기',
                                                 style: TextStyle(
@@ -401,14 +426,43 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                       _formKey.currentState!.save();
                                       user.isAgreed = true;
                                       debugPrint('$user');
-                                      // AuthService authService = AuthService();
-                                      // bool isSuccess =
-                                      //     await authService.signUp(user);
-                                      // if (isSuccess) {
-                                      // 성공 알림 표시 및 로그인 페이지로 이동
-                                      // } else {
-                                      // 실패 알림 표시
-                                      // }
+                                      AuthService authService = AuthService();
+                                      bool isSuccess =
+                                          await authService.signUp(user);
+                                      if (isSuccess) {
+                                        // 성공 알림 표시 및 로그인 페이지로 이동
+                                        return showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) =>
+                                                CustomModal.showCustomDialog(
+                                                    title: '회원가입 성공',
+                                                    content: '로그인 해주세요.',
+                                                    actions: [
+                                                      BasicButton(
+                                                        text: '확인',
+                                                        onPressed: () {
+                                                          context.go('/');
+                                                        },
+                                                      )
+                                                    ]));
+                                      } else {
+                                        return showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) =>
+                                                CustomModal.showCustomDialog(
+                                                    title: '회원가입 실패',
+                                                    content:
+                                                        '회원가입에 실패했습니다. 다시 시도해주세요.',
+                                                    actions: [
+                                                      BasicButton(
+                                                        text: '닫기',
+                                                        onPressed: () {
+                                                          Navigator.of(context)
+                                                              .pop();
+                                                        },
+                                                      )
+                                                    ]));
+                                      }
                                     }
                                   : null,
                             ),
