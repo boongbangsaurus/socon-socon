@@ -1,12 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:socon/utils/colors.dart';
+import 'package:socon/utils/fontSizes.dart';
 import 'package:socon/views/atoms/buttons.dart';
 import 'package:socon/views/atoms/checkbox.dart';
 import 'package:socon/views/atoms/dropdown.dart';
+import 'package:socon/views/atoms/input_form.dart';
 import 'package:socon/views/atoms/tag_icon.dart';
 import 'package:provider/provider.dart';
 import 'package:socon/viewmodels/store_register_view_model.dart';
+
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -91,30 +95,31 @@ class Step1 extends StatelessWidget {
             children: [
               Text(
                 '대표자',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: FontSizes.SMALL, fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 50),
-              Text(
-                '사업자 등록 번호',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              TextField(
+              SizedBox(height: 10),
+              Text('김싸피',
+                  style: TextStyle(fontSize: 18)),
+              SizedBox(height: 40),
+
+              CustomInputField(
+                labelText: '사업자 등록 번호',
                 onChanged: (value) => viewModel.setRegistrationNumber(value),
               ),
-              SizedBox(height: 50),
-              Text(
-                '사업자 주소',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              TextField(
+
+              CustomInputField(
+                labelText: '사업자 주소',
                 onChanged: (value) => viewModel.setAddress(value),
               ),
-              SizedBox(height: 50),
+
               Text(
                 '점포 등록 유의사항',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               Text('점포 폐업신고는 폐업일 최소 7일 이전에 신고해 주세요'),
+
+              // Spacer(),
+              SizedBox(height: 100),
               BasicButton(
                 text: '다음',
                 color: 'yellow',
@@ -131,11 +136,20 @@ class Step1 extends StatelessWidget {
   }
 }
 
-class Step2 extends StatelessWidget {
+
+
+
+
+class Step2 extends StatefulWidget {
   final PageController pageController;
 
   Step2({required this.pageController});
 
+  @override
+  State<Step2> createState() => _Step2State();
+}
+
+class _Step2State extends State<Step2> {
   @override
   Widget build(BuildContext context) {
     final viewModel = Provider.of<RegisterViewModel>(context);
@@ -144,112 +158,93 @@ class Step2 extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              '상호명을 입력해주세요',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            TextField(
+            CustomInputField(
+              labelText: '상호명을 입력해주세요',
               onChanged: (value) => viewModel.setName(value),
-              // decoration: InputDecoration(labelText: '상호명'),
             ),
-            SizedBox(height: 50),
 
-            Text(
-              '전화번호를 입력해 주세요',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            TextField(
+            CustomInputField(
+              labelText: '전화번호를 입력해 주세요',
               onChanged: (value) => viewModel.setPhoneNumber(value),
-              // decoration: InputDecoration(labelText: '전화번호'),
             ),
-            SizedBox(height: 50),
+
 
             Text(
               '업종을 선택해 주세요',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: FontSizes.SMALL, fontWeight: FontWeight.bold),
             ),
             // 업종 연결 state지정필요
             Row(
               children: [
+                // viewlist 리팩하기
                 TagButton(
                   buttonText: '음식점',
-                  buttonColor: Colors.yellow,
-                  buttonTextColor: Colors.black,
+                  buttonColor: AppColors.YELLOW,
+                  buttonTextColor: AppColors.BLACK,
                   onPressed: () {},
                   onSelected: (isSelected) => {viewModel.setCategory('음식점')},
                 ),
                 TagButton(
                   buttonText: '카페',
-                  buttonColor: Colors.yellow,
-                  buttonTextColor: Colors.black,
+                  buttonColor: AppColors.YELLOW,
+                  buttonTextColor: AppColors.BLACK,
                   onPressed: () {},
                   onSelected: (isSelected) => {viewModel.setCategory('카페')},
                 ),
                 TagButton(
                   buttonText: '미용',
-                  buttonColor: Colors.yellow,
-                  buttonTextColor: Colors.black,
+                  buttonColor: AppColors.YELLOW,
+                  buttonTextColor: AppColors.BLACK,
                   onPressed: () {},
                   onSelected: (isSelected) => {viewModel.setCategory('미용')},
                 ),
                 TagButton(
                   buttonText: '숙박',
-                  buttonColor: Colors.yellow,
-                  buttonTextColor: Colors.black,
+                  buttonColor: AppColors.YELLOW,
+                  buttonTextColor: AppColors.BLACK,
                   onPressed: () {},
                   onSelected: (isSelected) => {viewModel.setCategory('숙박')},
                 ),
                 TagButton(
                   buttonText: '스포츠',
-                  buttonColor: Colors.yellow,
-                  buttonTextColor: Colors.black,
+                  buttonColor: AppColors.YELLOW,
+                  buttonTextColor: AppColors.BLACK,
                   onPressed: () {},
                   onSelected: (isSelected) => {viewModel.setCategory('스포츠')},
                 ),
                 TagButton(
                   buttonText: '쇼핑',
-                  buttonColor: Colors.yellow,
-                  buttonTextColor: Colors.black,
+                  buttonColor: AppColors.YELLOW,
+                  buttonTextColor: AppColors.BLACK,
                   onPressed: () {},
                   onSelected: (isSelected) => {viewModel.setCategory('쇼핑')},
                 ),
               ],
             ),
-            Text(
-              '업체 주소를 입력해 주세요',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            TextField(
+            SizedBox(height: 40,),
+            CustomInputField(
+              labelText: '업체 주소를 입력해 주세요',
               onChanged: (value) => viewModel.setAddress(value),
-              // decoration: InputDecoration(labelText: '전화번호'),
+              // hintText: '서울시 강남구 역삼동'
             ),
-            SizedBox(height: 50),
 
-            Text(
-              '업체 소개를 입력해 주세요',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            TextField(
+            CustomInputField(
+              labelText: '업체 소개를 입력해 주세요',
               onChanged: (value) => viewModel.setIntroduction(value),
-              // decoration: InputDecoration(labelText: '전화번호'),
             ),
-            SizedBox(height: 50),
 
             Text(
               '업체 사진을 추가해 주세요',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: FontSizes.SMALL, fontWeight: FontWeight.bold),
             ),
 
-            TextField(
-              onChanged: (value) => viewModel.setImgUrl(value),
-              // decoration: InputDecoration(labelText: '전화번호'),
-            ),
+
             SizedBox(height: 50),
 
             BasicButton(
               text: '다음',
               color: 'yellow',
-              onPressed: () => pageController.nextPage(
+              onPressed: () => widget.pageController.nextPage(
                 duration: Duration(milliseconds: 300),
                 curve: Curves.easeInOut,
               ),
@@ -260,6 +255,10 @@ class Step2 extends StatelessWidget {
     );
   }
 }
+
+
+
+
 
 class Step3 extends StatefulWidget {
   final PageController pageController;
@@ -333,140 +332,147 @@ class _Step3State extends State<Step3> {
     final viewModel = Provider.of<RegisterViewModel>(context);
 
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Container(
+      body: Container(
           padding: EdgeInsets.all(20.0),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                '운영시간을 등록해주세요',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              Wrap(
-                spacing: -2.0,
-                children: operationDaysMap.keys.map((day) {
-                  return TagButton(
-                    buttonText: day,
-                    buttonColor:
-                        operationDaysMap[day]! ? Colors.yellow : Colors.grey,
-                    buttonTextColor: Colors.white,
-                    onSelected: (day) {},
-                    onPressed: operationDaysMap[day]!
-                        ? () {}
-                        : () {
-                            // 수정된 부분
-                            setState(() {
-                              operationDaysMap[day] = true; // 선택된 요일 활성화
-                            });
-                          },
-                  );
-                }).toList(),
-              ),
-              Row(
-                children: [
-                  Expanded(
+              Expanded(
+                  child: SingleChildScrollView(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('영업시작'),
-                        Dropdown(
-                          title: '시작시간',
-                          dropdownItems: dropdownItems,
-                          onItemSelected: (item) {
-                            setState(() {
-                              selectedStartTime = item ?? '';
-                            });
-                          },
+                        Text(
+                          '운영시간을 등록해주세요',
+                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
+                        Wrap(
+                          spacing: -2.0,
+                          children: operationDaysMap.keys.map((day) {
+                            return TagButton(
+                              buttonText: day,
+                              buttonColor:
+                              operationDaysMap[day]! ? Colors.yellow : Colors.grey,
+                              buttonTextColor: Colors.white,
+                              onSelected: (day) {},
+                              onPressed: operationDaysMap[day]!
+                                  ? () {}
+                                  : () {
+                                // 수정된 부분
+                                setState(() {
+                                  operationDaysMap[day] = true; // 선택된 요일 활성화
+                                });
+                              },
+                            );
+                          }).toList(),
+                        ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('영업시작'),
+                                  Dropdown(
+                                    title: '시작시간',
+                                    dropdownItems: dropdownItems,
+                                    onItemSelected: (item) {
+                                      setState(() {
+                                        selectedStartTime = item ?? '';
+                                      });
+                                    },
+                                  )
+                                ],
+                              ),
+                            ),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('영업종료'),
+                                  Dropdown(
+                                    title: '종료시간',
+                                    dropdownItems: dropdownItems,
+                                    onItemSelected: (item) {
+                                      setState(() {
+                                        selectedEndTime = item ?? '';
+                                      });
+                                    },
+                                  )
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            CheckBoxBtn(
+                                Text: '휴게시간',
+                                isChecked: isChecked,
+                                onCheckedChanged: (bool value) {
+                                  setState(() {
+                                    isChecked = value;
+                                  });
+                                }),
+                          ],
+                        ),
+                        isChecked
+                            ? Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('시작'),
+                                  Dropdown(
+                                    title: '시작시간',
+                                    dropdownItems: dropdownItems,
+                                    onItemSelected: (item) {
+                                      setState(() {
+                                        breaktimeStart = item ?? '';
+                                        viewModel.updateBusinessHour(
+                                            item ?? '00:00',
+                                            openAt: selectedStartTime);
+                                      });
+                                    },
+                                  )
+                                ],
+                              ),
+                            ),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('종료'),
+                                  Dropdown(
+                                    title: '종료시간',
+                                    dropdownItems: dropdownItems,
+                                    onItemSelected: (item) {
+                                      setState(() {
+                                        breaktimeEnd = item ?? '';
+                                        viewModel.updateBusinessHour(
+                                            item ?? '00:00',
+                                            openAt: selectedEndTime);
+                                      });
+                                    },
+                                  )
+                                ],
+                              ),
+                            ),
+                          ],
                         )
+                            : SizedBox.shrink(),
+                        BasicButton(
+                            text: '요일추가',
+                            color: 'yellow',
+                            onPressed: () => {_addSelectedTimeWidget()}),
+                        Column(
+                          children: selectedTimesWidgets,
+                        ),
+                        // SizedBox(height: 50),
                       ],
                     ),
-                  ),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('영업종료'),
-                        Dropdown(
-                          title: '종료시간',
-                          dropdownItems: dropdownItems,
-                          onItemSelected: (item) {
-                            setState(() {
-                              selectedEndTime = item ?? '';
-                            });
-                          },
-                        )
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              Row(
-                children: [
-                  CheckBoxBtn(
-                      Text: '휴게시간',
-                      isChecked: isChecked,
-                      onCheckedChanged: (bool value) {
-                        setState(() {
-                          isChecked = value;
-                        });
-                      }),
-                ],
-              ),
-              isChecked
-                  ? Row(
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('시작'),
-                              Dropdown(
-                                title: '시작시간',
-                                dropdownItems: dropdownItems,
-                                onItemSelected: (item) {
-                                  setState(() {
-                                    breaktimeStart = item ?? '';
-                                    viewModel.updateBusinessHour(
-                                        item ?? '00:00',
-                                        openAt: selectedStartTime);
-                                  });
-                                },
-                              )
-                            ],
-                          ),
-                        ),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('종료'),
-                              Dropdown(
-                                title: '종료시간',
-                                dropdownItems: dropdownItems,
-                                onItemSelected: (item) {
-                                  setState(() {
-                                    breaktimeEnd = item ?? '';
-                                    viewModel.updateBusinessHour(
-                                        item ?? '00:00',
-                                        openAt: selectedEndTime);
-                                  });
-                                },
-                              )
-                            ],
-                          ),
-                        ),
-                      ],
-                    )
-                  : SizedBox.shrink(),
-              BasicButton(
-                  text: '요일추가',
-                  color: 'yellow',
-                  onPressed: () => {_addSelectedTimeWidget()}),
-              Column(
-                children: selectedTimesWidgets,
-              ),
-              SizedBox(height: 50),
+                  )
+                ),
               BasicButton(
                 text: '다음',
                 color: 'yellow',
@@ -474,10 +480,9 @@ class _Step3State extends State<Step3> {
                   duration: Duration(milliseconds: 300),
                   curve: Curves.easeInOut,
                 ),
-              ),
+              )
             ],
           ),
-        ),
       ),
     );
   }

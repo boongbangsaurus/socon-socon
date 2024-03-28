@@ -1,77 +1,47 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'image_card.dart';
+import 'tag_icon.dart';
 
-// import 'image_card.dart';
-// import 'tag_icon.dart';
-import 'dart:math';
-import '../atoms/image_card.dart';
-import '../atoms/tag_icon.dart';
-
+// 안쓰지만 충돌날거같으니까 일단 남겨놔요
 class StoreSoconLists extends StatelessWidget {
   final String soconName;
-  final bool? isMain;
-  final int? maxQuantity;    // 설정된 최대 발행량
-  final int? issuedQuantity;   // 현재 발행 개수
+  final bool isMain;
+  final int maxQuantity;    // 설정된 최대 발행량
+  final int issuedQuantity;   // 현재 발행 개수
   final int price;     // 상품가격(정가)
-  final bool? isDiscounted;
-  final int? discountedPrice;    // 할인된 가격. 없을 경우 null
+  final bool isDiscounted;
+  final int discountedPrice;    // 할인된 가격. 없을 경우 null
   final String imageUrl;
-  final DateTime? createdAt;
-
-// =======
-// import '../atoms/image_card.dart';
-// import '../atoms/tag_icon.dart';
-//
-// class StoreSoconLists extends StatelessWidget {
-//   final String soconName;
-//   final bool isMain;
-//   final int maxQuantity;    // 설정된 최대 발행량
-//   final int issuedQuantity;   // 현재 발행 개수
-//   final int price;     // 상품가격(정가)
-//   final bool isDiscounted;
-//   final int discountedPrice;    // 할인된 가격. 없을 경우 null
-//   final String imageUrl;
-//   final DateTime createdAt;
-// >>>>>>> fd7dde051359e758a4bf6a6d7d5ff7c7514ba669
+  final DateTime createdAt;
 
 
   const StoreSoconLists({
     super.key,
     required this.soconName,
-    this.isMain,
-    this.maxQuantity,
-    this.issuedQuantity,
+    required this.isMain,
+    required this.maxQuantity,
+    required this.issuedQuantity,
     required this.price,
-    this.isDiscounted,
-    this.discountedPrice,
+    required this.isDiscounted,
+    required this.discountedPrice,
     required this.imageUrl,
-    this.createdAt,
+    required this.createdAt,
   });
 
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width / 2;
-
-    final int remainQuantity = maxQuantity != null && issuedQuantity != null ? maxQuantity! - issuedQuantity! : 0;
-    final String discountPercent = isDiscounted == true && discountedPrice != null ? ((price - discountedPrice!) / price * 100).toStringAsFixed(0) : '0';
-    final isNew = createdAt != null ? DateTime.now().difference(createdAt!).inDays < 1 && DateTime.now().difference(createdAt!).isNegative == false : false;
-
-    final List<String> images = ['assets/images/backgroundImg_1.JPG', 'assets/images/backgroundImg_2.png'];
-    final random = Random();
-    final String randomImage = images[random.nextInt(images.length)];
-
+    final remainQuantity = maxQuantity - issuedQuantity;
+    final discountPercent = isDiscounted ? ((price - discountedPrice) / price * 100).toStringAsFixed(0) : '0';
+    final isNew = DateTime.now().difference(createdAt).inDays < 1 && DateTime.now().difference(createdAt).isNegative == false;
 
     return Container(
       width: screenWidth,
       margin: EdgeInsets.all(5),
       padding: EdgeInsets.only(top: 10),
       decoration: BoxDecoration(
-          color: isMain ?? false ? null : Colors.white,
-          image: isMain ?? false ? DecorationImage(
-            image: AssetImage(randomImage),
-            fit: BoxFit.cover,
-          ) : null,
-
+          color: isMain ? Colors.lightGreenAccent : Colors.white,
           borderRadius: BorderRadius.circular(10),
           boxShadow: [
             BoxShadow(
@@ -91,8 +61,7 @@ class StoreSoconLists extends StatelessWidget {
               children: [
                 isNew? TagIcon.NEW() : Text(''),
                 // isNew? TagIcon.NEW() : Text(''),
-                isDiscounted == true ? TagIcon.SALE() : Text(''),
-
+                isDiscounted? TagIcon.SALE() : Text(''),
               ],
             ),
           ),
@@ -112,24 +81,23 @@ class StoreSoconLists extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                         color: Colors.black, ),
                     ),
-                    if (maxQuantity != null) Container(
+                    Container(
                       padding: EdgeInsets.only(bottom: 20),
                       child: Text(
-                        '잔여수량 $remainQuantity \n발행수량 $maxQuantity',
+                        '잔여수량 $remainQuantity',
                         style: TextStyle(
                             fontSize: 10,
                             color: Colors.black),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
-                    ) else SizedBox(height: 20),
+                    ),
                   ],
                 ),
-
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    if (isDiscounted == true && discountedPrice != null) ...[ // 할인된 경우
+                    if (isDiscounted) ...[ // 할인된 경우
                       Text('($discountPercent%)', style: TextStyle(fontSize: 11, color: Colors.red), ),
                       Text('$discountedPrice원', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.red)),
                       Text('$price원', style: TextStyle(fontSize: 12, decoration: TextDecoration.lineThrough ,decorationColor: Colors.red, decorationThickness: 2.0, fontWeight: FontWeight.bold)),
