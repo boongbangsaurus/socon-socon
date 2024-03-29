@@ -7,8 +7,9 @@ import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
+import site.soconsocon.notification.fcm.domain.dto.request.FcmMessage;
+import site.soconsocon.notification.fcm.domain.dto.request.SaveTokenRequest;
 import site.soconsocon.notification.fcm.domain.entity.DeviceToken;
 import site.soconsocon.notification.fcm.domain.entity.TokenStatus;
 import site.soconsocon.notification.fcm.exception.FcmErrorCode;
@@ -47,8 +48,19 @@ public class FcmService {
         } catch (IOException e) {
             throw new RuntimeException("FCM 서버 세팅 중 에러가 발생했습니다: " + e);
         }
+        if(FirebaseApp.getApps().isEmpty()){
+            FirebaseApp.initializeApp(options);
+        }
+    }
 
-        FirebaseApp.initializeApp(options);
+    public DeviceToken saveToken(SaveTokenRequest saveTokenRequest){
+        DeviceToken deviceToken=saveTokenRequest.toEntity();
+        try {
+            fcmRepository.save(deviceToken);
+        }catch (RuntimeException e){
+            throw new FcmException(FcmErrorCode.SAVING_TOKEN_FAIL);
+        }
+        return deviceToken;
     }
 
     public void subscribeMyTokens(Integer userId, Long groupId) {
@@ -80,22 +92,24 @@ public class FcmService {
                             .build())
                     .setTopic(topicName)
                     .build());
-        } catch (FirebaseMessagingException e) {
+        } catch (FirebaseMessagingException | IllegalArgumentException e) {
             throw new FcmException(FcmErrorCode.CAN_NOT_SEND_NOTIFICATION);
         }
     }
 
     // 받은 token을 이용하여 fcm를 보냄
-    public void sendMessageByToken(String title, String body, String token) {
+    public void sendMessageByToken(FcmMessage fcmMessage) {
+        log.info(fcmMessage.toString());
         try {
             FirebaseMessaging.getInstance().send(Message.builder()
                     .setNotification(Notification.builder()
-                            .setTitle(title)
-                            .setBody(body)
+                            .setTitle(fcmMessage.getTitle())
+                            .setBody(fcmMessage.getBody())
                             .build())
-                    .setToken(token)
+                    .setToken(fcmMessage.getTargetToken())
                     .build());
-        } catch (FirebaseMessagingException e) {
+        } catch (FirebaseMessagingException | IllegalArgumentException e) {
+            log.warn(e.getMessage());
             throw new FcmException(FcmErrorCode.CAN_NOT_SEND_NOTIFICATION);
         }
     }
@@ -119,7 +133,7 @@ public class FcmService {
                             .build())
                     .addAllTokens(tokenList)
                     .build());
-        } catch (FirebaseMessagingException e) {
+        } catch (FirebaseMessagingException | IllegalArgumentException e) {
             throw new FcmException(FcmErrorCode.CAN_NOT_SEND_NOTIFICATION);
         }
     }

@@ -2,6 +2,7 @@ package site.soconsocon.notification.fcm.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import site.soconsocon.notification.fcm.domain.dto.response.DeviceTokenResponse;
 import site.soconsocon.notification.global.domain.dto.request.Member;
 import site.soconsocon.notification.global.feign.MemberFeignClient;
 import site.soconsocon.notification.global.feign.dto.response.MemberFeignResponse;
@@ -14,6 +15,9 @@ import site.soconsocon.notification.global.feign.dto.response.MemberFeignRespons
 @Getter @Setter
 @Table(name="device_token", indexes = @Index(columnList="member_id"))
 @ToString(of = {})
+@Builder(toBuilder = true)
+@AllArgsConstructor
+@NoArgsConstructor
 public class DeviceToken {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,6 +50,15 @@ public class DeviceToken {
                 .nickname(memberFeignResponse.getNickname())
                 .soconMoney(memberFeignResponse.getSoconMoney())
                 .soconPassword(memberFeignResponse.getSoconPassword())
+                .build();
+    }
+
+    public DeviceTokenResponse toDto(){
+        return DeviceTokenResponse.builder()
+                .memberId(memberId)
+                .token(deviceToken)
+                .deviceType(deviceType)
+                .status(status)
                 .build();
     }
 

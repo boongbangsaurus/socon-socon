@@ -13,7 +13,7 @@ import site.soconsocon.utils.MessageUtils;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/email")
+@RequestMapping("/api/v1/notification/email")
 public class EmailController {
 
     private final EmailService emailService;
