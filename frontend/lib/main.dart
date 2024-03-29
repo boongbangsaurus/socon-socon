@@ -5,7 +5,6 @@ import 'package:socon/routes/router.dart';
 import 'package:socon/utils/colors.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:socon/viewmodels/login_state_view_model.dart';
-import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // runApp을 호출하기 전 위젯 바인딩 초기화
@@ -21,7 +20,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-        create: (context) => LoginState()..checkLoginStatus(),
+        create: (context) => LoginState(),
         child: MaterialApp.router(
           routerConfig: router,
           // routerDelegate: router.routerDelegate,

@@ -22,7 +22,12 @@ class AuthService {
     if (res.statusCode == 200) {
       return true;
     } else {
+      debugPrint(
+          'signUp not res 200 ################################################');
       print(jsonDecode(res.body));
+      debugPrint(
+          'signUp not res 200 ################################################');
+
       return false;
     }
   }
@@ -39,9 +44,11 @@ class AuthService {
     );
 
     if (res.statusCode == 200) {
-      debugPrint('res 200 ################################################');
-      debugPrint(jsonDecode(res.body));
-      debugPrint('################################################');
+      debugPrint(
+          'signIn res 200 ################################################');
+      print(jsonDecode(res.body));
+      debugPrint(
+          'signIn res 200 ################################################');
 
       final body = jsonDecode(res.body);
       final String accessToken = body['data_body']['accessToken'];
@@ -49,9 +56,10 @@ class AuthService {
       return [accessToken, refreshToken]; // accessToken, refreshToken 반환
     } else {
       debugPrint(
-          'res not 200 ################################################');
+          'signIn res not 200 ################################################');
       print(jsonDecode(res.body));
-      debugPrint('################################################');
+      debugPrint(
+          'signIn res not 200 ################################################');
 
       return null;
     }

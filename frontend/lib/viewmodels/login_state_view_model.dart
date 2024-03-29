@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginState with ChangeNotifier {
@@ -10,7 +10,7 @@ class LoginState with ChangeNotifier {
     _isLoggedIn = loggedIn;
     notifyListeners();
   }
-  
+
   void logout() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('accessToken');

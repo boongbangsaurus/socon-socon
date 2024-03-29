@@ -9,6 +9,7 @@ import 'package:socon/views/atoms/buttons.dart';
 import 'package:socon/views/atoms/inputs.dart';
 import 'package:socon/views/atoms/modal.dart';
 import 'package:socon/views/modules/app_bar.dart';
+import 'package:socon/views/screens/sign_in_screen.dart';
 import 'package:socon/views/screens/webView/web_view_screen.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -440,10 +441,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                                       BasicButton(
                                                         text: '확인',
                                                         onPressed: () {
-                                                          // context.go('/signin');
-                                                          print('로그인 이동');
-                                                          GoRouter.of(context)
-                                                              .go("/signin");
+                                                          Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                  builder:
+                                                                      (context) =>
+                                                                          const SignInScreen()));
                                                         },
                                                       )
                                                     ]));
