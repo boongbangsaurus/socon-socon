@@ -12,7 +12,7 @@ services:
     networks:
       - jenkins-project_socon-net
     volumes:
-      - redis-data/data
+      - redis-data:/data
     user: root
     command: redis-server /usr/local/etc/redis/redis.conf --requirepass ${REDIS_PASSWORD}
     ports:
