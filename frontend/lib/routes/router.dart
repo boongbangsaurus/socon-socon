@@ -14,13 +14,10 @@ final GoRouter router = GoRouter(
     redirect: (BuildContext context, GoRouterState state) {
       LoginState loginState = LoginState();
       final bool loggedIn = loginState.isLoggedIn;
-      final loggingIn =
-          state.uri.toString() == '/signin';
+      final loggingIn = state.uri.toString() == '/signin';
 
-      if (!loggedIn)
-        return '/signin';
-      if (loggedIn && loggingIn)
-        return '/';
+      if (!loggedIn) return '/signin';
+      if (loggedIn && loggingIn) return '/';
 
       return null;
     },
@@ -51,10 +48,19 @@ final GoRouter router = GoRouter(
             ]),
           ]),
       GoRoute(
-          path: '/signin',
+// path: "/",
+          path: "/signin",
           builder: (BuildContext context, GoRouterState state) {
             return SignInScreen();
-          })
+          }),
+      GoRoute(
+// path: "/",
+          path: "/signup",
+          builder: (BuildContext context, GoRouterState state) {
+            return SignUpScreen();
+          }),
+      TabRoutes.getSignInRoute(),
+      TabRoutes.getSignUpRoute(),
     ]);
 
 Widget _bottomNavBar(StatefulNavigationShell navigationShell) {

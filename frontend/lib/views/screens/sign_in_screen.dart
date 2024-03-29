@@ -187,7 +187,11 @@ class _SignInScreenState extends State<SignInScreen> {
                                               false
                                           ? () async {
                                               _formKey.currentState!.save();
+                                              debugPrint(
+                                                  'send user ################################################');
                                               debugPrint('$user');
+                                              debugPrint(
+                                                  '################################################');
                                               SignInViewModel signInViewModel =
                                                   SignInViewModel();
                                               bool isSuccess =
@@ -230,7 +234,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                                 context,
                                                 MaterialPageRoute(
                                                     builder: (context) =>
-                                                        SignUpScreen()));
+                                                        const SignUpScreen()));
                                           },
                                           child: const Text(
                                             '처음 오셨나요? 회원가입 하러 가기',

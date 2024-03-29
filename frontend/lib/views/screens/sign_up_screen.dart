@@ -440,7 +440,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                                       BasicButton(
                                                         text: '확인',
                                                         onPressed: () {
-                                                          context.go('/signin');
+                                                          // context.go('/signin');
+                                                          print('로그인 이동');
+                                                          GoRouter.of(context)
+                                                              .go("/signin");
                                                         },
                                                       )
                                                     ]));

@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:socon/models/user.dart';
@@ -5,7 +6,7 @@ import 'package:socon/models/user.dart';
 /// [AuthService]
 /// 백과 API 통신하기 위한 Class
 class AuthService {
-  final String baseUrl = 'https://0681-220-93-153-206.ngrok-free.app'; // 통신 url
+  final String baseUrl = 'http://j10c207.p.ssafy.io:8000'; // 통신 url
 
   // 회원가입 요청 api
   Future<bool> signUp(User user) async {
@@ -38,12 +39,20 @@ class AuthService {
     );
 
     if (res.statusCode == 200) {
+      debugPrint('res 200 ################################################');
+      debugPrint(jsonDecode(res.body));
+      debugPrint('################################################');
+
       final body = jsonDecode(res.body);
       final String accessToken = body['data_body']['accessToken'];
       final String refreshToken = body['data_body']['refreshToken'];
       return [accessToken, refreshToken]; // accessToken, refreshToken 반환
     } else {
+      debugPrint(
+          'res not 200 ################################################');
       print(jsonDecode(res.body));
+      debugPrint('################################################');
+
       return null;
     }
   }
