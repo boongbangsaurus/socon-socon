@@ -8,15 +8,18 @@ import '../../utils/responsive_utils.dart';
 import '../atoms/image_card.dart';
 import '../atoms/tag_icon.dart';
 
-class StoreSoconLists extends StatelessWidget {
-  final String soconName;
+class StoreMenuCard extends StatelessWidget {
+  final int id;
+  final String name;
+  final int price;     // 상품가격(정가)
+  final String imageUrl;
+
+  // ??
   final bool? isMain;
   final int? maxQuantity;    // 설정된 최대 발행량
   final int? issuedQuantity;   // 현재 발행 개수
-  final int price;     // 상품가격(정가)
   final bool? isDiscounted;
   final int? discountedPrice;    // 할인된 가격. 없을 경우 null
-  final String imageUrl;
   final DateTime? createdAt;
 
 // =======
@@ -36,9 +39,10 @@ class StoreSoconLists extends StatelessWidget {
 // >>>>>>> fd7dde051359e758a4bf6a6d7d5ff7c7514ba669
 
 
-  const StoreSoconLists({
+  const StoreMenuCard({
     super.key,
-    required this.soconName,
+    required this.id,
+    required this.name,
     this.isMain,
     this.maxQuantity,
     this.issuedQuantity,
@@ -62,7 +66,7 @@ class StoreSoconLists extends StatelessWidget {
 
     return GestureDetector(
       onTap: (){
-        print("소콘 클릭");
+        print("메뉴 클릭 $id  & 소콘 발행 페이지 이동");
       },
       child: Container(
         width: ResponsiveUtils.getWidthWithPixels(context, 154),
@@ -109,7 +113,7 @@ class StoreSoconLists extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        soconName,
+                        name,
                         textAlign: TextAlign.start,
                         style: TextStyle(
                           fontSize: 18,

@@ -1,18 +1,36 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:socon/models/menu.dart';
 import 'package:socon/models/socon_card.dart';
+import 'package:socon/utils/responsive_utils.dart';
 import 'package:socon/views/modules/add_menu_card.dart';
 import 'package:socon/views/modules/socon_storesocon.dart';
+import 'package:socon/views/modules/store_menu_card.dart';
 import 'package:socon/views/screens/myStore/store_product_register.dart';
 
 class MenuManagement extends StatelessWidget {
   final int storeId;
   final bool isOwner = false;
 
-  const MenuManagement({
+  MenuManagement({
     super.key,
     required this.storeId,
   });
+
+  final List<Menu> storeMenuList = [
+    Menu.fromJson({
+      "id": 0, // 상품 id
+      "name": "소금빵",
+      "imageUrl": "https://cataas.com/cat",
+      "price": 3000 // 상품 가격
+    }),
+    Menu.fromJson({
+      "id": 1, // 상품 id
+      "name": "감자",
+      "imageUrl": "https://cataas.com/cat",
+      "price": 3500 // 상품 가격
+    }),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +38,7 @@ class MenuManagement extends StatelessWidget {
       children: [
         if (isOwner)
           Container(
-            width: double.infinity,
+            width: ResponsiveUtils.getWidthWithPixels(context, 320),
             padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             child: ElevatedButton(
               onPressed: () {
@@ -39,7 +57,7 @@ class MenuManagement extends StatelessWidget {
           child: GridView.builder(
             shrinkWrap: true,
             // child 위젯의 크기를 정해주지 않은 경우 true로 지정해야됨
-            itemCount: socons.length,
+            itemCount: storeMenuList.length + 1,
             //item 개수
             padding: EdgeInsets.symmetric(horizontal: 20),
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -52,11 +70,15 @@ class MenuManagement extends StatelessWidget {
               if(index == 0){
                 return AddMenuCard();
               }else{
-                final socon = socons[index -1];
-                return StoreSoconLists(
-                  soconName: socon.soconName!,
-                  price: socon.price!,
-                  imageUrl: socon.imageUrl ?? '',
+                final storeMenu = storeMenuList[index -1];
+                return StoreMenuCard(
+                  id : storeMenu.id,
+                  name : storeMenu.name,
+                  price: storeMenu.price,
+                  imageUrl: storeMenu.imageUrl,
+                  // soconName: socon.soconName!,
+                  // price: socon.price!,
+                  // imageUrl: socon.imageUrl ?? '',
                 );
               }
 
@@ -67,6 +89,15 @@ class MenuManagement extends StatelessWidget {
     );
   }
 }
+
+
+// {
+// "id": 0, // 상품 id
+// "name": "상품 이름",
+// "image": "https://cataas.com/cat",
+// "price": 3000 // 상품 가격
+// },
+
 
 // 메뉴 정보
 // {
