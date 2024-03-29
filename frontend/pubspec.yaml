@@ -25,6 +25,7 @@ dependencies:
   pretty_qr_code: ^3.3.0
   image_gallery_saver: ^2.0.3
   webview_flutter: ^4.7.0
+  confetti: ^0.7.0
 
 
 

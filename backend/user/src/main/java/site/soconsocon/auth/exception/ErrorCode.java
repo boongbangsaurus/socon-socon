@@ -20,8 +20,10 @@ public enum ErrorCode implements CustomError {
 //    NOT_FOUND_FCM_TOKEN(HttpStatus.NOT_FOUND, "404", "FCM 토큰이 없습니다"),
 
     //소콘머니
+    NOT_MATCH_PASSWORD(HttpStatus.BAD_REQUEST, "400", "소콘 비밀번호를 잘못 입력했습니다."),
     NO_MONEY(HttpStatus.BAD_REQUEST, "400", "잔액이 모자릅니다."),
-
+    DEPOSIT_FAIL(HttpStatus.BAD_REQUEST, "400", "충전이 실패했습니다."),
+    WITHDRAW_FAIL(HttpStatus.BAD_REQUEST, "400", "출금이 실패했습니다."),
 
     ;
 
