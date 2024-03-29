@@ -7,6 +7,8 @@ import 'package:socon/views/screens/contact/contact_fail_screen.dart';
 import 'package:socon/views/screens/contact/contact_sucess_screen.dart';
 import 'package:socon/views/screens/my_info_screen.dart';
 import 'package:socon/views/screens/my_store_list_screen.dart';
+import 'package:socon/views/screens/sign_in_screen.dart';
+import 'package:socon/views/screens/sign_up_screen.dart';
 import 'package:socon/views/screens/soconBook/socon_book_detail_screen.dart';
 import 'package:socon/views/screens/soconBook/socon_book_screen.dart';
 import 'package:socon/views/screens/sogon_main_screen.dart';
@@ -137,12 +139,21 @@ class TabRoutes {
     );
   }
 
-  static RouteBase getVerifyFailRoute() {
+  static RouteBase getSignInRoute() {
     return GoRoute(
-        name: "verifyFail",
-        path: "fail",
+        // path: "/",
+        path: "/signin",
         builder: (BuildContext context, GoRouterState state) {
-          return BossVerificationFailScreen();
+          return SignInScreen();
+        });
+  }
+
+  static RouteBase getSignUpRoute() {
+    return GoRoute(
+        // path: "/",
+        path: "/signup",
+        builder: (BuildContext context, GoRouterState state) {
+          return SignUpScreen();
         });
   }
 }
