@@ -61,3 +61,17 @@ class MenuManagement extends StatelessWidget {
     );
   }
 }
+
+// 메뉴 정보
+// {
+// "id": 0, // issue id
+// "is_main": true, // 대표 상품 여부
+// "name": "발행 상품 이름",
+// "image": "https://cataas.com/cat",
+// "issued_quantity": 3, // 현재 발행량 (구매된 갯수)
+// "left_quantity": 4, // 남은 갯수
+// "is_discounted": true, // 할인 여부
+// "price": 3000, // 정가(할인 전 가격)
+// "discounted_price": 2500, // 할인 적용된 가격
+// "created_at": "YYYY-MM-DD" // 발행 정보 등록된 날짜
+// },
