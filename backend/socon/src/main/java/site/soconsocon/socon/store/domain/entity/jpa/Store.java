@@ -24,13 +24,13 @@ public class Store {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "category", nullable = true)
+    @Column(name = "category")
     private String category; // 가게 분류
 
-    @Column(name = "image", nullable = true)
+    @Column(name = "image")
     private String image; // 가게 대표 이미지
 
-    @Column(name = "phone_number", nullable = true)
+    @Column(name = "phone_number")
     private String phoneNumber; // 가게 전화번호
 
     @Column(name = "address", nullable = false)
@@ -42,10 +42,10 @@ public class Store {
     @Column(name = "lng", nullable = false)
     private Double lng; // 경도
 
-    @Column(name = "introduction", nullable = true)
+    @Column(name = "introduction")
     private String introduction; // 가게 설명
 
-    @Column(name = "closing_planned", nullable = true)
+    @Column(name = "closing_planned")
     private LocalDate closingPlanned; // 폐업 예정 일자
 
     @Column(name = "is_closed", nullable = false, columnDefinition = "boolean default false")
@@ -59,7 +59,7 @@ public class Store {
 
     @ManyToOne
     @JoinColumn(name = "registration_number_id")
-    private RegistrationNumber registrationNumber;
+    private BusinessRegistration businessRegistration;
 
     @OneToMany(mappedBy = "store")
     private List<BusinessHour> businessHours = new ArrayList<>();

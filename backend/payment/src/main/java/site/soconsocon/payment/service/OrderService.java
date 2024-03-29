@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import site.soconsocon.payment.domain.dto.request.OrderRequestDto;
 import site.soconsocon.payment.domain.dto.response.PaymentByOrderResponseDto;
-import site.soconsocon.payment.domain.entity.jpa.Order;
+import site.soconsocon.payment.domain.entity.jpa.Orders;
 import site.soconsocon.payment.domain.entity.jpa.Payment;
 import site.soconsocon.payment.exception.ErrorCode;
 import site.soconsocon.payment.exception.PaymentException;
@@ -22,7 +22,7 @@ public class OrderService {
 
     public String saveOrder(int memberId, OrderRequestDto orderRequestDto) {
 
-        Order order = Order.builder()
+        Orders order = Orders.builder()
                 .orderUid(UUID.randomUUID().toString())
                 .itemName(orderRequestDto.getItemName())
                 .price(orderRequestDto.getPrice())
@@ -43,7 +43,7 @@ public class OrderService {
                 () -> new PaymentException(ErrorCode.PAYMENT_NOT_FOUND)
         );
         //주문내역 조회
-        Order order = orderRepository.findOrderByImpUid(impUid)
+        Orders order = orderRepository.findOrderByImpUid(impUid)
                 .orElseThrow(() -> new PaymentException(ErrorCode.ORDER_NOT_FOUND));
 
         PaymentByOrderResponseDto paymentByOrderResponseDto = PaymentByOrderResponseDto.builder()

@@ -1,17 +1,15 @@
 package site.soconsocon.socon.store.domain.entity.jpa;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-@Entity(name="REGISTRATION_NUMBER")
+@Entity(name="BUSINESS_REGISTRATION")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class RegistrationNumber {
+@Builder
+public class BusinessRegistration {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

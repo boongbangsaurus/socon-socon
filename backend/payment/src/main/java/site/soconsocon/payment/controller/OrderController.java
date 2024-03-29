@@ -6,7 +6,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import site.soconsocon.payment.domain.dto.request.OrderRequestDto;
-import site.soconsocon.payment.domain.entity.jpa.Order;
 import site.soconsocon.payment.exception.PaymentException;
 import site.soconsocon.payment.service.OrderService;
 import site.soconsocon.utils.MessageUtils;
