@@ -5,7 +5,7 @@ class BusinessOwner {
   String registrationNumberId; // 아이디
   String registrationNumber; // 사업자 등록 번호
   String registrationAddress; // 등록 주소
-  String startDate;
+  // String startDate;
 
   // 생성자
   BusinessOwner({
@@ -13,7 +13,7 @@ class BusinessOwner {
     required this.registrationNumberId,
     required this.registrationNumber,
     required this.registrationAddress,
-    required this.startDate,
+    // required this.startDate,
   });
 
   // JSON에서 BusinessOwner 객체로 변환
@@ -23,7 +23,7 @@ class BusinessOwner {
       registrationNumberId: json['registrationNumberId'] as String,
       registrationNumber: json['registrationNumber'] as String,
       registrationAddress: json['registrationAddress'] as String,
-      startDate: json['startDate'] as String,
+      // startDate: json['startDate'] as String,
     );
   }
 
@@ -34,7 +34,7 @@ class BusinessOwner {
       'registrationNumberId': registrationNumberId,
       'registrationNumber': registrationNumber,
       'registrationAddress': registrationAddress,
-      'startDate': startDate,
+      // 'startDate': startDate,
     };
   }
 }
