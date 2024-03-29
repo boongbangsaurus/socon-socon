@@ -12,7 +12,7 @@ services:
     networks:
       - jenkins-project_socon-net
     volumes:
-      - infra/redis/data:/data
+      - redis-data/data
     user: root
     command: redis-server /usr/local/etc/redis/redis.conf --requirepass ${REDIS_PASSWORD}
     ports:
@@ -29,7 +29,7 @@ services:
     networks:
       - jenkins-project_socon-net
     volumes:
-      - infra/redis-key/data:/data
+      - redis-key-data:/data
     user: root
     command: redis-server /usr/local/etc/redis/redis.conf --requirepass ${REDIS_KEY_PASSWORD}
     ports:
@@ -40,5 +40,5 @@ networks:
     external: true
 
 volumes:
-  infra/redis/data:
-  infra/redis-key/data:
+  redis-data:
+  redis-key-data:
