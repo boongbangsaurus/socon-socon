@@ -7,22 +7,22 @@ pipeline {
         stage('Checkout') {
             steps {
                 checkout scmGit(
-                        branches: [[name: 'develop']],
+                        branches: [[name: 'release-test']],
                         extensions: [submodule(parentCredentials: true, trackingSubmodules: true)],
-                        userRemoteConfigs: [[credentialsId: 'github-access-token', url: 'https://github.com/boongbangsaurus/boongbang-settings']]
+                        userRemoteConfigs: [
+                                [credentialsId: 'github-access-token', url: 'https://github.com/boongbangsaurus/boongbang-settings']]
                 )
             }
         }
         stage('Move .env File') {
             steps {
                 script{
-                    sh 'cp secure-settings/back/.env .env'
-                    sh "cp secure-settings/back/payment/gradle.properties backend/payment/gradle.properties"
-                    sh "mkdir -p backend/payment/src/resources"
-                    // find 명령어를 사용하여 .yml 파일을 찾고, 각 파일에 대해 cp 명령어를 실행
-                    sh "find secure-settings/back/payment -name '*.yml' -exec cp {} backend/payment/src/resources \\;"
-                    // 동일한 디렉토리 내 모든 .yml 파일을 복사
-                    sh "find secure-settings/back -maxdepth 1 -name '*.yml' -exec cp {} backend/payment/src/resources \\;"
+                    sh 'cp ../environments/.env backend/payment/.env'
+                    sh 'cp ../environments/gradle.properties backend/payment/gradle.properties'
+                    sh "mkdir -p backend/payment/src/main/resources"
+                    sh "ls -al secure-settings/back/payment"
+                    // find 명령어를 사용하여 .yml 파일을  찾고, 각 파일에 대해 cp 명령어를 실행
+                    sh "cp secure-settings/back/payment/payment-service-default.yml backend/payment/src/main/resources/application.yml"
                 }
             }
         }
@@ -35,19 +35,15 @@ pipeline {
         }
         stage("Build & Run") {
             steps {
-                dir("infra/jenkins/back/payment"){
+                dir("backend/payment"){
                     script {
                         try {
-                            sh "docker build -t kimdahui/payment ."
-                            sh '''
-                            docker run -d --name payment \\
-                            --network jenkins-project_socon-net \\
-                            --restart unless-stopped \\
-                            -e "SPRING_PROFILES_ACTIVE=prod,payment_prod" \\
-                            -p 8020:8020 kimdahui/payment
-                            '''
+                            sh "docker-compose -p payment-project build --no-cache"
+                            sh "docker-compose -p payment-project up -d"
                         }catch (Exception e) {
-                            sh "docker restart payment"
+                            sh "docker stop payment"
+                            sh "docker-compose -p payment-project build --no-cache"
+                            sh "docker-compose -p payment-project up -d"
                         }
                     }
                 }

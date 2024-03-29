@@ -7,21 +7,22 @@ pipeline {
         stage('Checkout') {
             steps {
                 checkout scmGit(
-                        branches: [[name: 'develop']],
+                        branches: [[name: 'release-test']],
                         extensions: [submodule(parentCredentials: true, trackingSubmodules: true)],
-                        userRemoteConfigs: [[credentialsId: 'github-access-token', url: 'https://github.com/boongbangsaurus/boongbang-settings']]
+                        userRemoteConfigs: [
+                                [credentialsId: 'github-access-token', url: 'https://github.com/boongbangsaurus/boongbang-settings']]
                 )
             }
         }
         stage('Move .env File') {
             steps {
                 script{
-                    sh 'cp secure-settings/back/.env .env'
-                    sh "mkdir -p backend/eureka/src/resources"
-                    // find 명령어를 사용하여 .yml 파일을 찾고, 각 파일에 대해 cp 명령어를 실행
-                    sh "find secure-settings/back/eureka -name '*.yml' -exec cp {} backend/eureka/src/resources \\;"
-                    // 동일한 디렉토리 내 모든 .yml 파일을 복사
-                    sh "find secure-settings/back -maxdepth 1 -name '*.yml' -exec cp {} backend/eureka/src/resources \\;"
+                    sh 'cp ../environments/.env backend/eureka/.env'
+                    sh 'cp ../environments/gradle.properties backend/eureka/gradle.properties'
+                    sh "mkdir -p backend/eureka/src/main/resources"
+                    sh "ls -al secure-settings/back/eureka"
+                    // find 명령어를 사용하여 .yml 파일을  찾고, 각 파일에 대해 cp 명령어를 실행
+                    sh "cp secure-settings/back/eureka/eureka-service-default.yml backend/eureka/src/main/resources/application.yml"
                 }
             }
         }
@@ -34,19 +35,15 @@ pipeline {
         }
         stage("Build & Run") {
             steps {
-                dir("infra/jenkins/back/eureka"){
+                dir("backend/eureka"){
                     script {
                         try {
-                            sh "docker build -t kimdahui/eureka ."
-                            sh '''
-                            docker run -d --name eureka \\
-                            --network jenkins-project_socon-net \\
-                            --restart unless-stopped \\
-                            -e "SPRING_PROFILES_ACTIVE=prod,eureka_prod" \\
-                            -p 8761:8761 kimdahui/eureka
-                            '''
+                            sh "docker-compose -p eureka-project build --no-cache"
+                            sh "docker-compose -p eureka-project up -d"
                         }catch (Exception e) {
-                            sh "docker restart eureka"
+                            sh "docker stop eureka"
+                            sh "docker-compose -p eureka-project build --no-cache"
+                            sh "docker-compose -p eureka-project up -d"
                         }
                     }
                 }

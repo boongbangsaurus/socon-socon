@@ -36,12 +36,14 @@ ext {
 
 dependencies {
 	implementation 'site.socon-socon:utils:1.0'
+	implementation 'org.springframework.cloud:spring-cloud-config-client'
 	implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+	implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'com.mysql:mysql-connector-j'
@@ -57,21 +59,5 @@ dependencyManagement {
 
 tasks.named('test') {
 	useJUnitPlatform()
-}
-
-tasks.register('copyPrivate', Copy) {
-	copy {
-		from '../../secure-settings/back/socon'
-		include "*.yml"
-		into 'src/main/resources'
-	}
-	copy {
-		from '../../secure-settings/back/'
-		include "*.yml"
-		into 'src/main/resources'
-	}
-}
-processResources {
-	dependsOn tasks.copyPrivate
 }
 

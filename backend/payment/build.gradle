@@ -38,6 +38,7 @@ ext {
 
 dependencies {
     implementation 'site.socon-socon:utils:1.0'
+    implementation 'org.springframework.cloud:spring-cloud-config-client'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
@@ -60,20 +61,4 @@ dependencyManagement {
 
 tasks.named('test') {
     useJUnitPlatform()
-}
-
-tasks.register('copyPrivate', Copy) {
-    copy {
-        from '../../secure-settings/back/payment'
-        include "*.yml"
-        into 'src/main/resources'
-    }
-    copy {
-        from '../../secure-settings/back/'
-        include "*.yml"
-        into 'src/main/resources'
-    }
-}
-processResources {
-    dependsOn tasks.copyPrivate
 }

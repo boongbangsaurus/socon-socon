@@ -19,6 +19,7 @@ import site.soconsocon.auth.domain.entity.jpa.RefreshToken;
 import site.soconsocon.auth.exception.MemberException;
 import site.soconsocon.auth.repository.MemberRepository;
 import site.soconsocon.auth.repository.RefreshTokenRepository;
+import site.soconsocon.auth.security.MemberDetailService;
 import site.soconsocon.auth.security.MemberDetails;
 import site.soconsocon.auth.service.MemberService;
 import site.soconsocon.auth.util.JwtUtil;
@@ -29,15 +30,15 @@ import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/member-service")
+@RequestMapping("/api/v1/members")
 @Log4j2
 public class MemberController {
 
     private final MemberService memberService;
-    private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final MemberDetailService memberDetailService;
 
     /**
      * 회원가입
@@ -70,8 +71,10 @@ public class MemberController {
         // 로그인 요청한 유저로부터 입력된 패스워드 와 디비에 저장된 유저의 암호화된 패스워드가 같은지 확인.(유효한 패스워드인지 여부 확인)
         if (passwordEncoder.matches(password, member.getPassword())) {
             // 유효한 패스워드가 맞는 경우, 로그인 성공으로 응답.(액세스 토큰을 포함하여 응답값 전달)
-            String accessToken = jwtUtil.generateToken(member);
-            String refreshToken = jwtUtil.generateRefreshToken(member);
+            MemberDetails memberDetails = (MemberDetails) memberDetailService.loadUserByUsername(memberId);
+            String accessToken = jwtUtil.generateToken(memberDetails);
+            String refreshToken = jwtUtil.generateRefreshToken(memberDetails);
+
             RefreshToken redis = new RefreshToken(member.getId(), refreshToken);
             refreshTokenRepository.save(redis);
             MemberLoginResponseDto memberLoginResponseDto = new MemberLoginResponseDto(accessToken, refreshToken, member.getNickname());
@@ -92,7 +95,7 @@ public class MemberController {
 
     //마이페이지
     @GetMapping("/mypage")
-    public ResponseEntity getUserInfo(@RequestHeader("X-Authorization-Id") int memberId) {
+    public ResponseEntity getUserInfo(@RequestHeader("X-Authorization-Id") int memberId) throws MemberException {
         return ResponseEntity.ok().body(MessageUtils.success(memberService.getUserInfo(memberId)));
 
     }
@@ -108,8 +111,7 @@ public class MemberController {
         MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
         String memberId = memberDetails.getUsername();
 
-        return ResponseEntity.ok().body(MessageUtils.success(memberService.createAccessToken(Integer.parseInt(memberId), refreshToken.getRefreshToken())));
-
+        return ResponseEntity.ok().body(MessageUtils.success(memberService.createAccessToken(memberDetails, refreshToken.getRefreshToken())));
     }
 
     @PostMapping("/refresh-token")
@@ -117,34 +119,33 @@ public class MemberController {
         MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
         String memberId = memberDetails.getUsername();
 
-        return ResponseEntity.ok().body(MessageUtils.success(memberService.createRefreshToken(Integer.parseInt(memberId))));
+        return ResponseEntity.ok().body(MessageUtils.success(memberService.createRefreshToken(memberDetails)));
 
     }
 
-    @GetMapping("/user")
-    public ResponseEntity<Member> getCurrentUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-
-        Optional<Member> member = memberRepository.findMemberById(Integer.parseInt(username));
-        if (member.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        return ResponseEntity.ok(member.get());
+    /**
+     * Gateway에서 가져오는 memberId로 Member 조회
+     *
+     * @param memberId
+     * @return
+     * @throws MemberException
+     */
+    @GetMapping("/me")
+    public ResponseEntity getMember(@RequestHeader("X-Authorization-Id") int memberId) throws MemberException {
+        log.info("gateway success!");
+        return ResponseEntity.ok().body(MessageUtils.success(memberService.findMemberByMemberId(memberId)));
     }
 
-
-    @GetMapping
-    public MemberFeignResponse getMemberByMemberId(@RequestHeader("X-Authorization-Id") int memberId) {
-        log.info("open feign communication success!");
-        return memberService.findMemberByMemberId(memberId);
-    }
-
-    @GetMapping("")
+    @GetMapping("/email")
     public ResponseEntity getMemberByEmail(@RequestParam("email") String email) throws MemberException {
         return ResponseEntity.ok().body(MessageUtils.success(memberService.getMemberByEmail(email)));
     }
 
+    @GetMapping("/{memberId}")
+    public MemberFeignResponse getMemberByMemberId(@PathVariable int memberId) throws MemberException {
+        log.info("open feign communication success!");
+        log.info("getMemberByMemberId() 메소드 호출");
+        return memberService.findMemberByMemberId(memberId);
+    }
 
 }

@@ -10,12 +10,15 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 import site.soconsocon.auth.domain.entity.jpa.Member;
 import site.soconsocon.auth.security.MemberDetailService;
+import site.soconsocon.auth.security.MemberDetails;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -59,7 +62,7 @@ public class JwtUtil {
     }
 
     public String getUsername(String token) {
-        return extractAllClaims(token).get("username", String.class);
+        return extractAllClaims(token).get("memberId", String.class);
     }
 
     public Boolean isTokenExpired(String token) {
@@ -81,19 +84,27 @@ public class JwtUtil {
         return "refreshToken:" + memberId;
     }
 
-    public String generateToken(Member member) {
-        return doGenerateToken(String.valueOf(member.getId()), accessExpiration);
+    public String generateToken(MemberDetails memberDetails) {
+        return doGenerateToken(memberDetails, accessExpiration);
     }
 
-    public String generateRefreshToken(Member member) {
-        return doGenerateToken(String.valueOf(member.getId()), refreshExpiration);
+    public String generateRefreshToken(MemberDetails memberDetails) {
+        return doGenerateToken(memberDetails, refreshExpiration);
     }
 
-    public String doGenerateToken(String username, long expireTime) {
+    public String doGenerateToken(MemberDetails memberDetails, long expireTime) {
         Claims claims = Jwts.claims();
-        claims.put("memberId", username); //memberId
+        String memberId = memberDetails.getMember().getId().toString(); //회원 PK
+        claims.put("memberId", memberId); //memberId
+
+        List<String> roleList = new ArrayList<>();
+        for (GrantedAuthority role : memberDetails.getAuthorities()) {
+            roleList.add(role.getAuthority());
+        }
+        claims.put("role", roleList); //role
 
         String jwt = Jwts.builder()
+                .setSubject(memberId)
                 .setClaims(claims)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + expireTime))
@@ -103,13 +114,10 @@ public class JwtUtil {
         return jwt;
     }
 
-//    public Authentication getAuthentication(String jwtToken) {
-//        UserDetails userDetails = memberDetailService.loadUserByUsername(getUsername(jwtToken));
-//    }
 
     public boolean validateToken(String token) {
         try {
-            Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token);
+            Jwts.parserBuilder().setSigningKey(getSigningKey(secretKey)).build().parseClaimsJws(token);
             return true;
         } catch (SecurityException | MalformedJwtException e) {
             log.info("Invalid JWT token", e);
