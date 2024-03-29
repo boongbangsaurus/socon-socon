@@ -31,7 +31,6 @@ class _BossVerificationState extends State<BossVerification> {
     registrationNumberId: '',
     registrationNumber: '',
     registrationAddress: '',
-    startDate: '',
   );
 
   @override
@@ -63,31 +62,51 @@ class _BossVerificationState extends State<BossVerification> {
                             type: "owner",
                             labelText: "대표자",
                             helperText: "외국인 사업자의 경우에는 영문명을 입력해주세요.",
-                            emptyText: "대표자 성함을 입력해주세요.",
                             onSaved: (val) => businessOwner.owner = val ?? '',
+                            validateInput: (String? val) {
+                              if (val == null || val.isEmpty) {
+                                return "대표자 성함을 입력해주세요.";
+                              }
+                              return null;
+                            },
                           ),
                           const SizedBox(height: 15),
                           BossInput(
-                              type: "registrationNumber",
-                              labelText: "사업자 등록 번호",
-                              helperText: "123-45-6789 형태로 사업자 등록 번호를 입력해주세요.",
-                              emptyText: "사업자 등록 번호를 입력해주세요.",
-                              onSaved: (val) => {
-                                    formattedValue =
-                                        StringUtils.extractWithoutHyphen(val.toString()),
-                                    print("보정 처리한 사업자 등록번호 $formattedValue"),
-                                    businessOwner.registrationNumber =
-                                        "1208765763",
-                                  }),
+                            type: "registrationNumber",
+                            labelText: "사업자 등록 번호",
+                            helperText: "123-45-6789 형태로 사업자 등록 번호를 입력해주세요.",
+                            onSaved: (val) => {
+                              formattedValue = StringUtils.extractWithoutHyphen(
+                                  val.toString()),
+                              print("보정 처리한 사업자 등록번호 $formattedValue"),
+                              businessOwner.registrationNumber = "1208765763",
+                            },
+                            validateInput: (String? val) {
+                              final pattern = RegExp(r'^\d{3}-\d{2}-\d{4}$');
+
+                              if (val == null || val.isEmpty) {
+                                return "사업자 등록 번호를 입력해주세요.";
+                              } else if (!pattern.hasMatch(val)) {
+                                return "형태가 올바르지 않습니다. 123-45-6789 형태로 입력해주세요."; // 패턴과 일치하지 않을 때 반환할 에러 메시지
+                              } else {
+                                return null;
+                              }
+                            },
+                          ),
                           const SizedBox(height: 15),
                           BossInput(
-                            type: "startDate",
-                            labelText: "개업일",
-                            helperText: "달력 아이콘을 선택하여 사업자 등록증에 표기된 개업일을 입력해주세요",
-                            emptyText: "개업일을 입력해주세요.",
+                            type: "address",
+                            labelText: "사업자 주소",
+                            helperText: "사업자 등록증에 작성된 사업자 주소를 입력해주세요.",
                             showIcon: true,
                             onSaved: (val) =>
-                                businessOwner.startDate = val ?? '',
+                                businessOwner.registrationAddress = val ?? '',
+                            validateInput: (String? val) {
+                              if (val == null || val.isEmpty) {
+                                return "사업자 주소를 입력해주세요";
+                              }
+                              return null;
+                            },
                           ),
                         ],
                       ),
@@ -130,18 +149,18 @@ class BossInput extends StatelessWidget {
   final String type;
   final String labelText;
   final String helperText;
-  final String emptyText;
   final bool showIcon;
   final Function(String?) onSaved;
+  final String? Function(String?) validateInput;
 
   BossInput({
     super.key,
     required this.type,
     required this.labelText,
     required this.helperText,
-    required this.emptyText,
     this.showIcon = false,
     required this.onSaved,
+    required this.validateInput,
   });
 
   @override
@@ -156,12 +175,12 @@ class BossInput extends StatelessWidget {
             decoration: CustomTextFormField.getDecoration(
                 suffixs: showIcon
                     ? IconLoader(
-                        iconName: 'calendar',
+                        iconName: 'search',
                         width: ResponsiveUtils.getWidthWithPixels(context, 20),
                         height:
                             ResponsiveUtils.getHeightWithPixels(context, 25),
                         onPressed: () {
-                          print("달력 보여줘");
+                          print("주소 검색할게");
                         })
                     : null),
             style: TextStyle(
@@ -174,12 +193,7 @@ class BossInput extends StatelessWidget {
             // 실시간 검사
             keyboardType: TextInputType.name,
             onSaved: onSaved,
-            validator: (String? val) {
-              if (val == null || val.isEmpty) {
-                return emptyText;
-              }
-              return null;
-            },
+            validator: validateInput,
           )),
     );
   }
