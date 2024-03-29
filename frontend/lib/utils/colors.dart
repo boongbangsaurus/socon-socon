@@ -37,6 +37,7 @@ class AppColors {
   static const Color WARNING400 = Color(0XFFFDB022);
 
   // GREEN
+  static const Color SUCCESS200 = Color(0XFFA6F4C5);
   static const Color SUCCESS300 = Color(0XFF6CE9A6);
   static const Color SUCCESS400 = Color(0XFF32D583);
   static const Color SUCCESS500 = Color(0XFF12B76A);

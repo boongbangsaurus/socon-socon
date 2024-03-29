@@ -2,11 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+import 'package:go_router/go_router.dart';
 import 'package:socon/utils/colors.dart';
 import 'package:socon/utils/fontSizes.dart';
 import 'package:socon/utils/responsive_utils.dart';
 import 'package:socon/views/atoms/tag_icon.dart';
-import 'package:socon/views/modules/store_detail_view.dart';
+import 'package:socon/views/modules/store_detail_top_card.dart';
 import 'package:socon/views/screens/myStore/store_register_view.dart';
 import 'package:socon/views/atoms/image_loader.dart';
 import 'package:socon/models/my_store.dart';
@@ -33,6 +34,7 @@ class _MyStoreListsState extends State<MyStoreLists> {
                   context,
                   MaterialPageRoute(builder: (context) => RegisterPage()),
                 );
+
               },
               child: Text('+ 점포 등록', style: TextStyle(color: AppColors.BLACK),),
               style: OutlinedButton.styleFrom(
@@ -49,68 +51,6 @@ class _MyStoreListsState extends State<MyStoreLists> {
               ),
             ),
           )
-
-
-          // Container(
-          //   margin: EdgeInsets.all(20),
-          //   width: double.infinity,
-          //   // 화면 너비에 맞춤
-          //   height: 48.0,
-          //   // 적당한 높이
-          //   decoration: BoxDecoration(
-          //     // 그림자 추가
-          //     boxShadow: [
-          //       BoxShadow(
-          //         color: Colors.grey.withOpacity(0.5),
-          //         spreadRadius: 1,
-          //         blurRadius: 2,
-          //         offset: Offset(0, 2), // 그림자의 위치 조정
-          //       ),
-          //     ],
-          //   ),
-          //   child: ElevatedButton(
-          //     onPressed: () {
-          //       Navigator.push(
-          //         context,
-          //         MaterialPageRoute(builder: (context) => RegisterPage()),
-          //       );
-          //     },
-          //     style: ButtonStyle(
-          //       backgroundColor: MaterialStateProperty.resolveWith<Color?>(
-          //             (Set<MaterialState> states) {
-          //           if (states.contains(MaterialState.pressed)) {
-          //             return Color(0xFFF8D461); // 클릭 시 배경색
-          //           }
-          //           return Colors.white; // 기본 배경색
-          //         },
-          //       ),
-          //       foregroundColor: MaterialStateProperty.resolveWith<Color?>(
-          //             (Set<MaterialState> states) {
-          //           if (states.contains(MaterialState.pressed)) {
-          //             return Colors.black; // 클릭 시 글자색
-          //           }
-          //           return Colors.black; // 기본 글자색
-          //         },
-          //       ),
-          //       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-          //         RoundedRectangleBorder(
-          //           borderRadius: BorderRadius.circular(0),
-          //           side: BorderSide(color: Colors.grey),
-          //         ),
-          //       ),
-          //       elevation: MaterialStateProperty.resolveWith<double>(
-          //             (Set<MaterialState> states) {
-          //           if (states.contains(MaterialState.pressed)) {
-          //             return 0; // 클릭 시 그림자 제거
-          //           }
-          //           return 4; // 기본 그림자
-          //         },
-          //       ),
-          //     ),
-          //     child: Text('+ 점포 등록'),
-          //   ),
-          // ),
-
         ]
     );
   }
@@ -130,7 +70,9 @@ class StoreLists extends StatelessWidget {
           final store = stores[index];
           return InkWell(
             onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => StoreDetailPage(storeId : store.storeId)));
+              // Navigator.push(context, MaterialPageRoute(builder: (context) => StoreDetailTopCard(storeId : store.storeId)));
+              GoRouter.of(context).go("/myStores/detail/${store.storeId}");
+
             },
             child: Container(
               margin: EdgeInsets.all(10),

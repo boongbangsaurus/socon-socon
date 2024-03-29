@@ -5,12 +5,8 @@ import 'package:socon/routes/tab_routes.dart';
 import 'package:socon/views/atoms/bottom_bar.dart';
 import 'package:socon/views/screens/sign_up_screen.dart';
 
-
-
 final bool isOwner = true; // 상태 관리로 처리할 예정
 final bool isLoggined = true; // 상태 관리로 처리할 예정
-
-
 
 final GoRouter router =
     GoRouter(initialLocation: isLoggined ? "/" : "/signup", routes: <RouteBase>[
@@ -48,10 +44,14 @@ final GoRouter router =
 
 Widget _bottomNavBar(StatefulNavigationShell navigationShell) {
   final currentRoute = navigationShell.shellRouteContext.routeMatchList;
+
+  final regExp = RegExp(r'^/info/.*/success$');
+  final regExp2 = RegExp(r'^/info/.*/fail$');
   final bool showBottomNavBar =
       currentRoute.uri.toString() == "/info/contact" ||
-          currentRoute.uri.toString() == "/info/verification" ||
-          currentRoute.uri.toString() == "/info/success" ||
+          currentRoute.uri.toString() == "/info/verify" ||
+          regExp.hasMatch(currentRoute.uri.toString()) ||
+          regExp2.hasMatch(currentRoute.uri.toString()) ||
           currentRoute.uri.toString() == "/soconbook/detail";
 
   // print(currentRoute.uri.toString().runtimeType); // 타입 확인

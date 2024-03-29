@@ -3,6 +3,9 @@ package site.soconsocon.socon.store.domain.entity.jpa;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity(name="ITEM")
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,20 +23,23 @@ public class Item {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "image", nullable = true)
+    @Column(name = "image")
     private String image;
 
     @Column(name = "price", nullable = false)
     private Integer price;
 
-    @Column(name = "summary", nullable = true)
+    @Column(name = "summary")
     private String summary;
 
-    @Column(name = "description", nullable = true)
+    @Column(name = "description")
     private String description;
 
     @ManyToOne
     @JoinColumn(name = "store_id")
     private Store store;
+
+    @OneToMany(mappedBy = "item")
+    private List<Issue> issues = new ArrayList<>();
 
 }

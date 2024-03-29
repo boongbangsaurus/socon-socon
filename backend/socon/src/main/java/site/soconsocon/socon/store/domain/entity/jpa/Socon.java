@@ -9,7 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 @Getter
 @Setter
-@ToString
+@Builder
 public class Socon {
 
     @Id
@@ -23,11 +23,11 @@ public class Socon {
     @Column (name="expired_at", nullable = false)
     private LocalDateTime expiredAt;
 
-    @Column (name="used_at", nullable = true)
+    @Column (name="used_at")
     private LocalDateTime usedAt;
 
-    @Column (name="is_used", nullable = false, columnDefinition = "boolean default false")
-    private Boolean isUsed;
+    @Column (name="status", nullable = false, columnDefinition = "boolean default 'unused'")
+    private String status;
 
     @Column(name = "member_id", nullable = false)
     private Integer memberId; // 멤버 id

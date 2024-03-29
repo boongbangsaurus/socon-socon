@@ -1,33 +1,53 @@
 import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
+import 'package:socon/views/atoms/qr_code.dart';
 import 'package:socon/views/screens/bossVerification/boss_verification.dart';
+import 'package:socon/views/screens/bossVerification/boss_verification_fail_screen.dart';
 import 'package:socon/views/screens/contact/contact_fail_screen.dart';
 import 'package:socon/views/screens/contact/contact_sucess_screen.dart';
+import 'package:socon/views/screens/myStore/store_detail_screen.dart';
 import 'package:socon/views/screens/my_info_screen.dart';
 import 'package:socon/views/screens/my_store_list_screen.dart';
 import 'package:socon/views/screens/soconBook/socon_book_detail_screen.dart';
 import 'package:socon/views/screens/soconBook/socon_book_screen.dart';
 import 'package:socon/views/screens/sogon_main_screen.dart';
+import 'package:socon/views/screens/stores/store_detail.dart';
+import '../views/screens/bossVerification/boss_verification_success_screen.dart';
+import '../views/screens/contact/contact_screen.dart';
 import '../views/screens/nearby_info_screen.dart';
 
 class TabRoutes {
   static RouteBase getNearbyRoute() {
     return GoRoute(
-        // path: "/",
-        path: "/",
-        builder: (BuildContext context, GoRouterState state) {
-          return NearbyInfoScreen();
-        });
+      // path: "/",
+      path: "/",
+      builder: (BuildContext context, GoRouterState state) {
+        return NearbyInfoScreen();
+      },
+      routes: [
+        getStoreDetailRoute(),
+      ]
+    );
   }
 
   static RouteBase getStoreDetailRoute() {
     return GoRoute(
-      // path: "/",
-        path: "store",
+        // path: "/",
+        path: "detail/:storeId",
+
         builder: (BuildContext context, GoRouterState state) {
-          return NearbyInfoScreen();
+          return StoreDetailScreen(state.pathParameters['storeId']);
         });
   }
+
+  // static RouteBase getNearbyRoute() {
+  //   return GoRoute(
+  //       // path: "/",
+  //       path: "store",
+  //       builder: (BuildContext context, GoRouterState state) {
+  //         return NearbyInfoScreen();
+  //       });
+  // }
 
   static RouteBase getSogonMainRoute() {
     return GoRoute(
@@ -65,15 +85,27 @@ class TabRoutes {
           return MyInfoScreen();
         },
         routes: [
+          getContactRoute(),
+          getBossVerification(),
+        ]);
+  }
+
+  static RouteBase getContactRoute() {
+    return GoRoute(
+        name: "contact",
+        path: "contact",
+        builder: (BuildContext context, GoRouterState state) {
+          return ContactScreen();
+        },
+        routes: [
           getContactSuccessRoute(),
           getContactFailRoute(),
-          getBossVerification(),
         ]);
   }
 
   static RouteBase getContactSuccessRoute() {
     return GoRoute(
-      name: "contact",
+      name: "contactSuccess",
       path: "success",
       builder: (BuildContext context, GoRouterState state) {
         return ContactSuccessScreen();
@@ -93,19 +125,50 @@ class TabRoutes {
 
   static RouteBase getMyStoreListRoute() {
     return GoRoute(
-        path: "/stores",
+        path: "/myStores",
         builder: (BuildContext context, GoRouterState state) {
           return const MyStoreListScreen();
+        },
+        routes: [getMyStoreDetailRoute()]);
+  }
+
+  static RouteBase getMyStoreDetailRoute() {
+    return GoRoute(
+        // path: "/",
+        path: "detail/:storeId",
+        builder: (BuildContext context, GoRouterState state) {
+          return MyStoreDetailScreen(state.pathParameters['storeId']);
         });
   }
 
   static RouteBase getBossVerification() {
     return GoRoute(
-      name: "bossVerification",
-      path: "verification",
+        name: "verify",
+        path: "verify",
+        builder: (BuildContext context, GoRouterState state) {
+          return BossVerification();
+        },
+        routes: [
+          getVerifySuccessRoute(),
+        ]);
+  }
+
+  static RouteBase getVerifySuccessRoute() {
+    return GoRoute(
+      name: "verifySuccess",
+      path: "success",
       builder: (BuildContext context, GoRouterState state) {
-        return BossVerification();
+        return BossVerificationSuccessScreen();
       },
     );
+  }
+
+  static RouteBase getVerifyFailRoute() {
+    return GoRoute(
+        name: "verifyFail",
+        path: "fail",
+        builder: (BuildContext context, GoRouterState state) {
+          return BossVerificationFailScreen();
+        });
   }
 }

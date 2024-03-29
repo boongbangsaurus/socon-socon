@@ -2,7 +2,6 @@ package site.soconsocon.socon.store.domain.entity.jpa;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.aspectj.bridge.MessageUtil;
 
 import java.sql.Time;
 
@@ -27,18 +26,22 @@ public class BusinessHour {
     @Column(name = "is_working", nullable = false, columnDefinition = "boolean default false")
     private Boolean isWorking;
 
-    @Column(name = "open_at", nullable = true)
+    @Column(name = "open_at")
     private Time openAt;
 
-    @Column(name = "close_at", nullable = true)
+    @Column(name = "close_at")
     private Time closeAt;
 
-    @Column(name = "breaktime_start", nullable = true)
+    @Column(name = "is_breaktime", nullable = false, columnDefinition = "boolean default false")
+    private Boolean isBreaktime;
+
+    @Column(name = "breaktime_start")
     private Time breaktimeStart;
 
-    @Column(name = "breaktime_end", nullable = true)
+    @Column(name = "breaktime_end")
     private Time breaktimeEnd;
 
-    @Column(name = "store_id", nullable = false)
-    private Integer storeId;
+    @ManyToOne
+    @JoinColumn(name = "store_id", nullable = false)
+    private Store store;
 }

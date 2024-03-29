@@ -33,14 +33,20 @@ class CustomTextFormField {
               Text(
                 labelText,
                 style: const TextStyle(
-                    fontSize: FontSizes.XSMALL, fontWeight: FontWeight.bold),
+                    fontSize: FontSizes.SMALL, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(
+                height: 3.0,
               ),
               Text(
                 helper,
                 style: const TextStyle(
-                    fontSize: FontSizes.XXXSMALL, color: AppColors.GRAY400),
+                    fontSize: FontSizes.XXSMALL, color: AppColors.GRAY400),
               ),
             ])),
+        const SizedBox(
+          height: 15.0,
+        ),
         textFormField
       ],
     );

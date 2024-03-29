@@ -4,13 +4,15 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity(name="ISSUE")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
 @ToString
 public class Issue {
 
@@ -25,7 +27,7 @@ public class Issue {
     @Column(name = "store_name", nullable = false)
     private String storeName; // 가게 이름
 
-    @Column(name = "image", nullable = true)
+    @Column(name = "image")
     private String image;
 
     @Column(name = "is_main", nullable = false, columnDefinition = "boolean default false")
@@ -37,7 +39,7 @@ public class Issue {
     @Column(name = "is_discounted", nullable = false, columnDefinition = "boolean default false")
     private Boolean isDiscounted; // 할인 적용 여부
 
-    @Column(name = "discounted_price", nullable = true)
+    @Column(name = "discounted_price")
     private Integer discountedPrice; // 할인된 가격
 
     @Column(name = "max_quantity", nullable = false)
@@ -53,7 +55,7 @@ public class Issue {
     private Integer period; // 사용 기간
 
     @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt; // 등록 일자
+    private LocalDate createdAt; // 등록 일자
 
     @Column(name = "status", nullable = false, columnDefinition = "char default 'A'")
     private Character status; // 발행 상태. a:active i:inactive c:closed
@@ -64,5 +66,8 @@ public class Issue {
 
     @Column(name = "order_id", nullable = false)
     private Integer orderId;
+
+    @OneToMany(mappedBy = "issue")
+    private List<Socon> socons = new ArrayList<>();
 
 }
