@@ -23,16 +23,14 @@ public class AccountController {
     //소콘머니 증가
     @PutMapping("/deposit")
     public ResponseEntity deposit(@RequestBody DepositRequestDto depositRequestDto) throws MemberException, AccountException {
-        accountService.deposit(depositRequestDto);
-        return ResponseEntity.ok().body(MessageUtils.success());
+        return ResponseEntity.ok().body(MessageUtils.success( accountService.deposit(depositRequestDto)));
     }
 
 
     //소콘머니 출금
     @PutMapping("/withdraw")
     public ResponseEntity withdraw(@RequestBody WithdrawRequestDto withdrawRequestDto) throws AccountException, MemberException {
-        accountService.withdraw(withdrawRequestDto);
-        return ResponseEntity.ok().body(MessageUtils.success());
+        return ResponseEntity.ok().body(MessageUtils.success(accountService.withdraw(withdrawRequestDto)));
 
     }
 }
