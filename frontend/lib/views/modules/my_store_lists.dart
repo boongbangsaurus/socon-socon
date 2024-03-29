@@ -6,7 +6,7 @@ import 'package:socon/utils/colors.dart';
 import 'package:socon/utils/fontSizes.dart';
 import 'package:socon/utils/responsive_utils.dart';
 import 'package:socon/views/atoms/tag_icon.dart';
-import 'package:socon/views/modules/store_detail_view.dart';
+import 'package:socon/views/modules/store_detail_top_card.dart';
 import 'package:socon/views/screens/myStore/store_register_view.dart';
 import 'package:socon/views/atoms/image_loader.dart';
 import 'package:socon/models/my_store.dart';
@@ -130,7 +130,7 @@ class StoreLists extends StatelessWidget {
           final store = stores[index];
           return InkWell(
             onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => StoreDetailPage(storeId : store.storeId)));
+              Navigator.push(context, MaterialPageRoute(builder: (context) => StoreDetailTopCard(storeId : store.storeId)));
             },
             child: Container(
               margin: EdgeInsets.all(10),
