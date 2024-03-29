@@ -47,8 +47,6 @@ public class StoreService {
     // 가게 정보 등록
     public void saveStore(AddStoreRequest request, int memberId) {
 
-        log.info(request.getRegistrationNumberId().toString());
-
         //RegistrationNumber 조회
         BusinessRegistration businessRegistration = businessRegistrationRepository.findById(request.getRegistrationNumberId()).orElseThrow(() -> new StoreException(StoreErrorCode.REGISTRATION_NUMBER_NOT_FOUND));
 
@@ -83,7 +81,6 @@ public class StoreService {
 
         for (BusinessHourRequest businessHour : businessHours) {
             BusinessHour hour = new BusinessHour();
-            log.info(businessHour.toString());
             if(businessHour.getIsWorking()){
                 hour.setIsWorking(true);
                 hour.setOpenAt(Time.valueOf(businessHour.getOpenAt() + ":00"));
@@ -113,12 +110,9 @@ public class StoreService {
 
     // 가게 정보 목록 조회
     public List<StoreListResponse> getStoreList(int memberId) {
-        log.info("===============service method entered=============");
 
         List<Store> stores = storeRepository.findStoresByMemberId(memberId);
-        log.info(stores.toString());
 
-        log.info("----------------------------------------");
         List<StoreListResponse> storeList = new ArrayList<>();
         for (Store store : stores) {
             storeList.add(StoreListResponse.builder()
@@ -180,8 +174,6 @@ public class StoreService {
     public void updateStoreInfo(Integer storeId, UpdateStoreInfoRequest request, int memberId) {
 
         var store = storeRepository.findById(storeId).orElseThrow(() -> new StoreException(StoreErrorCode.STORE_NOT_FOUND));
-        log.info("----------------------------------------------");
-        log.info(request.getBusinessHour().toString());
         if (!store.getMemberId().equals(memberId)) {
             // 본인 가게 아닐 경우
             throw new SoconException(ErrorCode.FORBIDDEN);

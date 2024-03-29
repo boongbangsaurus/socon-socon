@@ -37,7 +37,6 @@ public class StoreApiController {
             @RequestHeader("X-Authorization-Id") int memberId
     ) {
 
-        log.info(request.toString());
         storeService.saveStore(request, memberId);
 
         return ResponseEntity.ok().body(MessageUtils.success(null));
@@ -88,10 +87,7 @@ public class StoreApiController {
             @PathVariable("store_id") Integer storeId,
             @RequestHeader("X-Authorization-Id") int memberId
     ) {
-        log.info("controller!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        log.info(request.toString());
 
-        log.info(request.getBusinessHour().toString());
         storeService.updateStoreInfo(storeId, request, memberId);
 
         return ResponseEntity.ok().body(MessageUtils.success(null));
