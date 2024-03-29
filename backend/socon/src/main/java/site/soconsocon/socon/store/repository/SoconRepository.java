@@ -26,5 +26,5 @@ public interface SoconRepository extends JpaRepository<Socon, Integer> {
 
     @Modifying
     @Query("UPDATE SOCON s SET s.status = 'expired' WHERE s.issue.item.store.id = :storeId AND s.status IN ('unused', 'sogon')")
-    void updateUnusedSoconByStoreId(Integer id);
+    void updateUnusedSoconByStoreId(Integer storeId);
 }

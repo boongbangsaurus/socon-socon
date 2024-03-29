@@ -170,4 +170,9 @@ public class StoreApiController {
 
         return ResponseEntity.ok().body(MessageUtils.success(null));
     }
+
+    @GetMapping("/test")
+    public ResponseEntity<Object> test(){
+        return ResponseEntity.ok().body(MessageUtils.success("test"));
+    }
 }

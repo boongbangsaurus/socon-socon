@@ -34,5 +34,4 @@ public class Comment {
 
     @Column(name = "member_id")
     private Integer memberId;
-
 }
