@@ -14,6 +14,7 @@ import site.soconsocon.socon.store.exception.StoreException;
 import site.soconsocon.socon.store.repository.ItemRepository;
 import site.soconsocon.socon.store.repository.StoreRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -29,7 +30,7 @@ public class ItemService {
         Store savedStore = storeRepository.findById(storeId)
                 .orElseThrow(() -> new StoreException(StoreErrorCode.STORE_NOT_FOUND));
 
-        if (Objects.equals(savedStore.getMemberId(), memberId)) {
+        if (!Objects.equals(savedStore.getMemberId(), memberId)) {
             // 점포 소유주 불일치
             throw new SoconException(ErrorCode.FORBIDDEN);
         }
@@ -50,7 +51,18 @@ public class ItemService {
             // 점포 소유주 불일치
             throw new SoconException(ErrorCode.FORBIDDEN);
         }
-        return itemRepository.findItemsByStoreId(StoreId);
+        List<Item> itemList = itemRepository.findItemsByStoreId(StoreId);
+        List<ItemListResponse> itemResponseList = new ArrayList<>();
+        for(Item item : itemList) {
+            itemResponseList.add(ItemListResponse.builder()
+                    .id(item.getId())
+                    .name(item.getName())
+                    .image(item.getImage())
+                    .price(item.getPrice())
+                    .build());
+        }
+
+        return itemResponseList;
     }
 
     // 상품 정보 상세 조회

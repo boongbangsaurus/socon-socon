@@ -66,6 +66,7 @@ public class IssueService {
                 .name(item.getName())
                 .image(item.getImage())
                 .isMain(request.getIsMain())
+                .price(item.getPrice())
                 .isDiscounted(request.getIsDiscounted())
                 .discountedPrice(request.getDiscountedPrice())
                 .maxQuantity(request.getMaxQuantity())

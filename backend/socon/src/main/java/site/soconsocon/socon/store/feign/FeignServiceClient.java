@@ -6,15 +6,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import site.soconsocon.socon.store.domain.dto.request.ChargeRequest;
 import site.soconsocon.socon.store.domain.entity.feign.Member;
 
-@FeignClient(name = "user-service", url = "api/v1/members")
+@FeignClient(name = "user", url = "http://localhost:8040/api/v1/members")
 public interface FeignServiceClient {
 
     // 멤버 정보 조회
-    @GetMapping("api/v1/members/me/{memberId}")
+    @GetMapping("/{memberId}")
     Member getMemberInfo(@PathVariable("memberId") int memberId);
 
     // 출금 요청
-    @GetMapping("api/v1/accounts/deposit")
+    @GetMapping("accounts/deposit")
     void deposit(ChargeRequest request);
 
 }

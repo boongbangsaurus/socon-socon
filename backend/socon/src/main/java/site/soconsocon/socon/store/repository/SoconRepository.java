@@ -1,7 +1,6 @@
 package site.soconsocon.socon.store.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import site.soconsocon.socon.store.domain.entity.jpa.Socon;
 
@@ -23,8 +22,6 @@ public interface SoconRepository extends JpaRepository<Socon, Integer> {
 
     @Query("SELECT s FROM SOCON s WHERE s.id = :issueId AND (s.status = 'unused' OR s.status = 'sogon')")
     List<Socon> getUnusedSoconByIssueId(Integer issueId);
-
-    @Modifying
-    @Query("UPDATE SOCON s SET s.status = 'expired' WHERE s.issue.item.store.id = :storeId AND s.status IN ('unused', 'sogon')")
-    void updateUnusedSoconByStoreId(Integer storeId);
+    @Query("SELECT s FROM SOCON s WHERE s.issue.item.store.id = :storeId AND s.status IN ('unused', 'sogon')")
+    List<Socon> getSoconByStoreId(Integer storeId);
 }
