@@ -38,3 +38,7 @@ services:
 networks:
   jenkins-project_socon-net:
     external: true
+
+volumes:
+  infra/redis/data:
+  infra/redis-key/data:
