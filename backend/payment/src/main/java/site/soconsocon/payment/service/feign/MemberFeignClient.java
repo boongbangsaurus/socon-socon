@@ -9,7 +9,7 @@ import site.soconsocon.payment.service.feign.response.MemberFeignResponse;
 @FeignClient(name = "user-service", path = "/api/v1/members")
 public interface MemberFeignClient {
 
-    @GetMapping
+    @GetMapping("/{memberId}")
     MemberFeignResponse findMemberIdByMemberId(@PathVariable int memberId);
 
 }

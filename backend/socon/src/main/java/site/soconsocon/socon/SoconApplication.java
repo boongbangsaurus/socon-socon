@@ -9,11 +9,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
-@EnableScheduling
-@EnableJpaRepositories(basePackages = {"site.soconsocon.socon.store.repository", "site.soconsocon.socon.sogon.repository"})
-@EntityScan("site.soconsocon.socon")
 @EnableDiscoveryClient
-@EnableFeignClients
+@EnableFeignClients //Feign Client
 public class SoconApplication {
 
 	public static void main(String[] args) {
