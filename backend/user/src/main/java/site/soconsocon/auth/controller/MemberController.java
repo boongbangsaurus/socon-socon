@@ -123,9 +123,16 @@ public class MemberController {
 
     }
 
+    /**
+     * Gateway에서 가져오는 memberId로 Member 조회
+     *
+     * @param memberId
+     * @return
+     * @throws MemberException
+     */
     @GetMapping("/me")
-    public ResponseEntity getMemberByMemberId(@RequestHeader("X-Authorization-Id") int memberId) throws MemberException {
-        log.info("open feign communication success!");
+    public ResponseEntity getMember(@RequestHeader("X-Authorization-Id") int memberId) throws MemberException {
+        log.info("gateway success!");
         return ResponseEntity.ok().body(MessageUtils.success(memberService.findMemberByMemberId(memberId)));
     }
 
@@ -134,5 +141,11 @@ public class MemberController {
         return ResponseEntity.ok().body(MessageUtils.success(memberService.getMemberByEmail(email)));
     }
 
+    @GetMapping("/{memberId}")
+    public MemberFeignResponse getMemberByMemberId(@PathVariable int memberId) throws MemberException {
+        log.info("open feign communication success!");
+        log.info("getMemberByMemberId() 메소드 호출");
+        return memberService.findMemberByMemberId(memberId);
+    }
 
 }
