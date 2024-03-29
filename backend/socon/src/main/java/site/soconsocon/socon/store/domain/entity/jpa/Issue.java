@@ -27,7 +27,7 @@ public class Issue {
     @Column(name = "store_name", nullable = false)
     private String storeName; // 가게 이름
 
-    @Column(name = "image", nullable = true)
+    @Column(name = "image")
     private String image;
 
     @Column(name = "is_main", nullable = false, columnDefinition = "boolean default false")
@@ -39,7 +39,7 @@ public class Issue {
     @Column(name = "is_discounted", nullable = false, columnDefinition = "boolean default false")
     private Boolean isDiscounted; // 할인 적용 여부
 
-    @Column(name = "discounted_price", nullable = true)
+    @Column(name = "discounted_price")
     private Integer discountedPrice; // 할인된 가격
 
     @Column(name = "max_quantity", nullable = false)
