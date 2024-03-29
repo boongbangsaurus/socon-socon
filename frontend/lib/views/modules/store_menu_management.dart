@@ -14,9 +14,7 @@ class MenuManagement extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => ProductViewModel(),
-      child: Column(
+    return Column(
         children: [
           Container(
             width: double.infinity,
@@ -51,7 +49,6 @@ class MenuManagement extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
+      );
   }
 }

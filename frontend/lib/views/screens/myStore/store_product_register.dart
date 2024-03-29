@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'dart:io';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 import 'package:socon/utils/colors.dart';
 import 'package:socon/utils/fontSizes.dart';
@@ -15,38 +17,80 @@ import 'package:socon/viewmodels/store_product_view_model.dart';
 
 
 
-
 class ProductRegister extends StatefulWidget {
   final int storeId;
 
   ProductRegister({super.key, required this.storeId});
-
   @override
   State<ProductRegister> createState() => _ProductRegisterState();
 }
 
 class _ProductRegisterState extends State<ProductRegister> {
-  ProductViewModel? productViewModel;
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController priceController = TextEditingController();
+  // ProductViewModel? productViewModel;
+  // final TextEditingController nameController = TextEditingController();
+  // final TextEditingController priceController = TextEditingController();
+  //
+  // void didChangeDependencies() {
+  //   super.didChangeDependencies();
+  //   // productViewModel을 초기화합니다.
+  //   productViewModel = Provider.of<ProductViewModel>(context, listen: false);
+  // }
 
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    // productViewModel을 초기화합니다.
-    productViewModel = Provider.of<ProductViewModel>(context, listen: false);
-  }
 
-
-  var userImage;
   String menuName = '';
-  String introLine = '';
-  String productPrice = '';
+  var userImage;
+  String summary = '';
+  int? productPrice;
+  String description = '';
 
   bool isInputValid() {
-    return menuName.isNotEmpty && userImage != null && introLine.isNotEmpty && productPrice.isNotEmpty;
+    return menuName.isNotEmpty && userImage != null && summary.isNotEmpty && productPrice != null;
   }
 
+  // API에서 가져온 데이터를 저장할 리스트
+  List<dynamic> _data = [];
+
+
+  Future<void> fetchData() async {
+    try {
+      String base64Image1 = "";
+
+
+      if (null != userImage) {
+        //userImage null 이 아니라면
+        final bytes = File(userImage!.path).readAsBytesSync(); //image 를 byte로 불러옴
+        base64Image1 = base64Encode(bytes); //불러온 byte를 base64 압축하여 base64Image1 변수에 저장 만약 null이였다면 가장 위에 선언된것처럼 공백으로 처리됨
+      }
+
+      final response = await http.post(Uri.parse('http://j10c207.p.ssafy.io:8000/api/v1/stores/${widget.storeId}/items'),
+          body: json.encode({
+            "name" : menuName,
+            "image" : base64Image1,
+            "price" : productPrice,
+            "summary" : summary,
+            "description" : description,
+          }));
+      print('요청데이터: ${response}');
+      print('응답 상태 코드: ${response.statusCode}');
+      print('응답 본문: ${response.body}');
+
+      // 만약 요청이 성공했다면
+      if (response.statusCode == 200) {
+        print('요청 성공!');
+        // JSON 형식의 응답을 Dart 객체로 변환하여 데이터 리스트에 저장
+        setState(() {
+          _data = json.decode(response.body);
+        });
+      }
+    } catch(error) {
+      print('Failed to load data: ${error}');
+
+    }
+  }
+
+
   @override
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -140,7 +184,7 @@ class _ProductRegisterState extends State<ProductRegister> {
                         labelText: '한줄 소개',
                         onChanged: (value) => {
                           setState(() {
-                            introLine = value;
+                            summary = value;
                             // viewModel에 업데이트
                           })
                         },
@@ -150,7 +194,7 @@ class _ProductRegisterState extends State<ProductRegister> {
                         labelText: '상품 가격',
                         onChanged: (value) => {
                           setState(() {
-                            productPrice = value;
+                            productPrice = int.tryParse(value);;
                             // viewModel에 업데이트
                           })
                         },
@@ -181,7 +225,11 @@ class _ProductRegisterState extends State<ProductRegister> {
                             physics: BouncingScrollPhysics(),
                             padding: EdgeInsets.symmetric(horizontal: 20),
                             child: TextFormField(
-                              onChanged: (value) => {},
+                              onChanged: (value) => {
+                                setState(() {
+                                  description = value;
+                                })
+                              },
                               maxLines: null,
                               decoration: InputDecoration(
                                 hintText: '가게에 대한 상세한 설명을 적어주세요',
@@ -201,16 +249,19 @@ class _ProductRegisterState extends State<ProductRegister> {
             ),
             SizedBox(height: 10,),
             BasicButton(
-              text: '다음',
+              text: '상품 등록',
               color: 'yellow',
               onPressed: () => {
-                if(isInputValid()){
-                  Navigator.push( context,
-                    MaterialPageRoute(builder: (context) => RegisterToastMsg(storeId: widget.storeId)),
-                  ),
-                } else {
-                  ToastUtil.showCustomToast(context, 'filedAlert')
-                },
+                fetchData(),
+
+                // if(isInputValid()){
+                //   fetchData(),
+                //   Navigator.push( context,
+                //     MaterialPageRoute(builder: (context) => RegisterToastMsg(storeId: widget.storeId)),
+                //   ),
+                // } else {
+                //   ToastUtil.showCustomToast(context, 'filedAlert')
+                // },
               }
             ),
           ],
