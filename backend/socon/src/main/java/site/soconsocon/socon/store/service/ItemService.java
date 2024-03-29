@@ -6,6 +6,7 @@ import site.soconsocon.socon.global.domain.ErrorCode;
 import site.soconsocon.socon.global.exception.SoconException;
 import site.soconsocon.socon.store.domain.dto.request.AddItemRequest;
 import site.soconsocon.socon.store.domain.dto.response.ItemListResponse;
+import site.soconsocon.socon.store.domain.dto.response.ItemResponse;
 import site.soconsocon.socon.store.domain.entity.jpa.Item;
 import site.soconsocon.socon.store.domain.entity.jpa.Store;
 import site.soconsocon.socon.store.exception.StoreErrorCode;
@@ -53,12 +54,18 @@ public class ItemService {
     }
 
     // 상품 정보 상세 조회
-    public Item getDetailItemInfo(Integer storeId, Integer itemId, int memberId) {
+    public ItemResponse getDetailItemInfo(Integer storeId, Integer itemId, int memberId) {
 
         if (!Objects.equals(memberId, storeRepository.findMemberIdByStoreId(storeId))) {
             throw new SoconException(ErrorCode.FORBIDDEN);
         }
-        return itemRepository.findById(itemId)
-                .orElseThrow(() -> new StoreException(StoreErrorCode.ITEM_NOT_FOUND));
+
+        ItemResponse itemResponse = itemRepository.findItemResponseByItemId(itemId);
+        if(itemResponse == null) {
+            throw new StoreException(StoreErrorCode.ITEM_NOT_FOUND);
+        }
+        else{
+            return itemResponse;
+        }
     }
 }

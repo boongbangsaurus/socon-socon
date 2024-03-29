@@ -35,7 +35,6 @@ import java.util.Optional;
 public class MemberController {
 
     private final MemberService memberService;
-    private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
     private final RefreshTokenRepository refreshTokenRepository;
@@ -96,7 +95,7 @@ public class MemberController {
 
     //마이페이지
     @GetMapping("/mypage")
-    public ResponseEntity getUserInfo(@RequestHeader("X-Authorization-Id") int memberId) {
+    public ResponseEntity getUserInfo(@RequestHeader("X-Authorization-Id") int memberId) throws MemberException {
         return ResponseEntity.ok().body(MessageUtils.success(memberService.getUserInfo(memberId)));
 
     }
@@ -124,24 +123,17 @@ public class MemberController {
 
     }
 
-    @GetMapping("/user")
-    public ResponseEntity<Member> getCurrentUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-
-        Optional<Member> member = memberRepository.findMemberById(Integer.parseInt(username));
-        if (member.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        return ResponseEntity.ok(member.get());
-    }
-
-
-    @GetMapping("/id")
-    public MemberFeignResponse getMemberByMemberId(@RequestHeader("X-Authorization-Id") int memberId) {
-        log.info("open feign communication success!");
-        return memberService.findMemberByMemberId(memberId);
+    /**
+     * Gateway에서 가져오는 memberId로 Member 조회
+     *
+     * @param memberId
+     * @return
+     * @throws MemberException
+     */
+    @GetMapping("/me")
+    public ResponseEntity getMember(@RequestHeader("X-Authorization-Id") int memberId) throws MemberException {
+        log.info("gateway success!");
+        return ResponseEntity.ok().body(MessageUtils.success(memberService.findMemberByMemberId(memberId)));
     }
 
     @GetMapping("/email")
@@ -149,5 +141,11 @@ public class MemberController {
         return ResponseEntity.ok().body(MessageUtils.success(memberService.getMemberByEmail(email)));
     }
 
+    @GetMapping("/{memberId}")
+    public MemberFeignResponse getMemberByMemberId(@PathVariable int memberId) throws MemberException {
+        log.info("open feign communication success!");
+        log.info("getMemberByMemberId() 메소드 호출");
+        return memberService.findMemberByMemberId(memberId);
+    }
 
 }

@@ -22,5 +22,6 @@ public interface StoreRepository extends JpaRepository<Store, Integer> {
 
     @Query("SELECT s FROM STORE s WHERE s.closingPlanned != null AND s.isClosed = false")
     List<Store> storesScheduledToClose();
+
 }
 

@@ -15,7 +15,6 @@ import site.soconsocon.auth.repository.MemberRepository;
 import site.soconsocon.auth.repository.RefreshTokenRepository;
 import site.soconsocon.auth.security.MemberDetails;
 import site.soconsocon.auth.util.JwtUtil;
-import site.soconsocon.utils.MessageUtils;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -42,8 +41,13 @@ public class MemberService {
     public Member register(MemberRegisterRequestDto requestDto) throws MemberException {
         //이메일 중복체크
         if (!dupleEmailCheck(requestDto.getEmail())) {
-            throw new MemberException(ErrorCode.USER_EMAIL_ALREADY_EXISTED); //이미 있는 이메일
+            throw new MemberException(ErrorCode.DUPLE_EMAIL); //이미 있는 이메일
         }
+        //닉네임 중복체크
+        if (!dupleNicknameCheck(requestDto.getNickname())) {
+            throw new MemberException(ErrorCode.DUPLE_NICK); //이미 있는 닉네임
+        }
+
         Member member = Member.builder()
                 .email(requestDto.getEmail())
                 .password(passwordEncoder.encode(requestDto.getPassword()))
@@ -68,6 +72,20 @@ public class MemberService {
         }
         return true;
     }
+
+    /**
+     * 닉네임 중복검사
+     *
+     * @param nickname
+     * @return
+     */
+    public boolean dupleNicknameCheck(String nickname) {
+        if (memberRepository.findMemberByNickname(nickname).isPresent()) {
+            return false;
+        }
+        return true;
+    }
+
 
     /**
      * 액세스 토큰 재발급
@@ -112,43 +130,43 @@ public class MemberService {
     }
 
 
-    public MemberResponseDto getUserInfo(int memberId) {
-        Optional<Member> result = memberRepository.findMemberById(memberId);
+    public MemberResponseDto getUserInfo(int memberId) throws MemberException {
+        Member member = memberRepository.findMemberById(memberId).orElseThrow(
+                () -> new MemberException(ErrorCode.USER_NOT_FOUND)
+        );
         MemberResponseDto memberResponseDto = new MemberResponseDto();
+        memberResponseDto.setEmail(member.getEmail());
+        memberResponseDto.setNickname(member.getNickname());
+        memberResponseDto.setName(member.getName());
+        memberResponseDto.setPhoneNumber(member.getPhoneNumber());
+        memberResponseDto.setSoconMoney(member.getSoconMoney());
+        memberResponseDto.setSoconPassword(member.getSoconPassword());
 
-        if (result.isPresent()) {
-            Member member = result.get();
-            memberResponseDto.setEmail(member.getEmail());
-            memberResponseDto.setNickname(member.getNickname());
-            memberResponseDto.setName(member.getName());
-            memberResponseDto.setPhoneNumber(member.getPhoneNumber());
-            memberResponseDto.setSoconMoney(member.getSoconMoney());
-            memberResponseDto.setSoconPassword(member.getSoconPassword());
-
-        }
         return memberResponseDto;
     }
 
     public Member getMemberByEmail(String email) throws MemberException {
-        Optional<Member> result = memberRepository.findMemberByEmail(email);
-        if (result.isEmpty()) {
-            throw new MemberException(ErrorCode.USER_NOT_FOUND);
-        }
-        return result.get();
+        Member member = memberRepository.findMemberByEmail(email).orElseThrow(
+                () -> new MemberException(ErrorCode.USER_NOT_FOUND)
+        );
+        return member;
     }
 
-    public MemberFeignResponse findMemberByMemberId(int memberId) {
-        Optional<Member> result = memberRepository.findMemberById(memberId);
+    public MemberFeignResponse findMemberByMemberId(int memberId) throws MemberException {
+        Member member = memberRepository.findMemberById(memberId).orElseThrow(
+                () -> new MemberException(ErrorCode.USER_NOT_FOUND)
+        );
         MemberFeignResponse memberFeignResponse = new MemberFeignResponse();
+        memberFeignResponse.setMemberId(memberId);
+        memberFeignResponse.setEmail(member.getEmail());
+        memberFeignResponse.setNickname(member.getNickname());
+        memberFeignResponse.setName(member.getName());
+        memberFeignResponse.setPhoneNumber(member.getPhoneNumber());
+        memberFeignResponse.setProfileUrl(member.getProfileUrl());
+        memberFeignResponse.setAccount(member.getAccount());
+        memberFeignResponse.setSoconMoney(member.getSoconMoney());
+        memberFeignResponse.setSoconPassword(member.getSoconPassword());
 
-        if (result.isPresent()) {
-            Member member = result.get();
-            memberFeignResponse.setMemberId(memberId);
-            memberFeignResponse.setEmail(member.getEmail());
-            memberFeignResponse.setNickname(member.getNickname());
-            memberFeignResponse.setSoconMoney(member.getSoconMoney());
-            memberFeignResponse.setSoconPassword(member.getSoconPassword());
-        }
         return memberFeignResponse;
     }
 

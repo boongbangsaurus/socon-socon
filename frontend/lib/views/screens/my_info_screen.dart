@@ -340,7 +340,7 @@ class _MyInfoScreen extends State<MyInfoScreen> {
               GestureDetector(
                 onTap: () => {
                   print("사장님 인증 클릭"),
-                  GoRouter.of(context).go('/info/verification')
+                  GoRouter.of(context).go('/info/verify')
                 },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -359,7 +359,7 @@ class _MyInfoScreen extends State<MyInfoScreen> {
                             width: 50,
                             height: 25,
                           )
-                        : SizedBox.shrink(),
+                        : const SizedBox.shrink(),
                   ],
                 ),
               )

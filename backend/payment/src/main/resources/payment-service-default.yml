@@ -1,0 +1,21 @@
+server:
+  port: 8020
+
+spring:
+  profiles:
+    active: dev,payment_dev
+    cache:
+      type: redis
+  application:
+    name: payment-service
+
+management:
+  endpoints:
+    enabled-by-default: false
+    web:
+      base-path: /actuator  # ?? ??
+      exposure:
+        include: info, health
+    jmx:
+      exposure:
+        exclude: ['*']

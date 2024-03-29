@@ -16,14 +16,16 @@ class SearchModule extends StatelessWidget {
       width: ResponsiveUtils.getWidthWithPixels(context, 320),
       // alignment: Alignment.center,
       child: SearchBox(
-        filterAppliedWidget: type == "soconbook" ?  soconFilterBox(context) : nearbyFilterBox(context),
+        filterAppliedWidget: type == "soconbook"
+            ? soconFilterBox(context)
+            : nearbyFilterBox(context),
       ),
     );
   }
 
   Widget nearbyFilterBox(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(top:5.0),
+      padding: EdgeInsets.only(top: 5.0),
       alignment: Alignment.center,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -81,14 +83,14 @@ class SearchModule extends StatelessWidget {
             children: [
               if (type == "nearby")
                 CheckBoxBtn(
-                  Text: "최단거리",
+                  Text: "가나다",
                   isChecked: false,
                   onCheckedChanged: (isChecked) {
                     print('Checkbox is checked: $isChecked');
                   },
                 ),
               CheckBoxBtn(
-                Text: "가나다",
+                Text: "최단거리",
                 isChecked: false,
                 onCheckedChanged: (isChecked) {
                   print('Checkbox is checked: $isChecked');
@@ -103,7 +105,7 @@ class SearchModule extends StatelessWidget {
 
   Widget soconFilterBox(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(top:5.0),
+      padding: EdgeInsets.only(top: 5.0),
       alignment: Alignment.center,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

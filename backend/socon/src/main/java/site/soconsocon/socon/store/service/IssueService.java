@@ -29,14 +29,8 @@ public class IssueService {
 
 
     // 발행 목록 조회
-    public List<IssueListResponse> getIssueList(Integer storeId, int memberId) {
+    public List<IssueListResponse> getIssueList(Integer storeId) {
 
-        Integer storeMemberId = storeRepository.findMemberIdByStoreId(storeId);
-
-        if (!Objects.equals(storeMemberId, memberId)) {
-            // 본인 가게 아닐 경우
-            throw new SoconException(ErrorCode.FORBIDDEN);
-        }
         List<Issue> issues = issueRepository.findIssueListByStoreId(storeId);
         List<IssueListResponse> issueList = new ArrayList<>();
         for (Issue issue : issues) {
@@ -97,7 +91,6 @@ public class IssueService {
             // 발행 가능 개수보다 요청한 개수가 많을 경우
             throw new StoreException(StoreErrorCode.ISSUE_MAX_QUANTITY);
         }
-
         issue.setIssuedQuantity(issue.getIssuedQuantity() + request.getPurchasedQuantity());
         issueRepository.save(issue);
 
