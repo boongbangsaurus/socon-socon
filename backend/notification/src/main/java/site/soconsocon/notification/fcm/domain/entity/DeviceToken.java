@@ -12,7 +12,7 @@ import site.soconsocon.notification.global.feign.dto.response.MemberFeignRespons
  */
 @Entity
 @Getter @Setter
-@Table(name="device_token", indexes = @Index(columnList="memberId"))
+@Table(name="device_token", indexes = @Index(columnList="member_id"))
 @ToString(of = {})
 public class DeviceToken {
     @Id
@@ -28,6 +28,10 @@ public class DeviceToken {
 
     @Enumerated(EnumType.STRING)
     private DeviceType deviceType;
+
+
+    @Enumerated(EnumType.STRING)
+    private TokenStatus status;
 
     @Column(name = "device_token",nullable = true, length = 256, unique = true)
     private String deviceToken;
