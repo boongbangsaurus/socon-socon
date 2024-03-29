@@ -8,14 +8,17 @@ import java.util.List;
 
 public interface FavStoreRepository extends JpaRepository<FavStore, Integer> {
 
-    @Query("SELECT COUNT(*) FROM FAV_STORE s WHERE s.storeId = :store_id")
+    @Query("SELECT COUNT(*) FROM FAV_STORE s WHERE s.storeId = :storeId")
     Integer countByStoreId(Integer storeId);
+
+
+    @Query("SELECT s FROM FAV_STORE s WHERE s.memberId = :memberId AND s.storeId = :storeId")
+    FavStore findByMemberIdAndStoreId(Integer memberId, Integer storeId);
 
 
     @Query("SELECT s FROM FAV_STORE s WHERE s.memberId = :memberId")
     List<FavStore> findByMemberId(Integer memberId);
 
-    @Query("SELECT s FROM FAV_STORE s WHERE s.memberId = :memberId AND s.storeId = :storeId")
-    FavStore isExist(Integer memberId, Integer storeId);
-
+    @Query("DELETE FROM FAV_STORE s WHERE s.storeId = :id")
+    void deleteByStoreId(Integer id);
 }

@@ -1,0 +1,23 @@
+package site.soconsocon.payment.domain.dto.request;
+
+import lombok.Data;
+
+import java.time.LocalDateTime;
+
+@Data
+public class OrderRequestDto {
+
+    private String itemName;
+
+    private String orderUid; //주문 고유번호
+
+    private int price;
+
+    private int quantity; //주문 수량
+
+    private int memberId; //회원 아이디
+
+    private int issueId; // 발행 아이디
+
+
+}

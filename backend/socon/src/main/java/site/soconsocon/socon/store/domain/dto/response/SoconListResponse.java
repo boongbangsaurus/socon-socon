@@ -15,7 +15,6 @@ public class SoconListResponse {
     private String itemName;
     private String storeName;
     private LocalDateTime expiredAt;
-    private Boolean isUsed;
-    private LocalDateTime usedAt;
+    private String status;
     private String itemImage;
 }

@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class FavoriteStoresListResponse {
 
-    private Integer storeId;
+    private Integer id;
     private String name;
     private String image;
     private String mainMenu;

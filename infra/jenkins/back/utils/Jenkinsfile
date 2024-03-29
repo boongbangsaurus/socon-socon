@@ -9,20 +9,14 @@ pipeline {
                 checkout scmGit(
                         branches: [[name: 'develop']],
                         extensions: [submodule(parentCredentials: true, trackingSubmodules: true)],
-                        userRemoteConfigs: [[credentialsId: 'github-access-token', url: 'https://github.com/boongbangsaurus/boongbang-settings']]
+                        utilsRemoteConfigs: [[credentialsId: 'github-access-token', url: 'https://github.com/boongbangsaurus/boongbang-settings']]
                 )
             }
         }
         stage('Move .env File') {
             steps {
                 script{
-                    sh 'cp secure-settings/back/.env .env'
-                    sh "cp secure-settings/back/utils/gradle.properties backend/utils/gradle.properties"
-                    sh "mkdir -p backend/utils/src/resources"
-                    // find 명령어를 사용하여 .yml 파일을 찾고, 각 파일에 대해 cp 명령어를 실행
-                    sh "find secure-settings/back/utils -name '*.yml' -exec cp {} backend/utils/src/resources \\;"
-                    // 동일한 디렉토리 내 모든 .yml 파일을 복사
-                    sh "find secure-settings/back -maxdepth 1 -name '*.yml' -exec cp {} backend/utils/src/resources \\;"
+                    sh 'cp ../environments/gradle.properties backend/user/gradle.properties'
                 }
             }
         }
@@ -35,9 +29,14 @@ pipeline {
         }
         stage("Build & Run") {
             steps {
-                dir("backend/utils"){
+                dir("infra/jenkins/back/utils"){
                     script {
-                        sh "docker build -t kimdahui/utils ."
+                        try {
+                            sh "docker build -t kimdahui/utils ."
+                            sh "docker run -d --name utils"
+                        }catch (Exception e) {
+                            sh "docker restart utils"
+                        }
                     }
                 }
             }

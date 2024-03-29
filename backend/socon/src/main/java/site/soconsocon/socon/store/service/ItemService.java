@@ -2,76 +2,70 @@ package site.soconsocon.socon.store.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import site.soconsocon.socon.global.domain.ErrorCode;
+import site.soconsocon.socon.global.exception.SoconException;
 import site.soconsocon.socon.store.domain.dto.request.AddItemRequest;
-import site.soconsocon.socon.store.domain.dto.request.MemberRequest;
 import site.soconsocon.socon.store.domain.dto.response.ItemListResponse;
+import site.soconsocon.socon.store.domain.dto.response.ItemResponse;
 import site.soconsocon.socon.store.domain.entity.jpa.Item;
 import site.soconsocon.socon.store.domain.entity.jpa.Store;
-import site.soconsocon.socon.global.exception.ForbiddenException;
-import site.soconsocon.socon.global.exception.notfound.ItemNotFoundException;
-import site.soconsocon.socon.global.exception.notfound.StoreNotFoundException;
+import site.soconsocon.socon.store.exception.StoreErrorCode;
+import site.soconsocon.socon.store.exception.StoreException;
 import site.soconsocon.socon.store.repository.ItemRepository;
 import site.soconsocon.socon.store.repository.StoreRepository;
 
 import java.util.List;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 @Service
 public class ItemService {
-
     private final StoreRepository storeRepository;
     private final ItemRepository itemRepository;
 
     // 상품 정보 등록
-    public void saveItem(AddItemRequest request, Integer storeId, MemberRequest memberRequest) {
+    public void saveItem(AddItemRequest request, Integer storeId, int memberId) {
 
         Store savedStore = storeRepository.findById(storeId)
-                .orElseThrow(() -> new StoreNotFoundException("NOT FOUND BY ID : " + storeId));
+                .orElseThrow(() -> new StoreException(StoreErrorCode.STORE_NOT_FOUND));
 
-        if(savedStore.getMemberId() == memberRequest.getMemberId()) {
-
-            Item item = new Item();
-            item.setName(request.getName());
-            item.setImage(request.getImage());
-            item.setPrice(request.getPrice());
-            item.setSummary(request.getSummary());
-            item.setDescription(request.getDescription());
-            item.setStore(savedStore);
-
-            itemRepository.save(item);
+        if (Objects.equals(savedStore.getMemberId(), memberId)) {
+            // 점포 소유주 불일치
+            throw new SoconException(ErrorCode.FORBIDDEN);
         }
-        else {
-            throw new ForbiddenException("Forbidden, storeId : " + storeId + ", memberId : " + memberRequest.getMemberId());
-        }
-
+        itemRepository.save(Item.builder()
+                .name(request.getName())
+                .image(request.getImage())
+                .price(request.getPrice())
+                .summary(request.getSummary())
+                .description(request.getDescription())
+                .store(savedStore)
+                .build());
     }
+
     // 점주 가게 상품 목록 조회
-    public List<ItemListResponse> getItemList(Integer StoreId, MemberRequest memberRequest) {
+    public List<ItemListResponse> getItemList(Integer StoreId, int memberId) {
 
-        Integer storeMemberId = storeRepository.findMemberIdByStoreId(StoreId);
-
-        if(storeMemberId == memberRequest.getMemberId()){
-            // 점주 id와 일치할 경우
-            List<ItemListResponse> itemList = itemRepository.findItemsByStoreId(StoreId);
-            return itemList;
+        if (!Objects.equals(storeRepository.findMemberIdByStoreId(StoreId), memberId)) {
+            // 점포 소유주 불일치
+            throw new SoconException(ErrorCode.FORBIDDEN);
         }
-        else {
-            // 본인 가게가 아닌 경우
-            throw new ForbiddenException("Forbidden, storeId : " + StoreId + ", memberId : " + memberRequest.getMemberId());
-        }
+        return itemRepository.findItemsByStoreId(StoreId);
     }
 
     // 상품 정보 상세 조회
-    public Item getDetailItemInfo(Integer storeId, Integer itemId, MemberRequest memberRequest) {
+    public ItemResponse getDetailItemInfo(Integer storeId, Integer itemId, int memberId) {
 
-        if(memberRequest.getMemberId() != itemRepository.findMemberIdByItemId(itemId)) {
-            throw new ForbiddenException("Forbidden, storeId : " + storeId + ", memberId : " + memberRequest.getMemberId());
+        if (!Objects.equals(memberId, storeRepository.findMemberIdByStoreId(storeId))) {
+            throw new SoconException(ErrorCode.FORBIDDEN);
+        }
+
+        ItemResponse itemResponse = itemRepository.findItemResponseByItemId(itemId);
+        if(itemResponse == null) {
+            throw new StoreException(StoreErrorCode.ITEM_NOT_FOUND);
         }
         else{
-            Item item = itemRepository.findById(itemId)
-                    .orElseThrow(() -> new ItemNotFoundException("NOT FOUND BY ID : " + itemId));
-            return item;
+            return itemResponse;
         }
-
     }
 }
