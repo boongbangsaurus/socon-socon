@@ -48,4 +48,16 @@ public class OrderController {
     public ResponseEntity getOrderByImpUid(@PathVariable String impUid) throws PaymentException {
         return ResponseEntity.ok().body(MessageUtils.success(orderService.findOrderByImpUid(impUid)));
     }
+
+    /**
+     * 주문 PK로 주문 상세조회
+     * @param orderId
+     * @return
+     * @throws PaymentException
+     */
+    @GetMapping("/{orderId}")
+    public ResponseEntity getOrderByOrderId(@PathVariable String orderId) throws PaymentException {
+        return ResponseEntity.ok().body(MessageUtils.success(orderService.findOrderByImpUid(impUid)));
+    }
+
 }

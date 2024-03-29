@@ -57,4 +57,21 @@ public class OrderService {
         return paymentByOrderResponseDto;
     }
 
+    public PaymentByOrderResponseDto findOrderByOrderId(String orderId) throws PaymentException {
+        //주문내역 조회
+        Orders order = orderRepository.findOrderByOrderUid(orderId)
+                .orElseThrow(() -> new PaymentException(ErrorCode.ORDER_NOT_FOUND));
+
+        PaymentByOrderResponseDto paymentByOrderResponseDto = PaymentByOrderResponseDto.builder()
+                .id(order.getId())
+                .impUid(payment.getImpUid())
+                .amount(payment.getAmount())
+                .orderUid(payment.getOrderUid())
+                .itemName(payment.getItemName())
+                .build();
+
+        return paymentByOrderResponseDto;
+    }
+
+
 }
