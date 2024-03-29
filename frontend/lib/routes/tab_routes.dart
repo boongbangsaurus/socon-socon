@@ -11,6 +11,7 @@ import 'package:socon/views/screens/soconBook/socon_book_detail_screen.dart';
 import 'package:socon/views/screens/soconBook/socon_book_screen.dart';
 import 'package:socon/views/screens/sogon_main_screen.dart';
 import '../views/screens/bossVerification/boss_verification_success_screen.dart';
+import '../views/screens/contact/contact_screen.dart';
 import '../views/screens/nearby_info_screen.dart';
 
 class TabRoutes {
@@ -25,7 +26,7 @@ class TabRoutes {
 
   static RouteBase getStoreDetailRoute() {
     return GoRoute(
-      // path: "/",
+        // path: "/",
         path: "store",
         builder: (BuildContext context, GoRouterState state) {
           return NearbyInfoScreen();
@@ -68,15 +69,27 @@ class TabRoutes {
           return MyInfoScreen();
         },
         routes: [
+          getContactRoute(),
+          getBossVerification(),
+        ]);
+  }
+
+  static RouteBase getContactRoute() {
+    return GoRoute(
+        name: "contact",
+        path: "contact",
+        builder: (BuildContext context, GoRouterState state) {
+          return ContactScreen();
+        },
+        routes: [
           getContactSuccessRoute(),
           getContactFailRoute(),
-          getBossVerification(),
         ]);
   }
 
   static RouteBase getContactSuccessRoute() {
     return GoRoute(
-      name: "contact",
+      name: "contactSuccess",
       path: "success",
       builder: (BuildContext context, GoRouterState state) {
         return ContactSuccessScreen();
@@ -104,19 +117,19 @@ class TabRoutes {
 
   static RouteBase getBossVerification() {
     return GoRoute(
-      name: "bossVerification",
-      path: "verify",
-      builder: (BuildContext context, GoRouterState state) {
-        return BossVerification();
-      },
-      routes: [
-        getVerifySuccessRoute(),
-      ]
-    );
+        name: "verify",
+        path: "verify",
+        builder: (BuildContext context, GoRouterState state) {
+          return BossVerification();
+        },
+        routes: [
+          getVerifySuccessRoute(),
+        ]);
   }
+
   static RouteBase getVerifySuccessRoute() {
     return GoRoute(
-      name: "verify",
+      name: "verifySuccess",
       path: "success",
       builder: (BuildContext context, GoRouterState state) {
         return BossVerificationSuccessScreen();
@@ -126,11 +139,10 @@ class TabRoutes {
 
   static RouteBase getVerifyFailRoute() {
     return GoRoute(
-      name : "verify",
-      path : "fail",
-      builder: (BuildContext context, GoRouterState state){
-        return BossVerificationFailScreen();
-      }
-    );
+        name: "verifyFail",
+        path: "fail",
+        builder: (BuildContext context, GoRouterState state) {
+          return BossVerificationFailScreen();
+        });
   }
 }
