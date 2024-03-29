@@ -39,7 +39,7 @@ public class OrderService {
 
     public PaymentByOrderResponseDto findOrderByImpUid(String impUid) throws PaymentException {
         //결제 정보 가져오기
-        site.soconsocon.payment.domain.entity.jpa.Payment payment = paymentRepository.findPaymentByImpUid(impUid).orElseThrow(
+        Payment payment = paymentRepository.findPaymentByImpUid(impUid).orElseThrow(
                 () -> new PaymentException(ErrorCode.PAYMENT_NOT_FOUND)
         );
         //주문내역 조회
@@ -56,5 +56,22 @@ public class OrderService {
 
         return paymentByOrderResponseDto;
     }
+
+    public PaymentByOrderResponseDto findOrderByOrderId(String orderId) throws PaymentException {
+        //주문내역 조회
+        Orders order = orderRepository.findOrderByOrderUid(orderId)
+                .orElseThrow(() -> new PaymentException(ErrorCode.ORDER_NOT_FOUND));
+
+        PaymentByOrderResponseDto paymentByOrderResponseDto = PaymentByOrderResponseDto.builder()
+                .id(order.getId())
+                .impUid(payment.getImpUid())
+                .amount(payment.getAmount())
+                .orderUid(payment.getOrderUid())
+                .itemName(payment.getItemName())
+                .build();
+
+        return paymentByOrderResponseDto;
+    }
+
 
 }

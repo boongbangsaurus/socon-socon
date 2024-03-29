@@ -42,7 +42,7 @@ public class Member {
     @Column(columnDefinition = "boolean default false")
     private boolean isAgreed; //약관동의 여부(개인정보 + 서비스)
 
-    private String account; //출금계좌
+    private String accountNo; //출금계좌
 
     private int soconMoney; //소콘 머니
 

@@ -38,7 +38,6 @@ dependencies {
     implementation 'site.socon-socon:utils:1.0'
     implementation 'org.springframework.cloud:spring-cloud-config-client'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-web'

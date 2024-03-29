@@ -163,7 +163,7 @@ public class MemberService {
         memberFeignResponse.setName(member.getName());
         memberFeignResponse.setPhoneNumber(member.getPhoneNumber());
         memberFeignResponse.setProfileUrl(member.getProfileUrl());
-        memberFeignResponse.setAccount(member.getAccount());
+        memberFeignResponse.setAccount(member.getAccountNo());
         memberFeignResponse.setSoconMoney(member.getSoconMoney());
         memberFeignResponse.setSoconPassword(member.getSoconPassword());
 
