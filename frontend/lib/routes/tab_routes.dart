@@ -18,25 +18,26 @@ import '../views/screens/nearby_info_screen.dart';
 class TabRoutes {
   static RouteBase getNearbyRoute() {
     return GoRoute(
-        // path: "/",
-        path: "/",
-        builder: (BuildContext context, GoRouterState state) {
-          return NearbyInfoScreen();
-        },
-        routes: [
-          getStoreDetailRoute(),
-        ]);
+      // path: "/",
+      path: "/",
+      builder: (BuildContext context, GoRouterState state) {
+        return NearbyInfoScreen();
+      },
+      // routes: [
+      //   getStoreDetailRoute(),
+      // ]
+    );
   }
 
-  static RouteBase getStoreDetailRoute() {
-    return GoRoute(
-        // path: "/",
-        path: "detail/:storeId",
-
-        builder: (BuildContext context, GoRouterState state) {
-          return StoreDetailScreen(state.pathParameters['storeId']);
-        });
-  }
+  // static RouteBase getStoreDetailRoute() {
+  //   return GoRoute(
+  //       // path: "/",
+  //       path: "detail/:storeId",
+  //
+  //       builder: (BuildContext context, GoRouterState state) {
+  //         return StoreDetailScreen(state.pathParameters['storeId']);
+  //       });
+  // }
 
   // static RouteBase getNearbyRoute() {
   //   return GoRoute(
@@ -126,6 +127,16 @@ class TabRoutes {
         path: "/myStores",
         builder: (BuildContext context, GoRouterState state) {
           return const MyStoreListScreen();
+        },
+        routes: [getMyStoreDetailRoute()]);
+  }
+
+  static RouteBase getMyStoreDetailRoute() {
+    return GoRoute(
+        // path: "/",
+        path: "detail/:storeId",
+        builder: (BuildContext context, GoRouterState state) {
+          return MyStoreDetailScreen(state.pathParameters['storeId']);
         });
   }
 

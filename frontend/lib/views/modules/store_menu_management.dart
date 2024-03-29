@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:socon/models/socon_card.dart';
+import 'package:socon/views/modules/add_menu_card.dart';
 import 'package:socon/views/modules/socon_storesocon.dart';
 import 'package:socon/views/screens/myStore/store_product_register.dart';
 
@@ -48,12 +49,17 @@ class MenuManagement extends StatelessWidget {
               crossAxisSpacing: 7, //수직 Padding
             ),
             itemBuilder: (BuildContext context, index) {
-              final socon = socons[index];
-              return StoreSoconLists(
-                soconName: socon.soconName!,
-                price: socon.price!,
-                imageUrl: socon.imageUrl ?? '',
-              );
+              if(index == 0){
+                return AddMenuCard();
+              }else{
+                final socon = socons[index -1];
+                return StoreSoconLists(
+                  soconName: socon.soconName!,
+                  price: socon.price!,
+                  imageUrl: socon.imageUrl ?? '',
+                );
+              }
+
             },
           ),
         ),

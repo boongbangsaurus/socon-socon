@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+import 'package:go_router/go_router.dart';
 import 'package:socon/utils/colors.dart';
 import 'package:socon/utils/fontSizes.dart';
 import 'package:socon/utils/responsive_utils.dart';
@@ -33,6 +34,7 @@ class _MyStoreListsState extends State<MyStoreLists> {
                   context,
                   MaterialPageRoute(builder: (context) => RegisterPage()),
                 );
+
               },
               child: Text('+ 점포 등록', style: TextStyle(color: AppColors.BLACK),),
               style: OutlinedButton.styleFrom(
@@ -130,7 +132,9 @@ class StoreLists extends StatelessWidget {
           final store = stores[index];
           return InkWell(
             onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => StoreDetailTopCard(storeId : store.storeId)));
+              // Navigator.push(context, MaterialPageRoute(builder: (context) => StoreDetailTopCard(storeId : store.storeId)));
+              GoRouter.of(context).go("/myStores/detail/${store.storeId}");
+
             },
             child: Container(
               margin: EdgeInsets.all(10),

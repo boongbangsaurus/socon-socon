@@ -23,7 +23,7 @@ class StoreDetailTopCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Container(
-          color: AppColors.WHITE,
+      color: AppColors.WHITE,
       child: Stack(
         children: [
           Container(
@@ -80,7 +80,6 @@ class StoreDetailTopCard extends StatelessWidget {
   Widget shortStoreInfoCard(BuildContext context) {
     return // 매장 정보 카드
         Container(
-      height: ResponsiveUtils.getHeightWithPixels(context, 180),
       width: ResponsiveUtils.getWidthWithPixels(context, 330),
       padding: EdgeInsets.all(20),
       margin: EdgeInsets.only(top: 10),
@@ -140,10 +139,10 @@ class StoreDetailTopCard extends StatelessWidget {
           ),
           SizedBox(height: 10),
           GestureDetector(
-            onTap: (){
+            onTap: () {
               print("매장 정보 수정 버튼 클릭");
             },
-            child:  Row(
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Icon(

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // import 'image_card.dart';
 // import 'tag_icon.dart';
 import 'dart:math';
+import '../../utils/responsive_utils.dart';
 import '../atoms/image_card.dart';
 import '../atoms/tag_icon.dart';
 
@@ -66,7 +67,8 @@ class StoreSoconLists extends StatelessWidget {
         print("소콘 클릭");
       },
       child: Container(
-        width: screenWidth,
+        width: ResponsiveUtils.getWidthWithPixels(context, 154),
+        height: ResponsiveUtils.getHeightWithPixels(context, 182),
         margin: EdgeInsets.all(5),
         padding: EdgeInsets.only(top: 10),
         decoration: BoxDecoration(
@@ -76,7 +78,7 @@ class StoreSoconLists extends StatelessWidget {
               fit: BoxFit.cover,
             ) : null,
 
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(15),
             boxShadow: [
               BoxShadow(
                 color: Colors.grey.withOpacity(0.7),
