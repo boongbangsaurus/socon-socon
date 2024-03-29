@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:socon/utils/colors.dart';
 import 'package:socon/utils/fontSizes.dart';
 
-
 // 지정값 : 세로 크기, 텍스트 크기, 텍스트 굵기
 class TagIcon extends StatelessWidget {
   final String buttonText;
@@ -22,13 +21,13 @@ class TagIcon extends StatelessWidget {
     this.height,
   });
 
-
   // 'NEW' 태그 아이콘을 생성하기 위한 팩토리 생성자
   factory TagIcon.NEW() {
     return TagIcon(
       buttonText: 'NEW',
       buttonColor: AppColors.WARNING25,
       buttonTextColor: AppColors.WHITE,
+      fontSize: 8,
     );
   }
 
@@ -38,9 +37,9 @@ class TagIcon extends StatelessWidget {
       buttonText: 'SALE',
       buttonColor: Color(0xffFEF4444),
       buttonTextColor: AppColors.WHITE,
+      fontSize: 8,
     );
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -76,10 +75,6 @@ class TagIcon extends StatelessWidget {
   }
 }
 
-
-
-
-
 // 지정값 : 체크여부, 버튼 죄소 가로/세로 크기, 텍스트 크기, 텍스트 굵기
 class TagButton extends StatefulWidget {
   final bool isSelected;
@@ -92,7 +87,6 @@ class TagButton extends StatefulWidget {
   final double minWidth;
   final double minHeight;
 
-
   const TagButton({
     super.key,
     this.isSelected = false,
@@ -101,7 +95,6 @@ class TagButton extends StatefulWidget {
     required this.buttonTextColor,
     required this.onPressed,
     required this.onSelected,
-
     this.minWidth = 10.0, // 최소 가로 크기
     this.minHeight = 30.0, // 최소 세로 크기
   });
@@ -124,15 +117,15 @@ class _TagButtonState extends State<TagButton> {
   Widget build(BuildContext context) {
     final buttonStyle = _isSelected
         ? ElevatedButton.styleFrom(
-      backgroundColor: widget.buttonColor,
-      minimumSize: Size(widget.minWidth, widget.minHeight),
-    )
+            backgroundColor: widget.buttonColor,
+            minimumSize: Size(widget.minWidth, widget.minHeight),
+          )
         : ElevatedButton.styleFrom(
-      backgroundColor: Colors.white,
-      foregroundColor: Colors.grey,
-      side: BorderSide(color: Colors.grey),
-      minimumSize: Size(widget.minWidth, widget.minHeight),
-    );
+            backgroundColor: Colors.white,
+            foregroundColor: Colors.grey,
+            side: BorderSide(color: AppColors.GRAY400),
+            minimumSize: Size(widget.minWidth, widget.minHeight),
+          );
 
     return TextButton(
       onPressed: () {
@@ -143,10 +136,11 @@ class _TagButtonState extends State<TagButton> {
         widget.onSelected(_isSelected);
       },
       style: buttonStyle,
-      child: Text(
-          widget.buttonText,
-          style: TextStyle( color: _isSelected ? widget.buttonTextColor : AppColors.GRAY, fontSize: FontSizes.XXXSMALL, fontWeight: FontWeight.bold)),
+      child: Text(widget.buttonText,
+          style: TextStyle(
+              color: _isSelected ? widget.buttonTextColor : AppColors.GRAY500,
+              fontSize: FontSizes.XXXSMALL,
+              fontWeight: FontWeight.bold)),
     );
   }
 }
-

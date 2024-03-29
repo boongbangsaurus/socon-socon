@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import site.soconsocon.socon.global.domain.ErrorCode;
 import site.soconsocon.socon.global.exception.SoconException;
+import site.soconsocon.socon.store.domain.dto.request.ChargeRequest;
 import site.soconsocon.socon.store.domain.dto.response.SoconListResponse;
 import site.soconsocon.socon.store.domain.dto.response.SoconInfoResponse;
 import site.soconsocon.socon.store.domain.entity.jpa.Issue;
@@ -11,6 +12,7 @@ import site.soconsocon.socon.store.domain.entity.jpa.Item;
 import site.soconsocon.socon.store.domain.entity.jpa.Socon;
 import site.soconsocon.socon.store.exception.StoreErrorCode;
 import site.soconsocon.socon.store.exception.StoreException;
+import site.soconsocon.socon.store.feign.FeignServiceClient;
 import site.soconsocon.socon.store.repository.SoconRepository;
 
 import java.time.LocalDateTime;
@@ -21,6 +23,7 @@ import java.util.*;
 public class SoconService {
 
     private final SoconRepository soconRepository;
+    private final FeignServiceClient feignServiceClient;
 
 
     // 소콘 상세 조회
@@ -113,6 +116,11 @@ public class SoconService {
             throw new StoreException(StoreErrorCode.INVALID_SOCON);
         }
 
+        // 출금 요청
+        feignServiceClient.deposit(ChargeRequest.builder()
+                        .memberId(memberId)
+                        .money(socon.getIssue().getPrice())
+                        .build());
     }
 
     // 소콘북 검색
