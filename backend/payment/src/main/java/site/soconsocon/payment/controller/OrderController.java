@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import site.soconsocon.payment.domain.dto.request.OrderRequestDto;
+import site.soconsocon.payment.domain.entity.jpa.Order;
 import site.soconsocon.payment.exception.PaymentException;
 import site.soconsocon.payment.service.OrderService;
 import site.soconsocon.utils.MessageUtils;
@@ -48,16 +49,4 @@ public class OrderController {
     public ResponseEntity getOrderByImpUid(@PathVariable String impUid) throws PaymentException {
         return ResponseEntity.ok().body(MessageUtils.success(orderService.findOrderByImpUid(impUid)));
     }
-
-    /**
-     * 주문 PK로 주문 상세조회
-     * @param orderId
-     * @return
-     * @throws PaymentException
-     */
-    @GetMapping("/{orderId}")
-    public ResponseEntity getOrderByOrderId(@PathVariable String orderId) throws PaymentException {
-        return ResponseEntity.ok().body(MessageUtils.success(orderService.findOrderByImpUid(impUid)));
-    }
-
 }

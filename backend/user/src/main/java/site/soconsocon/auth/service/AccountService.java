@@ -3,7 +3,6 @@ package site.soconsocon.auth.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import site.soconsocon.auth.domain.dto.request.AccountNoRequestDto;
 import site.soconsocon.auth.domain.dto.request.DepositRequestDto;
 import site.soconsocon.auth.domain.dto.request.WithdrawRequestDto;
 import site.soconsocon.auth.domain.entity.jpa.Member;
@@ -78,35 +77,7 @@ public class AccountService {
             // 출금이 실패했다는 결과를 보냄
             throw new AccountException(ErrorCode.WITHDRAW_FAIL);
         }
-    }
 
-    /**
-     * 출금 계좌번호, 비밀번호 등록
-     * @param memberId
-     * @param accountNoRequestDto
-     * @return
-     * @throws MemberException
-     * @throws AccountException
-     */
-    @Transactional
-    public String saveAccountNo(int memberId, AccountNoRequestDto accountNoRequestDto) throws MemberException, AccountException {
-        Member member = memberRepository.findMemberById(memberId).orElseThrow(
-                () -> new MemberException(ErrorCode.USER_NOT_FOUND)
-        );
-        String accountNo = accountNoRequestDto.getAccountNo(); //계좌번호
-        String soconPassword = accountNoRequestDto.getSoconPassword(); //소콘 비번
-
-        try {
-            member.setAccountNo(accountNo);
-            member.setSoconPassword(soconPassword);
-
-            memberRepository.save(member);
-            return "계좌번호가 등록되었습니다.";
-
-        } catch (Exception e) {
-            // 계좌 등록이 실패했다는 결과를 보냄
-            throw new AccountException(ErrorCode.ACCOUNT_REGISTER_FAIL);
-        }
     }
 
 }

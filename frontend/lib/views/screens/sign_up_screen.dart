@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:socon/models/user.dart';
+import 'package:socon/services/auth_service.dart';
 import 'package:socon/utils/colors.dart';
 import 'package:socon/utils/fontSizes.dart';
 import 'package:socon/viewmodels/sign_up_view_model.dart';
@@ -9,7 +10,6 @@ import 'package:socon/views/atoms/buttons.dart';
 import 'package:socon/views/atoms/inputs.dart';
 import 'package:socon/views/atoms/modal.dart';
 import 'package:socon/views/modules/app_bar.dart';
-import 'package:socon/views/screens/sign_in_screen.dart';
 import 'package:socon/views/screens/webView/web_view_screen.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -425,10 +425,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                       _formKey.currentState!.save();
                                       user.isAgreed = true;
                                       debugPrint('$user');
-                                      SignUpViewModel signUpViewModel =
-                                          SignUpViewModel();
+                                      AuthService authService = AuthService();
                                       bool isSuccess =
-                                          await signUpViewModel.signUp(user);
+                                          await authService.signUp(user);
                                       if (isSuccess) {
                                         // 성공 알림 표시 및 로그인 페이지로 이동
                                         return showDialog(
@@ -441,12 +440,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                                       BasicButton(
                                                         text: '확인',
                                                         onPressed: () {
-                                                          Navigator.push(
-                                                              context,
-                                                              MaterialPageRoute(
-                                                                  builder:
-                                                                      (context) =>
-                                                                          const SignInScreen()));
+                                                          context.go('/signin');
                                                         },
                                                       )
                                                     ]));
