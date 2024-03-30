@@ -9,7 +9,6 @@ class ProductDetailModel {
   final String summary;
   final String description;
 
-
   ProductDetailModel({
     required this.id,
     required this.name,
@@ -17,6 +16,16 @@ class ProductDetailModel {
     required this.price,
     required this.summary,
     required this.description,
-
   });
+
+  factory ProductDetailModel.fromJson(Map<String, dynamic> json) {
+    return ProductDetailModel(
+      id: json['id'],
+      name: json['name'],
+      image: json['image'],
+      price: json['price'],
+      summary: json['summary'],
+      description: json['description'],
+    );
+  }
 }
