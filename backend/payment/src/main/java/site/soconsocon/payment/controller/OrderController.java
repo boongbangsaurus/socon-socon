@@ -57,7 +57,7 @@ public class OrderController {
      */
     @GetMapping("/{orderId}")
     public ResponseEntity getOrderByOrderId(@PathVariable String orderId) throws PaymentException {
-        return ResponseEntity.ok().body(MessageUtils.success(orderService.findOrderByImpUid(impUid)));
+        return ResponseEntity.ok().body(MessageUtils.success(orderService.findOrderByOrderId(orderId)));
     }
 
 }
