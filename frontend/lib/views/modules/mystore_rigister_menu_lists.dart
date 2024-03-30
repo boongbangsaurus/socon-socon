@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:socon/models/socon_card.dart';
+import 'package:socon/views/modules/mystore_menu_card.dart';
 import 'package:socon/views/modules/socon_storesocon.dart';
 
 
@@ -24,15 +25,17 @@ class RegisteredMenu extends StatelessWidget {
           ),
           itemBuilder: (BuildContext context, index) {
             final socon = socons[index];
-            return StoreSoconLists(
-              soconName: socon.soconName!,
-              isMain: socon.isMain!,
-              maxQuantity: socon.maxQuantity!,
-              issuedQuantity: socon.issuedQuantity!,
+            return StoreMenuCard(
+              isOwner: true,
+              id: socon.id,
+              name: socon.name!,
+              is_main: socon.is_main!,
+              issued_quantity: socon.issued_quantity!,
+              left_quantity: socon.left_quantity!,
               price: socon.price!,
-              isDiscounted: socon.isDiscounted ?? false,
-              discountedPrice: socon.discountedPrice!,
-              imageUrl: socon.imageUrl ?? '',
+              is_discounted: socon.is_discounted ?? false,
+              discounted_price: socon.discounted_price!,
+              image: socon.image ?? '',
               createdAt: socon.createdAt ?? DateTime.now(),
             );
           },

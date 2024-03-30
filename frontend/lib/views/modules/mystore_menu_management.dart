@@ -75,7 +75,7 @@ class MenuManagement extends StatelessWidget {
                   id : storeMenu.id,
                   name : storeMenu.name,
                   price: storeMenu.price,
-                  imageUrl: storeMenu.imageUrl,
+                  image: storeMenu.imageUrl,
                   // soconName: socon.soconName!,
                   // price: socon.price!,
                   // imageUrl: socon.imageUrl ?? '',

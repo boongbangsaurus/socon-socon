@@ -1,57 +1,41 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-// import 'image_card.dart';
-// import 'tag_icon.dart';
 import 'dart:math';
+
 import '../../utils/responsive_utils.dart';
 import '../atoms/image_card.dart';
 import '../atoms/tag_icon.dart';
 
+
 class StoreSoconLists extends StatelessWidget {
+  final int id;
   final String soconName;
   final bool? isMain;
-  final int? maxQuantity;    // 설정된 최대 발행량
-  final int? issuedQuantity;   // 현재 발행 개수
   final int price;     // 상품가격(정가)
   final bool? isDiscounted;
   final int? discountedPrice;    // 할인된 가격. 없을 경우 null
   final String imageUrl;
   final DateTime? createdAt;
-
-// =======
-// import '../atoms/image_card.dart';
-// import '../atoms/tag_icon.dart';
-//
-// class StoreSoconLists extends StatelessWidget {
-//   final String soconName;
-//   final bool isMain;
-//   final int maxQuantity;    // 설정된 최대 발행량
-//   final int issuedQuantity;   // 현재 발행 개수
-//   final int price;     // 상품가격(정가)
-//   final bool isDiscounted;
-//   final int discountedPrice;    // 할인된 가격. 없을 경우 null
-//   final String imageUrl;
-//   final DateTime createdAt;
-// >>>>>>> fd7dde051359e758a4bf6a6d7d5ff7c7514ba669
+  final int? issued_quantity;    // 현재 발행량(구매된 갯수)
+  final int? left_quantity;   // 남은 갯수
 
 
   const StoreSoconLists({
     super.key,
+    required this.id,
     required this.soconName,
-    this.isMain,
-    this.maxQuantity,
-    this.issuedQuantity,
     required this.price,
+    required this.imageUrl,
+    this.isMain,
     this.isDiscounted,
     this.discountedPrice,
-    required this.imageUrl,
     this.createdAt,
+    this.issued_quantity,
+    this.left_quantity,
   });
 
   @override
   Widget build(BuildContext context) {
-    final int remainQuantity = maxQuantity != null && issuedQuantity != null ? maxQuantity! - issuedQuantity! : 0;
     final String discountPercent = isDiscounted == true && discountedPrice != null ? ((price - discountedPrice!) / price * 100).toStringAsFixed(0) : '0';
     final isNew = createdAt != null ? DateTime.now().difference(createdAt!).inDays < 1 && DateTime.now().difference(createdAt!).isNegative == false : false;
 
@@ -116,17 +100,7 @@ class StoreSoconLists extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                           color: Colors.black, ),
                       ),
-                      if (maxQuantity != null) Container(
-                        padding: EdgeInsets.only(bottom: 20),
-                        child: Text(
-                          '잔여수량 $remainQuantity \n발행수량 $maxQuantity',
-                          style: TextStyle(
-                              fontSize: 10,
-                              color: Colors.black),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ) else SizedBox(height: 20),
+
                     ],
                   ),
 

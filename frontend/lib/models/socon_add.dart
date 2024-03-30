@@ -2,11 +2,12 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 
-class Socon {
+class SoconAdd {
   // 필수
+  final id;
   final String? soconName;
   final String? imageUrl;
-  final int? price;
+  final int price;
   // 선택
   final String? storeName;
   final String? dueDate;
@@ -17,7 +18,8 @@ class Socon {
   final int? discountedPrice;
   final DateTime? createdAt;
 
-  Socon({
+  SoconAdd({
+    required this.id,
     required this.soconName,
     required this.imageUrl,
     required this.price,
@@ -33,8 +35,9 @@ class Socon {
   });
 
 
-  factory Socon.fromJson(Map<String, dynamic> json) {
-    return Socon(
+  factory SoconAdd.fromJson(Map<String, dynamic> json) {
+    return SoconAdd(
+      id : json['id'],
       soconName: json['soconName'],
       price: json['price'],
       imageUrl: json['imageUrl'],
@@ -71,12 +74,12 @@ class Socon {
 class ProductService {
   final String baseUrl = "/api/v1/stores/{store_id}"; // URL 수정하기
 
-  Future<List<Socon>> fetchProducts() async {
+  Future<List<SoconAdd>> fetchProducts() async {
     final response = await http.get(Uri.parse("$baseUrl/manage/info"));
 
     if (response.statusCode == 200) {
       List<dynamic> body = jsonDecode(response.body);
-      List<Socon> products = body.map((dynamic item) => Socon.fromJson(item)).toList();
+      List<SoconAdd> products = body.map((dynamic item) => SoconAdd.fromJson(item)).toList();
       return products;
     } else {
       throw Exception('Failed to load products');
@@ -84,7 +87,7 @@ class ProductService {
   }
 
   // 상품 추가
-  Future<Socon> addProduct(Socon product) async {
+  Future<SoconAdd> addProduct(SoconAdd product) async {
     final response = await http.post(
       Uri.parse("$baseUrl/items"),
       headers: {"Content-Type": "application/json"},
@@ -92,7 +95,7 @@ class ProductService {
     );
 
     if (response.statusCode == 201) {
-      return Socon.fromJson(jsonDecode(response.body));
+      return SoconAdd.fromJson(jsonDecode(response.body));
     } else {
       throw Exception('Failed to add product');
     }
