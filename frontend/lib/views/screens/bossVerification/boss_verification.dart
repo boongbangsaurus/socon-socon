@@ -76,7 +76,7 @@ class _BossVerificationState extends State<BossVerification> {
                             labelText: "사업자 등록 번호",
                             helperText: "123-45-6789 형태로 사업자 등록 번호를 입력해주세요.",
                             onSaved: (val) => {
-                              formattedValue = StringAndDateUtils.extractWithoutHyphen(
+                              formattedValue = StringUtils.extractWithoutHyphen(
                                   val.toString()),
                               print("보정 처리한 사업자 등록번호 $formattedValue"),
                               businessOwner.registrationNumber = "1208765763",
