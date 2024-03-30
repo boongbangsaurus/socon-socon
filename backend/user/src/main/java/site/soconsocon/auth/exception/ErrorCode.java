@@ -24,7 +24,6 @@ public enum ErrorCode implements CustomError {
     NO_MONEY(HttpStatus.BAD_REQUEST, "400", "잔액이 모자릅니다."),
     DEPOSIT_FAIL(HttpStatus.BAD_REQUEST, "400", "충전이 실패했습니다."),
     WITHDRAW_FAIL(HttpStatus.BAD_REQUEST, "400", "출금이 실패했습니다."),
-    ACCOUNT_REGISTER_FAIL(HttpStatus.BAD_REQUEST, "400", "계좌번호 등록에 실패하였습니다."),
 
     ;
 

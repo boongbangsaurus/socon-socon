@@ -123,7 +123,6 @@ public class MemberController {
 
     }
 
-
     /**
      * Gateway에서 가져오는 memberId로 Member 조회
      *

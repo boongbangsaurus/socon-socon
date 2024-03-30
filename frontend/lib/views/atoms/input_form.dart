@@ -21,14 +21,13 @@ class CustomInputField extends StatelessWidget {
       children: [
         Text(
           labelText,
-          style:
-              TextStyle(fontSize: FontSizes.SMALL, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: FontSizes.SMALL, fontWeight: FontWeight.bold),
         ),
         TextField(
           onChanged: onChanged,
-          style: TextStyle(
+        style: TextStyle(
             fontSize: FontSizes.XSMALL,
-          ),
+            ),
           decoration: InputDecoration(
             hintText: hintText,
             hintStyle: TextStyle(color: AppColors.GRAY400),
