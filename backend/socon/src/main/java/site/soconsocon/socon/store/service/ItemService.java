@@ -72,12 +72,21 @@ public class ItemService {
             throw new SoconException(ErrorCode.FORBIDDEN);
         }
 
-        ItemResponse itemResponse = itemRepository.findItemResponseByItemId(itemId);
-        if(itemResponse == null) {
+        Item item = itemRepository.findItemResponseByItemId(itemId);
+
+        if(item == null) {
             throw new StoreException(StoreErrorCode.ITEM_NOT_FOUND);
         }
         else{
-            return itemResponse;
+            return ItemResponse.builder()
+                    .id(item.getId())
+                    .name(item.getName())
+                    .itemImage(item.getImage())
+                    .storeImage(item.getStore().getImage())
+                    .price(item.getPrice())
+                    .summary(item.getSummary())
+                    .description(item.getDescription())
+                    .build();
         }
     }
 }
