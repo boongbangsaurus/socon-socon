@@ -64,6 +64,9 @@ public class Issue {
     @JoinColumn(name = "item_id")
     private Item item;
 
+    @Column(name = "order_id", nullable = false)
+    private Integer orderId;
+
     @OneToMany(mappedBy = "issue")
     private List<Socon> socons = new ArrayList<>();
 

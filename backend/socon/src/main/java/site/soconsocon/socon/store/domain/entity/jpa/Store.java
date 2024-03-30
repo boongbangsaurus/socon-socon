@@ -12,12 +12,12 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
-@ToString(exclude = "businessHours")
+@ToString
 @Builder
 public class Store {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id // id 필드를 기본키로 지정한다
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // 기본키를 자동으로 1씩 증가시킨다
     @Column(name = "store_id", updatable = false, nullable = false)
     private Integer id;
 

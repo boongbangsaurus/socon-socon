@@ -26,7 +26,7 @@ public class Socon {
     @Column (name="used_at")
     private LocalDateTime usedAt;
 
-    @Column (name="status", nullable = false)
+    @Column (name="status", nullable = false, columnDefinition = "boolean default 'unused'")
     private String status;
 
     @Column(name = "member_id", nullable = false)
