@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import site.soconsocon.auth.domain.dto.request.AccountNoRequestDto;
 import site.soconsocon.auth.domain.dto.request.DepositRequestDto;
 import site.soconsocon.auth.domain.dto.request.WithdrawRequestDto;
 import site.soconsocon.auth.exception.AccountException;
@@ -23,7 +24,7 @@ public class AccountController {
     //소콘머니 증가
     @PutMapping("/deposit")
     public ResponseEntity deposit(@RequestBody DepositRequestDto depositRequestDto) throws MemberException, AccountException {
-        return ResponseEntity.ok().body(MessageUtils.success( accountService.deposit(depositRequestDto)));
+        return ResponseEntity.ok().body(MessageUtils.success(accountService.deposit(depositRequestDto)));
     }
 
 
@@ -31,6 +32,13 @@ public class AccountController {
     @PutMapping("/withdraw")
     public ResponseEntity withdraw(@RequestBody WithdrawRequestDto withdrawRequestDto) throws AccountException, MemberException {
         return ResponseEntity.ok().body(MessageUtils.success(accountService.withdraw(withdrawRequestDto)));
+
+    }
+
+    //출금 계좌번호 등록 API
+    @PutMapping("/")
+    public ResponseEntity registerAccount(@RequestHeader("X-Authorization-Id") int memberId, @RequestBody AccountNoRequestDto accountNoRequestDto) throws AccountException, MemberException {
+        return ResponseEntity.ok().body(MessageUtils.success(accountService.saveAccountNo(memberId, accountNoRequestDto)));
 
     }
 }
