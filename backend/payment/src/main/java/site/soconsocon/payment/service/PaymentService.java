@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import site.soconsocon.payment.domain.dto.response.PaymentResponseDto;
 import site.soconsocon.payment.domain.dto.request.PaymentCallbackRequestDto;
-import site.soconsocon.payment.domain.entity.jpa.Order;
+import site.soconsocon.payment.domain.entity.jpa.Orders;
 import site.soconsocon.payment.exception.ErrorCode;
 import site.soconsocon.payment.exception.PaymentException;
 import site.soconsocon.payment.service.feign.SoconFeignClient;
@@ -81,7 +81,7 @@ public class PaymentService {
             String status = iamportResponse.getResponse().getStatus(); //paid이면 1
 
             //주문내역 조회
-            Order order = orderRepository.findOrderByOrderUid(orderUid)
+            Orders order = orderRepository.findOrderByOrderUid(orderUid)
                     .orElseThrow(() -> new PaymentException(ErrorCode.ORDER_NOT_FOUND));
 
             PaymentResponseDto paymentDto = PaymentResponseDto.builder()

@@ -399,7 +399,7 @@ class _MyInfoScreen extends State<MyInfoScreen> {
               GestureDetector(
                 onTap: () => {
                   print("문의하기 클릭"),
-                  GoRouter.of(context).go('/info/success')
+                  GoRouter.of(context).go('/info/contact')
                 },
                 child: Text(
                   "문의하기",
