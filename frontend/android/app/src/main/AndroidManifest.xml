@@ -1,10 +1,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="site.boongbang.socon">
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <!--    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />-->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <application
             android:label="frontend"
             android:name="${applicationName}"
             android:icon="@mipmap/ic_launcher"
+            android:usesCleartextTraffic="true"
     >
 
         <activity
@@ -17,6 +21,7 @@
                 android:windowSoftInputMode="adjustResize"
                 android:requestLegacyExternalStorage="true"
                 android:enableOnBackInvokedCallback="true"
+
         >
             <!-- Specifies an Android theme to apply to this Activity as soon as
                  the Android process has started. This theme is visible to the user
@@ -24,8 +29,12 @@
                  to determine the Window background behind the Flutter UI. -->
             <meta-data
                     android:name="io.flutter.embedding.android.NormalTheme"
-                    android:resource="@style/NormalTheme"
-            />
+                    android:resource="@style/NormalTheme" />
+
+            <meta-data
+                android:name="io.flutter.embedded_views_preview"
+                android:value="true" />
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>

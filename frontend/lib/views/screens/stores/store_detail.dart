@@ -6,6 +6,7 @@ import 'package:socon/utils/colors.dart';
 import 'package:socon/utils/fontSizes.dart';
 import 'package:socon/utils/responsive_utils.dart';
 import 'package:socon/views/modules/mystore_menu_card.dart';
+import 'package:socon/views/modules/socon_storesocon.dart';
 import 'package:socon/views/modules/store_detail_top_card.dart';
 
 
@@ -78,7 +79,7 @@ class StoreDetailScreen extends StatelessWidget {
           children: [
             StoreDetailTopCard(storeId: storeId, isOwner: isOwner),
             SizedBox( height: 25.0,),
-            Text('      할인 소콘', style: TextStyle(fontSize: FontSizes.MEDIUM, fontWeight: FontWeight.bold,) ,),
+            Text('할인 소콘', style: TextStyle(fontSize: FontSizes.MEDIUM, fontWeight: FontWeight.bold,) ,),
             SizedBox( height: 5.0,),
             Container(
               width: MediaQuery.of(context).size.width,
@@ -95,7 +96,8 @@ class StoreDetailScreen extends StatelessWidget {
                 ),
                 itemBuilder: (BuildContext context, index) {
                   final saleMenu = saleMenuList[index];
-                  return StoreMenuCard(
+                  return StoreSoconLists(
+                    storeId: storeId,
                     id: saleMenu.id,
                     is_main: saleMenu.is_main,
                     name: saleMenu.name,
