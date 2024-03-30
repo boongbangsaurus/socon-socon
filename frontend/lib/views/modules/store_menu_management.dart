@@ -72,6 +72,8 @@ class MenuManagement extends StatelessWidget {
               }else{
                 final storeMenu = storeMenuList[index -1];
                 return StoreMenuCard(
+
+                  storeId : storeId,
                   id : storeMenu.id,
                   name : storeMenu.name,
                   price: storeMenu.price,

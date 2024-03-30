@@ -7,7 +7,7 @@ import '../../modules/store_menu_management.dart';
 import '../../modules/store_rigister_menu_lists.dart';
 
 class MyStoreDetailScreen extends StatelessWidget {
-  final String? pathParameter;
+  final String pathParameter;
 
   const MyStoreDetailScreen(this.pathParameter, {super.key});
 
