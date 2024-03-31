@@ -1,8 +1,9 @@
 package site.soconsocon.socon.store.domain.entity.jpa;
 
-import java.time.LocalDateTime;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.time.LocalDateTime;
 
 @Entity(name = "SOCON")
 @NoArgsConstructor
@@ -26,7 +27,7 @@ public class Socon {
     @Column (name="used_at")
     private LocalDateTime usedAt;
 
-    @Column (name="status", nullable = false, columnDefinition = "boolean default 'unused'")
+    @Column (name="status", nullable = false)
     private String status;
 
     @Column(name = "member_id", nullable = false)

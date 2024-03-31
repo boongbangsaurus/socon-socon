@@ -46,7 +46,7 @@ class _BuyMenuDetailScreenState extends State<BuyMenuDetailScreen> {
   final List<ProductDetailModel> menuDetail = [
     ProductDetailModel.fromJson({
       "id": 0, // 상품 id
-      "name": "소금빵",
+      "name": "소금빵flfklgf",
       "image": "https://cataas.com/cat",
       "price": 300, // 상품 가격
       "summary": "갓 구워낸 따끈따끈 소금빵",

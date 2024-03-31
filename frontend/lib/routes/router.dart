@@ -77,7 +77,17 @@ Widget _bottomNavBar(StatefulNavigationShell navigationShell) {
           currentRoute.uri.toString() == infoVerifyRoute ||
           successRegExp.hasMatch(currentRoute.uri.toString()) ||
           failRegExp.hasMatch(currentRoute.uri.toString()) ||
-          currentRoute.uri.toString() == soconBookDetailRoute;
+          currentRoute.uri.toString() == soconBookDetailRoute ||
+          currentRoute.uri.toString() == "/sogon";
+
+  debugPrint(
+      '################## 현재 uri/showBottomNavBar ##############################');
+  // print(currentRoute.uri.toString().runtimeType); // 타입 확인
+  print(currentRoute.uri.toString());
+  print(showBottomNavBar);
+  // /info/contact
+  debugPrint(
+      '################## 현재 uri/showBottomNavBar ##############################');
 
   // 하단 네비게이션 바 숨김 여부에 따라 렌더링 결정
   if (showBottomNavBar) {
