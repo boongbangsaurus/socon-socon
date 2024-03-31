@@ -16,6 +16,8 @@ public class GetSogonListResponse {
 
     private Integer id;
     private String title;
+    private double lat;
+    private double lng;
     private Integer lastTime;
     private String memberName;
     private Integer commentCount;

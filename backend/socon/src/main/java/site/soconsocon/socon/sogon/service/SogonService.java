@@ -274,6 +274,8 @@ public class SogonService {
                 sogonListResponses.add(GetSogonListResponse.builder()
                         .id(sogon.getId())
                         .title(sogon.getTitle())
+                        .lat(sogon.getLat())
+                        .lng(sogon.getLng())
                         .lastTime((int) duration.toHours())
                         .memberName(member.getNickname())
                         .commentCount(commentRepository.countBySogonId(sogon.getId()))
