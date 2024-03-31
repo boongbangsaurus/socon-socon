@@ -62,17 +62,17 @@ class _PublishSoconScreenState extends State<PublishSoconScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.GRAY100,
-      body: Stack(
-        children: <Widget>[
-          FutureBuilder<Menu>(
-            future: _menu,
-            builder: (BuildContext context, AsyncSnapshot<Menu> snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(child: CircularProgressIndicator());
-              } else if (snapshot.hasError) {
-                return Center(child: Text('Error: ${snapshot.error}'));
-              } else {
-                return SingleChildScrollView(
+      body: FutureBuilder<Menu>(
+        future: _menu,
+        builder: (BuildContext context, AsyncSnapshot<Menu> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else {
+            return Stack(
+              children: <Widget>[
+                SingleChildScrollView(
                   // SingleChildScrollView 추가
                   child: Container(
                     width: ResponsiveUtils.getWidthPercent(context, 100),
@@ -94,85 +94,87 @@ class _PublishSoconScreenState extends State<PublishSoconScreen> {
                       ],
                     ),
                   ),
-                );
-              }
-            },
-          ),
-          Positioned(
-            left: 0.0,
-            right: 0.0,
-            bottom: 0.0,
-            child: CustomBottomSheet(
-              // maxHeight: _size.height * 0.745,
-              maxHeight: ResponsiveUtils.getHeightPercent(context, 25),
-              headerHeight: 60.0,
-              header: Container(
-                  padding: EdgeInsets.fromLTRB(40, 30, 40, 0),
-                  height: 60.0,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "발행 개수",
-                        style: TextStyle(
-                          fontSize: ResponsiveUtils.calculateResponsiveFontSize(
-                            context,
-                            FontSizes.SMALL,
+                ),
+                Positioned(
+                  left: 0.0,
+                  right: 0.0,
+                  bottom: 0.0,
+                  child: CustomBottomSheet(
+                    // maxHeight: _size.height * 0.745,
+                    maxHeight: ResponsiveUtils.getHeightPercent(context, 25),
+                    headerHeight: 60.0,
+                    header: Container(
+                      padding: EdgeInsets.fromLTRB(40, 30, 40, 0),
+                      height: 60.0,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "발행 개수",
+                            style: TextStyle(
+                              fontSize:
+                                  ResponsiveUtils.calculateResponsiveFontSize(
+                                context,
+                                FontSizes.SMALL,
+                              ),
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
-                          fontWeight: FontWeight.w600,
-                        ),
+                          PlusMinusButton(),
+                        ],
                       ),
-                      PlusMinusButton(),
-                    ],
-                  )),
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(20.0),
-                topRight: Radius.circular(20.0),
-              ),
-              boxShadow: <BoxShadow>[
-                BoxShadow(
-                  color: Colors.black26,
-                  blurRadius: 10.0,
-                  spreadRadius: -1.0,
-                  offset: Offset(0.0, 3.0),
-                ),
-                BoxShadow(
-                  color: Colors.black26,
-                  blurRadius: 4.0,
-                  spreadRadius: -1.0,
-                  offset: Offset(0.0, 0.0),
-                ),
-              ],
-              children: [
-                Column(
-                  children: [
-                    SizedBox(
-                      height: 20.0,
                     ),
-                    Column(
-                      children: [
-                        BasicButton(
-                          btnSize: 'fatM',
-                          onPressed: () {},
-                          text: '발행하기',
-                        ),
-                        SizedBox(
-                          height: 10.0,
-                        ),
-                        BasicButton(
-                          btnSize: 'fatM',
-                          color: "red",
-                          onPressed: () {},
-                          text: '발행 중지',
-                        ),
-                      ],
-                    )
-                  ],
-                )
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(20.0),
+                      topRight: Radius.circular(20.0),
+                    ),
+                    boxShadow: <BoxShadow>[
+                      BoxShadow(
+                        color: Colors.black26,
+                        blurRadius: 10.0,
+                        spreadRadius: -1.0,
+                        offset: Offset(0.0, 3.0),
+                      ),
+                      BoxShadow(
+                        color: Colors.black26,
+                        blurRadius: 4.0,
+                        spreadRadius: -1.0,
+                        offset: Offset(0.0, 0.0),
+                      ),
+                    ],
+                    children: [
+                      Column(
+                        children: [
+                          SizedBox(
+                            height: 20.0,
+                          ),
+                          Column(
+                            children: [
+                              BasicButton(
+                                btnSize: 'fatM',
+                                onPressed: () {},
+                                text: '발행하기',
+                              ),
+                              SizedBox(
+                                height: 10.0,
+                              ),
+                              BasicButton(
+                                btnSize: 'fatM',
+                                color: "red",
+                                onPressed: () {},
+                                text: '발행 중지',
+                              ),
+                            ],
+                          )
+                        ],
+                      )
+                    ],
+                  ),
+                ),
               ],
-            ),
-          ),
-        ],
+            );
+          }
+        },
       ),
     );
   }

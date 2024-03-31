@@ -4,6 +4,7 @@ import 'package:socon/models/menu.dart';
 import '../../../utils/colors.dart';
 import '../../../utils/fontSizes.dart';
 import '../../../utils/responsive_utils.dart';
+import '../../atoms/checkbox.dart';
 import '../../atoms/dropdown.dart';
 import '../../atoms/image_loader.dart';
 
@@ -13,12 +14,14 @@ class PublishSoconCard extends StatefulWidget {
 
   const PublishSoconCard({super.key, required this.menu});
 
-
   @override
   State<StatefulWidget> createState() => _PublishSoconCardState();
 }
 
 class _PublishSoconCardState extends State<PublishSoconCard> {
+  bool isMainChecked = false; // 대표상품 체크 여부
+  bool isOnSaleChecked = false; // 할인상품 체크 여부
+
   @override
   Widget build(BuildContext context) {
     final List<String> dropdownItems = ['5', '10', '15', '20'];
@@ -79,7 +82,37 @@ class _PublishSoconCardState extends State<PublishSoconCard> {
             ),
           ),
           SizedBox(
-            height: 15,
+            width: ResponsiveUtils.getWidthWithPixels(context, 250),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                CheckBoxBtn(
+                  Text: "대표상품",
+                  isChecked: false,
+                  onCheckedChanged: (isChecked) {
+                    print('Checkbox is checked: $isChecked');
+                    setState(() {
+                      isMainChecked = isChecked;
+                    });
+                  },
+                  gapX: 0,
+                ),
+                CheckBoxBtn(
+                  Text: "할인상품",
+                  isChecked: false,
+                  onCheckedChanged: (isChecked) {
+                    print('Checkbox is checked: $isChecked');
+                    setState(() {
+                      isOnSaleChecked = isChecked;
+                    });
+                  },
+                  gapX: 0,
+                ),
+              ],
+            ),
+          ),
+          SizedBox(
+            height: 10,
           ),
           Column(
             children: [
@@ -107,35 +140,7 @@ class _PublishSoconCardState extends State<PublishSoconCard> {
                   ],
                 ),
               ),
-              SizedBox(
-                height: 10.0,
-              ),
-              SizedBox(
-                width: ResponsiveUtils.getWidthWithPixels(context, 220),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "할인 가격",
-                      style: TextStyle(
-                        color: AppColors.ERROR500,
-                        fontSize: ResponsiveUtils.calculateResponsiveFontSize(
-                            context, FontSizes.XXSMALL),
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    Text(
-                      "${widget.menu.price}원 (00% 할인)",
-                      style: TextStyle(
-                        color: AppColors.ERROR500,
-                        fontSize: ResponsiveUtils.calculateResponsiveFontSize(
-                            context, FontSizes.XXSMALL),
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              buildDiscountPrice(context),
               SizedBox(
                 width: ResponsiveUtils.getWidthWithPixels(context, 220),
                 child: Row(
@@ -191,5 +196,46 @@ class _PublishSoconCardState extends State<PublishSoconCard> {
         ],
       ),
     );
+  }
+
+  // 할인 가격 입력 텍스트
+  Widget buildDiscountPrice(BuildContext context) {
+    if (isOnSaleChecked) {
+      return Column(
+        children: [
+          SizedBox(
+            height: 10.0,
+          ),
+          SizedBox(
+            width: ResponsiveUtils.getWidthWithPixels(context, 220),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "할인 가격",
+                  style: TextStyle(
+                    color: AppColors.ERROR500,
+                    fontSize: ResponsiveUtils.calculateResponsiveFontSize(
+                        context, FontSizes.XXSMALL),
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                Text(
+                  "${widget.menu.price}원 (00% 할인)",
+                  style: TextStyle(
+                    color: AppColors.ERROR500,
+                    fontSize: ResponsiveUtils.calculateResponsiveFontSize(
+                        context, FontSizes.XXSMALL),
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      );
+    } else {
+      return SizedBox.shrink(); // 아무 내용도 없는 빈 공간 위젯을 반환
+    }
   }
 }
