@@ -11,6 +11,7 @@ import '../../../utils/fontSizes.dart';
 import '../../../utils/responsive_utils.dart';
 import '../../atoms/bottom_sheet.dart';
 import '../../atoms/buttons.dart';
+import '../../modules/plus_minus_btn.dart';
 
 // {
 // "id" : 1, // 상품 id
@@ -121,7 +122,7 @@ class _PublishSoconScreenState extends State<PublishSoconScreen> {
                           fontWeight: FontWeight.w600,
                         ),
                       ),
-                      plusMinusButton(),
+                      PlusMinusButton(),
                     ],
                   )),
               borderRadius: const BorderRadius.only(
@@ -171,42 +172,6 @@ class _PublishSoconScreenState extends State<PublishSoconScreen> {
               ],
             ),
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget plusMinusButton() {
-    final int num = 0;
-    return Container(
-      child: Row(
-        children: [
-          IconLoader(
-              iconName: 'minus_btn',
-              onPressed: () {
-                print("빼기");
-              }),
-          SizedBox(
-            width: 8.0,
-          ),
-          Text(
-            "$num",
-            style: TextStyle(
-              fontSize: ResponsiveUtils.calculateResponsiveFontSize(
-                context,
-                FontSizes.SMALL,
-              ),
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          SizedBox(
-            width: 8.0,
-          ),
-          IconLoader(
-              iconName: 'plus_btn',
-              onPressed: () {
-                print("더하기");
-              }),
         ],
       ),
     );
