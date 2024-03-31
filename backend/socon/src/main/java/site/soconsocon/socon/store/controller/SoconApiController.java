@@ -35,7 +35,7 @@ public class SoconApiController {
     }
 
     // 소콘 사용 승인
-    @PostMapping("/{socon_id}/approval")
+    @GetMapping("/{socon_id}/approval")
     public ResponseEntity<Object> soconApproval(
             @PathVariable("socon_id") Integer soconId,
             @RequestHeader("X-Authorization-Id") int memberId) {

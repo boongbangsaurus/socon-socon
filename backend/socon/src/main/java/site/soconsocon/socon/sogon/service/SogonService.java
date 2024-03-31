@@ -1,6 +1,7 @@
 package site.soconsocon.socon.sogon.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import site.soconsocon.socon.global.domain.ErrorCode;
 import site.soconsocon.socon.global.exception.SoconException;
@@ -22,6 +23,7 @@ import site.soconsocon.socon.store.repository.SoconRepository;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +31,7 @@ import java.util.Objects;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class SogonService {
 
     private final SoconRepository soconRepository;
@@ -55,10 +58,10 @@ public class SogonService {
         }
 
         LocalDateTime now = LocalDateTime.now();
-        now = now.plusHours(24);
+        LocalDateTime expired = now.plusHours(24);
 
         if (now.isAfter(socon.getExpiredAt())) {
-            now = socon.getExpiredAt();
+            expired = socon.getExpiredAt();
         }
 
         socon.setStatus("sogon"); // 소콘의 상태를 "sogon"으로 업데이트
@@ -68,7 +71,7 @@ public class SogonService {
                 .title(request.getTitle())
                 .content(request.getContent())
                 .createdAt(LocalDateTime.now())
-                .expiredAt(now)
+                .expiredAt(expired)
                 .isPicked(false)
                 .image1(request.getImage1())
                 .image2(request.getImage2())
@@ -106,14 +109,14 @@ public class SogonService {
         Sogon sogon = sogonRepository.findById(sogonId)
                 .orElseThrow(() -> new SogonException(SogonErrorCode.SOGON_NOT_FOUND));
 
-        if (sogon.getMemberId().equals(memberId)) {
+        if (!sogon.getMemberId().equals(memberId)) {
             throw new SoconException(ErrorCode.FORBIDDEN);
         }
 
         Socon socon = soconRepository.findById(sogon.getSocon().getId())
                 .orElseThrow(() -> new StoreException(StoreErrorCode.SOCON_NOT_FOUND));
 
-        if (!Objects.equals(socon.getStatus(), "unused")) {
+        if (!(Objects.equals(socon.getStatus(), "sogon")) ) {
             throw new StoreException(StoreErrorCode.INVALID_SOCON);
         }
 
@@ -136,6 +139,18 @@ public class SogonService {
 
         Socon socon = soconRepository.findById(sogon.getSocon().getId())
                 .orElseThrow(() -> new StoreException(StoreErrorCode.SOCON_NOT_FOUND));
+
+        // 소곤 만료 시간
+        LocalDateTime expiredAt = LocalDateTime.parse(sogon.getExpiredAt().toString());
+        // 현재 시간
+        LocalDateTime nowWithMilliseconds = LocalDateTime.now().withNano(0);
+        Boolean isExpired;
+        if (expiredAt.toLocalTime().isAfter(nowWithMilliseconds.toLocalTime())) {
+            isExpired = true;
+        }
+        else{
+            isExpired = false;
+        }
 
 
         Member sogonOwner = feignServiceClient.getMemberInfo(sogon.getMemberId());
@@ -166,7 +181,7 @@ public class SogonService {
                         .soconImg(socon.getIssue().getImage())
                         .createdAt(sogon.getCreatedAt())
                         .expiredAt(sogon.getExpiredAt())
-                        .isExpired(sogon.getExpiredAt().isAfter(LocalDateTime.now()))
+                        .isExpired(isExpired)
                         .build(),
                 "comments", commentRepsonses);
     }
@@ -181,6 +196,7 @@ public class SogonService {
                     .orElseThrow(() -> new StoreException(StoreErrorCode.SOCON_NOT_FOUND));
 
             sogonListResponses.add(SogonListResponse.builder()
+                    .id(sogon.getId())
                     .title(sogon.getTitle())
                     .soconImg(socon.getIssue().getImage())
                     .createdAt(sogon.getCreatedAt())
@@ -201,6 +217,7 @@ public class SogonService {
         for (Comment comment : comments) {
 
             commentListResponses.add(CommentListResponse.builder()
+                    .id(comment.getId())
                     .title(comment.getSogon().getTitle())
                     .content(comment.getContent())
                     .createdAt(comment.getCreatedAt())
@@ -213,6 +230,7 @@ public class SogonService {
     // 범위 내 소곤 리스트 조회
     public Object getSogonList(Double x, Double y) {
         // 중심 좌표와 반경 1.5km 이내에 있는 Sogon 리스트 반환
+
 
         double radius = 1.5;
         double radiusInRadians = radius / 6371.0;
@@ -241,23 +259,30 @@ public class SogonService {
 
         for (Sogon sogon : sogons) {
 
-            LocalDateTime createdAt = sogon.getCreatedAt();
             LocalDateTime expiredAt = sogon.getExpiredAt();
 
-            Duration duration = Duration.between(createdAt, expiredAt);
+            LocalDateTime now = LocalDateTime.now();
 
-            Member member = feignServiceClient.getMemberInfo(sogon.getMemberId());
+            DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+            String formattedDateTime = now.format(formatter);
+            LocalDateTime parsedDateTime = LocalDateTime.parse(formattedDateTime, formatter);
+            Duration duration = Duration.between(parsedDateTime, expiredAt);
+            // 시간이 남은 sogon만 출력
+            if(duration.toHours() > 0) {
+                Member member = feignServiceClient.getMemberInfo(sogon.getMemberId());
 
-            sogonListResponses.add(GetSogonListResponse.builder()
-                    .id(sogon.getId())
-                    .title(sogon.getTitle())
-                    .lastTime((int) duration.toHours())
-                    .memberName(member.getNickname())
-                    .commentCount(commentRepository.countBySogonId(sogon.getId()))
-                    .soconImg(sogon.getSocon().getIssue().getImage())
-                    .isPicked(sogon.getIsPicked())
-                    .build()
-            );
+                sogonListResponses.add(GetSogonListResponse.builder()
+                        .id(sogon.getId())
+                        .title(sogon.getTitle())
+                        .lastTime((int) duration.toHours())
+                        .memberName(member.getNickname())
+                        .commentCount(commentRepository.countBySogonId(sogon.getId()))
+                        .soconImg(sogon.getSocon().getIssue().getImage())
+                        .isPicked(sogon.getIsPicked())
+                        .build()
+                );
+            }
+
         }
 
         return sogonListResponses;

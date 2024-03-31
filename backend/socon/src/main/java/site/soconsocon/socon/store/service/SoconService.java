@@ -113,7 +113,6 @@ public class SoconService {
             throw new SoconException(ErrorCode.FORBIDDEN);
         }
 
-        log.info("socon status : " + socon.getStatus());
         LocalDateTime expiredAt = LocalDateTime.parse(socon.getExpiredAt().toString());
         LocalDateTime nowWithMilliseconds = LocalDateTime.now().withNano(0);
         if (expiredAt.toLocalDate().isEqual(nowWithMilliseconds.toLocalDate()) && expiredAt.toLocalTime().isAfter(nowWithMilliseconds.toLocalTime())){
