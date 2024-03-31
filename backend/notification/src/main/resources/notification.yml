@@ -1,0 +1,23 @@
+server:
+  port: 8010
+
+spring:
+  profiles:
+    active: prod,credential
+  config:
+    import: optional:configserver:http://${CONFIG_USERNAME}:${CONFIG_PASSWORD}@config:9000
+  application:
+    name: notification-service
+    cache:
+      type: redis
+
+management:
+  endpoints:
+    enabled-by-default: false
+    web:
+      base-path: /actuator  # ?? ??
+      exposure:
+        include: info, health
+    jmx:
+      exposure:
+        exclude: ['*']
