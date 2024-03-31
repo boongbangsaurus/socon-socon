@@ -39,7 +39,8 @@ class BasicButton extends StatefulWidget {
     'xs': [70.0, 30.0, 10.0],
     's': [150.0, 60.0, FontSizes.XSMALL],
     'm': [280.0, 60.0, FontSizes.XSMALL],
-    'l': [320.0, 60.0, FontSizes.XSMALL]
+    'l': [320.0, 60.0, FontSizes.XSMALL],
+    'fatM': [290.0, 65.0, FontSizes.XSMALL],
   };
   @override
   State<BasicButton> createState() => _BasicButtonState();
@@ -59,6 +60,8 @@ class _BasicButtonState extends State<BasicButton> {
       buttonColor = AppColors.GRAY600;
     } else if (widget.color == null) {
       buttonColor = AppColors.YELLOW;
+    }else if (widget.color == "red") {
+      buttonColor = AppColors.ERROR500;
     }
     // 텍스트 색상 지정
     // 기본 white

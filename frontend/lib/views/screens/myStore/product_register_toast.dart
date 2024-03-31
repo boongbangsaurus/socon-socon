@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:socon/utils/fontSizes.dart';
 import 'package:socon/utils/icons.dart';
 import 'package:socon/views/atoms/buttons.dart';
-import 'package:socon/views/modules/store_detail_view.dart';
+import 'package:socon/views/modules/store_detail_top_card.dart';
 
 
 class RegisterToastMsg extends StatelessWidget {
@@ -39,7 +39,7 @@ class RegisterToastMsg extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => StoreDetailPage(storeId: storeId)),
+                    builder: (context) => StoreDetailTopCard(storeId: storeId)),
               )
             }
           ),

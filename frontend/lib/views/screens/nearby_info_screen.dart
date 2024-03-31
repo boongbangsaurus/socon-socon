@@ -101,4 +101,16 @@ Store tempStore = Store(
     mainSocon: "소금빵",
     distance: 15);
 
-List<Store> stores = List.generate(10, (index) => tempStore);
+List<Store> stores = List.generate(10, (index) {
+  return Store(
+    storeId: tempStore.storeId + index,
+    name: tempStore.name,
+    imageUrl: tempStore.imageUrl,
+    address: tempStore.address,
+    category: tempStore.category,
+    createdAt: tempStore.createdAt,
+    isLike: tempStore.isLike,
+    mainSocon: tempStore.mainSocon,
+    distance: tempStore.distance,
+  );
+});
