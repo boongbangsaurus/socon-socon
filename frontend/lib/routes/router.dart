@@ -7,6 +7,14 @@ import 'package:socon/views/atoms/bottom_bar.dart';
 
 final bool isOwner = false; // 상태 관리로 처리할 예정
 
+// 라우트 상수 정의
+const String signUpRoute = "/signup";
+const String infoContactRoute = "/info/contact";
+const String infoVerifyRoute = "/info/verify";
+final RegExp successRegExp = RegExp(r'^/info/.*/success$');
+final RegExp failRegExp = RegExp(r'^/info/.*/fail$');
+const String soconBookDetailRoute = "/soconbook/detail";
+
 final GoRouter router = GoRouter(
     initialLocation: "/",
     redirect: (BuildContext context, GoRouterState state) {
@@ -63,25 +71,14 @@ final GoRouter router = GoRouter(
 
 Widget _bottomNavBar(StatefulNavigationShell navigationShell) {
   final currentRoute = navigationShell.shellRouteContext.routeMatchList;
-
-  final regExp = RegExp(r'^/info/.*/success$');
-  final regExp2 = RegExp(r'^/info/.*/fail$');
   final bool showBottomNavBar =
-      currentRoute.uri.toString() == "/info/contact" ||
-          currentRoute.uri.toString() == "/info/verify" ||
-          regExp.hasMatch(currentRoute.uri.toString()) ||
-          regExp2.hasMatch(currentRoute.uri.toString()) ||
-          currentRoute.uri.toString() == "/soconbook/detail";
+      currentRoute.uri.toString() == infoContactRoute ||
+          currentRoute.uri.toString() == infoVerifyRoute ||
+          successRegExp.hasMatch(currentRoute.uri.toString()) ||
+          failRegExp.hasMatch(currentRoute.uri.toString()) ||
+          currentRoute.uri.toString() == soconBookDetailRoute;
 
-  debugPrint(
-      '################## 현재 uri/showBottomNavBar ##############################');
-  // print(currentRoute.uri.toString().runtimeType); // 타입 확인
-  print(currentRoute.uri.toString());
-  print(showBottomNavBar);
-  // /info/contact
-  debugPrint(
-      '################## 현재 uri/showBottomNavBar ##############################');
-
+  // 하단 네비게이션 바 숨김 여부에 따라 렌더링 결정
   if (showBottomNavBar) {
     return SizedBox.shrink();
   } else {

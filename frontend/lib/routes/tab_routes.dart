@@ -5,6 +5,8 @@ import 'package:socon/views/screens/bossVerification/boss_verification.dart';
 import 'package:socon/views/screens/bossVerification/boss_verification_fail_screen.dart';
 import 'package:socon/views/screens/contact/contact_fail_screen.dart';
 import 'package:socon/views/screens/contact/contact_sucess_screen.dart';
+import 'package:socon/views/screens/myStore/publish_socon_screen.dart';
+import 'package:socon/views/screens/myStore/store_detail_screen.dart';
 import 'package:socon/views/screens/my_info_screen.dart';
 import 'package:socon/views/screens/my_store_list_screen.dart';
 import 'package:socon/views/screens/sign_in_screen.dart';
@@ -19,21 +21,35 @@ import '../views/screens/nearby_info_screen.dart';
 class TabRoutes {
   static RouteBase getNearbyRoute() {
     return GoRoute(
-        // path: "/",
-        path: "/",
-        builder: (BuildContext context, GoRouterState state) {
-          return NearbyInfoScreen();
-        });
+      // path: "/",
+      path: "/",
+      builder: (BuildContext context, GoRouterState state) {
+        return NearbyInfoScreen();
+      },
+      // routes: [
+      //   getStoreDetailRoute(),
+      // ]
+    );
   }
 
-  static RouteBase getStoreDetailRoute() {
-    return GoRoute(
-        // path: "/",
-        path: "store",
-        builder: (BuildContext context, GoRouterState state) {
-          return NearbyInfoScreen();
-        });
-  }
+  // static RouteBase getStoreDetailRoute() {
+  //   return GoRoute(
+  //       // path: "/",
+  //       path: "detail/:storeId",
+  //
+  //       builder: (BuildContext context, GoRouterState state) {
+  //         return StoreDetailScreen(state.pathParameters['storeId']);
+  //       });
+  // }
+
+  // static RouteBase getNearbyRoute() {
+  //   return GoRoute(
+  //       // path: "/",
+  //       path: "store",
+  //       builder: (BuildContext context, GoRouterState state) {
+  //         return NearbyInfoScreen();
+  //       });
+  // }
 
   static RouteBase getSogonMainRoute() {
     return GoRoute(
@@ -111,11 +127,32 @@ class TabRoutes {
 
   static RouteBase getMyStoreListRoute() {
     return GoRoute(
-        path: "/stores",
+        path: "/myStores",
         builder: (BuildContext context, GoRouterState state) {
           return const MyStoreListScreen();
+        },
+        routes: [getMyStoreDetailRoute()]);
+  }
+
+  static RouteBase getMyStoreDetailRoute() {
+    return GoRoute(
+        path: ":storeId",
+        builder: (BuildContext context, GoRouterState state) {
+          return MyStoreDetailScreen(state.pathParameters['storeId']!);
+        },
+        routes: [
+          getMenuDetailRoute(),
+        ]);
+  }
+
+  static RouteBase getMenuDetailRoute() {
+    return GoRoute(
+        path: "menu/:menuId",
+        builder: (BuildContext context, GoRouterState state) {
+          return PublishSoconScreen(state.pathParameters['menuId']!, state.pathParameters['storeId']!);
         });
   }
+
 
   static RouteBase getBossVerification() {
     return GoRoute(

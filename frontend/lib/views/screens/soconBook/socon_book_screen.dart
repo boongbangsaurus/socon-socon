@@ -91,6 +91,7 @@ class _SoconBookScreenState extends State<SoconBookScreen> {
                       '사용완료': usedMySoconList(),
                     },
                     marginTop: 0,
+                    tabHeight: ResponsiveUtils.getHeightWithPixels(context, 450),
                   ),
                 )
               ],
@@ -127,9 +128,11 @@ class _SoconBookScreenState extends State<SoconBookScreen> {
                 height: 10.0,
               ),
               GridView.builder(
-                shrinkWrap: true, // child 위젯의 크기를 정해주지 않은 경우 true로 지정해야됨
+                shrinkWrap: true,
+                // child 위젯의 크기를 정해주지 않은 경우 true로 지정해야됨
                 physics: NeverScrollableScrollPhysics(),
-                itemCount: soconNames.length, //item 개수
+                itemCount: soconNames.length,
+                //item 개수
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2, //1 개의 행에 보여줄 item 개수
                   childAspectRatio: 1 / 1.2, //item 의 가로 세로의 비율
@@ -143,7 +146,7 @@ class _SoconBookScreenState extends State<SoconBookScreen> {
                     storeName: storeNames[index],
                     dueDate: dueDate[index],
                     imageUrl: imageUrl[index],
-                    onPressed:() {
+                    onPressed: () {
                       GoRouter.of(context).go("/soconbook/detail");
                     },
                   );
@@ -153,7 +156,6 @@ class _SoconBookScreenState extends State<SoconBookScreen> {
           )),
     );
   }
-
 
   Widget usedMySoconList() {
     return SingleChildScrollView(
@@ -184,9 +186,11 @@ class _SoconBookScreenState extends State<SoconBookScreen> {
                 height: 10.0,
               ),
               GridView.builder(
-                shrinkWrap: true, // child 위젯의 크기를 정해주지 않은 경우 true로 지정해야됨
+                shrinkWrap: true,
+                // child 위젯의 크기를 정해주지 않은 경우 true로 지정해야됨
                 physics: NeverScrollableScrollPhysics(),
-                itemCount: soconNames.length, //item 개수
+                itemCount: soconNames.length,
+                //item 개수
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2, //1 개의 행에 보여줄 item 개수
                   childAspectRatio: 1 / 1.2, //item 의 가로 세로의 비율
@@ -195,7 +199,7 @@ class _SoconBookScreenState extends State<SoconBookScreen> {
                 ),
                 itemBuilder: (BuildContext context, index) {
                   return MySocon(
-                    available : false,
+                    available: false,
                     soconName: soconNames[index],
                     storeName: storeNames[index],
                     dueDate: dueDate[index],
