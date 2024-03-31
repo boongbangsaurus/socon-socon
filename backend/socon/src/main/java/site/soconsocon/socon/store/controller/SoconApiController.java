@@ -3,6 +3,7 @@ package site.soconsocon.socon.store.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import site.soconsocon.socon.store.domain.dto.request.SoconBookSearchRequest;
 import site.soconsocon.socon.store.domain.dto.response.SoconInfoResponse;
 import site.soconsocon.socon.store.service.SoconService;
 import site.soconsocon.utils.MessageUtils;
@@ -45,15 +46,14 @@ public class SoconApiController {
     }
 
     // 소콘북 검색
-    @PostMapping("/book/search?category={category}&keyword={keyword}")
+    @PostMapping("/book/search")
     public ResponseEntity<Object> soconBookSearch(
-            @PathVariable("category") String category,
-            @PathVariable("keyword") String keyword,
+            @RequestBody SoconBookSearchRequest request,
             @RequestHeader("X-Authorization-Id") int memberId
     ) {
 
 
-        return ResponseEntity.ok().body(MessageUtils.success(soconService.searchSocon(category, keyword, memberId)));
+        return ResponseEntity.ok().body(MessageUtils.success(soconService.searchSocon(request, memberId)));
     }
 
 

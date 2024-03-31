@@ -12,8 +12,6 @@ import lombok.ToString;
 @ToString
 public class ChargeRequest {
 
-    @JsonProperty("member_id")
     private int memberId;
-
     private int money;
 }
