@@ -441,12 +441,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                                       BasicButton(
                                                         text: '확인',
                                                         onPressed: () {
-                                                          Navigator.push(
-                                                              context,
-                                                              MaterialPageRoute(
-                                                                  builder:
-                                                                      (context) =>
-                                                                          const SignInScreen()));
+                                                          GoRouter.of(context)
+                                                              .go('/signin');
+                                                          // Navigator.push(
+                                                          //     context,
+                                                          //     MaterialPageRoute(
+                                                          //         builder:
+                                                          //             (context) =>
+                                                          //                 const SignInScreen()));
                                                         },
                                                       )
                                                     ]));
