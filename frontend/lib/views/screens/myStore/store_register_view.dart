@@ -64,6 +64,8 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   final PageController _pageController = PageController();
+  // final StoreRegisterViewModel viewModel;
+
   int _currentPageIndex = 0;
 
   void _onBackPressed() {
@@ -82,49 +84,58 @@ class _RegisterPageState extends State<RegisterPage> {
   List<BusinessHour> BusinessHours = [];
 
 
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    final viewModel = Provider.of<StoreRegisterViewModel>(context, listen: false);
+    return ChangeNotifierProvider<StoreRegisterViewModel>(
+      create: (context) => StoreRegisterViewModel(),
+      child: Scaffold(
         appBar: _currentPageIndex != 4
             ? AppBar(
-                title: Text(
-                  '점포 등록(${_currentPageIndex + 1}/4)',
-                ),
-                leading: IconButton(
-                  icon: Icon(Icons.arrow_back),
-                  onPressed: _onBackPressed,
-                ),
-              )
+          title: Text(
+            '점포 등록(${_currentPageIndex + 1}/4)',
+          ),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: _onBackPressed,
+          ),
+        )
             : null,
         body: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Scaffold(
-                body: PageView(
-                  controller: _pageController,
-                  onPageChanged: (int page) {
-                    setState(() {
-                      _currentPageIndex = page;
-                    });
-                  },
-                  physics: NeverScrollableScrollPhysics(),
-                  children: [
-                    Step1(pageController: _pageController),
-                    Step2(pageController: _pageController),
-                    Step3(pageController: _pageController, BusinessHours:BusinessHours, ),
-                    SummaryPage(pageController: _pageController),
-                    RegisterComplete(pageController: _pageController),
-                  ],
-                ),
-              ),
+            body: PageView(
+              controller: _pageController,
+              onPageChanged: (int page) {
+                setState(() {
+                  _currentPageIndex = page;
+                });
+              },
+              physics: NeverScrollableScrollPhysics(),
+              children: [
+                Step1(pageController: _pageController, viewModel: viewModel,),
+                Step2(pageController: _pageController, viewModel: viewModel,),
+                Step3(pageController: _pageController, viewModel: viewModel, BusinessHours:BusinessHours, ),
+                SummaryPage(pageController: _pageController, viewModel: viewModel),
+                RegisterComplete(pageController: _pageController, viewModel: viewModel),
+              ],
+            ),
+          ),
         ),
-      );
+      ),
+    );
   }
 }
 
+
+
+
 class Step1 extends StatelessWidget {
   final PageController pageController;
+  final StoreRegisterViewModel viewModel;
 
-  Step1({required this.pageController});
+  Step1({required this.pageController, required this.viewModel});
 
   @override
   Widget build(BuildContext context) {
@@ -880,7 +891,7 @@ class RegisterComplete extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = Provider.of<RegisterViewModel>(context);
+    // final viewModel = Provider.of<RegisterViewModel>(context);
     return Scaffold(
       body: SingleChildScrollView(
         padding: EdgeInsets.all(20.0),

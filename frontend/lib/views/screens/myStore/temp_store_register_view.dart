@@ -39,8 +39,8 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<RegisterViewModel>(
-      create: (context) => RegisterViewModel(),
+    return ChangeNotifierProvider<StoreRegisterViewModel>(
+      create: (context) => StoreRegisterViewModel(),
       child: Scaffold(
         appBar: _currentPageIndex != 4
             ? AppBar(
@@ -55,7 +55,7 @@ class _RegisterPageState extends State<RegisterPage> {
             : null,
         body: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Consumer<RegisterViewModel>(
+          child: Consumer<StoreRegisterViewModel>(
             builder: (context, viewModel, child) {
               return Scaffold(
                 body: PageView(
@@ -90,7 +90,7 @@ class Step1 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = Provider.of<RegisterViewModel>(context);
+    final viewModel = Provider.of<StoreRegisterViewModel>(context);
     return Scaffold(
       body: Container(
         padding: EdgeInsets.all(20.0),
@@ -164,7 +164,7 @@ class _Step2State extends State<Step2> {
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = Provider.of<RegisterViewModel>(context);
+    final viewModel = Provider.of<StoreRegisterViewModel>(context);
     return Scaffold(
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
