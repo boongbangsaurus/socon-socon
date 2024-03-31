@@ -27,11 +27,11 @@ public class OrderController {
     @PostMapping("")
     public ResponseEntity order(@RequestHeader("X-Authorization-Id") int memberId, @RequestBody OrderRequestDto orderRequestDto) {
         try {
-            log.info("주문 성공 : 주문 번호 {}", orderRequestDto.getOrderUid());
+            log.info("주문 성공 : 주문 상품 이름 {}", orderRequestDto.getItemName());
             return ResponseEntity.ok().body(MessageUtils.success(orderService.saveOrder(memberId, orderRequestDto)));
 
         } catch (RuntimeException e) {
-            log.info("주문 실패 : 주문 번호 {}", orderRequestDto.getOrderUid());
+            log.info("주문 실패 : 주문 상품 이름 {}", orderRequestDto.getItemName());
             return ResponseEntity.status(400).body(MessageUtils.fail("400", "주문을 실패하였습니다."));
         }
     }
