@@ -71,7 +71,8 @@ Widget _bottomNavBar(StatefulNavigationShell navigationShell) {
           currentRoute.uri.toString() == "/info/verify" ||
           regExp.hasMatch(currentRoute.uri.toString()) ||
           regExp2.hasMatch(currentRoute.uri.toString()) ||
-          currentRoute.uri.toString() == "/soconbook/detail";
+          currentRoute.uri.toString() == "/soconbook/detail" ||
+          currentRoute.uri.toString() == "/sogon";
 
   debugPrint(
       '################## 현재 uri/showBottomNavBar ##############################');
