@@ -7,7 +7,7 @@ import site.soconsocon.socon.store.domain.entity.jpa.Store;
 import java.util.List;
 
 public interface StoreRepository extends JpaRepository<Store, Integer> {
-    @Query("SELECT s.id, s.name, s.category, s.image, s.createdAt FROM STORE s WHERE s.memberId = :memberId")
+    @Query("SELECT s FROM STORE s WHERE s.memberId = :memberId")
     List<Store> findStoresByMemberId(Integer memberId);
 
     @Query("SELECT s.name FROM STORE s WHERE s.id = :storeId")
