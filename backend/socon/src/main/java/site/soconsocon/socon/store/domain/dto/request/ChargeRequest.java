@@ -1,6 +1,5 @@
 package site.soconsocon.socon.store.domain.dto.request;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 @NoArgsConstructor
