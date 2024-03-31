@@ -3,13 +3,14 @@ import 'package:flutter/material.dart';
 class CheckBoxBtn extends StatefulWidget {
   final String Text;
   final bool isChecked;
-
+  final double gapX;
   final Function(bool) onCheckedChanged;
   CheckBoxBtn({
     super.key,
     required this.Text,
     required this.isChecked,
     required this.onCheckedChanged,
+    this.gapX = -5.0,
   });
 
   @override
@@ -32,7 +33,7 @@ class _CheckBoxBtnState extends State<CheckBoxBtn> {
       // mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         Transform.translate(
-          offset: Offset(-5.0, 0.0),
+          offset: Offset(widget.gapX, 0.0),
           child: Checkbox(
             value: isChecked,
 
@@ -59,7 +60,7 @@ class _CheckBoxBtnState extends State<CheckBoxBtn> {
         ),
         // 선택되었을 때 텍스트 선택
         Transform.translate(
-          offset: Offset(-5.0, 0.0),
+          offset: Offset(widget.gapX, 0.0),
           child: Text(widget.Text),
         )
       ],

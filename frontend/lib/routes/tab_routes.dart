@@ -5,32 +5,51 @@ import 'package:socon/views/screens/bossVerification/boss_verification.dart';
 import 'package:socon/views/screens/bossVerification/boss_verification_fail_screen.dart';
 import 'package:socon/views/screens/contact/contact_fail_screen.dart';
 import 'package:socon/views/screens/contact/contact_sucess_screen.dart';
+import 'package:socon/views/screens/myStore/publish_socon_screen.dart';
+import 'package:socon/views/screens/myStore/store_detail_screen.dart';
 import 'package:socon/views/screens/my_info_screen.dart';
 import 'package:socon/views/screens/my_store_list_screen.dart';
+import 'package:socon/views/screens/sign_in_screen.dart';
+import 'package:socon/views/screens/sign_up_screen.dart';
 import 'package:socon/views/screens/soconBook/socon_book_detail_screen.dart';
 import 'package:socon/views/screens/soconBook/socon_book_screen.dart';
 import 'package:socon/views/screens/sogon_main_screen.dart';
 import '../views/screens/bossVerification/boss_verification_success_screen.dart';
+import '../views/screens/contact/contact_screen.dart';
 import '../views/screens/nearby_info_screen.dart';
 
 class TabRoutes {
   static RouteBase getNearbyRoute() {
     return GoRoute(
-        // path: "/",
-        path: "/",
-        builder: (BuildContext context, GoRouterState state) {
-          return NearbyInfoScreen();
-        });
+      // path: "/",
+      path: "/",
+      builder: (BuildContext context, GoRouterState state) {
+        return NearbyInfoScreen();
+      },
+      // routes: [
+      //   getStoreDetailRoute(),
+      // ]
+    );
   }
 
-  static RouteBase getStoreDetailRoute() {
-    return GoRoute(
-      // path: "/",
-        path: "store",
-        builder: (BuildContext context, GoRouterState state) {
-          return NearbyInfoScreen();
-        });
-  }
+  // static RouteBase getStoreDetailRoute() {
+  //   return GoRoute(
+  //       // path: "/",
+  //       path: "detail/:storeId",
+  //
+  //       builder: (BuildContext context, GoRouterState state) {
+  //         return StoreDetailScreen(state.pathParameters['storeId']);
+  //       });
+  // }
+
+  // static RouteBase getNearbyRoute() {
+  //   return GoRoute(
+  //       // path: "/",
+  //       path: "store",
+  //       builder: (BuildContext context, GoRouterState state) {
+  //         return NearbyInfoScreen();
+  //       });
+  // }
 
   static RouteBase getSogonMainRoute() {
     return GoRoute(
@@ -68,15 +87,27 @@ class TabRoutes {
           return MyInfoScreen();
         },
         routes: [
+          getContactRoute(),
+          getBossVerification(),
+        ]);
+  }
+
+  static RouteBase getContactRoute() {
+    return GoRoute(
+        name: "contact",
+        path: "contact",
+        builder: (BuildContext context, GoRouterState state) {
+          return ContactScreen();
+        },
+        routes: [
           getContactSuccessRoute(),
           getContactFailRoute(),
-          getBossVerification(),
         ]);
   }
 
   static RouteBase getContactSuccessRoute() {
     return GoRoute(
-      name: "contact",
+      name: "contactSuccess",
       path: "success",
       builder: (BuildContext context, GoRouterState state) {
         return ContactSuccessScreen();
@@ -96,27 +127,48 @@ class TabRoutes {
 
   static RouteBase getMyStoreListRoute() {
     return GoRoute(
-        path: "/stores",
+        path: "/myStores",
         builder: (BuildContext context, GoRouterState state) {
           return const MyStoreListScreen();
+        },
+        routes: [getMyStoreDetailRoute()]);
+  }
+
+  static RouteBase getMyStoreDetailRoute() {
+    return GoRoute(
+        path: ":storeId",
+        builder: (BuildContext context, GoRouterState state) {
+          return MyStoreDetailScreen(state.pathParameters['storeId']!);
+        },
+        routes: [
+          getMenuDetailRoute(),
+        ]);
+  }
+
+  static RouteBase getMenuDetailRoute() {
+    return GoRoute(
+        path: "menu/:menuId",
+        builder: (BuildContext context, GoRouterState state) {
+          return PublishSoconScreen(state.pathParameters['menuId']!, state.pathParameters['storeId']!);
         });
   }
 
+
   static RouteBase getBossVerification() {
     return GoRoute(
-      name: "bossVerification",
-      path: "verify",
-      builder: (BuildContext context, GoRouterState state) {
-        return BossVerification();
-      },
-      routes: [
-        getVerifySuccessRoute(),
-      ]
-    );
+        name: "verify",
+        path: "verify",
+        builder: (BuildContext context, GoRouterState state) {
+          return BossVerification();
+        },
+        routes: [
+          getVerifySuccessRoute(),
+        ]);
   }
+
   static RouteBase getVerifySuccessRoute() {
     return GoRoute(
-      name: "verify",
+      name: "verifySuccess",
       path: "success",
       builder: (BuildContext context, GoRouterState state) {
         return BossVerificationSuccessScreen();
@@ -124,13 +176,21 @@ class TabRoutes {
     );
   }
 
-  static RouteBase getVerifyFailRoute() {
+  static RouteBase getSignInRoute() {
     return GoRoute(
-      name : "verify",
-      path : "fail",
-      builder: (BuildContext context, GoRouterState state){
-        return BossVerificationFailScreen();
-      }
-    );
+        // path: "/",
+        path: "/signin",
+        builder: (BuildContext context, GoRouterState state) {
+          return SignInScreen();
+        });
+  }
+
+  static RouteBase getSignUpRoute() {
+    return GoRoute(
+        // path: "/",
+        path: "/signup",
+        builder: (BuildContext context, GoRouterState state) {
+          return SignUpScreen();
+        });
   }
 }

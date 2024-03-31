@@ -1,12 +1,19 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:socon/utils/colors.dart';
+import 'package:socon/utils/responsive_utils.dart';
 
 // 탭 바 화면 위젯
 class TabBarScreen extends StatefulWidget {
   final Map<String, Widget> contents;
   final double marginTop;
-  const TabBarScreen({super.key, required this.contents, this.marginTop =80.0, });
+  final double tabHeight;
+  const TabBarScreen({
+    super.key,
+    required this.contents,
+    this.marginTop = 80.0, required this.tabHeight,
+  });
 
   @override
   State<TabBarScreen> createState() => _TabBarScreenState();
@@ -17,7 +24,9 @@ class _TabBarScreenState extends State<TabBarScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController; // 탭 컨트롤러
   late List<Widget> tabs; // 탭 위젯 목록
-  late Map<String, Widget> tabViews; // 탭 뷰 목록
+  late Map<String, Widget> tabViews;
+
+
 
   @override
   void initState() {
@@ -45,7 +54,6 @@ class _TabBarScreenState extends State<TabBarScreen>
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Container(
-
           margin: EdgeInsets.fromLTRB(0, widget.marginTop, 0, 0),
           child: TabBar(
             overlayColor: MaterialStateProperty.all(Colors.transparent),
@@ -55,7 +63,8 @@ class _TabBarScreenState extends State<TabBarScreen>
             tabs: tabs,
           ),
         ),
-        Expanded(
+        SizedBox(
+          height: ResponsiveUtils.getHeightWithPixels(context, widget.tabHeight),
           child: TabBarView(
             controller: _tabController,
             children: tabViews.values.toList(),
@@ -83,4 +92,3 @@ class TabContent extends StatelessWidget {
 }
 
 // author: 김아현
-

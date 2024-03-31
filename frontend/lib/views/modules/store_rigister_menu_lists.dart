@@ -4,7 +4,9 @@ import 'package:socon/views/modules/socon_storesocon.dart';
 
 
 class RegisteredMenu extends StatelessWidget {
-  const RegisteredMenu({super.key});
+  final int storeId;
+
+  const RegisteredMenu({super.key, required this.storeId});
 
   @override
   Widget build(BuildContext context) {

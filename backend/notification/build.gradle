@@ -35,37 +35,15 @@ ext {
 }
 
 dependencies {
-	implementation 'site.socon-socon:utils:1.0.2'
+	implementation 'site.socon-socon:utils:1.0'
+	implementation 'org.springframework.cloud:spring-cloud-config-client'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
-    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
-	implementation 'org.springframework.cloud:spring-cloud-config-client'
-
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-	runtimeOnly 'com.mysql:mysql-connector-j'
-	implementation "com.querydsl:querydsl-jpa:${queryDslVersion}:jakarta"
-	implementation "com.querydsl:querydsl-apt:${queryDslVersion}:jakarta"
-	implementation "com.querydsl:querydsl-core:${queryDslVersion}"
-
-
-	annotationProcessor "jakarta.annotation:jakarta.annotation-api"
-	annotationProcessor "jakarta.persistence:jakarta.persistence-api"
-
-
-	implementation 'org.springframework.boot:spring-boot-starter-mail'
-	implementation 'com.google.firebase:firebase-admin:9.2.0'
-
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
-
-configurations.all {
-	exclude group : "commons-logging", module: "commons-logging"
-}
-
 
 dependencyManagement {
 	imports {
@@ -75,4 +53,21 @@ dependencyManagement {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+tasks.register('copyPrivate', Copy) {
+	copy {
+		from '../../secure-settings/back/notification'
+		include "*.yml"
+		into 'src/main/resources'
+	}
+	copy {
+		from '../../secure-settings/back/'
+		include "*.yml"
+		into 'src/main/resources'
+	}
+}
+
+processResources {
+	dependsOn tasks.copyPrivate
 }

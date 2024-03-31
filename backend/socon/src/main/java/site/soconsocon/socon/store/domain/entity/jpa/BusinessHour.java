@@ -12,7 +12,7 @@ import java.sql.Time;
 @Getter
 @Setter
 @Builder
-@ToString
+@ToString(exclude = "store")
 public class BusinessHour {
 
     @Id
@@ -20,7 +20,7 @@ public class BusinessHour {
     @Column(name = "business_hour_id", updatable = false, nullable = false)
     private Integer id;
 
-    @Column(name = "day", nullable = false, unique = true)
+    @Column(name = "day", nullable = false)
     private String day;
 
     @Column(name = "is_working", nullable = false, columnDefinition = "boolean default false")
