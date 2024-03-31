@@ -8,6 +8,7 @@ Map<String, String> toastMsgList = {
   "paymentFailed" : "결제가 실패했어요!",
   "availableSocon" : "근처에 사용가능한 소콘이 있어요!",
   "productIssued" : "상품이 발급되었어요!",
+  "filedAlert" : "모든 필드를 채워주세요!",
 };
 
 class ToastUtil {

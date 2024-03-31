@@ -7,16 +7,18 @@ import 'package:socon/utils/responsive_utils.dart';
 import 'package:socon/utils/icons.dart';
 import 'package:socon/views/atoms/tab.dart';
 import 'package:socon/views/atoms/tag_icon.dart';
-import 'package:socon/views/modules/store_menu_management.dart';
-import 'package:socon/views/modules/store_rigister_menu_lists.dart';
+import 'package:socon/views/modules/mystore_menu_management.dart';
+import 'package:socon/views/modules/mystore_rigister_menu_lists.dart';
 import 'package:socon/views/screens/my_store_list_screen.dart';
 
 class StoreDetailTopCard extends StatelessWidget {
   final int storeId;
+  final bool isOwner;
 
   const StoreDetailTopCard({
     super.key,
     required this.storeId,
+    required this.isOwner,
   });
 
   @override
@@ -138,30 +140,103 @@ class StoreDetailTopCard extends StatelessWidget {
             ),
           ),
           SizedBox(height: 10),
-          GestureDetector(
-            onTap: () {
-              print("매장 정보 수정 버튼 클릭");
-            },
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Icon(
-                  AppIcons.EDIT,
-                  color: AppColors.BLACK,
-                  size: ResponsiveUtils.getWidthWithPixels(context, 16),
-                ),
-                SizedBox(width: 6),
-                Text(
-                  '매장 정보 수정',
-                  style: TextStyle(
+
+          isOwner?
+            GestureDetector(
+              onTap: () {
+                print("매장 정보 수정 버튼 클릭");
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Icon(
+                    AppIcons.EDIT,
                     color: AppColors.BLACK,
-                    fontSize: ResponsiveUtils.calculateResponsiveFontSize(
-                        context, FontSizes.XXXSMALL),
+                    size: ResponsiveUtils.getWidthWithPixels(context, 16),
+                  ),
+                  SizedBox(width: 6),
+                  Text(
+                    '매장 정보 수정',
+                    style: TextStyle(
+                      color: AppColors.BLACK,
+                      fontSize: ResponsiveUtils.calculateResponsiveFontSize(
+                          context, FontSizes.XXXSMALL),
+                    ),
+                  ),
+                ],
+              ),
+            ) :
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                GestureDetector(
+                  onTap: () {},
+                  child: Row(
+                    children: [
+                      Icon(
+                        AppIcons.PHONE,
+                        color: AppColors.BLACK,
+                        size: ResponsiveUtils.getWidthWithPixels(context, 16),
+                      ),
+                      SizedBox(width: 6),
+                      Text(
+                        '전화',
+                        style: TextStyle(
+                          color: AppColors.BLACK,
+                          fontSize: ResponsiveUtils.calculateResponsiveFontSize(
+                              context, FontSizes.XXXSMALL),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Text('|', style: TextStyle(color: AppColors.GRAY300),),
+                GestureDetector(
+                  onTap: () {},
+                  child: Row(
+                    children: [
+                      Icon(
+                        AppIcons.HEARTOFF,
+                        // AppIcons.HEARTON,
+                        color: AppColors.BLACK,
+                        size: ResponsiveUtils.getWidthWithPixels(context, 16),
+                      ),
+                      SizedBox(width: 6),
+                      Text(
+                        '123',
+                        style: TextStyle(
+                          color: AppColors.BLACK,
+                          fontSize: ResponsiveUtils.calculateResponsiveFontSize(
+                              context, FontSizes.XXXSMALL),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Text('|', style: TextStyle(color: AppColors.GRAY300),),
+                GestureDetector(
+                  onTap: () {},
+                  child: Row(
+                    children: [
+                      Icon(
+                        AppIcons.STORE,
+                        color: AppColors.BLACK,
+                        size: ResponsiveUtils.getWidthWithPixels(context, 16),
+                      ),
+                      SizedBox(width: 6),
+                      Text(
+                        '매장정보',
+                        style: TextStyle(
+                          color: AppColors.BLACK,
+                          fontSize: ResponsiveUtils.calculateResponsiveFontSize(
+                              context, FontSizes.XXXSMALL),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
-          ),
         ],
       ),
     );

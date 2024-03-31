@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:socon/models/store_register_model.dart';
 import 'dart:io';
 
 import 'package:socon/utils/colors.dart';
@@ -16,45 +15,6 @@ import 'package:socon/views/atoms/input_form.dart';
 import 'package:socon/views/atoms/tag_icon.dart';
 import 'package:provider/provider.dart';
 import 'package:socon/viewmodels/store_register_view_model.dart';
-
-class BusinessHour {
-  String day;
-  bool isWorking;
-  String? openAt;
-  String? closeAt;
-  bool? isBreaktime;
-  String? breaktimeStart;
-  String? breaktimeEnd;
-
-  BusinessHour({
-    required this.day,
-    required this.isWorking,
-    this.openAt,
-    this.closeAt,
-    this.isBreaktime = false,
-    this.breaktimeStart,
-    this.breaktimeEnd,
-  });
-
-  @override
-  String toString() {
-    return 'BusinessHour{day: $day, isWorking: $isWorking, openAt: $openAt, closeAt: $closeAt, isBreaktime: $isBreaktime, breaktimeStart: $breaktimeStart, breaktimeEnd: $breaktimeEnd}';
-  }
-}
-
-
-class StoreList {
-  String? _menuName;
-  String? _category;
-  var _userImage;
-  String? _phone_number;
-  String? _address;
-  double? _lat;
-  double? _lng;
-  String? _introduction;
-  String? _registration_number_id;
-  List<BusinessHour>? businessHours;
-}
 
 
 class RegisterPage extends StatefulWidget {
@@ -77,14 +37,11 @@ class _RegisterPageState extends State<RegisterPage> {
     }
   }
 
-  // 데이터
-  List<StoreList> StoreLists = [];
-  List<BusinessHour> BusinessHours = [];
-
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return ChangeNotifierProvider<RegisterViewModel>(
+      create: (context) => RegisterViewModel(),
+      child: Scaffold(
         appBar: _currentPageIndex != 4
             ? AppBar(
                 title: Text(
@@ -98,7 +55,9 @@ class _RegisterPageState extends State<RegisterPage> {
             : null,
         body: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Scaffold(
+          child: Consumer<RegisterViewModel>(
+            builder: (context, viewModel, child) {
+              return Scaffold(
                 body: PageView(
                   controller: _pageController,
                   onPageChanged: (int page) {
@@ -110,14 +69,17 @@ class _RegisterPageState extends State<RegisterPage> {
                   children: [
                     Step1(pageController: _pageController),
                     Step2(pageController: _pageController),
-                    Step3(pageController: _pageController, BusinessHours:BusinessHours, ),
+                    Step3(pageController: _pageController),
                     SummaryPage(pageController: _pageController),
                     RegisterComplete(pageController: _pageController),
                   ],
                 ),
-              ),
+              );
+            },
+          ),
         ),
-      );
+      ),
+    );
   }
 }
 
@@ -128,7 +90,7 @@ class Step1 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final viewModel = Provider.of<RegisterViewModel>(context);
+    final viewModel = Provider.of<RegisterViewModel>(context);
     return Scaffold(
       body: Container(
         padding: EdgeInsets.all(20.0),
@@ -150,17 +112,12 @@ class Step1 extends StatelessWidget {
 
                     CustomInputField(
                       labelText: '사업자 등록 번호',
-                      onChanged: (value) =>
-                      {
-                        // viewModel.setRegistrationNumber(value),
-                      }
+                      onChanged: (value) => viewModel.setRegistrationNumber(value),
                     ),
 
                     CustomInputField(
                       labelText: '사업자 주소',
-                      onChanged: (value) => {
-                        // viewModel.setAddress(value)
-                      },
+                      onChanged: (value) => viewModel.setAddress(value),
                     ),
 
                     Text(
@@ -207,7 +164,7 @@ class _Step2State extends State<Step2> {
 
   @override
   Widget build(BuildContext context) {
-    // final viewModel = Provider.of<RegisterViewModel>(context);
+    final viewModel = Provider.of<RegisterViewModel>(context);
     return Scaffold(
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -216,17 +173,12 @@ class _Step2State extends State<Step2> {
           children: [
             CustomInputField(
               labelText: '상호명을 입력해주세요',
-              onChanged: (value) => {
-                // viewModel.setName(value)
-              },
+              onChanged: (value) => viewModel.setName(value),
             ),
 
             CustomInputField(
               labelText: '전화번호를 입력해 주세요',
-              onChanged: (value) =>
-              {
-                // viewModel.setPhoneNumber(value),
-              }
+              onChanged: (value) => viewModel.setPhoneNumber(value),
             ),
 
 
@@ -237,78 +189,61 @@ class _Step2State extends State<Step2> {
             // 업종 연결 state지정필요
             Row(
               children: [
+                // viewlist 리팩하기
                 TagButton(
                   buttonText: '음식점',
                   buttonColor: AppColors.YELLOW,
                   buttonTextColor: AppColors.BLACK,
                   onPressed: () {},
-                  onSelected: (isSelected) => {
-                    // viewModel.setCategory('음식점')
-                  },
+                  onSelected: (isSelected) => {viewModel.setCategory('음식점')},
                 ),
                 TagButton(
                   buttonText: '카페',
                   buttonColor: AppColors.YELLOW,
                   buttonTextColor: AppColors.BLACK,
                   onPressed: () {},
-                  onSelected: (isSelected) => {
-                    // viewModel.setCategory('카페')
-                  },
+                  onSelected: (isSelected) => {viewModel.setCategory('카페')},
                 ),
                 TagButton(
                   buttonText: '미용',
                   buttonColor: AppColors.YELLOW,
                   buttonTextColor: AppColors.BLACK,
                   onPressed: () {},
-                  onSelected: (isSelected) => {
-                    // viewModel.setCategory('미용')
-                  },
+                  onSelected: (isSelected) => {viewModel.setCategory('미용')},
                 ),
                 TagButton(
                   buttonText: '숙박',
                   buttonColor: AppColors.YELLOW,
                   buttonTextColor: AppColors.BLACK,
                   onPressed: () {},
-                  onSelected: (isSelected) => {
-                    // viewModel.setCategory('숙박')
-                  },
+                  onSelected: (isSelected) => {viewModel.setCategory('숙박')},
                 ),
                 TagButton(
                   buttonText: '스포츠',
                   buttonColor: AppColors.YELLOW,
                   buttonTextColor: AppColors.BLACK,
                   onPressed: () {},
-                  onSelected: (isSelected) => {
-                    // viewModel.setCategory('스포츠')
-                  },
+                  onSelected: (isSelected) => {viewModel.setCategory('스포츠')},
                 ),
                 TagButton(
                   buttonText: '쇼핑',
                   buttonColor: AppColors.YELLOW,
                   buttonTextColor: AppColors.BLACK,
                   onPressed: () {},
-                  onSelected: (isSelected) => {
-                    // viewModel.setCategory('쇼핑')
-                  },
+                  onSelected: (isSelected) => {viewModel.setCategory('쇼핑')},
                 ),
               ],
             ),
             SizedBox(height: 40,),
             CustomInputField(
               labelText: '가게 주소를 입력해 주세요',
-              onChanged: (value) =>
-              {
-                // viewModel.setAddress(value),
-              },
+              onChanged: (value) => viewModel.setAddress(value),
               hintText: '도로명, 건물명 또는 지번으로 검색'
             ),
 
             CustomInputField(
               labelText: '가게 소개를 입력해 주세요',
-              onChanged: (value) =>
-              {
-                // viewModel.setIntroduction(value),
-              },
+              onChanged: (value) => viewModel.setIntroduction(value),
             ),
 
             Text('가게 사진을 추가해 주세요',
@@ -395,9 +330,7 @@ class _Step2State extends State<Step2> {
 class Step3 extends StatefulWidget {
   final PageController pageController;
 
-  final List<BusinessHour>? BusinessHours;
-
-  Step3({required this.pageController, this.BusinessHours});
+  Step3({required this.pageController});
 
   @override
   State<Step3> createState() => _Step3State();
@@ -405,172 +338,65 @@ class Step3 extends StatefulWidget {
 
 class _Step3State extends State<Step3> {
   bool isChecked = false;
-  List<BusinessHour> BusinessHours = [];
-
-  Map<String, BusinessHour> operationDaysMap = {
-    '월': BusinessHour(
-      day: '월',
-      isWorking: false,
-      openAt: null,
-      closeAt: null,
-      isBreaktime: false,
-      breaktimeStart: null,
-      breaktimeEnd: null,
-    ),
-    '화': BusinessHour(
-      day: '화',
-      isWorking: false,
-      openAt: null,
-      closeAt: null,
-      isBreaktime: false,
-      breaktimeStart: null,
-      breaktimeEnd: null,
-    ),
-    '수': BusinessHour(
-      day: '수',
-      isWorking: false,
-      openAt: null,
-      closeAt: null,
-      isBreaktime: false,
-      breaktimeStart: null,
-      breaktimeEnd: null,
-    ),
-    '목': BusinessHour(
-      day: '목',
-      isWorking: false,
-      openAt: null,
-      closeAt: null,
-      isBreaktime: false,
-      breaktimeStart: null,
-      breaktimeEnd: null,
-    ),
-    '금': BusinessHour(
-      day: '금',
-      isWorking: false,
-      openAt: null,
-      closeAt: null,
-      isBreaktime: false,
-      breaktimeStart: null,
-      breaktimeEnd: null,
-    ),
-    '토': BusinessHour(
-      day: '토',
-      isWorking: false,
-      openAt: null,
-      closeAt: null,
-      isBreaktime: false,
-      breaktimeStart: null,
-      breaktimeEnd: null,
-    ),
-    '일': BusinessHour(
-      day: '일',
-      isWorking: false,
-      openAt: null,
-      closeAt: null,
-      isBreaktime: false,
-      breaktimeStart: null,
-      breaktimeEnd: null,
-    ),
+  Map<String, bool> operationDaysMap = {
+    '월': false,
+    '화': false,
+    '수': false,
+    '목': false,
+    '금': false,
+    '토': false,
+    '일': false
   };
-
-  List<String> dropdownItems = ['09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00'];
+  List<String> dropdownItems = ['09:00', '09:30', '10:00', '10:30', '11:00'];
   String selectedStartTime = '';
   String selectedEndTime = '';
-  bool is_breaktime = false;
   String breaktimeStart = '';
   String breaktimeEnd = '';
   List<Widget> selectedTimesWidgets = [];
 
-
-
   void _addSelectedTimeWidget() {
     operationDaysMap.forEach((day, selected) {
-      print('$day $selected 선택값');
-      // if (selected) {
-      //   // var exists = BusinessHours.any((businessHour) => businessHour.day == day);
-      //   // print(exists? '존재x': exists);
-      //   //
-      //   // // 존재하지 않는 경우에만 추가
-      //   // if (!exists) {
-      //     BusinessHour business = BusinessHour(
-      //       day: day,
-      //       isWorking: true,
-      //       openAt: selectedStartTime,
-      //       closeAt: selectedEndTime,
-      //       // is_breaktime: isChecked,
-      //       breaktimeStart: isChecked ? breaktimeStart : null,
-      //       breaktimeEnd: isChecked ? breaktimeEnd : null,
-      //     );
-      //
-      //     BusinessHours.add(business);
-      //   // }
-      //
-      //   var widget = Padding(
-      //     padding: const EdgeInsets.only(top: 8.0),
-      //     child: Row(
-      //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //       children: [
-      //         Column(
-      //           crossAxisAlignment: CrossAxisAlignment.start,
-      //           children: [
-      //             Text("$day: $selectedStartTime ~ $selectedEndTime"),
-      //             isChecked
-      //                 ? Text("      $breaktimeStart ~ $breaktimeEnd 휴게시간")
-      //                 : SizedBox(height: 0,),
-      //           ],
-      //         ),
-      //         IconButton(
-      //           icon: Icon(Icons.close),
-      //           onPressed: () {
-      //             setState(() {
-      //               operationDaysMap[day] = false; // 선택 해제
-      //               selectedTimesWidgets.removeWhere((element) =>
-      //                   (element.key as ValueKey<String>).value == day);
-      //               BusinessHours.removeWhere((businessHour) => businessHour.day == day);
-      //
-      //               var targetBusinessHour = BusinessHours.firstWhere((businessHour) => businessHour.day == day);
-      //               if (targetBusinessHour != null) {
-      //                   targetBusinessHour.isWorking = false;
-      //                   targetBusinessHour.openAt = null;
-      //                   targetBusinessHour.closeAt = null;
-      //                   targetBusinessHour.isBreaktime = false;
-      //                   targetBusinessHour.breaktimeStart = null;
-      //                   targetBusinessHour.breaktimeEnd = null;
-      //               }
-      //             });
-      //           },
-      //         )
-      //       ],
-      //     ),
-      //     key: ValueKey<String>(day),
-      //   );
-      //
-      //   setState(() {
-      //     selectedTimesWidgets.add(widget);
-      //     operationDaysMap[day] = false; // 다시 비활성화
-      //
-      //   });
-      // } else {
-      //   var targetBusinessHour = BusinessHours.firstWhere((businessHour) => businessHour.day == day);
-      //   if (targetBusinessHour != null) {
-      //   BusinessHour business = BusinessHour(
-      //     day: day,
-      //     isWorking: false,
-      //     openAt: null,
-      //     closeAt: null,
-      //     // is_breaktime: false,
-      //     breaktimeStart: null,
-      //     breaktimeEnd: null,
-      //     );
-      //   BusinessHours.add(business);
-      //   }
-      // }
+      if (selected) {
+        var widget = Padding(
+          padding: const EdgeInsets.only(top: 8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("$day: $selectedStartTime ~ $selectedEndTime"),
+                  isChecked
+                      ? Text("      $breaktimeStart ~ $breaktimeEnd 휴게시간")
+                      : Text(''),
+                ],
+              ),
+              IconButton(
+                icon: Icon(Icons.close),
+                onPressed: () {
+                  setState(() {
+                    operationDaysMap[day] = false; // 선택 해제
+                    selectedTimesWidgets.removeWhere((element) =>
+                        (element.key as ValueKey<String>).value == day);
+                  });
+                },
+              )
+            ],
+          ),
+          key: ValueKey<String>(day),
+        );
+
+        setState(() {
+          selectedTimesWidgets.add(widget);
+          operationDaysMap[day] = false; // 다시 비활성화
+        });
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    // final viewModel = Provider.of<RegisterViewModel>(context);
+    final viewModel = Provider.of<RegisterViewModel>(context);
 
     return Scaffold(
       body: Container(
@@ -592,19 +418,17 @@ class _Step3State extends State<Step3> {
                             return TagButton(
                               buttonText: day,
                               buttonColor:
-                              operationDaysMap[day]!.isWorking ? Colors.yellow : Colors.grey,
+                              operationDaysMap[day]! ? Colors.yellow : Colors.grey,
                               buttonTextColor: Colors.white,
-                              onSelected: (day) {
-                                print("선택 요일 $day");
+                              onSelected: (day) {},
+                              onPressed: operationDaysMap[day]!
+                                  ? () {}
+                                  : () {
+                                // 수정된 부분
+                                setState(() {
+                                  operationDaysMap[day] = true; // 선택된 요일 활성화
+                                });
                               },
-                              isSelected :  operationDaysMap[day]!.isWorking,
-                              onPressed: operationDaysMap[day]!.isWorking ?null : (){
-                                print(operationDaysMap[day] );
-                                print(operationDaysMap[day]!.isWorking);
-                                print("선택 요일ddd $day");
-
-                                operationDaysMap[day]!.isWorking = true;
-                              } ,
                             );
                           }).toList(),
                         ),
@@ -672,9 +496,9 @@ class _Step3State extends State<Step3> {
                                     onItemSelected: (item) {
                                       setState(() {
                                         breaktimeStart = item ?? '';
-                                        // viewModel.updateBusinessHour(
-                                        //     item ?? '00:00',
-                                        //     openAt: selectedStartTime);
+                                        viewModel.updateBusinessHour(
+                                            item ?? '00:00',
+                                            openAt: selectedStartTime);
                                       });
                                     },
                                   )
@@ -692,10 +516,9 @@ class _Step3State extends State<Step3> {
                                     onItemSelected: (item) {
                                       setState(() {
                                         breaktimeEnd = item ?? '';
-                                        // viewModel.updateBusinessHour(
-                                        //     item ?? '00:00',
-                                        //     openAt: selectedEndTime
-                                        // );
+                                        viewModel.updateBusinessHour(
+                                            item ?? '00:00',
+                                            openAt: selectedEndTime);
                                       });
                                     },
                                   )
@@ -708,10 +531,7 @@ class _Step3State extends State<Step3> {
                         BasicButton(
                             text: '요일추가',
                             color: 'yellow',
-                            onPressed: () => {
-                              _addSelectedTimeWidget(),
-                            }
-                        ),
+                            onPressed: () => {_addSelectedTimeWidget()}),
                         Column(
                           children: selectedTimesWidgets,
                         ),
@@ -723,23 +543,10 @@ class _Step3State extends State<Step3> {
               BasicButton(
                 text: '다음',
                 color: 'yellow',
-                onPressed: () =>
-                {
-                    widget.pageController.nextPage(
-                      duration: Duration(milliseconds: 300),
-                      curve: Curves.easeInOut,),
-
-                  }
-
-                  ),
-              BasicButton(
-                  text: 'xptmxm',
-                  onPressed: () {
-
-                      BusinessHours.forEach((businessHour) {
-                        print(businessHour);
-                      });}
-
+                onPressed: () => widget.pageController.nextPage(
+                  duration: Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                ),
               )
             ],
           ),
@@ -760,7 +567,7 @@ class SummaryPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // ViewModel에서 데이터 가져오기
-    // final viewModel = Provider.of<RegisterViewModel>(context);
+    final viewModel = Provider.of<RegisterViewModel>(context);
 
     return Scaffold(
       body: SafeArea(

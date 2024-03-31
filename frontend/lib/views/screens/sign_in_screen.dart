@@ -209,6 +209,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                                           context,
                                                           listen: false)
                                                   .signIn(user);
+                                              debugPrint('####$isSuccess############################################');
                                               if (isSuccess) {
                                                 // 메인 페이지로 이동
                                                 loginState.setLoggedIn(true);

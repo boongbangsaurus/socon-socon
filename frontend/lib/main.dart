@@ -8,7 +8,10 @@ import 'package:socon/viewmodels/login_state_view_model.dart';
 import 'package:socon/viewmodels/boss_verification_view_model.dart';
 import 'firebase_options.dart';
 
-void main() async {
+import 'package:webview_flutter/webview_flutter.dart';
+
+
+void main() async{
   WidgetsFlutterBinding.ensureInitialized(); // runApp을 호출하기 전 위젯 바인딩 초기화
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
