@@ -1,6 +1,9 @@
 package site.soconsocon.auth.domain.dto.request;
 
+import jakarta.persistence.Entity;
 import lombok.*;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter

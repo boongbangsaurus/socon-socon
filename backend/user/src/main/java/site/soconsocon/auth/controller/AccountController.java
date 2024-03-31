@@ -9,6 +9,7 @@ import site.soconsocon.auth.domain.dto.request.DepositRequestDto;
 import site.soconsocon.auth.domain.dto.request.WithdrawRequestDto;
 import site.soconsocon.auth.exception.AccountException;
 import site.soconsocon.auth.exception.MemberException;
+import site.soconsocon.auth.repository.MemberRepository;
 import site.soconsocon.auth.service.AccountService;
 import site.soconsocon.utils.MessageUtils;
 

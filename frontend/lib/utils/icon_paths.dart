@@ -8,5 +8,7 @@ const Map<String, String> iconPaths = {
   'heart_fill': 'assets/icons/heart_fill.svg',
   'arrow_back' : 'assets/icons/arrow_back.svg',
   'avatar' : 'assets/icons/avatar.svg',
+  'plus_btn' : 'assets/icons/plus_btn.svg',
+  'minus_btn' : 'assets/icons/minus_btn.svg',
 };
 

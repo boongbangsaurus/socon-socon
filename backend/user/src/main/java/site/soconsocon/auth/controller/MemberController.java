@@ -4,15 +4,20 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import site.soconsocon.auth.domain.dto.request.MemberLoginRequestDto;
 import site.soconsocon.auth.domain.dto.request.MemberRegisterRequestDto;
 import site.soconsocon.auth.domain.dto.response.MemberFeignResponse;
 import site.soconsocon.auth.domain.dto.response.MemberLoginResponseDto;
+import site.soconsocon.auth.domain.dto.response.MemberResponseDto;
 import site.soconsocon.auth.domain.entity.jpa.Member;
 import site.soconsocon.auth.domain.entity.jpa.RefreshToken;
 import site.soconsocon.auth.exception.MemberException;
+import site.soconsocon.auth.repository.MemberRepository;
 import site.soconsocon.auth.repository.RefreshTokenRepository;
 import site.soconsocon.auth.security.MemberDetailService;
 import site.soconsocon.auth.security.MemberDetails;
@@ -21,6 +26,7 @@ import site.soconsocon.auth.util.JwtUtil;
 import site.soconsocon.utils.MessageUtils;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor

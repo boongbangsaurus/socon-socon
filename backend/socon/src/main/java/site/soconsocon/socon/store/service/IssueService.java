@@ -8,10 +8,15 @@ import site.soconsocon.socon.global.exception.SoconException;
 import site.soconsocon.socon.store.domain.dto.request.AddIssueRequest;
 import site.soconsocon.socon.store.domain.dto.request.AddMySoconRequest;
 import site.soconsocon.socon.store.domain.dto.response.IssueListResponse;
-import site.soconsocon.socon.store.domain.entity.jpa.*;
+import site.soconsocon.socon.store.domain.entity.jpa.Issue;
+import site.soconsocon.socon.store.domain.entity.jpa.Item;
+import site.soconsocon.socon.store.domain.entity.jpa.Socon;
 import site.soconsocon.socon.store.exception.StoreErrorCode;
 import site.soconsocon.socon.store.exception.StoreException;
-import site.soconsocon.socon.store.repository.*;
+import site.soconsocon.socon.store.repository.IssueRepository;
+import site.soconsocon.socon.store.repository.ItemRepository;
+import site.soconsocon.socon.store.repository.SoconRepository;
+import site.soconsocon.socon.store.repository.StoreRepository;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -66,6 +71,7 @@ public class IssueService {
                 .name(item.getName())
                 .image(item.getImage())
                 .isMain(request.getIsMain())
+                .price(item.getPrice())
                 .isDiscounted(request.getIsDiscounted())
                 .discountedPrice(request.getDiscountedPrice())
                 .maxQuantity(request.getMaxQuantity())
