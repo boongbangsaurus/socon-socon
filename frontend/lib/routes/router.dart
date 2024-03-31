@@ -5,7 +5,7 @@ import 'package:socon/routes/tab_routes.dart';
 import 'package:socon/viewmodels/login_state_view_model.dart';
 import 'package:socon/views/atoms/bottom_bar.dart';
 
-final bool isOwner = false; // 상태 관리로 처리할 예정
+final bool isOwner = true; // 상태 관리로 처리할 예정
 
 // 라우트 상수 정의
 const String signUpRoute = "/signup";
@@ -19,6 +19,7 @@ final GoRouter router = GoRouter(
     initialLocation: "/",
     redirect: (BuildContext context, GoRouterState state) {
       final loginState = Provider.of<LoginState>(context, listen: false);
+      // final loginState = Provider.of<LoginState>(context, listen: true);
       final bool loggedIn = loginState.isLoggedIn;
       debugPrint('####################### router #########################');
       print('isSignIned ######### $loggedIn');
