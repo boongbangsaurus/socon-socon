@@ -215,7 +215,6 @@ class _BuyMenuDetailScreenState extends State<BuyMenuDetailScreen> {
                           MaterialPageRoute(
                               builder: (context) => Payment(),
                               settings: RouteSettings(arguments: {
-                                'memberId': 1,
                                 'issueId': 1,
                                 'name': "소금빵",
                                 'amount': 10,

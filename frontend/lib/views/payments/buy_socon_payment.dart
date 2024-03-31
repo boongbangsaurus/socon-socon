@@ -16,8 +16,7 @@ class Payment extends StatelessWidget {
     var name = arg?['name'].toString();
     var amount = arg?['amount'].toInt();
     var buyerName = arg?['buyerName'].toString();
-    var memberId = arg?['buyerName'].toInt();
-    var issueId = arg?['buyerName'].toInt();
+    var issueId = arg?['issueId'].toInt();
 
     return IamportPayment(
       appBar: new AppBar(
@@ -62,13 +61,17 @@ class Payment extends StatelessWidget {
 
       /* [필수입력] 콜백 함수 */
       callback: (Map<String, String> result) async{
+        // 1. 회원이 요청한 데이터 == 실제 상품 데이터 확인
+        //  a. 맞으면 백에게 결제 요청? 보내고 결제완료 페이지
+        //  b. 아니면 결제실패 페이지
+
+
         var response = await http.post(
           Uri.parse('/api/v1/issues/{issue_id}/order'),
           body: json.encode({
             'itemName': name, // 상품명
             'amount': amount, // 결제 금액
             'name': buyerName, //
-            'memberId': memberId,
             'issueId': issueId,
           }),
         );
