@@ -22,40 +22,42 @@ class MyStoreLists extends StatefulWidget {
 class _MyStoreListsState extends State<MyStoreLists> {
   @override
   Widget build(BuildContext context) {
-    return Column(
-        children: [
-          stores.isNotEmpty ? StoreLists() : NoStoreComment(),
-          Container(
-            width: ResponsiveUtils.getWidthPercent(context, 100),
-            margin: EdgeInsets.only(bottom: 10),
-            child: OutlinedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => RegisterPage()),
-                );
-
+    return Column(children: [
+      stores.isNotEmpty ? StoreLists() : NoStoreComment(),
+      Container(
+        width: ResponsiveUtils.getWidthPercent(context, 100),
+        margin: EdgeInsets.only(bottom: 10),
+        child: OutlinedButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => RegisterPage()),
+            );
+          },
+          child: Text(
+            '+ 점포 등록',
+            style: TextStyle(color: AppColors.BLACK),
+          ),
+          style: OutlinedButton.styleFrom(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            side: BorderSide(color: Colors.grey.shade300),
+            padding: EdgeInsets.symmetric(vertical: 20),
+          ).copyWith(
+            overlayColor: MaterialStateProperty.resolveWith<Color?>(
+              (Set<MaterialState> states) {
+                if (states.contains(MaterialState.pressed))
+                  return AppColors.YELLOW;
+                return null; // 기본 상태에서는 변경 없음
               },
-              child: Text('+ 점포 등록', style: TextStyle(color: AppColors.BLACK),),
-              style: OutlinedButton.styleFrom(
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                side: BorderSide(color: Colors.grey.shade300),
-                padding: EdgeInsets.symmetric(vertical: 20),
-              ).copyWith(
-                overlayColor: MaterialStateProperty.resolveWith<Color?>(
-                      (Set<MaterialState> states) {
-                    if (states.contains(MaterialState.pressed)) return AppColors.YELLOW;
-                    return null;
-                  },
-                ),
-              ),
             ),
           )
-        ]
-    );
-  }
+        )
+      )
+    ]
+  );
+ }
 }
-
 
 class StoreLists extends StatelessWidget {
   const StoreLists({super.key});
@@ -71,8 +73,7 @@ class StoreLists extends StatelessWidget {
           return InkWell(
             onTap: () {
               // Navigator.push(context, MaterialPageRoute(builder: (context) => StoreDetailTopCard(storeId : store.storeId)));
-              GoRouter.of(context).go("/myStores/detail/${store.storeId}");
-
+              GoRouter.of(context).go("/myStores/${store.storeId}");
             },
             child: Container(
               margin: EdgeInsets.all(10),
@@ -86,8 +87,7 @@ class StoreLists extends StatelessWidget {
                       blurRadius: 3,
                       offset: Offset(1, 2),
                     )
-                  ]
-              ),
+                  ]),
               child: Row(
                 children: [
                   Flexible(
@@ -136,21 +136,26 @@ class StoreLists extends StatelessWidget {
   }
 }
 
-
-
 class NoStoreComment extends StatelessWidget {
   const NoStoreComment({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text('아직 등록된 점포가 없어요', style: TextStyle(fontSize: FontSizes.MEDIUM, fontWeight: FontWeight.bold),),
-          Text('점포를 등록해 주세요', style: TextStyle(fontSize: FontSizes.MEDIUM, fontWeight: FontWeight.bold),),
-        ],
-      )
-    );
+        child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          '아직 등록된 점포가 없어요',
+          style: TextStyle(
+              fontSize: FontSizes.MEDIUM, fontWeight: FontWeight.bold),
+        ),
+        Text(
+          '점포를 등록해 주세요',
+          style: TextStyle(
+              fontSize: FontSizes.MEDIUM, fontWeight: FontWeight.bold),
+        ),
+      ],
+    ));
   }
 }

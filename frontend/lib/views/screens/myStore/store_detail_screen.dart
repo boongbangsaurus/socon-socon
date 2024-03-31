@@ -8,7 +8,7 @@ import '../../modules/mystore_rigister_menu_lists.dart';
 
 class MyStoreDetailScreen extends StatelessWidget {
   final String? pathParameter;
-  final bool isOwner = false;
+  final bool isOwner = true;
 
   const MyStoreDetailScreen(this.pathParameter, {super.key});
 

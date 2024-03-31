@@ -5,9 +5,12 @@ import 'package:socon/views/screens/bossVerification/boss_verification.dart';
 import 'package:socon/views/screens/bossVerification/boss_verification_fail_screen.dart';
 import 'package:socon/views/screens/contact/contact_fail_screen.dart';
 import 'package:socon/views/screens/contact/contact_sucess_screen.dart';
+import 'package:socon/views/screens/myStore/publish_socon_screen.dart';
 import 'package:socon/views/screens/myStore/store_detail_screen.dart';
 import 'package:socon/views/screens/my_info_screen.dart';
 import 'package:socon/views/screens/my_store_list_screen.dart';
+import 'package:socon/views/screens/sign_in_screen.dart';
+import 'package:socon/views/screens/sign_up_screen.dart';
 import 'package:socon/views/screens/soconBook/socon_book_detail_screen.dart';
 import 'package:socon/views/screens/soconBook/socon_book_screen.dart';
 import 'package:socon/views/screens/sogon_main_screen.dart';
@@ -147,12 +150,23 @@ class TabRoutes {
 
   static RouteBase getMyStoreDetailRoute() {
     return GoRoute(
-        // path: "/",
-        path: "detail/:storeId",
+        path: ":storeId",
         builder: (BuildContext context, GoRouterState state) {
-          return MyStoreDetailScreen(state.pathParameters['storeId']);
+          return MyStoreDetailScreen(state.pathParameters['storeId']!);
+        },
+        routes: [
+          getMenuDetailRoute(),
+        ]);
+  }
+
+  static RouteBase getMenuDetailRoute() {
+    return GoRoute(
+        path: "menu/:menuId",
+        builder: (BuildContext context, GoRouterState state) {
+          return PublishSoconScreen(state.pathParameters['menuId']!, state.pathParameters['storeId']!);
         });
   }
+
 
   static RouteBase getBossVerification() {
     return GoRoute(
@@ -176,12 +190,21 @@ class TabRoutes {
     );
   }
 
-  static RouteBase getVerifyFailRoute() {
+  static RouteBase getSignInRoute() {
     return GoRoute(
-        name: "verifyFail",
-        path: "fail",
+        // path: "/",
+        path: "/signin",
         builder: (BuildContext context, GoRouterState state) {
-          return BossVerificationFailScreen();
+          return SignInScreen();
+        });
+  }
+
+  static RouteBase getSignUpRoute() {
+    return GoRoute(
+        // path: "/",
+        path: "/signup",
+        builder: (BuildContext context, GoRouterState state) {
+          return SignUpScreen();
         });
   }
 }

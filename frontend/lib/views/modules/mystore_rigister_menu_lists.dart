@@ -26,6 +26,7 @@ class RegisteredMenu extends StatelessWidget {
           itemBuilder: (BuildContext context, index) {
             final socon = socons[index];
             return StoreMenuCard(
+              storeId: storeId,
               isOwner: true,
               id: socon.id,
               name: socon.name!,

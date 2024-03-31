@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import 'dart:math';
 import '../../utils/responsive_utils.dart';
@@ -8,6 +9,7 @@ import '../atoms/tag_icon.dart';
 
 class StoreMenuCard extends StatelessWidget {
   final bool isOwner;
+  final int storeId;
   final int id;
   final String name;
   final int price;     // 상품가격(정가)
@@ -25,6 +27,7 @@ class StoreMenuCard extends StatelessWidget {
 
   const StoreMenuCard({
     super.key,
+    required this.storeId,
     this.isOwner = false,
     required this.id,
     required this.name,
@@ -51,6 +54,8 @@ class StoreMenuCard extends StatelessWidget {
     return GestureDetector(
       onTap: (){
         print("메뉴 클릭 $id  & 소콘 발행 페이지 이동");
+        context.go("/myStores/${storeId}/menu/${id}");
+          // GoRouter.of(context).go("/")
       },
       child: Container(
         width: ResponsiveUtils.getWidthWithPixels(context, 154),
