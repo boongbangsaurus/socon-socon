@@ -36,7 +36,7 @@ class _BossVerificationState extends State<BossVerification> {
   @override
   Widget build(BuildContext context) {
     final bossVerificationMessage =
-        ResultMessages.getMessage('bossVerification');
+    ResultMessages.getMessage('bossVerification');
 
     return Scaffold(
       backgroundColor: AppColors.WHITE,
@@ -100,7 +100,7 @@ class _BossVerificationState extends State<BossVerification> {
                             helperText: "사업자 등록증에 작성된 사업자 주소를 입력해주세요.",
                             showIcon: true,
                             onSaved: (val) =>
-                                businessOwner.registrationAddress = val ?? '',
+                            businessOwner.registrationAddress = val ?? '',
                             validateInput: (String? val) {
                               if (val == null || val.isEmpty) {
                                 return "사업자 주소를 입력해주세요";
@@ -124,8 +124,8 @@ class _BossVerificationState extends State<BossVerification> {
                   debugPrint("사업자 등록 정보 입력: ${businessOwner.toJson()}");
 
                   var _bossVerificationViewModel =
-                      Provider.of<BossVerificationViewModel>(context,
-                          listen: false);
+                  Provider.of<BossVerificationViewModel>(context,
+                      listen: false);
                   await _bossVerificationViewModel
                       .verifyBoss(businessOwner.registrationNumber);
 
@@ -145,7 +145,7 @@ class _BossVerificationState extends State<BossVerification> {
 }
 
 class BossInput extends StatelessWidget {
-  late bool validationResult; //  (예시) 유효성 통과 여부를 저장할 변수
+  late bool validationResult;
   final String type;
   final String labelText;
   final String helperText;
@@ -175,13 +175,13 @@ class BossInput extends StatelessWidget {
             decoration: CustomTextFormField.getDecoration(
                 suffixs: showIcon
                     ? IconLoader(
-                        iconName: 'search',
-                        width: ResponsiveUtils.getWidthWithPixels(context, 20),
-                        height:
-                            ResponsiveUtils.getHeightWithPixels(context, 25),
-                        onPressed: () {
-                          print("주소 검색할게");
-                        })
+                    iconName: 'search',
+                    width: ResponsiveUtils.getWidthWithPixels(context, 20),
+                    height:
+                    ResponsiveUtils.getHeightWithPixels(context, 25),
+                    onPressed: () {
+                      print("주소 검색할게");
+                    })
                     : null),
             style: TextStyle(
                 fontSize: ResponsiveUtils.calculateResponsiveFontSize(
