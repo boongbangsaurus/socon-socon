@@ -13,6 +13,7 @@ class Payment extends StatelessWidget {
   Widget build(BuildContext context) {
     final arg = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
     // debugPrint(arg.toString());
+    var orderUid = arg?['orderUid'].toString();
     var name = arg?['name'].toString();
     var amount = arg?['amount'].toInt();
     var buyerName = arg?['buyerName'].toString();

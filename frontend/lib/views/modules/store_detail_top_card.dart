@@ -53,6 +53,7 @@ class StoreDetailTopCard extends StatelessWidget {
               IconButton(
                 onPressed: () {
                   // Navigator 이동 기능 주석 처리됨
+                  Navigator.of(context).pop();
                 },
                 icon: Icon(
                   AppIcons.LEADING, // 아이콘
