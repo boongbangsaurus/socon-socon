@@ -1,76 +1,102 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="site.boongbang.socon">
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-    <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT"/>
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <!-- 외부 저장소 읽기 권한 -->
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
 
     <application
-        android:label="frontend"
-        android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+            android:label="frontend"
+            android:name="${applicationName}"
+            android:icon="@mipmap/ic_launcher"
+            android:usesCleartextTraffic="true">
 
+        <meta-data
+                android:name="com.google.android.gms.version"
+                android:value="@integer/google_play_services_version"/>
+
+        <uses-library
+                android:name="org.apache.http.legacy"
+                android:required="false"/>
         <!-- fcm_default_channel start-->
         <meta-data
                 android:name="firebase_messaging_auto_init_enabled"
-                android:value="false" />
+                android:value="false"/>
         <meta-data
                 android:name="firebase_analytics_collection_enabled"
-                android:value="false" />
+                android:value="false"/>
         <!-- 푸시 알림 채널 설정 -->
         <meta-data
                 android:name="com.google.firebase.messaging.default_notification_channel_id"
-                android:value="high_importance_channel" />
+                android:value="high_importance_channel"/>
         <!-- fcm_default_channel end-->
 
 
+        <!-- background location start -->
+        <service android:name="yukams.app.background_locator_2.IsolateHolderService"
+                 android:permission="android.permission.FOREGROUND_SERVICE"
+                 android:exported="true"
+                 android:foregroundServiceType="location"/>
+
+        <meta-data
+                android:name="flutterEmbedding"
+                android:value="2"/>
+
+        <!-- background location end -->
+
 
         <activity
-            android:name=".MainActivity"
-            android:exported="true"
-            android:launchMode="singleTop"
-            android:theme="@style/LaunchTheme"
-            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
-            android:hardwareAccelerated="true"
-            android:windowSoftInputMode="adjustResize"
-            android:requestLegacyExternalStorage="true"
-            android:enableOnBackInvokedCallback="true"
-            android:showWhenLocked="true"
-            android:turnScreenOn="true">
+                android:name=".MainActivity"
+                android:exported="true"
+                android:launchMode="singleTop"
+                android:theme="@style/LaunchTheme"
+                android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+                android:hardwareAccelerated="true"
+                android:windowSoftInputMode="adjustResize"
+                android:requestLegacyExternalStorage="true"
+                android:enableOnBackInvokedCallback="true"
+                android:showWhenLocked="true"
+                android:turnScreenOn="true">
 
             <intent-filter>
-                <action android:name="FLUTTER_NOTIFICATION_CLICK" />
-                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="FLUTTER_NOTIFICATION_CLICK"/>
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
             <!-- Specifies an Android theme to apply to this Activity as soon as
                  the Android process has started. This theme is visible to the user
                  while the Flutter UI initializes. After that, this theme continues
                  to determine the Window background behind the Flutter UI. -->
             <meta-data
-                android:name="io.flutter.embedding.android.NormalTheme"
-                android:resource="@style/NormalTheme" />
+                    android:name="io.flutter.embedding.android.NormalTheme"
+                    android:resource="@style/NormalTheme"/>
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
-
-
         </activity>
+
+
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data
-            android:name="flutterEmbedding"
-            android:value="2" />
+                android:name="flutterEmbedding"
+                android:value="2"/>
         <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyCYYz0YFQHPsKUQ_6-TcPHKgaduSvt_-Vg" />
+                android:name="com.google.android.geo.API_KEY"
+                android:value="AIzaSyCYYz0YFQHPsKUQ_6-TcPHKgaduSvt_-Vg"/>
     </application>
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility?hl=en and
@@ -79,8 +105,8 @@
          In particular, this is used by the Flutter engine in io.flutter.plugin.text.ProcessTextPlugin. -->
     <queries>
         <intent>
-            <action android:name="android.intent.action.PROCESS_TEXT" />
-            <data android:mimeType="text/plain" />
+            <action android:name="android.intent.action.PROCESS_TEXT"/>
+            <data android:mimeType="text/plain"/>
         </intent>
     </queries>
 </manifest>

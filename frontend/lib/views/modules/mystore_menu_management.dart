@@ -5,7 +5,7 @@ import 'package:socon/models/socon_card.dart';
 import 'package:socon/utils/responsive_utils.dart';
 import 'package:socon/views/modules/add_menu_card.dart';
 import 'package:socon/views/modules/socon_storesocon.dart';
-import 'package:socon/views/modules/store_menu_card.dart';
+import 'package:socon/views/modules/mystore_menu_card.dart';
 import 'package:socon/views/screens/myStore/store_product_register.dart';
 
 class MenuManagement extends StatelessWidget {
@@ -77,7 +77,7 @@ class MenuManagement extends StatelessWidget {
                   id : storeMenu.id,
                   name : storeMenu.name,
                   price: storeMenu.price,
-                  imageUrl: storeMenu.imageUrl,
+                  image: storeMenu.imageUrl,
                   // soconName: socon.soconName!,
                   // price: socon.price!,
                   // imageUrl: socon.imageUrl ?? '',
