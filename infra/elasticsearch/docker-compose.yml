@@ -13,7 +13,7 @@ services:
       - 9200:9200
       - 9300:9300
     networks:
-      - es-bridge
+      - jenkins-project_socon-net
 
   kibana:
     image: docker.elastic.co/kibana/kibana:8.13.0
@@ -27,8 +27,8 @@ services:
     depends_on:
       - elasticsearch
     networks:
-      - es-bridge
+      - jenkins-project_socon-net
 
 networks:
-  es-bridge:
-    driver: bridge
+  jenkins-project_socon-net:
+    external: true
