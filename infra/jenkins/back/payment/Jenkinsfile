@@ -18,6 +18,7 @@ pipeline {
                         sh "git submodule init"
                         sh "git config submodule.secure-settings.url https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/boongbangsaurus/boongbang-settings.git"
                         sh "git submodule update --recursive"
+                        sh "cd secure-settings && git checkout release "
                     }
                 }
             }
