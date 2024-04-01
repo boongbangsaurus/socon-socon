@@ -3,11 +3,12 @@ import 'package:socon/utils/colors.dart';
 import 'package:socon/utils/responsive_utils.dart';
 import 'package:socon/views/modules/store_detail_top_card.dart';
 import '../../atoms/tab.dart';
-import '../../modules/store_menu_management.dart';
-import '../../modules/store_rigister_menu_lists.dart';
+import '../../modules/mystore_menu_management.dart';
+import '../../modules/mystore_rigister_menu_lists.dart';
 
 class MyStoreDetailScreen extends StatelessWidget {
-  final String pathParameter;
+  final String? pathParameter;
+  final bool isOwner = true;
 
   const MyStoreDetailScreen(this.pathParameter, {super.key});
 
@@ -22,7 +23,7 @@ class MyStoreDetailScreen extends StatelessWidget {
           width: ResponsiveUtils.getWidthPercent(context, 100), // 너비를 100%로 설정
           child: Column(
             children: [
-              StoreDetailTopCard(storeId: storeId),
+              StoreDetailTopCard(storeId: storeId, isOwner: isOwner),
               SizedBox(
                 height: 15.0,
               ),

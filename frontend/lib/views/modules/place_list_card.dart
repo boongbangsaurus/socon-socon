@@ -40,7 +40,7 @@ class _PlaceListCardState extends State<PlaceListCard> {
     return GestureDetector(
       onTap: () {
         print("장소리스트 클릭 ${widget.storeInfo.storeId}");
-        GoRouter.of(context).go("/myStores/${widget.storeInfo.storeId}");
+        GoRouter.of(context).go("/detail/${widget.storeInfo.storeId}");
       },
       child: Container(
         margin: EdgeInsets.only(

@@ -4,14 +4,23 @@ pipeline {
         REPO = "s10-blockchain-contract-sub2/S10P22C207"
     }
     stages {
-        stage('Checkout') {
+        stage('Checkout Main Repo') {
             steps {
-                checkout scmGit(
-                        branches: [[name: 'release-test']],
-                        extensions: [submodule(parentCredentials: true, trackingSubmodules: true)],
-                        userRemoteConfigs: [
-                                [credentialsId: 'github-access-token', url: 'https://github.com/boongbangsaurus/boongbang-settings']]
-                )
+                checkout scm
+            }
+        }
+
+        stage('Init & Update Submodules with Custom Credentials') {
+            steps {
+                script {
+                    // 서브모듈 크레덴셜을 설정
+                    withCredentials([usernamePassword(credentialsId: 'github-access-token', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]) {
+                        sh "git submodule init"
+                        sh "git config submodule.secure-settings.url https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/boongbangsaurus/boongbang-settings.git"
+                        sh "git submodule update --recursive"
+                        sh "cd secure-settings && git checkout release "
+                    }
+                }
             }
         }
         stage('Move .env File') {
@@ -20,7 +29,6 @@ pipeline {
                     sh 'cp ../environments/.env backend/eureka/.env'
                     sh 'cp ../environments/gradle.properties backend/eureka/gradle.properties'
                     sh "mkdir -p backend/eureka/src/main/resources"
-                    sh "ls -al secure-settings/back/eureka"
                     // find 명령어를 사용하여 .yml 파일을  찾고, 각 파일에 대해 cp 명령어를 실행
                     sh "cp secure-settings/back/eureka/eureka-service-default.yml backend/eureka/src/main/resources/application.yml"
                 }

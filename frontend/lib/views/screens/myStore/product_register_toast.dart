@@ -12,6 +12,7 @@ class RegisterToastMsg extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return Column(
       children: [
         SizedBox(height: 200,),
@@ -39,7 +40,7 @@ class RegisterToastMsg extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => StoreDetailTopCard(storeId: storeId)),
+                    builder: (context) => StoreDetailTopCard(storeId: storeId, isOwner: true,)),
               )
             }
           ),

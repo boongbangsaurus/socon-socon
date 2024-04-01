@@ -1,0 +1,19 @@
+version: '3.3'
+
+services:
+  nginx:
+    container_name: elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.5.2
+    restart: always
+    #    볼륨 매핑은 젠킨스 워크스페이스 기준
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      - "discovery.type=single-node"
+    networks:
+      - jenkins-project_socon-net
+
+networks:
+  jenkins-project_socon-net:
+    external: true

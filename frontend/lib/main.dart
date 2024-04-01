@@ -1,8 +1,12 @@
+
 import 'dart:isolate';
 import 'dart:ui';
 
 import 'package:background_locator_2/background_locator.dart';
 import 'package:background_locator_2/settings/android_settings.dart';
+
+import 'dart:async';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -19,18 +23,26 @@ import 'package:socon/utils/firebase_utils.dart';
 import 'package:socon/utils/location_callback_handler.dart';
 import 'package:socon/utils/location_service_repository.dart';
 import 'package:socon/viewmodels/boss_verification_view_model.dart';
+
 import 'package:socon/viewmodels/login_state_view_model.dart';
+
+import 'package:socon/viewmodels/payment_verification_view_model.dart';
+import 'package:socon/viewmodels/store_register_view_model.dart';
+
 import 'package:socon/viewmodels/notification_view_model.dart';
 
 import 'models/location.dart';
 
+
+import 'package:google_maps_flutter_android/google_maps_flutter_android.dart';
+import 'package:google_maps_flutter_platform_interface/google_maps_flutter_platform_interface.dart';
+
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized(); // runApp을 호출하기 전 위젯 바인딩 초기화
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  // Firebase 메시지 수신을 위한 설정
   if (!kIsWeb) {
     await FirebaseUtils().setupFlutterNotifications();
   }
@@ -41,13 +53,31 @@ void main() async {
   print("fcmToken: $fcmToken");
   await FirebaseMessaging.instance.setAutoInitEnabled(true);
 
+
   // 위치 권한 요청
   await getPermissionHandler();
+
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    // foreground에서 fcm 메세지 처리
+    print(
+        "[포어그라운드] FCM 메세지를 받았는데요. 저는 집에 가고 싶네요. ${message.notification!.body}");
+    FirebaseUtils().showFlutterNotification(message);
+  });
 
   // 백그라운드 메시지 핸들러 설정
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
+
+  // google map 설정
+  final GoogleMapsFlutterPlatform mapsImplementation =
+      GoogleMapsFlutterPlatform.instance;
+  if (mapsImplementation is GoogleMapsFlutterAndroid) {
+    mapsImplementation.useAndroidViewSurface = true;
+    initializeMapRenderer();
+  }
+
   runApp(MyApp());
+
 }
 
 class MyApp extends StatefulWidget {
@@ -167,6 +197,8 @@ class _MyAppState extends State<MyApp> {
       providers: [
         ChangeNotifierProvider(create: (_) => BossVerificationViewModel()),
         ChangeNotifierProvider(create: (context) => LoginState()),
+        ChangeNotifierProvider(create: (context) => PaymentVerificationViewModel()),
+        ChangeNotifierProvider(create: (context) => StoreRegisterViewModel()),
       ],
       child: MaterialApp.router(
         routerConfig: router,
@@ -185,3 +217,34 @@ class _MyAppState extends State<MyApp> {
 
 // 위치 정보 widget
 // final log = Text(logStr);
+
+Completer<AndroidMapRenderer?>? _initializedRendererCompleter;
+
+/// Initializes map renderer to the `latest` renderer type for Android platform.
+///
+/// The renderer must be requested before creating GoogleMap instances,
+/// as the renderer can be initialized only once per application context.
+Future<AndroidMapRenderer?> initializeMapRenderer() async {
+  if (_initializedRendererCompleter != null) {
+    return _initializedRendererCompleter!.future;
+  }
+
+  final Completer<AndroidMapRenderer?> completer =
+      Completer<AndroidMapRenderer?>();
+  _initializedRendererCompleter = completer;
+
+  WidgetsFlutterBinding.ensureInitialized();
+
+  final GoogleMapsFlutterPlatform mapsImplementation =
+      GoogleMapsFlutterPlatform.instance;
+  if (mapsImplementation is GoogleMapsFlutterAndroid) {
+    unawaited(mapsImplementation
+        .initializeWithRenderer(AndroidMapRenderer.latest)
+        .then((AndroidMapRenderer initializedRenderer) =>
+            completer.complete(initializedRenderer)));
+  } else {
+    completer.complete(null);
+  }
+
+  return completer.future;
+}
