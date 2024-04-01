@@ -20,8 +20,8 @@ import 'package:socon/services/notifications/background_message_handler.dart';
 import 'package:socon/services/permission_handler.dart';
 import 'package:socon/utils/colors.dart';
 import 'package:socon/utils/firebase_utils.dart';
-import 'package:socon/utils/location_callback_handler.dart';
-import 'package:socon/utils/location_service_repository.dart';
+import 'package:socon/utils/location/location_callback_handler.dart';
+import 'package:socon/utils/location/location_service_repository.dart';
 import 'package:socon/viewmodels/boss_verification_view_model.dart';
 
 import 'package:socon/viewmodels/login_state_view_model.dart';
