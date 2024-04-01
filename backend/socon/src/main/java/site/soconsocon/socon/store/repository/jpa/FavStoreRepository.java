@@ -1,10 +1,11 @@
-package site.soconsocon.socon.store.repository;
+package site.soconsocon.socon.store.repository.jpa;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import site.soconsocon.socon.store.domain.entity.jpa.FavStore;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface FavStoreRepository extends JpaRepository<FavStore, Integer> {
 

@@ -12,14 +12,14 @@ import site.soconsocon.socon.sogon.domain.entity.jpa.Comment;
 import site.soconsocon.socon.sogon.domain.entity.jpa.Sogon;
 import site.soconsocon.socon.sogon.exception.SogonErrorCode;
 import site.soconsocon.socon.sogon.exception.SogonException;
-import site.soconsocon.socon.sogon.repository.CommentRepository;
-import site.soconsocon.socon.sogon.repository.SogonRepository;
+import site.soconsocon.socon.sogon.repository.jpa.CommentRepository;
+import site.soconsocon.socon.sogon.repository.jpa.SogonRepository;
 import site.soconsocon.socon.store.domain.entity.feign.Member;
 import site.soconsocon.socon.store.domain.entity.jpa.Socon;
 import site.soconsocon.socon.store.exception.StoreErrorCode;
 import site.soconsocon.socon.store.exception.StoreException;
 import site.soconsocon.socon.store.feign.FeignServiceClient;
-import site.soconsocon.socon.store.repository.SoconRepository;
+import site.soconsocon.socon.store.repository.jpa.SoconRepository;
 
 import java.time.Duration;
 import java.time.LocalDateTime;

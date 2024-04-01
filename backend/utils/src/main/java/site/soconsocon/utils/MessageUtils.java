@@ -2,7 +2,6 @@ package site.soconsocon.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.*;
@@ -55,7 +54,7 @@ public class MessageUtils<T> {
     @NoArgsConstructor
     @Builder
     @Getter
-    @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     private static class DataHeader {
 
         private int successCode;

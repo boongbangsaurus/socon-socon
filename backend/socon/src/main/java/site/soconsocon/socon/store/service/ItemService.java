@@ -11,8 +11,8 @@ import site.soconsocon.socon.store.domain.entity.jpa.Item;
 import site.soconsocon.socon.store.domain.entity.jpa.Store;
 import site.soconsocon.socon.store.exception.StoreErrorCode;
 import site.soconsocon.socon.store.exception.StoreException;
-import site.soconsocon.socon.store.repository.ItemRepository;
-import site.soconsocon.socon.store.repository.StoreRepository;
+import site.soconsocon.socon.store.repository.jpa.ItemRepository;
+import site.soconsocon.socon.store.repository.jpa.StoreRepository;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -14,10 +14,10 @@ import site.soconsocon.socon.store.domain.entity.jpa.Item;
 import site.soconsocon.socon.store.domain.entity.jpa.Socon;
 import site.soconsocon.socon.store.exception.StoreErrorCode;
 import site.soconsocon.socon.store.exception.StoreException;
-import site.soconsocon.socon.store.repository.IssueRepository;
-import site.soconsocon.socon.store.repository.ItemRepository;
-import site.soconsocon.socon.store.repository.SoconRepository;
-import site.soconsocon.socon.store.repository.StoreRepository;
+import site.soconsocon.socon.store.repository.jpa.IssueRepository;
+import site.soconsocon.socon.store.repository.jpa.ItemRepository;
+import site.soconsocon.socon.store.repository.jpa.SoconRepository;
+import site.soconsocon.socon.store.repository.jpa.StoreRepository;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
