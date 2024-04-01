@@ -1,11 +1,15 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:socon/firebase_options.dart';
 import 'package:socon/routes/router.dart';
 import 'package:socon/utils/colors.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:socon/utils/firebase_utils.dart';
 import 'package:socon/viewmodels/login_state_view_model.dart';
 import 'package:socon/viewmodels/boss_verification_view_model.dart';
+import 'package:socon/viewmodels/notification_view_model.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -13,6 +17,19 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  if(!kIsWeb) {
+    await FirebaseUtils().setupFlutterNotifications();
+  }
+
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    // foreground에서 fcm 메세지 처리
+    print("FCM 메세지를 받았는데요. 저는 집에 가고 싶네요. ${message.notification!.body}");
+    FirebaseUtils().showFlutterNotification(message);
+  });
+
+  // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
   runApp(const MyApp());
 }
 

@@ -1,12 +1,33 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="site.boongbang.socon">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <!--    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />-->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <!-- 외부 저장소 읽기 권한 -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
     <application
         android:label="frontend"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+
+        <!-- fcm_default_channel start-->
+        <meta-data
+                android:name="firebase_messaging_auto_init_enabled"
+                android:value="false" />
+        <meta-data
+                android:name="firebase_analytics_collection_enabled"
+                android:value="false" />
+        <!-- 푸시 알림 채널 설정 -->
+        <meta-data
+                android:name="com.google.firebase.messaging.default_notification_channel_id"
+                android:value="high_importance_channel" />
+        <!-- fcm_default_channel end-->
 
         <activity
             android:name=".MainActivity"
@@ -17,7 +38,9 @@
             android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustResize"
             android:requestLegacyExternalStorage="true"
-            android:enableOnBackInvokedCallback="true">
+            android:enableOnBackInvokedCallback="true"
+            android:showWhenLocked="true"
+            android:turnScreenOn="true">
             <!-- Specifies an Android theme to apply to this Activity as soon as
                  the Android process has started. This theme is visible to the user
                  while the Flutter UI initializes. After that, this theme continues
