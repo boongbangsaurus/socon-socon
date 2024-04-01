@@ -6,6 +6,8 @@ import 'package:socon/utils/colors.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:socon/viewmodels/login_state_view_model.dart';
 import 'package:socon/viewmodels/boss_verification_view_model.dart';
+import 'package:socon/viewmodels/payment_verification_view_model.dart';
+import 'package:socon/viewmodels/store_register_view_model.dart';
 import 'firebase_options.dart';
 
 import 'package:webview_flutter/webview_flutter.dart';
@@ -28,6 +30,8 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => BossVerificationViewModel()),
         ChangeNotifierProvider(create: (context) => LoginState()),
+        ChangeNotifierProvider(create: (context) => PaymentVerificationViewModel()),
+        ChangeNotifierProvider(create: (context) => StoreRegisterViewModel()),
       ],
       child: MaterialApp.router(
         routerConfig: router,

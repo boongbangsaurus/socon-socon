@@ -96,7 +96,8 @@ class _BuyMenuDetailScreenState extends State<BuyMenuDetailScreen> {
             return Consumer<PaymentVerificationViewModel>(
               builder: (context, viewModel, child) {
                 final productDetailModel = viewModel.productDetailModel;
-                return SafeArea(
+                return
+                  SafeArea(
                     child: Column(
                       children: [
                         Expanded(
@@ -230,9 +231,9 @@ class _BuyMenuDetailScreenState extends State<BuyMenuDetailScreen> {
                                             settings: RouteSettings(arguments: {
                                               'orderUid': viewModel.orderUid,
                                               'issueId': 1,
-                                              'name': "소금빵",
-                                              'amount': 100,
-                                              'buyerName': '김싸피'
+                                              'name': "멸치꼬마김밥",
+                                              'amount': 300,
+                                              'buyerName': '김온유'
                                             }
                                           )
                                         ),

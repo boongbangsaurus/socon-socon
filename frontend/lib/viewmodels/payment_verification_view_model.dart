@@ -15,16 +15,22 @@ class PaymentVerificationViewModel extends ChangeNotifier {
   String get orderUid => _orderUid;
 
 
-  // 상품 주문 요청 api 호출
+  // 상품 주문 요청 api 호출 (post)
   Future<void> sendPaymentRequest(Map<String, dynamic> orderData) async {
     _orderUid = await _paymentService.sendPaymentRequest(orderData);
     notifyListeners();
   }
 
 
-  // 상품 상세 데이터 호출
+  // 상품 상세 데이터 호출 (get)
   Future<void> getMenuDetail(String storeId, String menuId) async {
     _productDetailModel = await _paymentService.getMenuDetail(storeId, menuId);
     notifyListeners();
   }
+
+  // Future<void> getVerification(String impUid, String orderUid) async {
+  //   _productDetailModel = await _paymentService.getMenuDetail(impUid, orderUid);
+  //   notifyListeners();
+  // }
+
 }

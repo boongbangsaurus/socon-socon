@@ -9,6 +9,7 @@ class StoreRegisterViewModel extends ChangeNotifier {
   final StoreRegisterModel storeModel = StoreRegisterModel();
   final StoreRegisterService storeService = StoreRegisterService();
 
+  // 스토어 등록 api post 요청
   Future<bool> registerStore() async {
     try {
       final result = await storeService.registerStore(storeModel);
@@ -19,20 +20,73 @@ class StoreRegisterViewModel extends ChangeNotifier {
     }
   }
 
+    // Getters
+  // String? get representative => storeModel.representative;
+  String? get name => storeModel.name;
+  String? get category => storeModel.category;
+  String? get image => storeModel.image;
+  String? get phoneNumber => storeModel.phoneNumber;
+  String? get address => storeModel.address;
+  double? get lat => storeModel.lat;
+  double? get lng => storeModel.lng;
+  String? get introduction => storeModel.introduction;
+  int? get registrationNumberId => storeModel.registrationNumberId;
+  List<BusinessHour>? get businessHours => storeModel.businessHours;
+
+
+
+
+
+
   void setName(String name) {
     storeModel.name = name;
     notifyListeners();
   }
 
-  void setAddress(String address, double lat, double lng) {
+  void setCategory(String category) {
+    storeModel.category = category;
+    notifyListeners();
+  }
+
+  void setImage(String image) {
+    storeModel.image = image;
+    notifyListeners();
+  }
+
+  void setPhoneNumber(String phoneNumber) {
+    storeModel.phoneNumber = phoneNumber;
+    notifyListeners();
+  }
+
+  void setAddress(String address) {
     storeModel.address = address;
+    notifyListeners();
+  }
+
+  void setLatitude(double lat) {
     storeModel.lat = lat;
+    notifyListeners();
+  }
+
+  void setLongitude(double lng) {
     storeModel.lng = lng;
     notifyListeners();
   }
 
-  // 여기에 다른 세터 메서드를 추가합니다.
+  void setIntroduction(String introduction) {
+    storeModel.introduction = introduction;
+    notifyListeners();
+  }
 
+  void setRegistrationNumberId(int registrationNumberId) {
+    storeModel.registrationNumberId = registrationNumberId;
+    notifyListeners();
+  }
+
+  void setBusinessHours(List<BusinessHour> businessHours) {
+    storeModel.businessHours = businessHours;
+    notifyListeners();
+  }
 
 }
 

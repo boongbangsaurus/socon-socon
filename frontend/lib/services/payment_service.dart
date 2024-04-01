@@ -24,7 +24,7 @@ class PaymentService {
     if (response.statusCode == 200) {
       debugPrint(
           '상품 주문요청 조회 성공################################################');
-      print(jsonDecode(response.body));
+      print('${jsonDecode(response.body)}===========================');
       return json.decode(response.body)['orderUid'];
     } else {
       // throw Exception('주문 실패');
@@ -49,4 +49,7 @@ class PaymentService {
       throw Exception('상세 조회 실패');
     }
   }
+
+
+
 }
