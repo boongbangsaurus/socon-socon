@@ -1,4 +1,4 @@
-package site.soconsocon.socon.store.repository;
+package site.soconsocon.socon.store.repository.jpa;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -16,7 +16,7 @@ public interface StoreRepository extends JpaRepository<Store, Integer> {
     @Query("SELECT s.memberId FROM STORE s WHERE s.id = :storeId")
     Integer findMemberIdByStoreId(Integer storeId);
 
-    @Query("SELECT COUNT(s) FROM STORE s WHERE s.name = :name AND s.businessRegistration.id = :registrationNumberId AND s.lat = :lat AND s.lng = :lng")
+    @Query("SELECT COUNT(s) FROM STORE s WHERE s.name = :name AND s.businessRegistration.id = :registrationNumberId AND s.lat = :lat AND s.lon = :lon")
     Integer checkStoreDuplication(String name, Integer registrationNumberId, Double lat, Double lng);
 
 

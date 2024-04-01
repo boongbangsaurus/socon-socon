@@ -1,4 +1,4 @@
-package site.soconsocon.socon.store.repository;
+package site.soconsocon.socon.store.repository.jpa;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import site.soconsocon.socon.store.domain.entity.jpa.BusinessRegistration;

@@ -4,32 +4,31 @@ pipeline {
         REPO = "s10-blockchain-contract-sub2/S10P22C207"
     }
     stages {
-        stage('Checkout') {
+        stage('Checkout Main Repo') {
             steps {
-                checkout scmGit(
-                        branches: [[name: 'develop']],
-                        extensions: [submodule(parentCredentials: true, trackingSubmodules: true)],
-                        userRemoteConfigs: [
-                                [credentialsId: 'github-access-token', url: 'https://github.com/boongbangsaurus/boongbang-settings']]
-                )
+                checkout scm
             }
         }
-        stage('Print current files'){
+
+        stage('Init & Update Submodules with Custom Credentials') {
             steps {
                 script {
-                    sh 'ls -al'
+                    // 서브모듈 크레덴셜을 설정
+                    withCredentials([usernamePassword(credentialsId: 'github-access-token', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]) {
+                        sh "git submodule init"
+                        sh "git config submodule.secure-settings.url https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/boongbangsaurus/boongbang-settings.git"
+                        sh "git submodule update --recursive"
+                        sh "cd secure-settings && git checkout release "
+                    }
                 }
             }
         }
         stage('Move .env File') {
             steps {
                 script{
-                    sh 'ls -al ../'
-                    sh 'ls -al'
                     sh 'cp ../environments/.env backend/payment/.env'
                     sh 'cp ../environments/gradle.properties backend/payment/gradle.properties'
                     sh "mkdir -p backend/payment/src/main/resources"
-                    sh "ls -al secure-settings/back/payment"
                     // find 명령어를 사용하여 .yml 파일을  찾고, 각 파일에 대해 cp 명령어를 실행
                     sh "cp secure-settings/back/payment/payment-service-default.yml backend/payment/src/main/resources/application.yml"
                 }

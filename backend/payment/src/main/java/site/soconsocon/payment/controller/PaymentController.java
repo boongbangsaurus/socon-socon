@@ -13,7 +13,7 @@ import site.soconsocon.utils.MessageUtils;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/payments")
+@RequestMapping("/api/v1/payments")
 @Log4j2
 public class PaymentController {
 
