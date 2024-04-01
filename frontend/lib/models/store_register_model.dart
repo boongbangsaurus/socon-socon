@@ -39,6 +39,11 @@ class StoreRegisterModel {
     'registration_number_id': registrationNumberId,
     'business_hour': businessHours.map((bh) => bh.toJson()).toList(),
   };
+
+  @override
+  String toString() {
+    return 'StoreRegisterModel{name: $name, category: $category, image: $image, phoneNumber: $phoneNumber, address: $address, lat: $lat, lng: $lng, introduction: $introduction, registrationNumberId: $registrationNumberId, businessHours: $businessHours}';
+  }
 }
 
 class BusinessHour {

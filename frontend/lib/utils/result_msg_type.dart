@@ -30,6 +30,13 @@ class ResultMessages {
       failTitle: '인증에 실패했어요...',
       failComment: '다시 시도해주세요',
     ),
+    'storeRegister': Message(
+      name: '내점포 등록',
+      successTitle: '점포 등록 완료!',
+      successComment: '점포 관리로 이동 후\n소콘을 발행하실 수 있습니다',
+      failTitle: '',
+      failComment: '',
+    ),
   };
 
   static Message getMessage(String key) {
