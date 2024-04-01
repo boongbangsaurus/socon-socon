@@ -5,8 +5,6 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' as http;
 
 class FirebaseMessagingService {
-
-
   // fcmToken 가져오는 메소드
   Future<String?> getFcmToken() async {
     try {
