@@ -7,7 +7,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 checkout scmGit(
-                        branches: [[name: 'release-test']],
+                        branches: [[name: 'develop']],
                         extensions: [submodule(parentCredentials: true, trackingSubmodules: true)],
                         userRemoteConfigs: [
                                 [credentialsId: 'github-access-token', url: 'https://github.com/boongbangsaurus/boongbang-settings']]
