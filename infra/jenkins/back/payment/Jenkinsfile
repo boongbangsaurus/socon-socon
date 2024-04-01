@@ -6,10 +6,23 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                checkout scmGit(
+                checkout([
+                        $class: 'GitSCM',
                         branches: [[name: 'develop']],
-                        extensions: [submodule(parentCredentials: true, trackingSubmodules: true)]
-                )
+                        extensions: [
+                                [$class: 'SubmoduleOption',
+                                 recursiveSubmodules: true,
+                                 reference: '',
+                                 trackingSubmodules: true,
+                                 parentCredentials: false,
+                                 credentialsId: 'github-access-token']
+                        ],
+                        userRemoteConfigs: [[
+                                                    credentialsId: 'Gitlab-api-password',
+                                                    url: 'https://lab.ssafy.com/s10-blockchain-contract-sub2/S10P22C207'
+                                            ]]
+                ])
+
             }
         }
         stage('Print current files'){
