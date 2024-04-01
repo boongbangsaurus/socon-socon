@@ -15,7 +15,7 @@ import site.soconsocon.socon.store.domain.entity.jpa.*;
 import site.soconsocon.socon.store.exception.StoreErrorCode;
 import site.soconsocon.socon.store.exception.StoreException;
 import site.soconsocon.socon.store.feign.FeignServiceClient;
-import site.soconsocon.socon.store.repository.*;
+import site.soconsocon.socon.store.repository.jpa.*;
 
 import java.sql.Time;
 import java.time.LocalDate;
@@ -57,7 +57,8 @@ public class StoreService {
                 .lat(request.getLat())
                 .lng(request.getLng())
                 .introduction(request.getIntroduction())
-                .closingPlanned(null).isClosed(false).createdAt(LocalDate.now())
+                .closingPlanned(null).isClosed(false)
+                .createdAt(LocalDate.now())
                 .memberId(memberId)
                 .businessRegistration(businessRegistration).build();
 
@@ -215,15 +216,29 @@ public class StoreService {
                 for (BusinessHourRequest businessHour : requestBusinessHours) {
                     BusinessHour matchedBusinessHour = savedBusinessHours.stream().filter(savedBusinessHour -> savedBusinessHour.getDay().equals(businessHour.getDay())).findFirst().orElse(null); // null일 경우
 
-                    matchedBusinessHour.setIsWorking(businessHour.getIsWorking());
-                    matchedBusinessHour.setOpenAt(Time.valueOf(businessHour.getOpenAt() + ":00"));
-                    matchedBusinessHour.setCloseAt(Time.valueOf(businessHour.getCloseAt()+ ":00"));
-                    matchedBusinessHour.setIsBreaktime(businessHour.getIsBreaktime());
-                    matchedBusinessHour.setBreaktimeStart(Time.valueOf(businessHour.getBreaktimeStart()+ ":00"));
-                    matchedBusinessHour.setBreaktimeEnd(Time.valueOf(businessHour.getBreaktimeEnd()+ ":00"));
+                    if(businessHour .getIsWorking()){
+                        matchedBusinessHour.setIsWorking(true);
+                        matchedBusinessHour.setOpenAt(Time.valueOf(businessHour.getOpenAt() + ":00"));
+                        matchedBusinessHour.setCloseAt(Time.valueOf(businessHour.getCloseAt()+ ":00"));
+                    }
+                    else{
+                        matchedBusinessHour.setIsWorking(false);
+                        matchedBusinessHour.setOpenAt(null);
+                        matchedBusinessHour.setCloseAt(null);
+                    }
+                    if(businessHour.getIsBreaktime()){
+                        matchedBusinessHour.setIsBreaktime(true);
+                        matchedBusinessHour.setBreaktimeStart(Time.valueOf(businessHour.getBreaktimeStart()+ ":00"));
+                        matchedBusinessHour.setBreaktimeEnd(Time.valueOf(businessHour.getBreaktimeEnd()+ ":00"));
+
+                    }else{
+                        matchedBusinessHour.setIsBreaktime(false);
+                        matchedBusinessHour.setBreaktimeStart(null);
+                        matchedBusinessHour.setBreaktimeEnd(null);
+
+                    }
 
                     businessHourRepository.save(matchedBusinessHour);
-
                 }
             }
 
@@ -253,6 +268,7 @@ public class StoreService {
         }
         LocalDate closedAt = LocalDate.now().plusDays(request.getCloseAfter());
         store.setClosingPlanned(closedAt);
+
         storeRepository.save(store);
 
         // 발행 중 소콘 발행 중지
@@ -321,17 +337,18 @@ public class StoreService {
 
         List<FavoriteStoresListResponse> stores = new ArrayList<>();
 
-        List<FavStore> favStores = favStoreRepository.findByMemberId(memberId);
+        List<FavStore> favStores = favStoreRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new StoreException(StoreErrorCode.STORE_NOT_FOUND));
 
         for (FavStore favStore : favStores) {
             Store store = storeRepository.findById(favStore.getStoreId())
                     .orElseThrow(() -> new StoreException(StoreErrorCode.STORE_NOT_FOUND));
-
+            List<Issue> issues = issueRepository.findMainIssueNameByStoreId(store.getId());
             stores.add(FavoriteStoresListResponse.builder()
                     .id(store.getId())
                     .name(store.getName())
                     .image(store.getImage())
-                    .mainMenu(issueRepository.findMainIssueNameByStoreId(store.getId()))
+                    .mainMenu(!issues.isEmpty() ?issues.get(0).getName() : null)
                     .build());
         }
         return stores;

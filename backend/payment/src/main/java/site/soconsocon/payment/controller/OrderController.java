@@ -2,7 +2,6 @@ package site.soconsocon.payment.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import site.soconsocon.payment.domain.dto.request.OrderRequestDto;
@@ -28,11 +27,11 @@ public class OrderController {
     @PostMapping("")
     public ResponseEntity order(@RequestHeader("X-Authorization-Id") int memberId, @RequestBody OrderRequestDto orderRequestDto) {
         try {
-            log.info("주문 성공 : 주문 번호 {}", orderRequestDto.getOrderUid());
+            log.info("주문 성공 : 주문 상품 이름 {}", orderRequestDto.getItemName());
             return ResponseEntity.ok().body(MessageUtils.success(orderService.saveOrder(memberId, orderRequestDto)));
 
         } catch (RuntimeException e) {
-            log.info("주문 실패 : 주문 번호 {}", orderRequestDto.getOrderUid());
+            log.info("주문 실패 : 주문 상품 이름 {}", orderRequestDto.getItemName());
             return ResponseEntity.status(400).body(MessageUtils.fail("400", "주문을 실패하였습니다."));
         }
     }
@@ -57,7 +56,7 @@ public class OrderController {
      */
     @GetMapping("/{orderId}")
     public ResponseEntity getOrderByOrderId(@PathVariable String orderId) throws PaymentException {
-        return ResponseEntity.ok().body(MessageUtils.success(orderService.findOrderByImpUid(impUid)));
+        return ResponseEntity.ok().body(MessageUtils.success(orderService.findOrderByOrderId(orderId)));
     }
 
 }

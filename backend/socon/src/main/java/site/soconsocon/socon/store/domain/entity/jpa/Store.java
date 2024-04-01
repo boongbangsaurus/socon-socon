@@ -65,4 +65,3 @@ public class Store {
     private List<BusinessHour> businessHours = new ArrayList<>();
 
 }
-

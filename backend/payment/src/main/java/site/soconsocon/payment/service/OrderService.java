@@ -3,6 +3,8 @@ package site.soconsocon.payment.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import site.soconsocon.payment.domain.dto.request.OrderRequestDto;
+import site.soconsocon.payment.domain.dto.response.OrderRegisterResponseDto;
+import site.soconsocon.payment.domain.dto.response.OrderResponseDto;
 import site.soconsocon.payment.domain.dto.response.PaymentByOrderResponseDto;
 import site.soconsocon.payment.domain.entity.jpa.Orders;
 import site.soconsocon.payment.domain.entity.jpa.Payment;
@@ -20,7 +22,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final PaymentRepository paymentRepository;
 
-    public String saveOrder(int memberId, OrderRequestDto orderRequestDto) {
+    public OrderRegisterResponseDto saveOrder(int memberId, OrderRequestDto orderRequestDto) {
 
         Orders order = Orders.builder()
                 .orderUid(UUID.randomUUID().toString())
@@ -33,8 +35,9 @@ public class OrderService {
 
         orderRepository.save(order);
         String orderUid = order.getOrderUid();
+        OrderRegisterResponseDto orderRegisterResponseDto = OrderRegisterResponseDto.builder().orderUid(orderUid).build();
 
-        return orderUid;
+        return orderRegisterResponseDto;
     }
 
     public PaymentByOrderResponseDto findOrderByImpUid(String impUid) throws PaymentException {
@@ -57,20 +60,21 @@ public class OrderService {
         return paymentByOrderResponseDto;
     }
 
-    public PaymentByOrderResponseDto findOrderByOrderId(String orderId) throws PaymentException {
+    public OrderResponseDto findOrderByOrderId(String orderId) throws PaymentException {
         //주문내역 조회
         Orders order = orderRepository.findOrderByOrderUid(orderId)
                 .orElseThrow(() -> new PaymentException(ErrorCode.ORDER_NOT_FOUND));
 
-        PaymentByOrderResponseDto paymentByOrderResponseDto = PaymentByOrderResponseDto.builder()
+        OrderResponseDto orderResponseDto = OrderResponseDto.builder()
                 .id(order.getId())
-                .impUid(payment.getImpUid())
-                .amount(payment.getAmount())
-                .orderUid(payment.getOrderUid())
-                .itemName(payment.getItemName())
+                .orderUid(order.getOrderUid())
+                .itemName(order.getItemName())
+                .orderStatus(order.getOrderStatus())
+                .memberId(order.getMemberId())
+                .quantity(order.getQuantity())
                 .build();
 
-        return paymentByOrderResponseDto;
+        return orderResponseDto;
     }
 
 

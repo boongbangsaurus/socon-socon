@@ -97,7 +97,7 @@ public class StoreApiController {
     @PutMapping("/{store_id}/manage/info")
     public ResponseEntity<Object> updateClosedPlanned(
             @PathVariable("store_id") Integer storeId,
-            UpdateClosedPlannedRequest request,
+            @RequestBody UpdateClosedPlannedRequest request,
             @RequestHeader("X-Authorization-Id") int memberId
     ) {
         storeService.updateClosedPlanned(storeId, request, memberId);
@@ -175,8 +175,4 @@ public class StoreApiController {
         return ResponseEntity.ok().body(MessageUtils.success(null, "201 CREATED", null));
     }
 
-    @GetMapping("/test")
-    public ResponseEntity<Object> test(){
-        return ResponseEntity.ok().body(MessageUtils.success("test"));
-    }
 }

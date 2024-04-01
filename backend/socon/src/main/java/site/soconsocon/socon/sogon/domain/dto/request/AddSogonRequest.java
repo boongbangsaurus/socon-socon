@@ -1,5 +1,6 @@
 package site.soconsocon.socon.sogon.domain.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,6 +16,8 @@ public class AddSogonRequest {
     private String image2;
     private Double lat;
     private Double lng;
+
+    @JsonProperty("socon_id")
     private Integer soconId;
 
 }
