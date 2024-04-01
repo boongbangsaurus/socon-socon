@@ -4,17 +4,12 @@ pipeline {
         REPO = "s10-blockchain-contract-sub2/S10P22C207"
     }
     stages {
-        stage('Checkout Main Repo') {
+        stage('Checkout') {
             steps {
-                checkout scm
-            }
-        }
-        stage('Init & Update Submodules') {
-            steps {
-                script {
-                    // 서브모듈 초기화 및 업데이트
-                    sh 'git submodule update --init --recursive'
-                }
+                checkout scmGit(
+                        branches: [[name: 'develop']],
+                        extensions: [submodule(parentCredentials: true, trackingSubmodules: true)]
+                )
             }
         }
         stage('Print current files'){
