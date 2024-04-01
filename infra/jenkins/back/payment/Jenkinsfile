@@ -4,14 +4,17 @@ pipeline {
         REPO = "s10-blockchain-contract-sub2/S10P22C207"
     }
     stages {
-        stage('Checkout') {
+        stage('Checkout Main Repo') {
             steps {
-                checkout scmGit(
-                        branches: [[name: 'develop']],
-                        extensions: [submodule(parentCredentials: true, trackingSubmodules: true)],
-                        userRemoteConfigs: [
-                                [credentialsId: 'github-access-token', url: 'https://github.com/boongbangsaurus/boongbang-settings']]
-                )
+                checkout scm
+            }
+        }
+        stage('Init & Update Submodules') {
+            steps {
+                script {
+                    // 서브모듈 초기화 및 업데이트
+                    sh 'git submodule update --init --recursive'
+                }
             }
         }
         stage('Print current files'){
