@@ -98,16 +98,24 @@ public class FcmService {
     }
 
     // 받은 token을 이용하여 fcm를 보냄
-    public void sendMessageByToken(FcmMessage fcmMessage) {
+    public void sendMessageByMemberId(FcmMessage fcmMessage) {
         log.info(fcmMessage.toString());
         try {
-            FirebaseMessaging.getInstance().send(Message.builder()
-                    .setNotification(Notification.builder()
-                            .setTitle(fcmMessage.getTitle())
-                            .setBody(fcmMessage.getBody())
-                            .build())
-                    .setToken(fcmMessage.getTargetToken())
-                    .build());
+            List<DeviceToken> tokenList = fcmRepository.findDeviceTokensByMemberId(fcmMessage.getMemberId())
+                            .orElseThrow(() -> new FcmException(FcmErrorCode.NO_EXIST_TOKEN));
+
+            for (DeviceToken token:tokenList) {
+                if(token.getStatus() == TokenStatus.ACTIVE){
+                    FirebaseMessaging.getInstance().send(Message.builder()
+                            .setNotification(Notification.builder()
+                                    .setTitle(fcmMessage.getTitle())
+                                    .setBody(fcmMessage.getBody())
+                                    .build())
+                            .setToken(token.getDeviceToken())
+                            .build());
+                }
+            }
+
         } catch (FirebaseMessagingException | IllegalArgumentException e) {
             log.warn(e.getMessage());
             throw new FcmException(FcmErrorCode.CAN_NOT_SEND_NOTIFICATION);

@@ -29,9 +29,9 @@ public class FcmController {
         return ResponseEntity.ok().body(MessageUtils.success());
     }
 
-    @PostMapping("/token")
+    @PostMapping("/user")
     public ResponseEntity sendMessageToken(@RequestBody FcmMessage fcmMessage) {
-        fcmService.sendMessageByToken(fcmMessage);
+        fcmService.sendMessageByMemberId(fcmMessage);
         return ResponseEntity.ok().body(MessageUtils.success());
     }
 
@@ -43,7 +43,7 @@ public class FcmController {
 
     @PostMapping("/subscribe")
     public ResponseEntity subscribeByTopic(@RequestBody FcmMessage fcmMessage) {
-        fcmService.subscribeByTopic(fcmMessage.getTargetToken(), fcmMessage.getTopicName());
+        fcmService.subscribeMyTokens(fcmMessage.getMemberId(), fcmMessage.getTopicId());
         return ResponseEntity.ok().body(MessageUtils.success());
     }
 }
