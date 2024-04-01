@@ -7,8 +7,8 @@ import 'package:socon/models/location.dart';
 /// [SogonService]
 /// 백과 API 통신하기 위한 Class
 class SogonService {
-  final String baseUrl = 'http://j10c207.p.ssafy.io:8000'; // 통신 url
-  // final String baseUrl = 'https://f4b5-121-178-98-12.ngrok-free.app'; // 통신 url
+  // final String baseUrl = 'http://j10c207.p.ssafy.io:8000'; // 통신 url
+  final String baseUrl = 'https://1d00-61-84-244-233.ngrok-free.app'; // 통신 url
 
   // marker 요청 api
   Future<List?> getMarker(Locations location) async {

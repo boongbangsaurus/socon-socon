@@ -1,8 +1,11 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_maps_cluster_manager/google_maps_cluster_manager.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:socon/models/location.dart';
+import 'package:socon/models/sogon_place.dart';
 import 'package:socon/utils/colors.dart';
 import 'package:socon/utils/fontSizes.dart';
 import 'package:socon/viewmodels/sogon_view_model.dart';
@@ -24,6 +27,13 @@ class _SogonMainScreen extends State<SogonMainScreen> {
   Location _location = Location(); // 내 위치
   List<Marker> _markers = []; // 소곤 리스트
   List<dynamic> _sogons = []; // 소곤 리스트 바텀 시트
+  // ###### google_maps_cluster_manager
+  Set<Marker> sogonMarker = {}; // 소곤 위치 마커
+  List<SogonPlace> sogonItems = [];
+  late ClusterManager _manager;
+  Completer<GoogleMapController> googleMapController = Completer();
+  late ClusterManager clusterManager;
+
   @override
   void initState() {
     super.initState();
@@ -59,7 +69,42 @@ class _SogonMainScreen extends State<SogonMainScreen> {
     _updateMapForCurrentLocation();
     _getCurrentLocation();
     _loadMarkers();
+    _manager = _initClusterManager();
   }
+
+  ClusterManager _initClusterManager() {
+    return ClusterManager<SogonPlace>(sogonItems, _updateMarkers,
+        markerBuilder: _markerBuilder);
+  }
+
+  void _updateMarkers(Set<Marker> markers) {
+    print('Updated ${markers.length} markers');
+    setState(() {
+      this.sogonMarker = markers;
+    });
+  }
+
+  Future<Marker> Function(dynamic) get _markerBuilder => (cluster) async {
+        String iconPath;
+        if (cluster.count >= 5) {
+          iconPath = "assets/images/bukjeokMarker.png";
+        } else if (cluster.count >= 3) {
+          iconPath = "assets/images/sugeunMarker.png";
+        } else {
+          iconPath = "assets/images/sogonMarker.png";
+        }
+        BitmapDescriptor markerIcon = await BitmapDescriptor.fromAssetImage(
+            const ImageConfiguration(), iconPath);
+        return Marker(
+          markerId: MarkerId(cluster.getId()),
+          position: cluster.location,
+          onTap: () {
+            print('---- $cluster');
+            cluster.items.forEach((p) => print(p));
+          },
+          icon: markerIcon,
+        );
+      };
 
   Future<void> _updateMapForCurrentLocation() async {
     var currentLocation = await _location.getLocation();
@@ -103,7 +148,7 @@ class _SogonMainScreen extends State<SogonMainScreen> {
     setState(() {
       _sogons = res!;
 
-      _markers = res.map((item) {
+      _markers = _sogons.map((item) {
         return Marker(
           markerId: MarkerId(item["id"].toString()),
           position: LatLng(
@@ -116,6 +161,21 @@ class _SogonMainScreen extends State<SogonMainScreen> {
           ),
           icon: markerIcon,
         );
+      }).toList();
+
+      sogonItems = _sogons.map((item) {
+        return SogonPlace(
+            id: item["id"],
+            latLng: LatLng(
+              (item["lat"] as num).toDouble(),
+              (item["lng"] as num).toDouble(),
+            ),
+            soconImg: item['socon_img'].toString(),
+            memberName: item['member_name'].toString(),
+            lastTime: item['last_time'],
+            isPicked: item['is_picked'],
+            commentCount: item['comment_count'],
+            title: item['title']);
       }).toList();
     });
     print("############## markers ##############");
@@ -174,8 +234,13 @@ class _SogonMainScreen extends State<SogonMainScreen> {
                               ),
                               onMapCreated: (GoogleMapController controller) {
                                 _controller = controller;
+                                googleMapController.complete(controller);
+                                _manager.setMapId(controller.mapId);
                               },
-                              markers: Set.from(_markers),
+                              onCameraMove: _manager.onCameraMove,
+                              onCameraIdle: _manager.updateMap,
+                              // markers: Set.from(_markers),
+                              markers: sogonMarker,
                               myLocationEnabled: true,
                               myLocationButtonEnabled: false,
                             ),
