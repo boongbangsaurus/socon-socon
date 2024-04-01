@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class FirebaseUtils {
   bool _isFlutterLocalNotificationsInitialized = false;
@@ -13,6 +14,14 @@ class FirebaseUtils {
   Future<void> setupFlutterNotifications() async {
     if (_isFlutterLocalNotificationsInitialized) {
       return;
+    }
+
+    // 알림 권한 요청
+    if (await Permission.notification.isDenied) {
+      print("알림이 거부되어있습니다. 다시 권한을 요청합니다");
+      await Permission.notification.request();
+    }else{
+      print("알림이 허용되어있습니다.");
     }
 
     channel = const AndroidNotificationChannel(
