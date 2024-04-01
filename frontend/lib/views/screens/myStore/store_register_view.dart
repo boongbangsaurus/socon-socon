@@ -64,6 +64,8 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   final PageController _pageController = PageController();
+  // final StoreRegisterViewModel viewModel;
+
   int _currentPageIndex = 0;
 
   void _onBackPressed() {
@@ -82,49 +84,58 @@ class _RegisterPageState extends State<RegisterPage> {
   List<BusinessHour> BusinessHours = [];
 
 
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    final viewModel = Provider.of<StoreRegisterViewModel>(context, listen: false);
+    return ChangeNotifierProvider<StoreRegisterViewModel>(
+      create: (context) => StoreRegisterViewModel(),
+      child: Scaffold(
         appBar: _currentPageIndex != 4
             ? AppBar(
-                title: Text(
-                  '점포 등록(${_currentPageIndex + 1}/4)',
-                ),
-                leading: IconButton(
-                  icon: Icon(Icons.arrow_back),
-                  onPressed: _onBackPressed,
-                ),
-              )
+          title: Text(
+            '점포 등록(${_currentPageIndex + 1}/4)',
+          ),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: _onBackPressed,
+          ),
+        )
             : null,
         body: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Scaffold(
-                body: PageView(
-                  controller: _pageController,
-                  onPageChanged: (int page) {
-                    setState(() {
-                      _currentPageIndex = page;
-                    });
-                  },
-                  physics: NeverScrollableScrollPhysics(),
-                  children: [
-                    Step1(pageController: _pageController),
-                    Step2(pageController: _pageController),
-                    Step3(pageController: _pageController, BusinessHours:BusinessHours, ),
-                    SummaryPage(pageController: _pageController),
-                    RegisterComplete(pageController: _pageController),
-                  ],
-                ),
-              ),
+            body: PageView(
+              controller: _pageController,
+              onPageChanged: (int page) {
+                setState(() {
+                  _currentPageIndex = page;
+                });
+              },
+              physics: NeverScrollableScrollPhysics(),
+              children: [
+                Step1(pageController: _pageController, viewModel: viewModel,),
+                Step2(pageController: _pageController, viewModel: viewModel,),
+                Step3(pageController: _pageController, viewModel: viewModel, BusinessHours:BusinessHours, ),
+                SummaryPage(pageController: _pageController, viewModel: viewModel),
+                RegisterComplete(pageController: _pageController,),
+              ],
+            ),
+          ),
         ),
-      );
+      ),
+    );
   }
 }
 
+
+
+
 class Step1 extends StatelessWidget {
   final PageController pageController;
+  final StoreRegisterViewModel viewModel;
 
-  Step1({required this.pageController});
+  Step1({required this.pageController, required this.viewModel});
 
   @override
   Widget build(BuildContext context) {
@@ -152,14 +163,14 @@ class Step1 extends StatelessWidget {
                       labelText: '사업자 등록 번호',
                       onChanged: (value) =>
                       {
-                        // viewModel.setRegistrationNumber(value),
+                        viewModel.setRegistrationNumberId(int.parse(value)),
                       }
                     ),
 
                     CustomInputField(
                       labelText: '사업자 주소',
                       onChanged: (value) => {
-                        // viewModel.setAddress(value)
+                        viewModel.setAddress(value)
                       },
                     ),
 
@@ -195,8 +206,9 @@ class Step1 extends StatelessWidget {
 
 class Step2 extends StatefulWidget {
   final PageController pageController;
+  final StoreRegisterViewModel viewModel;
 
-  Step2({required this.pageController});
+  Step2({required this.pageController, required this.viewModel});
 
   @override
   State<Step2> createState() => _Step2State();
@@ -217,7 +229,7 @@ class _Step2State extends State<Step2> {
             CustomInputField(
               labelText: '상호명을 입력해주세요',
               onChanged: (value) => {
-                // viewModel.setName(value)
+                widget.viewModel.setName(value)
               },
             ),
 
@@ -225,7 +237,7 @@ class _Step2State extends State<Step2> {
               labelText: '전화번호를 입력해 주세요',
               onChanged: (value) =>
               {
-                // viewModel.setPhoneNumber(value),
+                widget.viewModel.setPhoneNumber(value),
               }
             ),
 
@@ -243,7 +255,7 @@ class _Step2State extends State<Step2> {
                   buttonTextColor: AppColors.BLACK,
                   onPressed: () {},
                   onSelected: (isSelected) => {
-                    // viewModel.setCategory('음식점')
+                    widget.viewModel.setCategory('음식점')
                   },
                 ),
                 TagButton(
@@ -252,7 +264,7 @@ class _Step2State extends State<Step2> {
                   buttonTextColor: AppColors.BLACK,
                   onPressed: () {},
                   onSelected: (isSelected) => {
-                    // viewModel.setCategory('카페')
+                    widget.viewModel.setCategory('카페')
                   },
                 ),
                 TagButton(
@@ -261,7 +273,7 @@ class _Step2State extends State<Step2> {
                   buttonTextColor: AppColors.BLACK,
                   onPressed: () {},
                   onSelected: (isSelected) => {
-                    // viewModel.setCategory('미용')
+                    widget.viewModel.setCategory('미용')
                   },
                 ),
                 TagButton(
@@ -270,7 +282,7 @@ class _Step2State extends State<Step2> {
                   buttonTextColor: AppColors.BLACK,
                   onPressed: () {},
                   onSelected: (isSelected) => {
-                    // viewModel.setCategory('숙박')
+                    widget.viewModel.setCategory('숙박')
                   },
                 ),
                 TagButton(
@@ -279,7 +291,7 @@ class _Step2State extends State<Step2> {
                   buttonTextColor: AppColors.BLACK,
                   onPressed: () {},
                   onSelected: (isSelected) => {
-                    // viewModel.setCategory('스포츠')
+                    widget.viewModel.setCategory('스포츠')
                   },
                 ),
                 TagButton(
@@ -288,7 +300,7 @@ class _Step2State extends State<Step2> {
                   buttonTextColor: AppColors.BLACK,
                   onPressed: () {},
                   onSelected: (isSelected) => {
-                    // viewModel.setCategory('쇼핑')
+                    widget.viewModel.setCategory('쇼핑')
                   },
                 ),
               ],
@@ -298,7 +310,7 @@ class _Step2State extends State<Step2> {
               labelText: '가게 주소를 입력해 주세요',
               onChanged: (value) =>
               {
-                // viewModel.setAddress(value),
+                widget.viewModel.setAddress(value),
               },
               hintText: '도로명, 건물명 또는 지번으로 검색'
             ),
@@ -307,7 +319,7 @@ class _Step2State extends State<Step2> {
               labelText: '가게 소개를 입력해 주세요',
               onChanged: (value) =>
               {
-                // viewModel.setIntroduction(value),
+                widget.viewModel.setIntroduction(value),
               },
             ),
 
@@ -359,6 +371,7 @@ class _Step2State extends State<Step2> {
                       if (image != null) {
                         setState(() {
                           userImage = File(image.path); // 이미지 선택
+                          widget.viewModel.setImage(userImage);
                         });
                       }
                     },
@@ -394,10 +407,11 @@ class _Step2State extends State<Step2> {
 
 class Step3 extends StatefulWidget {
   final PageController pageController;
+  final StoreRegisterViewModel viewModel;
 
   final List<BusinessHour>? BusinessHours;
 
-  Step3({required this.pageController, this.BusinessHours});
+  Step3({required this.pageController, this.BusinessHours, required this.viewModel});
 
   @override
   State<Step3> createState() => _Step3State();
@@ -479,98 +493,15 @@ class _Step3State extends State<Step3> {
   bool is_breaktime = false;
   String breaktimeStart = '';
   String breaktimeEnd = '';
-  List<Widget> selectedTimesWidgets = [];
+  // List<Widget> selectedTimesWidgets = [];
+  Map<String, String> selectedStartTimes = {};
 
 
 
-  void _addSelectedTimeWidget() {
-    operationDaysMap.forEach((day, selected) {
-      print('$day $selected 선택값');
-      // if (selected) {
-      //   // var exists = BusinessHours.any((businessHour) => businessHour.day == day);
-      //   // print(exists? '존재x': exists);
-      //   //
-      //   // // 존재하지 않는 경우에만 추가
-      //   // if (!exists) {
-      //     BusinessHour business = BusinessHour(
-      //       day: day,
-      //       isWorking: true,
-      //       openAt: selectedStartTime,
-      //       closeAt: selectedEndTime,
-      //       // is_breaktime: isChecked,
-      //       breaktimeStart: isChecked ? breaktimeStart : null,
-      //       breaktimeEnd: isChecked ? breaktimeEnd : null,
-      //     );
-      //
-      //     BusinessHours.add(business);
-      //   // }
-      //
-      //   var widget = Padding(
-      //     padding: const EdgeInsets.only(top: 8.0),
-      //     child: Row(
-      //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //       children: [
-      //         Column(
-      //           crossAxisAlignment: CrossAxisAlignment.start,
-      //           children: [
-      //             Text("$day: $selectedStartTime ~ $selectedEndTime"),
-      //             isChecked
-      //                 ? Text("      $breaktimeStart ~ $breaktimeEnd 휴게시간")
-      //                 : SizedBox(height: 0,),
-      //           ],
-      //         ),
-      //         IconButton(
-      //           icon: Icon(Icons.close),
-      //           onPressed: () {
-      //             setState(() {
-      //               operationDaysMap[day] = false; // 선택 해제
-      //               selectedTimesWidgets.removeWhere((element) =>
-      //                   (element.key as ValueKey<String>).value == day);
-      //               BusinessHours.removeWhere((businessHour) => businessHour.day == day);
-      //
-      //               var targetBusinessHour = BusinessHours.firstWhere((businessHour) => businessHour.day == day);
-      //               if (targetBusinessHour != null) {
-      //                   targetBusinessHour.isWorking = false;
-      //                   targetBusinessHour.openAt = null;
-      //                   targetBusinessHour.closeAt = null;
-      //                   targetBusinessHour.isBreaktime = false;
-      //                   targetBusinessHour.breaktimeStart = null;
-      //                   targetBusinessHour.breaktimeEnd = null;
-      //               }
-      //             });
-      //           },
-      //         )
-      //       ],
-      //     ),
-      //     key: ValueKey<String>(day),
-      //   );
-      //
-      //   setState(() {
-      //     selectedTimesWidgets.add(widget);
-      //     operationDaysMap[day] = false; // 다시 비활성화
-      //
-      //   });
-      // } else {
-      //   var targetBusinessHour = BusinessHours.firstWhere((businessHour) => businessHour.day == day);
-      //   if (targetBusinessHour != null) {
-      //   BusinessHour business = BusinessHour(
-      //     day: day,
-      //     isWorking: false,
-      //     openAt: null,
-      //     closeAt: null,
-      //     // is_breaktime: false,
-      //     breaktimeStart: null,
-      //     breaktimeEnd: null,
-      //     );
-      //   BusinessHours.add(business);
-      //   }
-      // }
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
-    // final viewModel = Provider.of<RegisterViewModel>(context);
+    final viewModel = Provider.of<StoreRegisterViewModel>(context);
 
     return Scaffold(
       body: Container(
@@ -709,11 +640,11 @@ class _Step3State extends State<Step3> {
                             text: '요일추가',
                             color: 'yellow',
                             onPressed: () => {
-                              _addSelectedTimeWidget(),
+                              // _addSelectedTimeWidget(),
                             }
                         ),
                         Column(
-                          children: selectedTimesWidgets,
+                          // children: selectedTimesWidgets,
                         ),
                         // SizedBox(height: 50),
                       ],
@@ -753,14 +684,15 @@ class _Step3State extends State<Step3> {
 
 
 class SummaryPage extends StatelessWidget {
+  final StoreRegisterViewModel viewModel;
   final PageController pageController;
 
-  SummaryPage({required this.pageController});
+  SummaryPage({required this.pageController, required this.viewModel});
 
   @override
   Widget build(BuildContext context) {
     // ViewModel에서 데이터 가져오기
-    // final viewModel = Provider.of<RegisterViewModel>(context);
+    final viewModel = Provider.of<StoreRegisterViewModel>(context);
 
     return Scaffold(
       body: SafeArea(
@@ -815,6 +747,7 @@ class SummaryPage extends StatelessWidget {
                         children: <Widget>[
                           Text('가게정보',
                             style: TextStyle(fontSize: FontSizes.XLARGE, fontWeight: FontWeight.bold),),
+                          Text(viewModel.name.toString()),
                           SizedBox(height: 20,),
                           Row(
                             children: [
@@ -825,7 +758,7 @@ class SummaryPage extends StatelessWidget {
                               ),
                               Expanded(
                                 flex: 3,
-                                child: Text('010-2345-6789',
+                                child: Text(viewModel.phoneNumber.toString(),
                                   style: TextStyle(),),
                               ),
                             ],
@@ -841,7 +774,7 @@ class SummaryPage extends StatelessWidget {
                               ),
                               Expanded(
                                 flex: 3,
-                                child: Text('010-2345-6789',
+                                child: Text(viewModel.address.toString(),
                                   style: TextStyle(),),
                               ),
                             ],
@@ -854,7 +787,7 @@ class SummaryPage extends StatelessWidget {
                   Container(
                     child: Column(
                       children: [
-                        Text('testttt'),
+                        Text(viewModel.category.toString()),
                       ],
                     ),
                   )
@@ -880,7 +813,7 @@ class RegisterComplete extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = Provider.of<RegisterViewModel>(context);
+    // final viewModel = Provider.of<RegisterViewModel>(context);
     return Scaffold(
       body: SingleChildScrollView(
         padding: EdgeInsets.all(20.0),

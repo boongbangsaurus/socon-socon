@@ -6,6 +6,7 @@ import 'dart:convert'; // JSON 처리를 위한 패키지
 import 'package:iamport_flutter/iamport_payment.dart';
 /* 아임포트 결제 데이터 모델을 불러옵니다. */
 import 'package:iamport_flutter/model/payment_data.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Payment extends StatelessWidget {
 
@@ -13,10 +14,12 @@ class Payment extends StatelessWidget {
   Widget build(BuildContext context) {
     final arg = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
     // debugPrint(arg.toString());
+    var orderUid = arg!['orderUid'].toString();
     var name = arg?['name'].toString();
     var amount = arg?['amount'].toInt();
     var buyerName = arg?['buyerName'].toString();
     var issueId = arg?['issueId'].toInt();
+    var test = 'mid_${DateTime.now().millisecondsSinceEpoch}';
 
     return IamportPayment(
       appBar: new AppBar(
@@ -44,10 +47,10 @@ class Payment extends StatelessWidget {
           pg: 'html5_inicis',                                          // PG사
           payMethod: 'card',                                           // 결제수단
           name: name,                                  // 주문명
-          merchantUid: 'mid_${DateTime.now().millisecondsSinceEpoch}', // 주문번호 Required
+          merchantUid: orderUid, // 주문번호 Required
           amount: amount,                                               // 결제금액 Required
           buyerName: buyerName,                                           // 구매자 이름 Required
-          buyerTel: '01012345678',                                     // 구매자 연락처
+          buyerTel: '01023445664',                                     // 구매자 연락처
           buyerEmail: 'example@naver.com',                             // 구매자 이메일
           buyerAddr: '서울시 강남구 신사동 661-16',                         // 구매자 주소
           buyerPostcode: '06018',                                      // 구매자 우편번호
@@ -64,18 +67,16 @@ class Payment extends StatelessWidget {
         // 1. 회원이 요청한 데이터 == 실제 상품 데이터 확인
         //  a. 맞으면 백에게 결제 요청? 보내고 결제완료 페이지
         //  b. 아니면 결제실패 페이지
+        debugPrint('결제 후 콜백 함수: $result');
+        debugPrint('결제 후 콜백 함수 imppppp: ${result['imp_uid']}');
+        debugPrint('결제후 콜백 함수11111111111111111111111');
+        String? impUid = 'imp01516875'; // 아임포트에서 제공하는 결제 고유 ID
+        debugPrint('impUid ${impUid}2222222222222222222');
+        debugPrint('orderUid ${orderUid}333333333333333333333333');
 
+        // 결제 검증 함수 호출
+        await validatePayment(result['imp_uid'].toString(), orderUid);
 
-        var response = await http.post(
-          Uri.parse('/api/v1/issues/{issue_id}/order'),
-          body: json.encode({
-            'itemName': name, // 상품명
-            'amount': amount, // 결제 금액
-            'name': buyerName, //
-            'issueId': issueId,
-          }),
-        );
-        debugPrint(response as String?);
 
         // Navigator.of(context).push(
         //   MaterialPageRoute(builder: (context) => Payment())
@@ -83,5 +84,46 @@ class Payment extends StatelessWidget {
         // );
       },
     );
+  }
+
+}
+
+// 결제 검증 요청 (콜백함수)
+Future<void> validatePayment(String impUid, String orderUid) async {
+  // final String baseUrl = 'http://j10c207.p.ssafy.io:8000'; // 통신 url
+  final String baseUrl = 'https://f7a9-121-178-98-30.ngrok-free.app';
+  // 통신 url
+  final Uri url = Uri.parse('$baseUrl/api/v1/payments/validate');
+  final prefs = await SharedPreferences.getInstance();
+  final accessToken = prefs.getString('accessToken');
+
+  print('$accessToken >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
+  try {
+    final response = await http.post(
+      url,
+      headers: <String, String>{
+        'Authorization': 'Bearer $accessToken',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        'impUid': impUid, // 아임포트 결제 고유 ID
+        'orderUid': orderUid, // 주문 고유 ID
+      }),
+    );
+    debugPrint('결제 ~~: ${response.statusCode}');
+
+    if (response.statusCode == 200) {
+      // 서버로부터 정상적인 응답을 받았을 때의 처리
+      debugPrint('결제 검증 성공: ${response.body}');
+      debugPrint('결제 검증 성공: ${response.headers}');
+      // Navigator를 사용하여 결제완료 페이지로 이동하거나, 상태 업데이트 등의 로직 추가
+    } else {
+      // 서버로부터 오류 응답을 받았을 때의 처리
+      debugPrint('결제 검증 실패: ${response.body}');
+      // Navigator를 사용하여 결제실패 페이지로 이동하거나, 오류 메시지 표시 등의 로직 추가
+    }
+  } catch (e) {
+    debugPrint('결제 검증 중 예외 발생: $e');
+    // 예외 발생 시 처리 로직 추가
   }
 }

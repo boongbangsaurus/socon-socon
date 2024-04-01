@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:socon/models/user.dart';
 import 'package:socon/services/auth_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:socon/viewmodels/login_state_view_model.dart';
+import 'package:socon/models/product_detail_model.dart';
+
 
 /// [SignInViewModel]
 /// view의 실제 로직 구현 (폼 검증, 서비스 호출)

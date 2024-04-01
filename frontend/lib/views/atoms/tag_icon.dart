@@ -130,6 +130,7 @@ class _TagButtonState extends State<TagButton> {
     return TextButton(
       onPressed: widget.onPressed != null ? () {
         setState(() {
+          _isSelected = !_isSelected;
           widget.onPressed!();
         });
         widget.onSelected(_isSelected);

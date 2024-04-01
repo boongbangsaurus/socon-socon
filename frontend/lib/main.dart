@@ -11,10 +11,11 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:socon/utils/firebase_utils.dart';
 import 'package:socon/viewmodels/login_state_view_model.dart';
 import 'package:socon/viewmodels/boss_verification_view_model.dart';
+import 'package:socon/viewmodels/payment_verification_view_model.dart';
+import 'package:socon/viewmodels/store_register_view_model.dart';
 import 'package:socon/viewmodels/notification_view_model.dart';
 import 'firebase_options.dart';
 
-import 'package:webview_flutter/webview_flutter.dart';
 import 'package:google_maps_flutter_android/google_maps_flutter_android.dart';
 import 'package:google_maps_flutter_platform_interface/google_maps_flutter_platform_interface.dart';
 
@@ -63,6 +64,8 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => BossVerificationViewModel()),
         ChangeNotifierProvider(create: (context) => LoginState()),
+        ChangeNotifierProvider(create: (context) => PaymentVerificationViewModel()),
+        ChangeNotifierProvider(create: (context) => StoreRegisterViewModel()),
       ],
       child: MaterialApp.router(
         routerConfig: router,
