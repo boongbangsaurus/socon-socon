@@ -1,7 +1,11 @@
 package site.soconsocon.socon.search.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.geo.Distance;
 import org.springframework.data.geo.Point;
 import org.springframework.stereotype.Service;
@@ -21,11 +25,14 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class SearchService {
     private final SearchRepository searchRepository;
     private final FavStoreRepository favStoreRepository;
     public ArrayList<FoundStoreInfo> searchStores(SearchRequest searchRequest, Integer memberId){
         ArrayList<FoundStoreInfo> foundStoreInfoList = null;
+        log.warn(searchRequest.toString());
+        log.warn("memberId : "+memberId);
         if(searchRequest.getSearchType() == SearchType.name){
 
         }
@@ -33,10 +40,16 @@ public class SearchService {
 
         }
         else if (searchRequest.getSearchType() == SearchType.address) {
-            Point location = new Point(Double.parseDouble(searchRequest.getLat()), Double.parseDouble(searchRequest.getLng()));
+            Point location = new Point(Double.parseDouble(searchRequest.getLng()), Double.parseDouble(searchRequest.getLat()));
             Distance distance = new Distance(3);
+            // default pagination value
+            int page = 0; // Page number, 0-based
+            int size = 10; // Number of items per page
+            Pageable pageable = PageRequest.of(page, size);
+            // Define sorting by distance
+            Sort sort = Sort.by(Sort.Direction.ASC, "location").and(Sort.by(Sort.Direction.ASC, "name")); // Assuming location field name is "location"
 
-            Page<StoreDocument> foundStores = searchRepository.findStoreDocumentsByLocationNear(location, distance)
+            Page<StoreDocument> foundStores = searchRepository.findStoreDocumentsByLocationNear(location, distance, pageable)
                     .orElseThrow(() -> new SearchException(SearchErrorCode.SEARCH_FAIL));
 
             List<FavStore> favStoreList = favStoreRepository.findByMemberId(memberId);
@@ -58,6 +71,7 @@ public class SearchService {
                     })
                     .collect(Collectors.toCollection(ArrayList::new));
         } else {
+            log.error(SearchType.address.toString());
             throw new SearchException(SearchErrorCode.INVALID_FORMAT);
         }
         return foundStoreInfoList;

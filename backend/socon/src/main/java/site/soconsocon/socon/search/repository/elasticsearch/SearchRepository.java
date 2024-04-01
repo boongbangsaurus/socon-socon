@@ -17,5 +17,5 @@ public interface SearchRepository extends ElasticsearchRepository<StoreDocument,
      * @param distance
      * @return
      */
-    Optional<Page<StoreDocument>> findStoreDocumentsByLocationNear(Point point, Distance distance);
+    Optional<Page<StoreDocument>> findStoreDocumentsByLocationNear(Point point, Distance distance, Pageable pageable);
 }

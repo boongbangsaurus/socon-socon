@@ -337,8 +337,7 @@ public class StoreService {
 
         List<FavoriteStoresListResponse> stores = new ArrayList<>();
 
-        List<FavStore> favStores = favStoreRepository.findByMemberId(memberId)
-                .orElseThrow(() -> new StoreException(StoreErrorCode.STORE_NOT_FOUND));
+        List<FavStore> favStores = favStoreRepository.findByMemberId(memberId);
 
         for (FavStore favStore : favStores) {
             Store store = storeRepository.findById(favStore.getStoreId())
