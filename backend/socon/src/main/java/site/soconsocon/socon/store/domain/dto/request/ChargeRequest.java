@@ -1,12 +1,13 @@
 package site.soconsocon.socon.store.domain.dto.request;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Getter
+@Setter
+@ToString
 public class ChargeRequest {
 
     private int memberId;

@@ -2,6 +2,7 @@ package site.soconsocon.socon.store.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import site.soconsocon.socon.store.domain.dto.request.*;
@@ -20,6 +21,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/v1/stores")
 @RequiredArgsConstructor
+@Slf4j
 public class StoreApiController {
 
     private final StoreService storeService;
@@ -34,6 +36,7 @@ public class StoreApiController {
             AddStoreRequest request,
             @RequestHeader("X-Authorization-Id") int memberId
     ) {
+
         storeService.saveStore(request, memberId);
 
         return ResponseEntity.ok().body(MessageUtils.success(null));
@@ -61,8 +64,8 @@ public class StoreApiController {
         return ResponseEntity.ok().body(MessageUtils.success(response));
     }
 
-    // 점주 가게 상세 정보 조회
-    @GetMapping("/stores/{store_id}/manage/info")
+    // 점주 가게 상세 정보 조회`
+    @GetMapping("/{store_id}/manage/info")
     public ResponseEntity<Object> getDetailStoreInfo(
             @PathVariable("store_id") Integer storeId,
             @RequestHeader("X-Authorization-Id") int memberId
@@ -80,10 +83,11 @@ public class StoreApiController {
     // 가게 정보 수정
     @PutMapping("/{store_id}/info")
     public ResponseEntity<Object> updateStoreInfo(
-            UpdateStoreInfoRequest request,
+            @RequestBody UpdateStoreInfoRequest request,
             @PathVariable("store_id") Integer storeId,
             @RequestHeader("X-Authorization-Id") int memberId
     ) {
+
         storeService.updateStoreInfo(storeId, request, memberId);
 
         return ResponseEntity.ok().body(MessageUtils.success(null));
@@ -93,7 +97,7 @@ public class StoreApiController {
     @PutMapping("/{store_id}/manage/info")
     public ResponseEntity<Object> updateClosedPlanned(
             @PathVariable("store_id") Integer storeId,
-            UpdateClosedPlannedRequest request,
+            @RequestBody UpdateClosedPlannedRequest request,
             @RequestHeader("X-Authorization-Id") int memberId
     ) {
         storeService.updateClosedPlanned(storeId, request, memberId);
@@ -102,7 +106,7 @@ public class StoreApiController {
     }
 
     // 상품 정보 등록
-    @PostMapping("/stores/{store_id}/items")
+    @PostMapping("/{store_id}/items")
     public ResponseEntity<Object> saveStoreItem(
             @PathVariable("store_id") Integer storeId,
             @RequestBody AddItemRequest request,
@@ -115,7 +119,7 @@ public class StoreApiController {
     }
 
     // 상품 정보 상세 조회
-    @GetMapping("/stores/{store_id}/items/{item_id}")
+    @GetMapping("/{store_id}/items/{item_id}")
     public ResponseEntity<Object> getDetailItemInfo(
             @PathVariable("store_id") Integer storeId,
             @PathVariable("item_id") Integer itemId,
@@ -125,7 +129,7 @@ public class StoreApiController {
     }
 
     // 상품 발행 정보 등록
-    @PostMapping("/stores/{store_id}/items/{item_id}")
+    @PostMapping("/{store_id}/items/{item_id}")
     public ResponseEntity<Object> saveIssue(
             @PathVariable("store_id") Integer storeId,
             @PathVariable("item_id") Integer itemId,
@@ -145,7 +149,7 @@ public class StoreApiController {
     ) {
         storeService.favoriteStore(storeId, memberId);
 
-        return ResponseEntity.ok().body(MessageUtils.success(null));
+        return ResponseEntity.ok().body(MessageUtils.success(null, "204 NO CONTENT", null));
     }
 
     // 관심 가게 목록 조회
@@ -168,11 +172,7 @@ public class StoreApiController {
 
         storeService.saveBusinessNumber(request, memberId);
 
-        return ResponseEntity.ok().body(MessageUtils.success(null));
+        return ResponseEntity.ok().body(MessageUtils.success(null, "201 CREATED", null));
     }
 
-    @GetMapping("/test")
-    public ResponseEntity<Object> test(){
-        return ResponseEntity.ok().body(MessageUtils.success("test"));
-    }
 }

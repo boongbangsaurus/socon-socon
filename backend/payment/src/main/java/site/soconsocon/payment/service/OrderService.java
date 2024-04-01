@@ -3,6 +3,7 @@ package site.soconsocon.payment.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import site.soconsocon.payment.domain.dto.request.OrderRequestDto;
+import site.soconsocon.payment.domain.dto.response.OrderResponseDto;
 import site.soconsocon.payment.domain.dto.response.PaymentByOrderResponseDto;
 import site.soconsocon.payment.domain.entity.jpa.Orders;
 import site.soconsocon.payment.domain.entity.jpa.Payment;
@@ -39,7 +40,7 @@ public class OrderService {
 
     public PaymentByOrderResponseDto findOrderByImpUid(String impUid) throws PaymentException {
         //결제 정보 가져오기
-        site.soconsocon.payment.domain.entity.jpa.Payment payment = paymentRepository.findPaymentByImpUid(impUid).orElseThrow(
+        Payment payment = paymentRepository.findPaymentByImpUid(impUid).orElseThrow(
                 () -> new PaymentException(ErrorCode.PAYMENT_NOT_FOUND)
         );
         //주문내역 조회
@@ -56,5 +57,23 @@ public class OrderService {
 
         return paymentByOrderResponseDto;
     }
+
+    public OrderResponseDto findOrderByOrderId(String orderId) throws PaymentException {
+        //주문내역 조회
+        Orders order = orderRepository.findOrderByOrderUid(orderId)
+                .orElseThrow(() -> new PaymentException(ErrorCode.ORDER_NOT_FOUND));
+
+        OrderResponseDto orderResponseDto = OrderResponseDto.builder()
+                .id(order.getId())
+                .orderUid(order.getOrderUid())
+                .itemName(order.getItemName())
+                .orderStatus(order.getOrderStatus())
+                .memberId(order.getMemberId())
+                .quantity(order.getQuantity())
+                .build();
+
+        return orderResponseDto;
+    }
+
 
 }

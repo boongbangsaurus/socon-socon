@@ -1,6 +1,7 @@
 package site.soconsocon.socon.sogon.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import site.soconsocon.socon.sogon.domain.dto.request.AddCommentRequest;
@@ -10,6 +11,7 @@ import site.soconsocon.socon.sogon.service.SogonService;
 import site.soconsocon.utils.MessageUtils;
 
 @RestController
+@Slf4j
 @RequestMapping("/api/v1/sogons")
 @RequiredArgsConstructor
 public class SogonController {
@@ -19,7 +21,7 @@ public class SogonController {
     // 소곤 작성
     @PostMapping("")
     public ResponseEntity<Object> saveSogon(
-            AddSogonRequest request,
+            @RequestBody AddSogonRequest request,
             @RequestHeader("X-Authorization-Id") int memberId
     ){
 
@@ -32,7 +34,7 @@ public class SogonController {
     @PostMapping("/{sogon_id}/comment")
     public ResponseEntity<Object> addSogonComment(
         @PathVariable ("sogon_id") Integer sogonId,
-        AddCommentRequest request,
+        @RequestBody AddCommentRequest request,
         @RequestHeader("X-Authorization-Id") int memberId
     ){
         sogonService.addSogonComment(sogonId, request, memberId);
@@ -41,7 +43,7 @@ public class SogonController {
     }
 
     // 댓글 채택
-    @PutMapping("/{sogon_id}/comment/{comment_id}")
+    @GetMapping("/{sogon_id}/comment/{comment_id}")
     public ResponseEntity<Object> pickSogonComment(
             @PathVariable ("sogon_id") Integer sogonId,
             @PathVariable ("comment_id") Integer commentId,

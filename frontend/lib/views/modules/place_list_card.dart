@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:go_router/go_router.dart';
 import 'package:socon/models/store.dart';
 import 'package:socon/utils/colors.dart';
 import 'package:socon/utils/fontSizes.dart';
@@ -36,53 +37,59 @@ class _PlaceListCardState extends State<PlaceListCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(
-          bottom: ResponsiveUtils.getHeightWithPixels(
-              context, ResponsiveUtils.getHeightWithPixels(context, 5.0))),
-      color: AppColors.WHITE,
-      height: ResponsiveUtils.getHeightWithPixels(context, 100),
-      width: ResponsiveUtils.getWidthWithPixels(context, 360),
-      child: Row(
-        children: <Widget>[
-          Container(
-            width: ResponsiveUtils.getWidthWithPixels(
-                context, imageContainerWidth),
-            height: ResponsiveUtils.getWidthWithPixels(
-                context, imageContainerWidth),
-            decoration: BoxDecoration(
-              color: AppColors.WHITE,
-              borderRadius: BorderRadius.circular(borderRadius),
-            ),
-            child: const ImageLoader(
-              imageUrl: "https://cataas.com/cat",
-              borderRadius: borderRadius,
-            ),
-          ),
-          const SizedBox(width: 10.0),
-          Expanded(
-            child: Container(
-              padding: EdgeInsets.only(
-                  right: ResponsiveUtils.getWidthWithPixels(context, 5.0)),
+    return GestureDetector(
+      onTap: () {
+        print("장소리스트 클릭 ${widget.storeInfo.storeId}");
+        GoRouter.of(context).go("/myStores/${widget.storeInfo.storeId}");
+      },
+      child: Container(
+        margin: EdgeInsets.only(
+            bottom: ResponsiveUtils.getHeightWithPixels(
+                context, ResponsiveUtils.getHeightWithPixels(context, 5.0))),
+        color: AppColors.WHITE,
+        height: ResponsiveUtils.getHeightWithPixels(context, 100),
+        width: ResponsiveUtils.getWidthWithPixels(context, 360),
+        child: Row(
+          children: <Widget>[
+            Container(
+              width: ResponsiveUtils.getWidthWithPixels(
+                  context, imageContainerWidth),
               height: ResponsiveUtils.getWidthWithPixels(
                   context, imageContainerWidth),
-              color: AppColors.WHITE,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Expanded(
-                    flex: 2,
-                    child: buildPlaceInfo(), // 장소 정보 위젯
-                  ),
-                  Expanded(
-                    flex: 1,
-                    child: buildTagsAndDistance(), // 태그 및 거리 위젯
-                  ),
-                ],
+              decoration: BoxDecoration(
+                color: AppColors.WHITE,
+                borderRadius: BorderRadius.circular(borderRadius),
+              ),
+              child: const ImageLoader(
+                imageUrl: "https://cataas.com/cat",
+                borderRadius: borderRadius,
               ),
             ),
-          ),
-        ],
+            const SizedBox(width: 10.0),
+            Expanded(
+              child: Container(
+                padding: EdgeInsets.only(
+                    right: ResponsiveUtils.getWidthWithPixels(context, 5.0)),
+                height: ResponsiveUtils.getWidthWithPixels(
+                    context, imageContainerWidth),
+                color: AppColors.WHITE,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Expanded(
+                      flex: 2,
+                      child: buildPlaceInfo(), // 장소 정보 위젯
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: buildTagsAndDistance(), // 태그 및 거리 위젯
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

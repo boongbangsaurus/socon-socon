@@ -1,5 +1,7 @@
 package site.soconsocon.socon.store.domain.dto.response;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,6 +13,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Getter
 @Builder
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class IssueListResponse {
 
     private Integer id;

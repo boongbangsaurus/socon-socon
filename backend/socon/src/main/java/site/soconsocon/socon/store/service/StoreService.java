@@ -3,26 +3,21 @@ package site.soconsocon.socon.store.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
 import site.soconsocon.socon.global.domain.ErrorCode;
 import site.soconsocon.socon.global.exception.SoconException;
-
-import site.soconsocon.socon.store.domain.entity.feign.Member;
 import site.soconsocon.socon.store.domain.dto.request.*;
+import site.soconsocon.socon.store.domain.dto.response.BusinessHourResponse;
 import site.soconsocon.socon.store.domain.dto.response.FavoriteStoresListResponse;
 import site.soconsocon.socon.store.domain.dto.response.StoreInfoResponse;
 import site.soconsocon.socon.store.domain.dto.response.StoreListResponse;
+import site.soconsocon.socon.store.domain.entity.feign.Member;
 import site.soconsocon.socon.store.domain.entity.jpa.*;
 import site.soconsocon.socon.store.exception.StoreErrorCode;
 import site.soconsocon.socon.store.exception.StoreException;
-
-import site.soconsocon.socon.store.domain.entity.jpa.BusinessHour;
-import site.soconsocon.socon.store.domain.entity.jpa.FavStore;
-import site.soconsocon.socon.store.domain.entity.jpa.BusinessRegistration;
-import site.soconsocon.socon.store.domain.entity.jpa.Store;
 import site.soconsocon.socon.store.feign.FeignServiceClient;
 import site.soconsocon.socon.store.repository.*;
 
+import java.sql.Time;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,21 +37,14 @@ public class StoreService {
     private final SoconRepository soconRepository;
     private final FeignServiceClient feignServiceClient;
 
-
-    // 사업자 번호 등록
-
-
     // 가게 정보 등록
     public void saveStore(AddStoreRequest request, int memberId) {
-
-        log.info(request.toString());
 
         //RegistrationNumber 조회
         BusinessRegistration businessRegistration = businessRegistrationRepository.findById(request.getRegistrationNumberId()).orElseThrow(() -> new StoreException(StoreErrorCode.REGISTRATION_NUMBER_NOT_FOUND));
 
         // 본인 소유의 사업자 등록 id가 아닌 경우
-
-        if (businessRegistration.getMemberId().equals(memberId)) {
+        if (!(businessRegistration.getMemberId().equals(memberId))) {
             throw new SoconException(ErrorCode.FORBIDDEN);
         }
 
@@ -69,7 +57,8 @@ public class StoreService {
                 .lat(request.getLat())
                 .lng(request.getLng())
                 .introduction(request.getIntroduction())
-                .closingPlanned(null).isClosed(false).createdAt(LocalDate.now())
+                .closingPlanned(null).isClosed(false)
+                .createdAt(LocalDate.now())
                 .memberId(memberId)
                 .businessRegistration(businessRegistration).build();
 
@@ -77,20 +66,39 @@ public class StoreService {
         if (storeRepository.checkStoreDuplication(store.getName(), store.getBusinessRegistration().getId(), store.getLat(), store.getLng()) > 0) {
             throw new StoreException(StoreErrorCode.ALREADY_SAVED_STORE);
         }
+
         storeRepository.save(store);
 
         // businessHourList 저장
-        List<BusinessHourRequest> businessHours = request.getBusinessHours();
+        List<BusinessHourRequest> businessHours = request.getBusinessHour();
+
+
         for (BusinessHourRequest businessHour : businessHours) {
-            businessHourRepository.save(BusinessHour.builder()
-                    .day(businessHour.getDay())
-                    .isWorking(businessHour.getIsWorking())
-                    .openAt(businessHour.getOpenAt())
-                    .closeAt(businessHour.getCloseAt())
-                    .breaktimeStart(businessHour.getBreaktimeStart())
-                    .breaktimeEnd(businessHour.getBreaktimeEnd())
-                    .store(store)
-                    .build());
+            BusinessHour hour = new BusinessHour();
+            if(businessHour.getIsWorking()){
+                hour.setIsWorking(true);
+                hour.setOpenAt(Time.valueOf(businessHour.getOpenAt() + ":00"));
+                hour.setCloseAt(Time.valueOf(businessHour.getCloseAt() + ":00"));
+            }
+            else{
+                hour.setIsWorking(false);
+                hour.setOpenAt(null);
+                hour.setCloseAt(null);
+            }
+            if(businessHour.getIsBreaktime()){
+                hour.setIsBreaktime(true);
+                hour.setBreaktimeStart(Time.valueOf(businessHour.getBreaktimeStart() + ":00"));
+                hour.setBreaktimeEnd(Time.valueOf(businessHour.getBreaktimeEnd() + ":00"));
+            }
+            else{
+                hour.setIsBreaktime(false);
+                hour.setBreaktimeStart(null);
+                hour.setBreaktimeEnd(null);
+            }
+            hour.setDay(businessHour.getDay());
+            hour.setStore(store);
+
+            businessHourRepository.save(hour);
         }
     }
 
@@ -98,6 +106,7 @@ public class StoreService {
     public List<StoreListResponse> getStoreList(int memberId) {
 
         List<Store> stores = storeRepository.findStoresByMemberId(memberId);
+
         List<StoreListResponse> storeList = new ArrayList<>();
         for (Store store : stores) {
             storeList.add(StoreListResponse.builder()
@@ -116,10 +125,26 @@ public class StoreService {
 
         Store store = storeRepository.findById(storeId).orElseThrow(() -> new StoreException(StoreErrorCode.STORE_NOT_FOUND));
 
+        Member member = feignServiceClient.getMemberInfo(store.getMemberId());
+
         BusinessRegistration businessRegistration = store.getBusinessRegistration();
         Integer favoriteCount = favStoreRepository.countByStoreId(storeId);
 
-        Member member = feignServiceClient.getMemberInfo(store.getMemberId());
+        List<BusinessHour> businessHours = businessHourRepository.findBusinessHourResponseByStoreId(storeId);
+        List<BusinessHourResponse> businessHourResponses = new ArrayList<>();
+        for(BusinessHour businessHour : businessHours){
+            businessHourResponses.add(BusinessHourResponse.builder()
+                    .day(businessHour.getDay())
+                    .isWorking(businessHour.getIsWorking())
+                    .isBreaktime(businessHour.getIsBreaktime())
+                    .openAt(businessHour.getOpenAt())
+                    .closeAt(businessHour.getCloseAt())
+                    .breaktimeStart(businessHour.getBreaktimeStart())
+                    .breaktimeEnd(businessHour.getBreaktimeEnd())
+                    .build());
+        }
+
+
 
         return StoreInfoResponse.builder()
                 .storeId(storeId)
@@ -128,7 +153,7 @@ public class StoreService {
                 .image(store.getImage())
                 .address(store.getAddress())
                 .phoneNumber(store.getPhoneNumber())
-                .businessHours(businessHourRepository.findBusinessHourResponseByStoreId(storeId))
+                .businessHours(businessHourResponses)
                 .introduction(store.getIntroduction())
                 .closingPlanned(store.getClosingPlanned())
                 .favoriteCount(favoriteCount)
@@ -143,32 +168,44 @@ public class StoreService {
     public void updateStoreInfo(Integer storeId, UpdateStoreInfoRequest request, int memberId) {
 
         var store = storeRepository.findById(storeId).orElseThrow(() -> new StoreException(StoreErrorCode.STORE_NOT_FOUND));
-
-
-        if (store.getMemberId().equals(memberId)) {
+        if (!store.getMemberId().equals(memberId)) {
             // 본인 가게 아닐 경우
             throw new SoconException(ErrorCode.FORBIDDEN);
         } else {
             // 영업시간 수정
-            List<BusinessHourRequest> requestBusinessHours = request.getBusinessHours();
-
-            List<BusinessHour> savedBusinessHours = businessHourRepository.findByStoreId(storeId);
-
+            List<BusinessHourRequest> requestBusinessHours = request.getBusinessHour(); // 요청 영업시간
+            List<BusinessHour> savedBusinessHours = businessHourRepository.findByStoreId(storeId); // 저장되어있는 영업시간
             if (savedBusinessHours.isEmpty()) {
                 // 저장된 값이 없을 경우
                 for (BusinessHourRequest businessHour : requestBusinessHours) {
+                    BusinessHour hour = new BusinessHour();
+                    if (businessHour.getIsWorking()) {
+                        hour.setIsWorking(true);
+                        hour.setOpenAt(Time.valueOf(businessHour.getOpenAt()+":00"));
+                        hour.setCloseAt(Time.valueOf(businessHour.getCloseAt()+":00"));
+                    }
+                    else{
+                        hour.setIsWorking(false);
+                        hour.setOpenAt(null);
+                        hour.setCloseAt(null);
+                    }
+                    if (businessHour.getIsBreaktime()){
+                        hour.setIsBreaktime(true);
+                        hour.setBreaktimeStart(Time.valueOf(businessHour.getBreaktimeStart()+":00"));
+                        hour.setBreaktimeEnd(Time.valueOf(businessHour.getBreaktimeEnd()+":00"));
+                    }
+                    else{
+                        hour.setIsBreaktime(false);
+                        hour.setBreaktimeStart(null);
+                        hour.setBreaktimeEnd(null);
+                    }
 
-                    businessHourRepository.save(BusinessHour.builder()
-                                    .day(businessHour.getDay())
-                                    .isWorking(businessHour.getIsWorking())
-                                    .openAt(businessHour.getOpenAt())
-                                    .closeAt(businessHour.getCloseAt())
-                                    .isBreaktime(businessHour.getIsBreaktime())
-                                    .breaktimeStart(businessHour.getBreaktimeStart())
-                                    .breaktimeEnd(businessHour.getBreaktimeEnd())
-                                    .store(store)
-                                    .build());
+                    hour.setDay(businessHour.getDay());
+                    hour.setStore(store);
+
+                    businessHourRepository.save(hour);
                 }
+
                 List<BusinessHour> newBusinessHours = businessHourRepository.findByStoreId(storeId);
 
                 Store savedStore = storeRepository.findById(storeId).orElseThrow(() -> new StoreException(StoreErrorCode.STORE_NOT_FOUND));
@@ -179,15 +216,29 @@ public class StoreService {
                 for (BusinessHourRequest businessHour : requestBusinessHours) {
                     BusinessHour matchedBusinessHour = savedBusinessHours.stream().filter(savedBusinessHour -> savedBusinessHour.getDay().equals(businessHour.getDay())).findFirst().orElse(null); // null일 경우
 
-                    matchedBusinessHour.setIsWorking(businessHour.getIsWorking());
-                    matchedBusinessHour.setOpenAt(businessHour.getOpenAt());
-                    matchedBusinessHour.setCloseAt(businessHour.getCloseAt());
-                    matchedBusinessHour.setIsBreaktime(businessHour.getIsBreaktime());
-                    matchedBusinessHour.setBreaktimeStart(businessHour.getBreaktimeStart());
-                    matchedBusinessHour.setBreaktimeEnd(businessHour.getBreaktimeEnd());
+                    if(businessHour .getIsWorking()){
+                        matchedBusinessHour.setIsWorking(true);
+                        matchedBusinessHour.setOpenAt(Time.valueOf(businessHour.getOpenAt() + ":00"));
+                        matchedBusinessHour.setCloseAt(Time.valueOf(businessHour.getCloseAt()+ ":00"));
+                    }
+                    else{
+                        matchedBusinessHour.setIsWorking(false);
+                        matchedBusinessHour.setOpenAt(null);
+                        matchedBusinessHour.setCloseAt(null);
+                    }
+                    if(businessHour.getIsBreaktime()){
+                        matchedBusinessHour.setIsBreaktime(true);
+                        matchedBusinessHour.setBreaktimeStart(Time.valueOf(businessHour.getBreaktimeStart()+ ":00"));
+                        matchedBusinessHour.setBreaktimeEnd(Time.valueOf(businessHour.getBreaktimeEnd()+ ":00"));
+
+                    }else{
+                        matchedBusinessHour.setIsBreaktime(false);
+                        matchedBusinessHour.setBreaktimeStart(null);
+                        matchedBusinessHour.setBreaktimeEnd(null);
+
+                    }
 
                     businessHourRepository.save(matchedBusinessHour);
-
                 }
             }
 
@@ -217,6 +268,7 @@ public class StoreService {
         }
         LocalDate closedAt = LocalDate.now().plusDays(request.getCloseAfter());
         store.setClosingPlanned(closedAt);
+
         storeRepository.save(store);
 
         // 발행 중 소콘 발행 중지
@@ -251,7 +303,11 @@ public class StoreService {
                 favStoreRepository.deleteByStoreId(store.getId());
 
                 // 사용되지 않은 소콘 상태 업데이트
-                soconRepository.updateUnusedSoconByStoreId(store.getId());
+                List<Socon> socons = soconRepository.getSoconByStoreId(store.getId());
+                for(Socon socon : socons ){
+                    socon.setStatus("expired");
+                    soconRepository.save(socon);
+                }
             }
         }
     }
@@ -286,12 +342,12 @@ public class StoreService {
         for (FavStore favStore : favStores) {
             Store store = storeRepository.findById(favStore.getStoreId())
                     .orElseThrow(() -> new StoreException(StoreErrorCode.STORE_NOT_FOUND));
-
+            List<Issue> issues = issueRepository.findMainIssueNameByStoreId(store.getId());
             stores.add(FavoriteStoresListResponse.builder()
                     .id(store.getId())
                     .name(store.getName())
                     .image(store.getImage())
-                    .mainMenu(issueRepository.findMainIssueNameByStoreId(store.getId()))
+                    .mainMenu(!issues.isEmpty() ?issues.get(0).getName() : null)
                     .build());
         }
         return stores;
