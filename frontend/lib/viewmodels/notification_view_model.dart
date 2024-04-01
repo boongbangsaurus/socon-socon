@@ -1,5 +1,5 @@
 
-import 'package:socon/services/firebase_messaging_service.dart';
+import 'package:socon/services/notifications/firebase_messaging_service.dart';
 
 class NotificationViewModel {
   final FirebaseMessagingService _firebaseMessagingService = FirebaseMessagingService();
