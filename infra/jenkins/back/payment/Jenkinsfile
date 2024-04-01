@@ -23,22 +23,12 @@ pipeline {
                 }
             }
         }
-        stage('Print current files'){
-            steps {
-                script {
-                    sh 'ls -al'
-                }
-            }
-        }
         stage('Move .env File') {
             steps {
                 script{
-                    sh 'ls -al ../'
-                    sh 'ls -al'
                     sh 'cp ../environments/.env backend/payment/.env'
                     sh 'cp ../environments/gradle.properties backend/payment/gradle.properties'
                     sh "mkdir -p backend/payment/src/main/resources"
-                    sh "ls -al secure-settings/back/payment"
                     // find 명령어를 사용하여 .yml 파일을  찾고, 각 파일에 대해 cp 명령어를 실행
                     sh "cp secure-settings/back/payment/payment-service-default.yml backend/payment/src/main/resources/application.yml"
                 }
