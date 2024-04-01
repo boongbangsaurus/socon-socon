@@ -7,16 +7,25 @@ pipeline {
         stage('Checkout') {
             steps {
                 checkout scmGit(
-                        branches: [[name: 'release-test']],
+                        branches: [[name: 'develop']],
                         extensions: [submodule(parentCredentials: true, trackingSubmodules: true)],
                         userRemoteConfigs: [
                                 [credentialsId: 'github-access-token', url: 'https://github.com/boongbangsaurus/boongbang-settings']]
                 )
             }
         }
+        stage('Print current files'){
+            steps {
+                script {
+                    sh 'ls -al'
+                }
+            }
+        }
         stage('Move .env File') {
             steps {
                 script{
+                    sh 'ls -al ../'
+                    sh 'ls -al'
                     sh 'cp ../environments/.env backend/payment/.env'
                     sh 'cp ../environments/gradle.properties backend/payment/gradle.properties'
                     sh "mkdir -p backend/payment/src/main/resources"

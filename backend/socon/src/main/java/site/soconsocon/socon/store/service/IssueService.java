@@ -7,6 +7,7 @@ import site.soconsocon.socon.global.domain.ErrorCode;
 import site.soconsocon.socon.global.exception.SoconException;
 import site.soconsocon.socon.store.domain.dto.request.AddIssueRequest;
 import site.soconsocon.socon.store.domain.dto.request.AddMySoconRequest;
+import site.soconsocon.socon.store.domain.dto.response.IssueInfoResponse;
 import site.soconsocon.socon.store.domain.dto.response.IssueListResponse;
 import site.soconsocon.socon.store.domain.entity.jpa.Issue;
 import site.soconsocon.socon.store.domain.entity.jpa.Item;
@@ -130,4 +131,20 @@ public class IssueService {
         issueRepository.save(issue);
     }
 
+    public Object getIssueInfo(Integer issueId) {
+
+        Issue issue = issueRepository.findById(issueId)
+                .orElseThrow(() -> new StoreException(StoreErrorCode.ISSUE_NOT_FOUND));
+        Item item = itemRepository.findById(issue.getItem().getId())
+                .orElseThrow(() -> new StoreException(StoreErrorCode.ITEM_NOT_FOUND));
+        return IssueInfoResponse.builder()
+                .id(issue.getId())
+                .name(issue.getName())
+                .itemImage(issue.getImage())
+                .storeImage(item.getStore().getImage())
+                .price(issue.getPrice())
+                .summary(item.getSummary())
+                .description(item.getDescription())
+                .build();
+    }
 }

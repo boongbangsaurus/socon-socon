@@ -1,10 +1,12 @@
 package site.soconsocon.socon.store.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import site.soconsocon.socon.global.domain.ErrorCode;
 import site.soconsocon.socon.global.exception.SoconException;
 import site.soconsocon.socon.store.domain.dto.request.ChargeRequest;
+import site.soconsocon.socon.store.domain.dto.request.SoconBookSearchRequest;
 import site.soconsocon.socon.store.domain.dto.response.SoconInfoResponse;
 import site.soconsocon.socon.store.domain.dto.response.SoconListResponse;
 import site.soconsocon.socon.store.domain.entity.jpa.Issue;
@@ -20,6 +22,7 @@ import java.util.*;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class SoconService {
 
     private final SoconRepository soconRepository;
@@ -56,7 +59,10 @@ public class SoconService {
             Issue issue = socon.getIssue();
             Item item = issue.getItem();
 
-            if(socon.getExpiredAt().isAfter(LocalDateTime.now())) {
+            LocalDateTime expiredAt = LocalDateTime.parse(socon.getExpiredAt().toString());
+            LocalDateTime nowWithMilliseconds = LocalDateTime.now().withNano(0);
+
+             if (expiredAt.toLocalDate().isEqual(nowWithMilliseconds.toLocalDate()) && expiredAt.toLocalTime().isAfter(nowWithMilliseconds.toLocalTime())){
                 socon.setStatus("expired");
                 soconRepository.save(socon);
             }
@@ -102,34 +108,43 @@ public class SoconService {
         Socon socon = soconRepository.findById(soconId)
                 .orElseThrow(() -> new StoreException(StoreErrorCode.SOCON_NOT_FOUND));
 
-        if (!Objects.equals(socon.getIssue().getItem().getStore().getId(), memberId)) {
+        if (!Objects.equals(socon.getIssue().getItem().getStore().getMemberId(), memberId)) {
             // 요청자가 해당 점포 주인이 아닌 경우
             throw new SoconException(ErrorCode.FORBIDDEN);
         }
 
-        if (Objects.equals(socon.getStatus(), "usused") && socon.getExpiredAt().isAfter(LocalDateTime.now())) {
+        LocalDateTime expiredAt = LocalDateTime.parse(socon.getExpiredAt().toString());
+        LocalDateTime nowWithMilliseconds = LocalDateTime.now().withNano(0);
+        if (expiredAt.toLocalDate().isEqual(nowWithMilliseconds.toLocalDate()) && expiredAt.toLocalTime().isAfter(nowWithMilliseconds.toLocalTime())){
+            socon.setStatus("expired");
+            soconRepository.save(socon);
+        }
+        if (Objects.equals(socon.getStatus(), "unused")) {
             socon.setStatus("used");
             socon.setUsedAt(LocalDateTime.now());
+
+            // 출금 요청
+            feignServiceClient.deposit(ChargeRequest.builder()
+                    .memberId(memberId)
+                    .money(socon.getIssue().getPrice())
+                    .build());
+
             soconRepository.save(socon);
         } else {
             // 소곤에 등록된 경우, 만료 기간이 지난 경우, 사용된 상태인 경우 등등.
             throw new StoreException(StoreErrorCode.INVALID_SOCON);
         }
 
-        // 출금 요청
-        feignServiceClient.deposit(ChargeRequest.builder()
-                        .memberId(memberId)
-                        .money(socon.getIssue().getPrice())
-                        .build());
+
     }
 
     // 소콘북 검색
-    public List<SoconListResponse> searchSocon(String category, String keyword, int memberId) {
+    public List<SoconListResponse> searchSocon(SoconBookSearchRequest request, int memberId) {
         List<Socon> socons;
-        if (Objects.equals(category, "store")) {
-            socons = soconRepository.getSoconByMemberIdAndStoreName(memberId, keyword);
-        } else if (Objects.equals(category, "item")) {
-            socons = soconRepository.getSoconByMemberIdAndItemName(memberId, keyword);
+        if (Objects.equals(request.getCategory(), "store")) {
+            socons = soconRepository.getSoconByMemberIdAndStoreName(memberId, request.getKeyword());
+        } else if (Objects.equals(request.getCategory(), "item")) {
+            socons = soconRepository.getSoconByMemberIdAndItemName(memberId, request.getKeyword());
         } else {
             throw new SoconException(ErrorCode.BAD_REQUEST);
         }
@@ -138,7 +153,7 @@ public class SoconService {
         for (Socon socon : socons) {
             soconListResponses.add(SoconListResponse.builder()
                     .soconId(socon.getId())
-                    .itemImage(socon.getIssue().getName())
+                    .itemName(socon.getIssue().getName())
                     .storeName(socon.getIssue().getStoreName())
                     .expiredAt(socon.getExpiredAt())
                     .status(socon.getStatus())

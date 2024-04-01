@@ -17,7 +17,7 @@ public class IssueApiController {
     // 소콘북 저장
     @PostMapping("socon")
     public ResponseEntity<Object> saveMySocon(
-            AddMySoconRequest request
+            @RequestBody AddMySoconRequest request
     ){
         issueService.saveMySocon(request);
 
@@ -33,5 +33,13 @@ public class IssueApiController {
         issueService.stopIssue(issueId, memberId);
 
         return ResponseEntity.ok().body(MessageUtils.success(null, "204 NO CONTENT", null));
+    }
+
+    // 발행 정보 상세 조회
+    @GetMapping("/{issue_id}")
+    public ResponseEntity<Object> getIssueInfo(
+            @PathVariable("issue_id") Integer issueId
+    ){
+        return ResponseEntity.ok().body(MessageUtils.success(issueService.getIssueInfo(issueId)));
     }
 }
