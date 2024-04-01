@@ -22,11 +22,16 @@ void main() async {
     await FirebaseUtils().setupFlutterNotifications();
   }
 
+  NotificationViewModel _notificationViewModel  = NotificationViewModel();
+  var fcmToken = _notificationViewModel.getFcmToken();
+  print("fcmToken야. $fcmToken");
+
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
     // foreground에서 fcm 메세지 처리
     print("FCM 메세지를 받았는데요. 저는 집에 가고 싶네요. ${message.notification!.body}");
     FirebaseUtils().showFlutterNotification(message);
   });
+
 
   // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 

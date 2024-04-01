@@ -9,13 +9,13 @@ class NotificationViewModel {
   //    print("firebase fcm 설정 완");
   // }
 
-  Future<bool> getFcmToken() async{
+  Future<String?> getFcmToken() async{
     var fcmToken = await _firebaseMessagingService.getFcmToken();
 
     if(fcmToken != null){
-      return true;
+      return fcmToken;
     }
 
-    return false;
+    return null;
   }
 }
