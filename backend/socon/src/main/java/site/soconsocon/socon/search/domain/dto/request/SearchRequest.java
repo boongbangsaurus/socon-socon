@@ -23,4 +23,5 @@ public class SearchRequest {
     private SearchType searchType;
     private String sort;
     private Boolean isFavoriteSearch;
+    private Integer memberId;
 }

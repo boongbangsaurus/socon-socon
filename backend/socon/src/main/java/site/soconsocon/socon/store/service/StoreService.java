@@ -15,7 +15,7 @@ import site.soconsocon.socon.store.domain.entity.jpa.*;
 import site.soconsocon.socon.store.exception.StoreErrorCode;
 import site.soconsocon.socon.store.exception.StoreException;
 import site.soconsocon.socon.store.feign.FeignServiceClient;
-import site.soconsocon.socon.store.repository.*;
+import site.soconsocon.socon.store.repository.jpa.*;
 
 import java.sql.Time;
 import java.time.LocalDate;
@@ -337,7 +337,8 @@ public class StoreService {
 
         List<FavoriteStoresListResponse> stores = new ArrayList<>();
 
-        List<FavStore> favStores = favStoreRepository.findByMemberId(memberId);
+        List<FavStore> favStores = favStoreRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new StoreException(StoreErrorCode.STORE_NOT_FOUND));
 
         for (FavStore favStore : favStores) {
             Store store = storeRepository.findById(favStore.getStoreId())

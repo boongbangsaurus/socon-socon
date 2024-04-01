@@ -29,7 +29,6 @@ public class FoundStoreInfo {
     private String imageUrl;
     private String address;
     private String category;
-    private String createdAt;
     private Boolean isLike;
     private String mainSocon;
     private Integer distance;
