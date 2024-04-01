@@ -18,6 +18,7 @@ pipeline {
             steps {
                 script{
                     sh 'ls -al ../'
+                    sh 'ls -al'
                     sh 'cp ../environments/.env backend/payment/.env'
                     sh 'cp ../environments/gradle.properties backend/payment/gradle.properties'
                     sh "mkdir -p backend/payment/src/main/resources"
