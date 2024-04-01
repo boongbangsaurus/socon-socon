@@ -21,7 +21,7 @@ public class SearchController {
             @RequestBody SearchRequest searchRequest,
             @RequestHeader("X-Authorization-Id") int memberId){
         List<FoundStoreInfo> storeInfoList = searchService.searchStores(searchRequest, memberId);
-        return ResponseEntity.ok().body(MessageUtils.success());
+        return ResponseEntity.ok().body(MessageUtils.success(storeInfoList));
     }
 
 }
