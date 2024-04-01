@@ -14,6 +14,13 @@ pipeline {
                 )
             }
         }
+        stage('Print current files'){
+            steps {
+                script {
+                    sh 'ls -al'
+                }
+            }
+        }
         stage('Move .env File') {
             steps {
                 script{
