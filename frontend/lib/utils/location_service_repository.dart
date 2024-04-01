@@ -6,9 +6,8 @@ import 'dart:ui';
 import 'package:background_locator_2/location_dto.dart';
 
 
-
 class LocationServiceRepository {
-  static final LocationServiceRepository _instance = LocationServiceRepository._();
+  static LocationServiceRepository _instance = LocationServiceRepository._();
 
   LocationServiceRepository._();
 
@@ -57,19 +56,18 @@ class LocationServiceRepository {
     final SendPort? send = IsolateNameServer.lookupPortByName(isolateName);
     send?.send(locationDto.toJson());
     _count++;
-
   }
 
   static Future<void> setLogLabel(String label) async {
     final date = DateTime.now();
-    // await FileManager.writeToLogFile(
-    //     '------------\n$label: ${formatDateLog(date)}\n------------\n');
+    print('------------');
+    print('$label: ${formatDateLog(date)}');
+    print('------------');
   }
 
   static Future<void> setLogPosition(int count, LocationDto data) async {
     final date = DateTime.now();
-    // await FileManager.writeToLogFile(
-    //     '$count : ${formatDateLog(date)} --> ${formatLog(data)} --- isMocked: ${data.isMocked}\n');
+    print('$count : ${formatDateLog(date)} --> ${formatLog(data)} 이게 뭘까 ${data.isMocked}');
   }
 
   static double dp(double val, int places) {
@@ -78,16 +76,10 @@ class LocationServiceRepository {
   }
 
   static String formatDateLog(DateTime date) {
-    return date.hour.toString() +
-        ":" +
-        date.minute.toString() +
-        ":" +
-        date.second.toString();
+    return '${date.hour}:${date.minute}:${date.second}';
   }
 
   static String formatLog(LocationDto locationDto) {
-    return dp(locationDto.latitude, 4).toString() +
-        " " +
-        dp(locationDto.longitude, 4).toString();
+    return '${dp(locationDto.latitude, 4)} ${dp(locationDto.longitude, 4)}';
   }
 }

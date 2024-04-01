@@ -7,6 +7,7 @@ import 'location_service_repository.dart';
 class LocationCallbackHandler {
   @pragma('vm:entry-point')
   static Future<void> initCallback(Map<dynamic, dynamic> params) async {
+    print("initCallback 해봤어");
     LocationServiceRepository myLocationCallbackRepository =
     LocationServiceRepository();
     await myLocationCallbackRepository.init(params);
@@ -14,6 +15,7 @@ class LocationCallbackHandler {
 
   @pragma('vm:entry-point')
   static Future<void> disposeCallback() async {
+    print("disposeCallback 해봤어");
     LocationServiceRepository myLocationCallbackRepository =
     LocationServiceRepository();
     await myLocationCallbackRepository.dispose();
@@ -21,6 +23,7 @@ class LocationCallbackHandler {
 
   @pragma('vm:entry-point')
   static Future<void> callback(LocationDto locationDto) async {
+    print("callback 했다는 건 위치값이 업데이트되었다는 건데.. $locationDto");
     LocationServiceRepository myLocationCallbackRepository =
     LocationServiceRepository();
     await myLocationCallbackRepository.callback(locationDto);
@@ -28,6 +31,7 @@ class LocationCallbackHandler {
 
   @pragma('vm:entry-point')
   static Future<void> notificationCallback() async {
+    print("notificationCallback 해봤어");
     print('***notificationCallback');
   }
 }
