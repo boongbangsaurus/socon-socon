@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import site.soconsocon.socon.search.exception.SearchException;
 import site.soconsocon.socon.sogon.exception.SogonException;
 import site.soconsocon.socon.store.exception.StoreException;
 import site.soconsocon.utils.MessageUtils;
@@ -31,14 +32,15 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(SoconException.class)
-    public ResponseEntity<Object> SoconExceptionHandler(SoconException e) {
+    public ResponseEntity<Object> SearchExceptionHandler(SearchException e) {
         log.debug(Arrays.toString(e.getStackTrace()));
         return ResponseEntity.status(e.getErrorCode().getHttpStatus())
                 .body(MessageUtils.fail(String.valueOf(e.getErrorCode()), e.getMessage()));
 
     }
 
-    @ExceptionHandler(Exception.class)
+
+    @ExceptionHandler(SearchException.class)
     public ResponseEntity<Object> handleOtherExceptions(Exception e) {
         log.error("An unexpected error occurred", e);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

@@ -9,6 +9,6 @@ import lombok.Data;
 public class FcmMessage {
     private String title;
     private String body;
-    private String targetToken;
-    private String topicName;
+    private Integer memberId;
+    private Long topicId;
 }

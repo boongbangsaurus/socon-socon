@@ -127,7 +127,7 @@ class _BossVerificationState extends State<BossVerification> {
                       Provider.of<BossVerificationViewModel>(context,
                           listen: false);
                   await _bossVerificationViewModel
-                      .verifyBoss(businessOwner.registrationNumber);
+                      .verifyBoss(businessOwner);
 
                   if (_bossVerificationViewModel.isVerified) {
                     GoRouter.of(context).go("/info/verify/success");

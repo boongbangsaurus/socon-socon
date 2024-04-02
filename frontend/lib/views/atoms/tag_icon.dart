@@ -81,7 +81,7 @@ class TagButton extends StatefulWidget {
   final String buttonText;
   final Color buttonColor;
   final Color buttonTextColor;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final Function(bool) onSelected;
 
   final double minWidth;
@@ -93,7 +93,7 @@ class TagButton extends StatefulWidget {
     required this.buttonText,
     required this.buttonColor,
     required this.buttonTextColor,
-    required this.onPressed,
+    this.onPressed,
     required this.onSelected,
     this.minWidth = 10.0, // 최소 가로 크기
     this.minHeight = 30.0, // 최소 세로 크기
@@ -128,13 +128,13 @@ class _TagButtonState extends State<TagButton> {
           );
 
     return TextButton(
-      onPressed: () {
+      onPressed: widget.onPressed != null ? () {
         setState(() {
           _isSelected = !_isSelected;
-          widget.onPressed();
+          widget.onPressed!();
         });
         widget.onSelected(_isSelected);
-      },
+      } : null,
       style: buttonStyle,
       child: Text(widget.buttonText,
           style: TextStyle(

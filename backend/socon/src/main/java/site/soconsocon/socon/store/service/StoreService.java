@@ -15,7 +15,7 @@ import site.soconsocon.socon.store.domain.entity.jpa.*;
 import site.soconsocon.socon.store.exception.StoreErrorCode;
 import site.soconsocon.socon.store.exception.StoreException;
 import site.soconsocon.socon.store.feign.FeignServiceClient;
-import site.soconsocon.socon.store.repository.*;
+import site.soconsocon.socon.store.repository.jpa.*;
 
 import java.sql.Time;
 import java.time.LocalDate;

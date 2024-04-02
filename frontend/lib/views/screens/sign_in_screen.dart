@@ -209,6 +209,8 @@ class _SignInScreenState extends State<SignInScreen> {
                                                           context,
                                                           listen: false)
                                                   .signIn(user);
+                                              debugPrint(
+                                                  '####$isSuccess############################################');
                                               if (isSuccess) {
                                                 // 메인 페이지로 이동
                                                 loginState.setLoggedIn(true);
@@ -218,7 +220,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                                 debugPrint(
                                                     'SignInScreen ################################################');
 
-                                                context.go('/');
+                                                GoRouter.of(context).go('/');
                                               } else {
                                                 return showDialog(
                                                     context: context,
@@ -249,11 +251,13 @@ class _SignInScreenState extends State<SignInScreen> {
                                           child: TextButton(
                                               onPressed: () {
                                                 print('router signup');
-                                                Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            const SignUpScreen()));
+                                                GoRouter.of(context)
+                                                    .push('/signup');
+                                                // Navigator.push(
+                                                //     context,
+                                                //     MaterialPageRoute(
+                                                //         builder: (context) =>
+                                                //             const SignUpScreen()));
                                               },
                                               child: const Text(
                                                 '처음 오셨나요? 회원가입 하러 가기',

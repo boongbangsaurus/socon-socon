@@ -1,16 +1,21 @@
 
-import 'package:socon/services/firebase_messaging_service.dart';
+import 'package:socon/services/notifications/firebase_messaging_service.dart';
 
 class NotificationViewModel {
-  final FirebaseMessaginService _firebaseMessagingService = FirebaseMessaginService();
+  final FirebaseMessagingService _firebaseMessagingService = FirebaseMessagingService();
 
-  Future<bool> getFcmToken() async{
+  // Future<void> setupNotifications() async{
+  //    await _firebaseMessagingService.setupFlutterNotifications();
+  //    print("firebase fcm 설정 완");
+  // }
+
+  Future<String?> getFcmToken() async{
     var fcmToken = await _firebaseMessagingService.getFcmToken();
 
     if(fcmToken != null){
-      return true;
+      return fcmToken;
     }
 
-    return false;
+    return null;
   }
 }
