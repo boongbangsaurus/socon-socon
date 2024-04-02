@@ -30,7 +30,7 @@ public class FcmController {
     }
 
     @PostMapping("/user")
-    public ResponseEntity sendMessageToken(@RequestBody FcmMessage fcmMessage) {
+    public ResponseEntity sendMessageMember(@RequestBody FcmMessage fcmMessage) {
         fcmService.sendMessageByMemberId(fcmMessage);
         return ResponseEntity.ok().body(MessageUtils.success());
     }
