@@ -3,8 +3,11 @@ package site.soconsocon.socon.store.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import site.soconsocon.socon.global.domain.ErrorCode;
 import site.soconsocon.socon.global.exception.SoconException;
+import site.soconsocon.socon.search.domain.dto.request.StoreCreateDocument;
+import site.soconsocon.socon.search.service.SearchService;
 import site.soconsocon.socon.store.domain.dto.request.*;
 import site.soconsocon.socon.store.domain.dto.response.*;
 import site.soconsocon.socon.store.domain.entity.feign.Member;
@@ -24,6 +27,8 @@ import java.util.*;
 @Service
 public class StoreService {
 
+    private final SearchService searchService;
+
     private final StoreRepository storeRepository;
     private final BusinessRegistrationRepository businessRegistrationRepository;
     private final BusinessHourRepository businessHourRepository;
@@ -32,6 +37,7 @@ public class StoreService {
     private final SoconRepository soconRepository;
     private final FeignServiceClient feignServiceClient;
 
+    @Transactional
     // 가게 정보 등록
     public void saveStore(AddStoreRequest request, int memberId) {
 
@@ -62,7 +68,21 @@ public class StoreService {
             throw new StoreException(StoreErrorCode.ALREADY_SAVED_STORE);
         }
 
-        storeRepository.save(store);
+        try {
+            storeRepository.save(store);
+            searchService.addStores(StoreCreateDocument.builder()
+                    .id(store.getId())
+                    .name(store.getName())
+                    .category(store.getCategory())
+                    .phoneNumber(store.getPhoneNumber())
+                    .lat(store.getLat())
+                    .lng(store.getLng())
+                    .address(store.getAddress())
+                    .introduction(store.getIntroduction())
+                    .build());
+        }catch (RuntimeException e){
+            throw new StoreException(StoreErrorCode.TRANSACTION_FAIL);
+        }
 
         // businessHourList 저장
         List<BusinessHourRequest> businessHours = request.getBusinessHour();
