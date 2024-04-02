@@ -30,6 +30,7 @@ class SogonViewModel {
     }
   }
 
+  // 보유 소콘
   Future<Map<String, dynamic>?> socons() async {
     Map<String, dynamic>? socons = await _sogonService.getSocons();
     if (socons != null) {
