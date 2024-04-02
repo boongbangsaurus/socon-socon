@@ -25,12 +25,12 @@ public class FcmController {
 
     @PostMapping("/topic")
     public ResponseEntity sendMessageTopic(@RequestBody FcmMessage fcmMessage) {
-        fcmService.sendMessageByTopic(fcmMessage.getTitle(), fcmMessage.getBody(), fcmMessage.getTopicName());
+        fcmService.sendMessageByTopic(fcmMessage.getTitle(), fcmMessage.getBody(), fcmMessage.getTopicId());
         return ResponseEntity.ok().body(MessageUtils.success());
     }
 
     @PostMapping("/user")
-    public ResponseEntity sendMessageToken(@RequestBody FcmMessage fcmMessage) {
+    public ResponseEntity sendMessageMember(@RequestBody FcmMessage fcmMessage) {
         fcmService.sendMessageByMemberId(fcmMessage);
         return ResponseEntity.ok().body(MessageUtils.success());
     }
