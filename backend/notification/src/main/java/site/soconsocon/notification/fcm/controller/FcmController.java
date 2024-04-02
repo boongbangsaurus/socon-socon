@@ -25,7 +25,7 @@ public class FcmController {
 
     @PostMapping("/topic")
     public ResponseEntity sendMessageTopic(@RequestBody FcmMessage fcmMessage) {
-        fcmService.sendMessageByTopic(fcmMessage.getTitle(), fcmMessage.getBody(), fcmMessage.getTopicName());
+        fcmService.sendMessageByTopic(fcmMessage.getTitle(), fcmMessage.getBody(), fcmMessage.getTopicId());
         return ResponseEntity.ok().body(MessageUtils.success());
     }
 
