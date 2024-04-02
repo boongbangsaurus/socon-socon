@@ -19,7 +19,6 @@ import site.soconsocon.socon.search.exception.SearchException;
 import site.soconsocon.socon.search.repository.elasticsearch.SearchRepository;
 import site.soconsocon.socon.store.domain.entity.jpa.FavStore;
 import site.soconsocon.socon.store.repository.jpa.FavStoreRepository;
-import site.soconsocon.socon.store.repository.jpa.StoreRepository;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -31,49 +30,59 @@ public class SearchService {
     private final SearchRepository searchRepository;
     private final FavStoreRepository favStoreRepository;
     public ArrayList<FoundStoreInfo> searchStores(SearchRequest searchRequest, Integer memberId){
-        ArrayList<FoundStoreInfo> foundStoreInfoList = null;
+        ArrayList<FoundStoreInfo> foundStoreInfoList = new ArrayList<>();
         log.warn(searchRequest.toString());
         log.warn("memberId : "+memberId);
-        if(searchRequest.getSearchType() == SearchType.name){
+        Point location = new Point(Double.parseDouble(searchRequest.getLng()), Double.parseDouble(searchRequest.getLat()));
+        Distance distance = new Distance(3);
 
+        // default pagination value
+        int page = searchRequest.getPage() == null ? 0 : searchRequest.getPage(); // Page number, 0-based
+        int size = searchRequest.getSize() == null ? 0 : searchRequest.getSize(); // Number of items per page
+
+        // Define sorting method
+        Sort sort = null;
+        if(searchRequest.getSort() == "distance"){
+            sort = Sort.by(Sort.Direction.ASC, "location").and(Sort.by(Sort.Direction.ASC, "name")); // Assuming location field name is "location"
+        } else if (searchRequest.getSort() == "name") {
+            sort = Sort.by(Sort.Direction.ASC, "name"); // Assuming location field name is "location"
         }
-        else if(searchRequest.getSearchType() == SearchType.category){
 
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<StoreDocument> foundStores = null;
+
+        // create set for field isLike
+        List<FavStore> favStoreList = favStoreRepository.findByMemberId(memberId);
+        Set<Integer> favStoreIdList = favStoreList != null ? favStoreList.stream()
+                .map(FavStore::getStoreId)
+                .collect(Collectors.toSet()) : Collections.emptySet();
+
+        if(searchRequest.getSearchType() == SearchType.address){
+            foundStores = searchRepository.findStoreDocumentsByLocationNear(location, pageable);
         }
-        else if (searchRequest.getSearchType() == SearchType.address) {
-            Point location = new Point(Double.parseDouble(searchRequest.getLng()), Double.parseDouble(searchRequest.getLat()));
-            Distance distance = new Distance(3);
-            // default pagination value
-            int page = 0; // Page number, 0-based
-            int size = 10; // Number of items per page
-            Pageable pageable = PageRequest.of(page, size);
-            // Define sorting by distance
-            Sort sort = Sort.by(Sort.Direction.ASC, "location").and(Sort.by(Sort.Direction.ASC, "name")); // Assuming location field name is "location"
-
-            Page<StoreDocument> foundStores = searchRepository.findStoreDocumentsByLocationNear(location, distance, pageable)
-                    .orElseThrow(() -> new SearchException(SearchErrorCode.SEARCH_FAIL));
-
-            List<FavStore> favStoreList = favStoreRepository.findByMemberId(memberId);
-            Set<Integer> favStoreIdList = favStoreList != null ? favStoreList.stream()
-                    .map(FavStore::getStoreId)
-                    .collect(Collectors.toSet()) : Collections.emptySet();
-
-            foundStoreInfoList = foundStores.getContent().stream()
-                    .map(storeDocument -> {
-                        boolean isLike = favStoreIdList.contains(storeDocument.getId()); // 람다 내부에서 선언
-                        return FoundStoreInfo.builder()
-                                .storeId(storeDocument.getId())
-                                .name(storeDocument.getName())
-                                .imageUrl(storeDocument.getImage())
-                                .address(storeDocument.getAddress())
-                                .category(storeDocument.getCategory())
-                                .isLike(isLike)
-                                .build();
-                    })
-                    .collect(Collectors.toCollection(ArrayList::new));
-        } else {
+        else if(searchRequest.getSearchType() == SearchType.category ||searchRequest.getSearchType() == SearchType.name){
+            foundStores = searchRepository.findStoreDocumentsByLocationNearAndContent(location, searchRequest.getSearchType().name(), searchRequest.getContent(), pageable);
+        }else {
             log.error(SearchType.address.toString());
             throw new SearchException(SearchErrorCode.INVALID_FORMAT);
+        }
+        // generate FoundStoreInfo DTO
+        for (StoreDocument storeDocument:foundStores) {
+            boolean isLike = favStoreIdList.contains(storeDocument.getId());
+            FoundStoreInfo storeInfo = FoundStoreInfo.builder()
+                    .storeId(storeDocument.getId())
+                    .name(storeDocument.getName())
+                    .imageUrl(storeDocument.getImage())
+                    .address(storeDocument.getAddress())
+                    .category(storeDocument.getCategory())
+                    .isLike(isLike)
+                    .build();
+            // filter favourites
+            if(searchRequest.getIsFavoriteSearch()){
+                if(isLike) foundStoreInfoList.add(storeInfo);
+            }else {
+                foundStoreInfoList.add(storeInfo);
+            }
         }
         return foundStoreInfoList;
     }
