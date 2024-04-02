@@ -7,6 +7,8 @@ import 'package:background_locator_2/settings/android_settings.dart';
 
 import 'dart:async';
 
+import 'package:uni_links/uni_links.dart';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -39,6 +41,7 @@ import 'package:google_maps_flutter_platform_interface/google_maps_flutter_platf
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // runApp을 호출하기 전 위젯 바인딩 초기화
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -53,9 +56,16 @@ void main() async {
   print("fcmToken: $fcmToken");
   await FirebaseMessaging.instance.setAutoInitEnabled(true);
 
-
   // 위치 권한 요청
   await getPermissionHandler();
+
+  uriLinkStream.listen((Uri? uri) {
+    print("딥링크 구현 $uri");
+  }, onError: (Object error) {
+    print("딥링크 이동 $error");
+  }, onDone: (){
+    print("딥링크 이동 완료");
+  });
 
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
     // foreground에서 fcm 메세지 처리
