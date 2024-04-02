@@ -68,6 +68,7 @@ final GoRouter router = GoRouter(
           ]),
       TabRoutes.getSignInRoute(),
       TabRoutes.getSignUpRoute(),
+      TabRoutes.getSerachAddressRoute(),
     ]);
 
 Widget _bottomNavBar(StatefulNavigationShell navigationShell) {

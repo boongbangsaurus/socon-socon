@@ -4,6 +4,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'package:socon/models/location.dart';
 
+import '../models/locations.dart';
+
 /// [SogonService]
 /// 백과 API 통신하기 위한 Class
 class SogonService {

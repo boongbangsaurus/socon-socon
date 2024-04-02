@@ -15,6 +15,8 @@ import 'package:socon/views/atoms/bottom_sheet.dart';
 import 'package:socon/views/atoms/buttons.dart';
 import 'package:socon/views/atoms/image_card.dart';
 
+import '../../models/locations.dart';
+
 class SogonMainScreen extends StatefulWidget {
   const SogonMainScreen({super.key});
 

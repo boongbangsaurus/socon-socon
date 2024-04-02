@@ -5,6 +5,7 @@ import 'package:socon/views/screens/bossVerification/boss_verification.dart';
 import 'package:socon/views/screens/bossVerification/boss_verification_fail_screen.dart';
 import 'package:socon/views/screens/contact/contact_fail_screen.dart';
 import 'package:socon/views/screens/contact/contact_sucess_screen.dart';
+import 'package:socon/views/screens/kpostal_screen.dart';
 import 'package:socon/views/screens/myStore/publish_socon_screen.dart';
 import 'package:socon/views/screens/myStore/store_detail_screen.dart';
 import 'package:socon/views/screens/my_info_screen.dart';
@@ -24,7 +25,6 @@ import '../views/screens/nearby_info_screen.dart';
 class TabRoutes {
   static RouteBase getNearbyRoute() {
     return GoRoute(
-        // path: "/",
         path: "/",
         builder: (BuildContext context, GoRouterState state) {
           return NearbyInfoScreen();
@@ -216,6 +216,14 @@ class TabRoutes {
         path: "/signup",
         builder: (BuildContext context, GoRouterState state) {
           return SignUpScreen();
+        });
+  }
+
+  static RouteBase getSerachAddressRoute() {
+    return GoRoute(
+        path: "/kopo",
+        builder: (BuildContext context, GoRouterState state) {
+          return KpostalScreen();
         });
   }
 }

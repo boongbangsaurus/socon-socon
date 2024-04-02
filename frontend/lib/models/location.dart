@@ -1,28 +1,65 @@
-/// [Location]
-/// 위치 정보 Class
-class Locations {
-  double lat; // 위도
-  double lng; // 경도
+import 'dart:io' show Platform;
+import 'package:background_locator_2/keys.dart';
 
-  Locations({
-    required this.lat,
-    required this.lng,
-  });
+class LocationDto {
+  final double latitude;
+  final double longitude;
+  final double accuracy;
+  final double altitude;
+  final double speed;
+  final double speedAccuracy;
+  final double heading;
+  final double time;
+  final bool isMocked;
+  final String provider;
 
-  // JSON 데이터를 Location 객체로 변환
-  factory Locations.fromJson(Map<String, dynamic> json) => Locations(
-        lat: json['lat'],
-        lng: json['lng'],
-      );
 
-  // Location 객체를 JSON 데이터로 변환
-  Map<String, dynamic> toJson() => {
-        'lat': lat,
-        'lng': lng,
-      };
+  LocationDto(
+      this.latitude,
+      this.longitude,
+      this.accuracy,
+      this.altitude,
+      this.speed,
+      this.speedAccuracy,
+      this.heading,
+      this.time,
+      this.isMocked,
+      this.provider);
+
+  factory LocationDto.fromJson(Map<dynamic, dynamic> json) {
+    bool isLocationMocked =
+    Platform.isAndroid ? json[Keys.ARG_IS_MOCKED] : false;
+    return LocationDto(
+      json[Keys.ARG_LATITUDE],
+      json[Keys.ARG_LONGITUDE],
+      json[Keys.ARG_ACCURACY],
+      json[Keys.ARG_ALTITUDE],
+      json[Keys.ARG_SPEED],
+      json[Keys.ARG_SPEED_ACCURACY],
+      json[Keys.ARG_HEADING],
+      json[Keys.ARG_TIME],
+      isLocationMocked,
+      json[Keys.ARG_PROVIDER] ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      Keys.ARG_LATITUDE: this.latitude,
+      Keys.ARG_LONGITUDE: this.longitude,
+      Keys.ARG_ACCURACY: this.accuracy,
+      Keys.ARG_ALTITUDE: this.altitude,
+      Keys.ARG_SPEED: this.speed,
+      Keys.ARG_SPEED_ACCURACY: this.speedAccuracy,
+      Keys.ARG_HEADING: this.heading,
+      Keys.ARG_TIME: this.time,
+      Keys.ARG_IS_MOCKED: this.isMocked,
+      Keys.ARG_PROVIDER: this.provider,
+    };
+  }
 
   @override
   String toString() {
-    return 'Locations{lat: $lat, lng: $lng}';
+    return 'LocationDto{latitude: $latitude, longitude: $longitude, accuracy: $accuracy, altitude: $altitude, speed: $speed, speedAccuracy: $speedAccuracy, heading: $heading, time: $time, isMocked: $isMocked, provider: $provider}';
   }
 }

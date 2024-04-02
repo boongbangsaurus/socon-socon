@@ -16,13 +16,7 @@ class FirebaseUtils {
       return;
     }
 
-    // 알림 권한 요청
-    if (await Permission.notification.isDenied) {
-      print("알림이 거부되어있습니다. 다시 권한을 요청합니다");
-      await Permission.notification.request();
-    }else{
-      print("알림이 허용되어있습니다.");
-    }
+
 
     channel = const AndroidNotificationChannel(
       'high_importance_channel',

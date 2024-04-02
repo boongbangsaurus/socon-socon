@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:socon/models/location.dart';
 import 'package:socon/services/sogon_service.dart';
+
+import '../models/locations.dart';
 // import 'package:shared_preferences/shared_preferences.dart';
 
 /// [SogonViewModel]
