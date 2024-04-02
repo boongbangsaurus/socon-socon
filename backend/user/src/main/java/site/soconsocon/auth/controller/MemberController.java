@@ -50,9 +50,9 @@ public class MemberController {
      */
     @PostMapping("/auth")
     public ResponseEntity login(@RequestBody MemberLoginRequestDto loginDto) throws MemberException{
-        memberService.login(loginDto);
+        MemberLoginResponseDto memberLoginResponseDto = memberService.login(loginDto);
         // 유효하지 않는 패스워드인 경우, 로그인 실패로 응답.
-        return ResponseEntity.ok().body(MessageUtils.success());
+        return ResponseEntity.ok().body(MessageUtils.success(memberLoginResponseDto));
     }
 
     //마이페이지
