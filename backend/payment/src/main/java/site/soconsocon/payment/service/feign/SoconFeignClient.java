@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import site.soconsocon.payment.service.feign.request.AddMySoconRequest;
 
-@FeignClient(name = "socon-service", url = "http://localhost:8010/api/v1/issues")
+@FeignClient(name = "socon-service", url = "${feign.urls.issues}")
 public interface SoconFeignClient {
 
     //소콘북 저장
