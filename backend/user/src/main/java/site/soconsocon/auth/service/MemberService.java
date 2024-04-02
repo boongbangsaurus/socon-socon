@@ -1,20 +1,28 @@
 package site.soconsocon.auth.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import site.soconsocon.auth.domain.dto.request.MemberLoginRequestDto;
 import site.soconsocon.auth.domain.dto.request.MemberRegisterRequestDto;
 import site.soconsocon.auth.domain.dto.response.MemberFeignResponse;
+import site.soconsocon.auth.domain.dto.response.MemberLoginResponseDto;
 import site.soconsocon.auth.domain.dto.response.MemberResponseDto;
 import site.soconsocon.auth.domain.entity.jpa.Member;
 import site.soconsocon.auth.domain.entity.jpa.RefreshToken;
 import site.soconsocon.auth.domain.entity.jpa.UserRole;
 import site.soconsocon.auth.exception.ErrorCode;
 import site.soconsocon.auth.exception.MemberException;
+import site.soconsocon.auth.feign.NotificationFeignClient;
+import site.soconsocon.auth.feign.domain.dto.feign.SaveTokenRequest;
 import site.soconsocon.auth.repository.MemberRepository;
 import site.soconsocon.auth.repository.RefreshTokenRepository;
+import site.soconsocon.auth.security.MemberDetailService;
 import site.soconsocon.auth.security.MemberDetails;
 import site.soconsocon.auth.util.JwtUtil;
+import site.soconsocon.utils.MessageUtils;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -22,6 +30,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class MemberService {
 
     private final MemberRepository memberRepository;
@@ -29,6 +38,10 @@ public class MemberService {
     private final RefreshTokenRepository refreshTokenRepository;
 
     private final PasswordEncoder passwordEncoder;
+
+    private final NotificationFeignClient notificationFeignClient;
+
+    private final MemberDetailService memberDetailService;
 
     private final JwtUtil jwtUtil;
 
@@ -38,7 +51,7 @@ public class MemberService {
      * @param requestDto
      * @return
      */
-    public Member register(MemberRegisterRequestDto requestDto) throws MemberException {
+    public Member register(MemberRegisterRequestDto requestDto) throws MemberException{
         //이메일 중복체크
         if (!dupleEmailCheck(requestDto.getEmail())) {
             throw new MemberException(ErrorCode.DUPLE_EMAIL); //이미 있는 이메일
@@ -58,7 +71,14 @@ public class MemberService {
                 .isAgreed(requestDto.isAgreed())
                 .build();
 
-        return memberRepository.save(member);
+        Member savedMember = null;
+        try {
+            savedMember = memberRepository.save(member);
+        }catch (RuntimeException e){
+            throw new MemberException(ErrorCode.ACCOUNT_REGISTER_FAIL);
+        }
+
+        return savedMember;
     }
 
     /**
@@ -95,7 +115,7 @@ public class MemberService {
      * @return
      * @throws IOException
      */
-    public String createAccessToken(MemberDetails memberDetails, String refreshToken) throws IOException {
+    public String createAccessToken(MemberDetails memberDetails, String refreshToken){
         int memberId = memberDetails.getMember().getId();
         //Redis에 저장된 리프레시 토큰 가져오기
         RefreshToken refreshToken1 = refreshTokenRepository.findRefreshTokenByMemberId(memberId);
@@ -130,7 +150,7 @@ public class MemberService {
     }
 
 
-    public MemberResponseDto getUserInfo(int memberId) throws MemberException {
+    public MemberResponseDto getUserInfo(int memberId) throws MemberException{
         Member member = memberRepository.findMemberById(memberId).orElseThrow(
                 () -> new MemberException(ErrorCode.USER_NOT_FOUND)
         );
@@ -145,14 +165,14 @@ public class MemberService {
         return memberResponseDto;
     }
 
-    public Member getMemberByEmail(String email) throws MemberException {
+    public Member getMemberByEmail(String email) throws MemberException{
         Member member = memberRepository.findMemberByEmail(email).orElseThrow(
                 () -> new MemberException(ErrorCode.USER_NOT_FOUND)
         );
         return member;
     }
 
-    public MemberFeignResponse findMemberByMemberId(int memberId) throws MemberException {
+    public MemberFeignResponse findMemberByMemberId(int memberId) throws MemberException{
         Member member = memberRepository.findMemberById(memberId).orElseThrow(
                 () -> new MemberException(ErrorCode.USER_NOT_FOUND)
         );
@@ -170,10 +190,33 @@ public class MemberService {
         return memberFeignResponse;
     }
 
-    /**
-     * 회원 정보 수정
-     */
-//    public void modifyMember(MemberModifyRequestDto requestDto) {
-//        memberRepository.updateMember(requestDto.getName(), requestDto.getNickname(), requestDto.getMemo(), requestDto.getProfileUrl());
-//    }
+    public MemberLoginResponseDto login(MemberLoginRequestDto loginDto)  throws MemberException{
+        String email = loginDto.getEmail();
+        String password = loginDto.getPassword();
+        String fcmToken = loginDto.getFcmToken();
+        log.info(loginDto.toString());
+
+        Member member = getMemberByEmail(email);
+        String memberId = String.valueOf(member.getId());
+
+        MemberLoginResponseDto memberLoginResponseDto = null;
+        // 로그인 요청한 유저로부터 입력된 패스워드 와 디비에 저장된 유저의 암호화된 패스워드가 같은지 확인.(유효한 패스워드인지 여부 확인)
+        if (passwordEncoder.matches(password, member.getPassword())) {
+            // 유효한 패스워드가 맞는 경우, 로그인 성공으로 응답.(액세스 토큰을 포함하여 응답값 전달)
+            MemberDetails memberDetails = (MemberDetails) memberDetailService.loadUserByUsername(memberId);
+            String accessToken = jwtUtil.generateToken(memberDetails);
+            String refreshToken = jwtUtil.generateRefreshToken(memberDetails);
+
+            RefreshToken redis = new RefreshToken(member.getId(), refreshToken);
+            refreshTokenRepository.save(redis);
+            memberLoginResponseDto = new MemberLoginResponseDto(accessToken, refreshToken, member.getNickname());
+            try {
+                notificationFeignClient.saveDeviceToken(new SaveTokenRequest(member.getId(),fcmToken,"MOBILE"));
+            } catch (RuntimeException e){
+                log.warn("디바이스 토큰 저장 실패");
+            }
+        }
+        return memberLoginResponseDto;
+    }
+
 }
