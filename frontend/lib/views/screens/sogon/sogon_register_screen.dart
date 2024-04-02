@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:socon/models/sogon_register.dart';
+import 'package:socon/viewmodels/sogon_view_model.dart';
 import 'package:socon/views/atoms/buttons.dart';
 import 'package:socon/views/atoms/input_form.dart';
 import 'package:socon/views/modules/app_bar.dart';
@@ -12,6 +13,8 @@ class SogonRegisterScreen extends StatefulWidget {
 }
 
 class _SogonRegisterScreenState extends State<SogonRegisterScreen> {
+  SogonViewModel sogonViewModel = SogonViewModel();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,6 +40,12 @@ class _SogonRegisterScreenState extends State<SogonRegisterScreen> {
                   onChanged: (val) {
                     print('새글 작성');
                   }),
+            ),
+            BasicButton(
+              text: '보유 소콘',
+              onPressed: () async {
+                final res = await sogonViewModel.socons();
+              },
             ),
             BasicButton(
               text: '소곤 작성',

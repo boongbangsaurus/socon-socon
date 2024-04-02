@@ -99,4 +99,45 @@ class SogonService {
       return null;
     }
   }
+
+  // 보유 소콘 조회
+  Future<Map<String, dynamic>?> getSocons() async {
+    final prefs = await SharedPreferences.getInstance();
+    final accessToken = prefs.getString('accessToken');
+    final res = await http.get(
+      Uri.parse('$baseUrl/api/v1/socons/book'),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+        'authorization': 'Bearer $accessToken',
+      },
+    );
+    if (res.statusCode == 200) {
+      final String body = utf8.decode(res.bodyBytes);
+      final Map<String, dynamic> dataBody =
+          jsonDecode(body)['data_body'] as Map<String, dynamic>;
+      debugPrint(
+          'getSocons res 200 ################################################');
+      print(body);
+      print(dataBody);
+      debugPrint(
+          'getSocons res 200 ################################################');
+
+      // final List dataBody = body['data_body'];
+      // final String accessToken = body['data_body']['accessToken'];
+      // final String refreshToken = body['data_body']['refreshToken'];
+      return dataBody; // accessToken, refreshToken 반환
+    } else {
+      debugPrint(
+          'getSocons res not 200 ################################################');
+      print(utf8.decode(res.bodyBytes));
+
+      // print(jsonDecode(res.body));
+      debugPrint(
+          'getSocons res not 200 ################################################');
+
+      return null;
+    }
+  }
+
+//
 }

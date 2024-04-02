@@ -27,4 +27,13 @@ class SogonViewModel {
       return {};
     }
   }
+
+  Future<Map<String, dynamic>?> socons() async {
+    Map<String, dynamic>? socons = await _sogonService.getSocons();
+    if (socons != null) {
+      return socons;
+    } else {
+      return null;
+    }
+  }
 }
