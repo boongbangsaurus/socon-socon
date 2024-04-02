@@ -144,17 +144,15 @@ class StoreDetailScreen extends StatelessWidget {
                       MaterialPageRoute(
                           builder: (context) => Payment(),
                           settings: RouteSettings(arguments: {
-                            'orderUid': '26e28cc1-d403-487c-b36c-56b905dc1056',
+                            'orderUid': 'e8f3079a-1f30-48eb-99b8-194ca678d748',
                             'issueId': 1,
-                            'name': "소고기버섯비빔밥",
-                            'amount': 300,
+                            'name': "김치라면",
+                            'amount': 100,
                             'buyerName': '김온유'
                           }
                         )
                       ),
                     );
-
-
 
 
                     //   Navigator.push(

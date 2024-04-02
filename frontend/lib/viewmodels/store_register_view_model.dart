@@ -12,13 +12,13 @@ class StoreRegisterViewModel extends ChangeNotifier {
   // 스토어 등록 api post 요청
   Future<bool> registerStore() async {
     try {
-      debugPrint('ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ');
       final result = await storeService.registerStore(storeModel);
-      debugPrint(result as String?);
-      debugPrint('ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ');
+      // debugPrint('[[[[[[[[[[[[[[[[[[[[result.toString()]]]]]]]]]]]]]]]]]]]]');
+      // debugPrint(result.toString());
       return result;
     } catch (e) {
-      // 에러 처리 하기
+      debugPrint('에러메시지!');
+      debugPrint(e.toString());
       return false;
     }
   }

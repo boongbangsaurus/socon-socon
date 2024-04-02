@@ -1,6 +1,10 @@
+import 'dart:typed_data';
+
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:socon/models/store_register_model.dart';
@@ -339,11 +343,24 @@ class _Step2State extends State<Step2> {
                                   if (image != null) {
                                     setState(() {
                                       userImage = File(image.path); // 이미지 선택
-                                      print('유저이미지~~~~~~~~~~~~~~~~~~~~~~~~~~~');
-                                      print(userImage);
-                                      viewModel.setImage(userImage.toString());
+                                      // viewmodel에 저장
+                                      viewModel.setImage(image.path.toString());
                                     });
+                                      // firebase에 저장
+                                    Uint8List _bytes = await image.readAsBytes();
+                                    FirebaseStorage.instance.ref("images/storeImg").putData(
+                                      _bytes,
+                                      SettableMetadata(
+                                        contentType: "image/jpeg",
+                                      ),
+                                    );
                                   }
+
+                                  // 파이어 베이스 저장
+                                  final now = DateTime.now();
+                                  // FirebaseStorage.instance.ref("test/$_imageName").putFile(file);
+                                  var ref = FirebaseStorage.instance.ref().child('Images/$now.jpg');
+
                                 },
                                 icon: Icon(Icons.add),
                                 color: Colors.black,
@@ -387,73 +404,73 @@ class _Step3State extends State<Step3> {
 
   List<Map> operationDaysList = [
     {'day': '월',
-      'isWorking': false,
-      'openAt': null,
-      'closeAt': null,
-      'isBreaktime': false,
-      'breaktimeStart': null,
-      'breaktimeEnd': null,} ,
+      'is_working': false,
+      'open_at': null,
+      'close_at': null,
+      'is_breaktime': false,
+      'breaktime_start': null,
+      'breaktime_end': null,} ,
 
     {'day': '화',
-      'isWorking': false,
-      'openAt': null,
-      'closeAt': null,
-      'isBreaktime': false,
-      'breaktimeStart': null,
-      'breaktimeEnd': null,} ,
+      'is_working': false,
+      'open_at': null,
+      'close_at': null,
+      'is_breaktime': false,
+      'breaktime_start': null,
+      'breaktime_end': null,} ,
 
     {'day': '수',
-      'isWorking': false,
-      'openAt': null,
-      'closeAt': null,
-      'isBreaktime': false,
-      'breaktimeStart': null,
-      'breaktimeEnd': null,} ,
+      'is_working': false,
+      'open_at': null,
+      'close_at': null,
+      'is_breaktime': false,
+      'breaktime_start': null,
+      'breaktime_end': null,} ,
 
     {'day': '목',
-      'isWorking': false,
-      'openAt': null,
-      'closeAt': null,
-      'isBreaktime': false,
-      'breaktimeStart': null,
-      'breaktimeEnd': null,} ,
+      'is_working': false,
+      'open_at': null,
+      'close_at': null,
+      'is_breaktime': false,
+      'breaktime_start': null,
+      'breaktime_end': null,} ,
 
     {'day': '금',
-      'isWorking': false,
-      'openAt': null,
-      'closeAt': null,
-      'isBreaktime': false,
-      'breaktimeStart': null,
-      'breaktimeEnd': null,} ,
+      'is_working': false,
+      'open_at': null,
+      'close_at': null,
+      'is_breaktime': false,
+      'breaktime_start': null,
+      'breaktime_end': null,} ,
 
     {'day': '토',
-      'isWorking': false,
-      'openAt': null,
-      'closeAt': null,
-      'isBreaktime': false,
-      'breaktimeStart': null,
-      'breaktimeEnd': null,} ,
+      'is_working': false,
+      'open_at': null,
+      'close_at': null,
+      'is_breaktime': false,
+      'breaktime_start': null,
+      'breaktime_end': null,} ,
 
     {'day': '일',
-      'isWorking': false,
-      'openAt': null,
-      'closeAt': null,
-      'isBreaktime': false,
-      'breaktimeStart': null,
-      'breaktimeEnd': null,} ,
+      'is_working': false,
+      'open_at': null,
+      'close_at': null,
+      'is_breaktime': false,
+      'breaktime_start': null,
+      'breaktime_end': null,} ,
   ];
 
   List<String> dropdownItems = [ '08:00', '08:30', '09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30',  '13:00', '13:30', '14:00', '14:30','15:00', '15:30', '16:00', '16:30', '17:00', '17:30', '18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00', '21:30'];
   List<String> Days = ['월', '화', '수', '목', '금', '토', '일'];
-  Map<String, dynamic> operationDaysMap = {
-    '월': {'isWorking': false},
-    '화': {'isWorking': false},
-    '수': {'isWorking': false},
-    '목': {'isWorking': false},
-    '금': {'isWorking': false},
-    '토': {'isWorking': false},
-    '일': {'isWorking': false},
-  };
+  // Map<String, dynamic> operationDaysMap = {
+  //   '월': {'isWorking': false},
+  //   '화': {'isWorking': false},
+  //   '수': {'isWorking': false},
+  //   '목': {'isWorking': false},
+  //   '금': {'isWorking': false},
+  //   '토': {'isWorking': false},
+  //   '일': {'isWorking': false},
+  // };
 
   List<String> selectedDay = [];
   String selectedStartTime = '';
@@ -600,12 +617,12 @@ class _Step3State extends State<Step3> {
                         setState(() {
                           operationDaysList.forEach((dayinfo) {
                             if (selectedDay.contains(dayinfo['day'])){
-                              dayinfo['isWorking'] = true;
-                              dayinfo['openAt'] = selectedStartTime;
-                              dayinfo['closeAt'] = selectedEndTime ;
-                              dayinfo['isBreaktime'] = isChecked ;
-                              dayinfo['breaktimeStart'] = breaktimeStart ;
-                              dayinfo['breaktimeEnd'] = breaktimeEnd;
+                              dayinfo['is_working'] = true;
+                              dayinfo['open_at'] = selectedStartTime;
+                              dayinfo['close_at'] = selectedEndTime ;
+                              dayinfo['is_breaktime'] = isChecked ;
+                              dayinfo['breaktime_start'] = breaktimeStart ;
+                              dayinfo['breaktime_end'] = breaktimeEnd;
                             }
                           });
                           // 선택요일 초기화
@@ -614,7 +631,7 @@ class _Step3State extends State<Step3> {
 
                       }),
                   Column(
-                    children: operationDaysList.where((dayInfo) => dayInfo['isWorking'] as bool).map((filteredDayInfo) {
+                    children: operationDaysList.where((dayInfo) => dayInfo['is_working'] as bool).map((filteredDayInfo) {
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -626,8 +643,8 @@ class _Step3State extends State<Step3> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text('${filteredDayInfo['day']}     ${filteredDayInfo['openAt']} ~ ${filteredDayInfo['closeAt']}'),
-                                    filteredDayInfo['isBreaktime'] ? Text('        ${filteredDayInfo['breaktimeStart']} ~  ${filteredDayInfo['breaktimeEnd']}  휴식시간') : Text(''),
+                                    Text('${filteredDayInfo['day']}     ${filteredDayInfo['open_at']} ~ ${filteredDayInfo['close_at']}'),
+                                    filteredDayInfo['is_breaktime'] ? Text('        ${filteredDayInfo['breaktime_start']} ~  ${filteredDayInfo['breaktime_end']}  휴식시간') : Text(''),
                                   ],
                                 ),
                               ),
@@ -635,7 +652,7 @@ class _Step3State extends State<Step3> {
                                 icon: Icon(Icons.close), // X 아이콘
                                 onPressed: () {
                                   setState(() {
-                                    filteredDayInfo['isWorking'] = false;
+                                    filteredDayInfo['is_working'] = false;
                                   });
                                 },
                               ),
@@ -729,9 +746,6 @@ class SummaryPage extends StatelessWidget {
                                 width: ResponsiveUtils.getWidthPercent(context, 100)
                             ),
                           ),
-                          Text(viewModel.image.toString()),
-                          Text('ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ'),
-
 
                         ],
                       ),
@@ -836,8 +850,8 @@ class SummaryPage extends StatelessWidget {
                                             return Container(
                                               child: Row(
                                                 children: [
-                                                  element['isWorking'] ?
-                                                  Text('${element['day']} ${element['openAt']} ~ ${element['closeAt']}') :
+                                                  element['is_working'] ?
+                                                  Text('${element['day']} ${element['open_at']} ~ ${element['close_at']}') :
                                                       Text(''),
                                                 ],
                                               ),
@@ -998,11 +1012,19 @@ class SummaryPage extends StatelessWidget {
                 Container(
                   margin: EdgeInsets.symmetric(horizontal: 20),
                   child: BasicButton(
-                    onPressed: () {
-                      viewModel.registerStore();
-                      // Navigator.of(context).push(
-                      //   MaterialPageRoute(builder: (context) => StoreRegisterSuccessScreen()),
-                      // );
+                    onPressed: () async {
+                      var result = await viewModel.registerStore();
+                      print('----------------------------');
+                      print(result);
+                      if(result == true) {
+                        // GoRouter.of(context).go("/");
+                        Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context) => StoreRegisterSuccessScreen()),
+                        );
+                      } else {
+                        print('가게등록 실패 페이지');
+                      }
+
                     },
                     text: '등록하기',
                   ),
