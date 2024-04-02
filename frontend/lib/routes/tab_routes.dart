@@ -13,6 +13,7 @@ import 'package:socon/views/screens/sign_in_screen.dart';
 import 'package:socon/views/screens/sign_up_screen.dart';
 import 'package:socon/views/screens/soconBook/socon_book_detail_screen.dart';
 import 'package:socon/views/screens/soconBook/socon_book_screen.dart';
+import 'package:socon/views/screens/sogon/sogon_register_screen.dart';
 import 'package:socon/views/screens/sogon_main_screen.dart';
 import 'package:socon/views/screens/stores/buy_menu_screen.dart';
 import 'package:socon/views/screens/stores/store_detail.dart';
@@ -23,22 +24,20 @@ import '../views/screens/nearby_info_screen.dart';
 class TabRoutes {
   static RouteBase getNearbyRoute() {
     return GoRoute(
-      // path: "/",
-      path: "/",
-      builder: (BuildContext context, GoRouterState state) {
-        return NearbyInfoScreen();
-      },
-      routes: [
-        getStoreDetailRoute(),
-      ]
-    );
+        // path: "/",
+        path: "/",
+        builder: (BuildContext context, GoRouterState state) {
+          return NearbyInfoScreen();
+        },
+        routes: [
+          getStoreDetailRoute(),
+        ]);
   }
 
   static RouteBase getStoreDetailRoute() {
     return GoRoute(
         // path: "/",
         path: "detail/:storeId",
-
         builder: (BuildContext context, GoRouterState state) {
           return StoreDetailScreen(state.pathParameters['storeId']);
         },
@@ -51,9 +50,9 @@ class TabRoutes {
     return GoRoute(
         path: "menu/:menuId",
         builder: (BuildContext context, GoRouterState state) {
-      return BuyMenuDetailScreen(state.pathParameters['menuId']!, state.pathParameters['storeId']!);
-      });
-
+          return BuyMenuDetailScreen(state.pathParameters['menuId']!,
+              state.pathParameters['storeId']!);
+        });
   }
 
   // static RouteBase getNearbyRoute() {
@@ -70,6 +69,18 @@ class TabRoutes {
         path: "/sogon",
         builder: (BuildContext context, GoRouterState state) {
           return SogonMainScreen();
+        },
+        routes: [
+          getSogonRegisterRoute(),
+        ]);
+  }
+
+  static RouteBase getSogonRegisterRoute() {
+    return GoRoute(
+        name: "sogonRegister",
+        path: "register",
+        builder: (BuildContext context, GoRouterState state) {
+          return SogonRegisterScreen();
         });
   }
 
@@ -163,10 +174,10 @@ class TabRoutes {
     return GoRoute(
         path: "menu/:menuId",
         builder: (BuildContext context, GoRouterState state) {
-          return PublishSoconScreen(state.pathParameters['menuId']!, state.pathParameters['storeId']!);
+          return PublishSoconScreen(state.pathParameters['menuId']!,
+              state.pathParameters['storeId']!);
         });
   }
-
 
   static RouteBase getBossVerification() {
     return GoRoute(
