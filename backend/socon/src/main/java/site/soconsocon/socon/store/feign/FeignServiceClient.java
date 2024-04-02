@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import site.soconsocon.socon.store.domain.dto.request.ChargeRequest;
 import site.soconsocon.socon.store.domain.entity.feign.Member;
 
-@FeignClient(name = "user", url = "${feign.urls.user}.")
+@FeignClient(name = "user", url = "${feign.urls.user}")
 public interface FeignServiceClient {
 
     // 멤버 정보 조회
