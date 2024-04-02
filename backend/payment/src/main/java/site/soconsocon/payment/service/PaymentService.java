@@ -7,6 +7,7 @@ import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import site.soconsocon.payment.domain.dto.response.PaymentResponseDto;
@@ -25,6 +26,7 @@ import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class PaymentService {
 
     private final PaymentRepository paymentRepository;
@@ -128,6 +130,7 @@ public class PaymentService {
                         .issueId(order.getIssueId())
                         .purchasedQuantity(order.getQuantity())
                         .build();
+                log.info("addMysoconRequest: {}", addMysoconRequest);
 
                 soconFeignClient.saveMySocon(addMysoconRequest); //feign을 통해 사용자의 쿠폰북에 저장
 

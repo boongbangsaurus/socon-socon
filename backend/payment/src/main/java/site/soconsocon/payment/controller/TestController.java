@@ -31,16 +31,20 @@ public class TestController {
     }
 
     @GetMapping("/save")
-    public ResponseEntity<Object> testSave(@RequestHeader("X-Authorization-Id") int memberId) {
-        AddMySoconRequest addMySoconRequest = AddMySoconRequest.builder()
-                .purchaseAt(LocalDateTime.now())
-                .expiredAt(LocalDateTime.now().plusDays(30))
-                .status("unused")
-                .memberId(memberId)
-                .purchasedQuantity(1)
-                .build();
-        return soconFeignClient.saveMySocon(addMySoconRequest);
+    public String testSave(@RequestHeader("X-Authorization-Id") int memberId) {
+//        AddMySoconRequest addMySoconRequest = AddMySoconRequest.builder()
+//                .purchaseAt(LocalDateTime.now())
+//                .expiredAt(LocalDateTime.now().plusDays(30))
+//                .issueId(1)
+//                .status("unused")
+//                .memberId(memberId)
+//                .purchasedQuantity(1)
+//                .build();
+        AddMySoconRequest addMySoconRequest1 = new AddMySoconRequest(LocalDateTime.now(), LocalDateTime.now().plusDays(30), null, "unused", memberId, 1, 1);
+        log.info("addMySoconRequest: {}", addMySoconRequest1);
+        soconFeignClient.saveMySocon(addMySoconRequest1);
 
+        return "saveMethod";
     }
 
 
