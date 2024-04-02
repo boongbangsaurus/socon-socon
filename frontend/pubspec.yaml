@@ -38,6 +38,7 @@ dependencies:
   flutter_local_notifications: ^17.0.0
   permission_handler: ^11.3.1
   background_locator_2: ^2.0.6
+  kpostal: ^0.5.1
   
 dev_dependencies:
   flutter_test:

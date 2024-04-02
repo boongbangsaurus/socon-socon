@@ -5,6 +5,7 @@ import 'package:socon/views/screens/bossVerification/boss_verification.dart';
 import 'package:socon/views/screens/bossVerification/boss_verification_fail_screen.dart';
 import 'package:socon/views/screens/contact/contact_fail_screen.dart';
 import 'package:socon/views/screens/contact/contact_sucess_screen.dart';
+import 'package:socon/views/screens/kpostal_screen.dart';
 import 'package:socon/views/screens/myStore/publish_socon_screen.dart';
 import 'package:socon/views/screens/myStore/store_detail_screen.dart';
 import 'package:socon/views/screens/my_info_screen.dart';
@@ -24,19 +25,19 @@ class TabRoutes {
   static RouteBase getNearbyRoute() {
     return GoRoute(
       // path: "/",
-      path: "/",
-      builder: (BuildContext context, GoRouterState state) {
-        return NearbyInfoScreen();
-      },
-      routes: [
-        getStoreDetailRoute(),
-      ]
+        path: "/",
+        builder: (BuildContext context, GoRouterState state) {
+          return NearbyInfoScreen();
+        },
+        routes: [
+          getStoreDetailRoute(),
+        ]
     );
   }
 
   static RouteBase getStoreDetailRoute() {
     return GoRoute(
-        // path: "/",
+      // path: "/",
         path: "detail/:storeId",
 
         builder: (BuildContext context, GoRouterState state) {
@@ -51,9 +52,9 @@ class TabRoutes {
     return GoRoute(
         path: "menu/:menuId",
         builder: (BuildContext context, GoRouterState state) {
-      return BuyMenuDetailScreen(state.pathParameters['menuId']!, state.pathParameters['storeId']!);
-      });
-
+          return BuyMenuDetailScreen(state.pathParameters['menuId']!,
+              state.pathParameters['storeId']!);
+        });
   }
 
   // static RouteBase getNearbyRoute() {
@@ -163,7 +164,8 @@ class TabRoutes {
     return GoRoute(
         path: "menu/:menuId",
         builder: (BuildContext context, GoRouterState state) {
-          return PublishSoconScreen(state.pathParameters['menuId']!, state.pathParameters['storeId']!);
+          return PublishSoconScreen(state.pathParameters['menuId']!,
+              state.pathParameters['storeId']!);
         });
   }
 
@@ -192,7 +194,7 @@ class TabRoutes {
 
   static RouteBase getSignInRoute() {
     return GoRoute(
-        // path: "/",
+      // path: "/",
         path: "/signin",
         builder: (BuildContext context, GoRouterState state) {
           return SignInScreen();
@@ -201,10 +203,19 @@ class TabRoutes {
 
   static RouteBase getSignUpRoute() {
     return GoRoute(
-        // path: "/",
+      // path: "/",
         path: "/signup",
         builder: (BuildContext context, GoRouterState state) {
           return SignUpScreen();
         });
+  }
+
+
+  static RouteBase getSerachAddressRoute() {
+    return GoRoute(
+        path: "/kopo",
+        builder: (BuildContext context, GoRouterState state) {
+          return KpostalScreen();
+    });
   }
 }
