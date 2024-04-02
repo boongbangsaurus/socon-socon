@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import site.soconsocon.socon.search.domain.document.StoreDocument;
 import site.soconsocon.socon.search.domain.dto.common.SearchType;
 import site.soconsocon.socon.search.domain.dto.request.SearchRequest;
+import site.soconsocon.socon.search.domain.dto.request.StoreCreateDocument;
 import site.soconsocon.socon.search.domain.dto.response.FoundStoreInfo;
 import site.soconsocon.socon.search.exception.SearchErrorCode;
 import site.soconsocon.socon.search.exception.SearchException;
@@ -75,5 +76,13 @@ public class SearchService {
             throw new SearchException(SearchErrorCode.INVALID_FORMAT);
         }
         return foundStoreInfoList;
+    }
+
+    public void addStores(StoreCreateDocument storeCreateDocument) {
+        try{
+            searchRepository.save(storeCreateDocument.toDocument());
+        } catch (RuntimeException e){
+            throw new SearchException(SearchErrorCode.SAVE_DOCUMENT_FAIL);
+        }
     }
 }
