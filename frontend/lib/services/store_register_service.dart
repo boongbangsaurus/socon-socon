@@ -9,8 +9,8 @@ import 'package:socon/models/store_register_model.dart';
 /// 백과 통신하기 위한 classq..
 
 class StoreRegisterService {
-  // final String baseUrl = 'http://j10c207.p.ssafy.io:8000'; // 통신 url
-  final String baseUrl = 'https://6739-61-84-244-233.ngrok-free.app';
+  final String baseUrl = 'http://j10c207.p.ssafy.io:8000'; // 통신 url
+  // final String baseUrl = 'https://6739-61-84-244-233.ngrok-free.app';
 
   Future<bool> registerStore(StoreRegisterModel storeRegisterModel) async {
     final url = Uri.parse('$baseUrl/api/v1/stores');

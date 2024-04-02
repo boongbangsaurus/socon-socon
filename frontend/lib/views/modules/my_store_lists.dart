@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
+import 'package:socon/services/mystore_lists_service.dart';
 import 'package:socon/utils/colors.dart';
 import 'package:socon/utils/fontSizes.dart';
 import 'package:socon/utils/responsive_utils.dart';
@@ -10,7 +11,7 @@ import 'package:socon/views/atoms/tag_icon.dart';
 import 'package:socon/views/modules/store_detail_top_card.dart';
 import 'package:socon/views/screens/myStore/store_register_view.dart';
 import 'package:socon/views/atoms/image_loader.dart';
-import 'package:socon/models/my_store.dart';
+import 'package:socon/models/mystore_lists_model.dart';
 
 class MyStoreLists extends StatefulWidget {
   const MyStoreLists({super.key});
@@ -28,11 +29,15 @@ class _MyStoreListsState extends State<MyStoreLists> {
         width: ResponsiveUtils.getWidthPercent(context, 100),
         margin: EdgeInsets.only(bottom: 10),
         child: OutlinedButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => RegisterPage()),
-            );
+          onPressed: () async{
+            MystoreListsService service = MystoreListsService();
+
+          // 생성한 인스턴스를 통해 getMystoreLists 메서드를 호출합니다.
+            await service.getMystoreLists();
+          //   Navigator.push(
+          //     context,
+          //     MaterialPageRoute(builder: (context) => RegisterPage()),
+          //   );
           },
           child: Text(
             '+ 점포 등록',
@@ -73,7 +78,7 @@ class StoreLists extends StatelessWidget {
           return InkWell(
             onTap: () {
               // Navigator.push(context, MaterialPageRoute(builder: (context) => StoreDetailTopCard(storeId : store.storeId)));
-              GoRouter.of(context).go("/myStores/${store.storeId}");
+              GoRouter.of(context).go("/myStores/${store.id}");
             },
             child: Container(
               margin: EdgeInsets.all(10),
@@ -96,7 +101,7 @@ class StoreLists extends StatelessWidget {
                       height: 80,
                       width: 80,
                       child: ImageLoader(
-                        imageUrl: store.imageUrl,
+                        imageUrl: store.image,
                         borderRadius: 15.0,
                       ),
                     ),
@@ -116,7 +121,7 @@ class StoreLists extends StatelessWidget {
                                   fontWeight: FontWeight.bold),
                             ),
                             TagIcon(
-                              buttonText: store.tag,
+                              buttonText: store.category,
                               buttonColor: Colors.amber,
                               buttonTextColor: Colors.white,
                             )
