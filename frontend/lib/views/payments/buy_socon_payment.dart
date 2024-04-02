@@ -13,9 +13,12 @@ class Payment extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final arg = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
-    // debugPrint(arg.toString());
     var orderUid = arg!['orderUid'].toString();
-    var name = arg?['name'].toString();
+
+    debugPrint('kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk');
+    debugPrint(arg.toString());
+    debugPrint('kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk');
+    var name = arg['name'].toString();
     var amount = arg?['amount'].toInt();
     var buyerName = arg?['buyerName'].toString();
     var issueId = arg?['issueId'].toInt();
@@ -90,8 +93,8 @@ class Payment extends StatelessWidget {
 
 // 결제 검증 요청 (콜백함수)
 Future<void> validatePayment(String impUid, String orderUid) async {
-  // final String baseUrl = 'http://j10c207.p.ssafy.io:8000'; // 통신 url
-  final String baseUrl = 'https://f7a9-121-178-98-30.ngrok-free.app';
+  final String baseUrl = 'http://j10c207.p.ssafy.io:8000'; // 통신 url
+  // final String baseUrl = 'https://f7a9-121-178-98-30.ngrok-free.app';
   // 통신 url
   final Uri url = Uri.parse('$baseUrl/api/v1/payments/validate');
   final prefs = await SharedPreferences.getInstance();

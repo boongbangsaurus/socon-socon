@@ -11,7 +11,7 @@ class StoreRegisterModel {
   double lng;
   String introduction;
   int registrationNumberId;
-  List<BusinessHour> businessHours;
+  List businessHours;
 
   StoreRegisterModel({
     this.name = '',

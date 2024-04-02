@@ -69,10 +69,12 @@ class _StoreRegisterSuccessScreen
               resultMsg: bossVerificationMessage,
               // 일단은 home으로... -> isOwner 넣기
               onPressed: () => {
-                // GoRouter.of(context).go('/'),
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => MyStoreListScreen()),
-                ),
+                GoRouter.of(context).go('/'),
+                // GoRouter.of(context).go('/myStores'),
+
+                // Navigator.of(context).push(
+                //   MaterialPageRoute(builder: (context) => MyStoreListScreen()),
+                // ),
               },
             ),
           ),

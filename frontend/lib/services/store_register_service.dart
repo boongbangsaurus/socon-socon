@@ -16,16 +16,17 @@ class StoreRegisterService {
     final url = Uri.parse('$baseUrl/api/v1/stores');
     final prefs = await SharedPreferences.getInstance();
     final accessToken = prefs.getString('accessToken');
-    print(storeRegisterModel);
+    // print(storeRegisterModel);
     final response = await http.post(url,
         headers: <String, String>{
           'Authorization': 'Bearer $accessToken',
           'Content-Type': 'application/json',
         },
         body: jsonEncode(storeRegisterModel.toJson()));
+    debugPrint('vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv');
 
     if (response.statusCode == 200) {
-      print('응답');
+      print('응답ㅂㅂㅂㅂㅂㅂㅂㅂㅂㅂㅂㅂ');
       print(utf8.decode(response.bodyBytes));
       return true;
     } else {

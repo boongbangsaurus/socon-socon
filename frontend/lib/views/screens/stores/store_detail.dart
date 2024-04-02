@@ -122,11 +122,9 @@ class StoreDetailScreen extends StatelessWidget {
               margin: EdgeInsets.symmetric(horizontal: 20),
               child: BasicButton(
                 onPressed: () async {
-                  // var impUid = 'imp01516875';
-                  // var orderUid = 'd2ff7305-0e1d-4852-a3ae-3c94e49f95ed';
+
                   try {
                     // 결제 검증 호출
-                    // await validatePayment(impUid, orderUid);
 
                     // var orderData = {
                     //   "itemName": '멸치꼬마김밥',
@@ -138,14 +136,17 @@ class StoreDetailScreen extends StatelessWidget {
                     // var paymentService = PaymentService();
                     // var orderUid = await paymentService.sendPaymentRequest(orderData);
 
+                    // var impUid = 'imp01516875';
+                    // var orderUid = 'd2ff7305-0e1d-4852-a3ae-3c94e49f95ed';
+                    // await validatePayment(impUid, orderUid);
 
                     Navigator.of(context).push(
                       MaterialPageRoute(
                           builder: (context) => Payment(),
                           settings: RouteSettings(arguments: {
-                            'orderUid': '2088feb7-9713-40be-8d13-b6d16e5fedca',
+                            'orderUid': '26e28cc1-d403-487c-b36c-56b905dc1056',
                             'issueId': 1,
-                            'name': "멸치어린이김밥",
+                            'name': "소고기버섯비빔밥",
                             'amount': 300,
                             'buyerName': '김온유'
                           }

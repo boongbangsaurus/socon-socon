@@ -12,7 +12,10 @@ class StoreRegisterViewModel extends ChangeNotifier {
   // 스토어 등록 api post 요청
   Future<bool> registerStore() async {
     try {
+      debugPrint('ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ');
       final result = await storeService.registerStore(storeModel);
+      debugPrint(result as String?);
+      debugPrint('ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ');
       return result;
     } catch (e) {
       // 에러 처리 하기
@@ -31,7 +34,8 @@ class StoreRegisterViewModel extends ChangeNotifier {
   double? get lng => storeModel.lng;
   String? get introduction => storeModel.introduction;
   int? get registrationNumberId => storeModel.registrationNumberId;
-  List<BusinessHour>? get businessHours => storeModel.businessHours;
+  List? get businessHours => storeModel.businessHours;
+  // List<BusinessHour>? get businessHours => storeModel.businessHours;
 
 
 
@@ -50,6 +54,9 @@ class StoreRegisterViewModel extends ChangeNotifier {
 
   void setImage(String image) {
     storeModel.image = image;
+    debugPrint('DDDDDDDDDDDDDDDDDDDDDDD');
+    debugPrint(image);
+    debugPrint('DDDDDDDDDDDDDDDDDDDDDDDDDD');
     notifyListeners();
   }
 
@@ -83,8 +90,15 @@ class StoreRegisterViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setBusinessHours(List<BusinessHour> businessHours) {
+  // void setBusinessHours(List<BusinessHour> businessHours) {
+  //   storeModel.businessHours = businessHours;
+  //   notifyListeners();
+  // }
+ void setBusinessHours(List businessHours) {
     storeModel.businessHours = businessHours;
+    // debugPrint('EEEEEEEEEEEEEEEEEEEEEEEEEEE');
+    // debugPrint(businessHours as String?);
+    // debugPrint('EEEEEEEEEEEEEEEEEEEEEEEEEEE');
     notifyListeners();
   }
 

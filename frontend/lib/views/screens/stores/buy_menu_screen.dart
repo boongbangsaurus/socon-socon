@@ -224,14 +224,15 @@ class _BuyMenuDetailScreenState extends State<BuyMenuDetailScreen> {
                                         "issueId": productDetailModel.id,
                                       };
 
-                                      await viewModel.sendPaymentRequest(orderData);
+                                      // await viewModel.sendPaymentRequest(orderData);
                                       Navigator.of(context).push(
                                         MaterialPageRoute(
                                             builder: (context) => Payment(),
                                             settings: RouteSettings(arguments: {
-                                              'orderUid': viewModel.orderUid,
+                                              // 'orderUid': viewModel.orderUid,
+                                              'orderUid': 'ac88940a-8b9b-4e5b-95f8-6782f970bb65',
                                               'issueId': 1,
-                                              'name': "멸치꼬마김밥",
+                                              'name': "열무국수",
                                               'amount': 300,
                                               'buyerName': '김온유'
                                             }

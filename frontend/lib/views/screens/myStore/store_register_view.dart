@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:socon/models/store_register_model.dart';
 import 'dart:io';
 
 import 'package:socon/utils/colors.dart';
@@ -384,115 +385,86 @@ class _Step3State extends State<Step3> {
   bool isChecked = false;
   List<BusinessHour> BusinessHours = [];
 
-  Map<String, BusinessHour> operationDaysMap = {
-    '월': BusinessHour(
-      day: '월',
-      isWorking: false,
-      openAt: null,
-      closeAt: null,
-      isBreaktime: false,
-      breaktimeStart: null,
-      breaktimeEnd: null,
-    ),
-    '화': BusinessHour(
-      day: '화',
-      isWorking: false,
-      openAt: null,
-      closeAt: null,
-      isBreaktime: false,
-      breaktimeStart: null,
-      breaktimeEnd: null,
-    ),
-    '수': BusinessHour(
-      day: '수',
-      isWorking: false,
-      openAt: null,
-      closeAt: null,
-      isBreaktime: false,
-      breaktimeStart: null,
-      breaktimeEnd: null,
-    ),
-    '목': BusinessHour(
-      day: '목',
-      isWorking: false,
-      openAt: null,
-      closeAt: null,
-      isBreaktime: false,
-      breaktimeStart: null,
-      breaktimeEnd: null,
-    ),
-    '금': BusinessHour(
-      day: '금',
-      isWorking: false,
-      openAt: null,
-      closeAt: null,
-      isBreaktime: false,
-      breaktimeStart: null,
-      breaktimeEnd: null,
-    ),
-    '토': BusinessHour(
-      day: '토',
-      isWorking: false,
-      openAt: null,
-      closeAt: null,
-      isBreaktime: false,
-      breaktimeStart: null,
-      breaktimeEnd: null,
-    ),
-    '일': BusinessHour(
-      day: '일',
-      isWorking: false,
-      openAt: null,
-      closeAt: null,
-      isBreaktime: false,
-      breaktimeStart: null,
-      breaktimeEnd: null,
-    ),
+  List<Map> operationDaysList = [
+    {'day': '월',
+      'isWorking': false,
+      'openAt': null,
+      'closeAt': null,
+      'isBreaktime': false,
+      'breaktimeStart': null,
+      'breaktimeEnd': null,} ,
+
+    {'day': '화',
+      'isWorking': false,
+      'openAt': null,
+      'closeAt': null,
+      'isBreaktime': false,
+      'breaktimeStart': null,
+      'breaktimeEnd': null,} ,
+
+    {'day': '수',
+      'isWorking': false,
+      'openAt': null,
+      'closeAt': null,
+      'isBreaktime': false,
+      'breaktimeStart': null,
+      'breaktimeEnd': null,} ,
+
+    {'day': '목',
+      'isWorking': false,
+      'openAt': null,
+      'closeAt': null,
+      'isBreaktime': false,
+      'breaktimeStart': null,
+      'breaktimeEnd': null,} ,
+
+    {'day': '금',
+      'isWorking': false,
+      'openAt': null,
+      'closeAt': null,
+      'isBreaktime': false,
+      'breaktimeStart': null,
+      'breaktimeEnd': null,} ,
+
+    {'day': '토',
+      'isWorking': false,
+      'openAt': null,
+      'closeAt': null,
+      'isBreaktime': false,
+      'breaktimeStart': null,
+      'breaktimeEnd': null,} ,
+
+    {'day': '일',
+      'isWorking': false,
+      'openAt': null,
+      'closeAt': null,
+      'isBreaktime': false,
+      'breaktimeStart': null,
+      'breaktimeEnd': null,} ,
+  ];
+
+  List<String> dropdownItems = [ '08:00', '08:30', '09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30',  '13:00', '13:30', '14:00', '14:30','15:00', '15:30', '16:00', '16:30', '17:00', '17:30', '18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00', '21:30'];
+  List<String> Days = ['월', '화', '수', '목', '금', '토', '일'];
+  Map<String, dynamic> operationDaysMap = {
+    '월': {'isWorking': false},
+    '화': {'isWorking': false},
+    '수': {'isWorking': false},
+    '목': {'isWorking': false},
+    '금': {'isWorking': false},
+    '토': {'isWorking': false},
+    '일': {'isWorking': false},
   };
 
-  List<String> dropdownItems = [
-    '08:00',
-    '08:30',
-    '09:00',
-    '09:30',
-    '10:00',
-    '10:30',
-    '11:00',
-    '11:30',
-    '12:00',
-    '12:30',
-    '13:00',
-    '13:30',
-    '14:00',
-    '14:30',
-    '15:00',
-    '15:30',
-    '16:00',
-    '16:30',
-    '17:00',
-    '17:30',
-    '18:00',
-    '18:30',
-    '19:00',
-    '19:30',
-    '20:00',
-    '20:30',
-    '21:00',
-    '21:30'
-  ];
+  List<String> selectedDay = [];
   String selectedStartTime = '';
   String selectedEndTime = '';
   bool is_breaktime = false;
   String breaktimeStart = '';
   String breaktimeEnd = '';
 
-  // List<Widget> selectedTimesWidgets = [];
+
   Map<String, String> selectedStartTimes = {};
 
-  // var filteredOperationDaysMap = operationDaysMap.entries
-  //     .where((entry) => entry.value.isWorking == true)
-  //     .map((entry) => MapEntry(entry.key, entry.value))
-  //     .toMap();
 
   @override
   Widget build(BuildContext context) {
@@ -514,24 +486,21 @@ class _Step3State extends State<Step3> {
                   ),
                   Wrap(
                     spacing: -2.0,
-                    children: operationDaysMap.keys.map((day) {
-                      return TagButton(
-                        buttonText: day,
-                        buttonColor: operationDaysMap[day]!.isWorking
-                            ? Colors.yellow
-                            : Colors.grey,
-                        buttonTextColor: Colors.white,
-                        onSelected: (day) {
-                          print("선택 요일 $day");
-                        },
-                        isSelected: operationDaysMap[day]!.isWorking,
-                        onPressed: operationDaysMap[day]!.isWorking
-                            ? null
-                            : () {
-                                print("선택 요일ddd $day");
-                                // operationDaysMap[day]!.isWorking = true;
-                              },
-                      );
+                    children: Days.map((day) {
+                      return TagButton(buttonText: day, buttonColor: AppColors.YELLOW, buttonTextColor: AppColors.WHITE,
+                            onSelected: (isSelected) => {
+                              setState(() {
+                                if (isSelected) {
+                                  if (!selectedDay.contains(day)) {
+                                    selectedDay.add(day);
+                                  }
+                                } else {
+                                  selectedDay.remove(day);
+                                }
+                                // print('$selectedDay =======================');
+                              })
+                            },
+                            onPressed: (){},);
                     }).toList(),
                   ),
                   Row(
@@ -598,9 +567,6 @@ class _Step3State extends State<Step3> {
                                     onItemSelected: (item) {
                                       setState(() {
                                         breaktimeStart = item ?? '';
-                                        // viewModel.updateBusinessHour(
-                                        //     item ?? '00:00',
-                                        //     openAt: selectedStartTime);
                                       });
                                     },
                                   )
@@ -618,10 +584,6 @@ class _Step3State extends State<Step3> {
                                     onItemSelected: (item) {
                                       setState(() {
                                         breaktimeEnd = item ?? '';
-                                        // viewModel.updateBusinessHour(
-                                        //     item ?? '00:00',
-                                        //     openAt: selectedEndTime
-                                        // );
                                       });
                                     },
                                   )
@@ -635,17 +597,54 @@ class _Step3State extends State<Step3> {
                       text: '요일추가',
                       color: 'yellow',
                       onPressed: () {
-                        operationDaysMap.keys.forEach((day) {
-                          operationDaysMap[day]!.isWorking = true;
+                        setState(() {
+                          operationDaysList.forEach((dayinfo) {
+                            if (selectedDay.contains(dayinfo['day'])){
+                              dayinfo['isWorking'] = true;
+                              dayinfo['openAt'] = selectedStartTime;
+                              dayinfo['closeAt'] = selectedEndTime ;
+                              dayinfo['isBreaktime'] = isChecked ;
+                              dayinfo['breaktimeStart'] = breaktimeStart ;
+                              dayinfo['breaktimeEnd'] = breaktimeEnd;
+                            }
+                          });
+                          // 선택요일 초기화
+                          selectedDay = [];
                         });
+
                       }),
                   Column(
-                    children: operationDaysMap.entries
-                        .where((entry) =>
-                            entry.value.isWorking) // isWorking이 true인 항목만 필터링
-                        .map((entry) => Text(entry.key)) // 각 항목을 Text 위젯으로 변환
-                        .toList(), // Iterable을 List로 변환
-                  ),
+                    children: operationDaysList.where((dayInfo) => dayInfo['isWorking'] as bool).map((filteredDayInfo) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(height: 10),
+                          Row( // Row 위젯을 추가하여 텍스트와 버튼을 가로로 배열
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween, // 요소들을 양 끝으로 정렬
+                            children: [
+                              Expanded( // 텍스트가 버튼보다 넓은 공간을 차지하도록 함
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text('${filteredDayInfo['day']}     ${filteredDayInfo['openAt']} ~ ${filteredDayInfo['closeAt']}'),
+                                    filteredDayInfo['isBreaktime'] ? Text('        ${filteredDayInfo['breaktimeStart']} ~  ${filteredDayInfo['breaktimeEnd']}  휴식시간') : Text(''),
+                                  ],
+                                ),
+                              ),
+                              IconButton(
+                                icon: Icon(Icons.close), // X 아이콘
+                                onPressed: () {
+                                  setState(() {
+                                    filteredDayInfo['isWorking'] = false;
+                                  });
+                                },
+                              ),
+                            ],
+                          ),
+                        ],
+                      );
+                    }).toList(),
+                  )
 
                   // SizedBox(height: 50),
                 ],
@@ -659,20 +658,20 @@ class _Step3State extends State<Step3> {
                         duration: Duration(milliseconds: 300),
                         curve: Curves.easeInOut,
                       ),
+                    // viewModel에 보내기
+                    operationDaysList.forEach((element) {print('$element >>>>>>>>>>>>>>>>>>>>>>>>>>>>');}),
+                    viewModel.setBusinessHours(operationDaysList),
                     }),
-            BasicButton(
-                text: 'xptmxm',
-                onPressed: () {
-                  BusinessHours.forEach((businessHour) {
-                    print(businessHour);
-                  });
-                })
           ],
         ),
       ),
     );
   }
 }
+
+
+
+
 
 class SummaryPage extends StatelessWidget {
   final PageController pageController;
@@ -707,6 +706,8 @@ class SummaryPage extends StatelessWidget {
     final viewModel = Provider.of<StoreRegisterViewModel>(context);
     final Size _size = MediaQuery.of(context).size;
 
+    final List? businessHours = viewModel.businessHours;
+
     return Scaffold(
       body: SafeArea(
           child: Stack(
@@ -722,12 +723,15 @@ class SummaryPage extends StatelessWidget {
                           Container(
                             // 가게 url 이미지
                             child: Image.network(
-                                'https://cataas.com/cat',
+                                viewModel.image.toString(),
                                 fit: BoxFit.cover,
                                 height: 160,
                                 width: ResponsiveUtils.getWidthPercent(context, 100)
                             ),
                           ),
+                          Text(viewModel.image.toString()),
+                          Text('ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ'),
+
 
                         ],
                       ),
@@ -824,10 +828,22 @@ class SummaryPage extends StatelessWidget {
                                         child: Text('운영시간',
                                           style: TextStyle(fontWeight: FontWeight.w600),),
                                       ),
+
                                       Expanded(
                                         flex: 3,
-                                        child: Text(viewModel.businessHours.toString(),
-                                          style: TextStyle(),),
+                                        child: Column(
+                                          children: businessHours?.map((element) {
+                                            return Container(
+                                              child: Row(
+                                                children: [
+                                                  element['isWorking'] ?
+                                                  Text('${element['day']} ${element['openAt']} ~ ${element['closeAt']}') :
+                                                      Text(''),
+                                                ],
+                                              ),
+                                            );
+                                          }).toList() ?? [],
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -984,9 +1000,9 @@ class SummaryPage extends StatelessWidget {
                   child: BasicButton(
                     onPressed: () {
                       viewModel.registerStore();
-                      Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => StoreRegisterSuccessScreen()),
-                      );
+                      // Navigator.of(context).push(
+                      //   MaterialPageRoute(builder: (context) => StoreRegisterSuccessScreen()),
+                      // );
                     },
                     text: '등록하기',
                   ),
