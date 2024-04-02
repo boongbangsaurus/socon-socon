@@ -62,6 +62,7 @@ public class Store {
     private BusinessRegistration businessRegistration;
 
     @OneToMany(mappedBy = "store")
+    @Builder.Default
     private List<BusinessHour> businessHours = new ArrayList<>();
 
 }

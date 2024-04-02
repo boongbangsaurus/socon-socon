@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import site.soconsocon.payment.service.feign.response.MemberFeignResponse;
 
-@FeignClient(name = "memberClient", url = "http://localhost:8040/api/v1/members")
+@FeignClient(name = "memberClient", url = "${feign.urls.member}")
 public interface MemberFeignClient {
 
     @GetMapping("/{memberId}")

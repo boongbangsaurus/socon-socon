@@ -48,7 +48,7 @@ class BossVerificationService {
 
   // 사장님 인증
   Future<bool> checkBossAgain(BusinessOwner businessOwner) async {
-    print("사장님 인증 2차 시작");
+    print("사장님 인증 2차 시작 $businessOwner");
     final response = await ApiUtils.postDataWithToken(
         '/api/v1/stores/business', businessOwner);
 

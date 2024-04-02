@@ -16,6 +16,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 
 import 'package:socon/firebase_options.dart';
+import 'package:socon/provider/Boss_provider.dart';
 import 'package:socon/routes/router.dart';
 import 'package:socon/services/notifications/background_location_service.dart';
 import 'package:socon/services/notifications/background_message_handler.dart';
@@ -32,7 +33,9 @@ import 'package:socon/viewmodels/payment_verification_view_model.dart';
 import 'package:socon/viewmodels/store_register_view_model.dart';
 
 import 'package:socon/viewmodels/notification_view_model.dart';
+import 'package:socon/views/screens/bossVerification/boss_verification.dart';
 
+import 'provider/Address.dart';
 import 'models/location.dart';
 
 
@@ -117,7 +120,7 @@ class _MyAppState extends State<MyApp> {
 
     initPlatformState();
 
-    _onStart();
+    // _onStart();  // 잠시 주석 처리
   }
 
   @override
@@ -209,6 +212,7 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (context) => LoginState()),
         ChangeNotifierProvider(create: (context) => PaymentVerificationViewModel()),
         ChangeNotifierProvider(create: (context) => StoreRegisterViewModel()),
+        ChangeNotifierProvider(create: (_) => BossProvider()),
       ],
       child: MaterialApp.router(
         routerConfig: router,
