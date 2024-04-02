@@ -24,4 +24,30 @@ public interface SoconRepository extends JpaRepository<Socon, Integer> {
     List<Socon> getUnusedSoconByIssueId(Integer issueId);
     @Query("SELECT s FROM SOCON s WHERE s.issue.item.store.id = :storeId AND s.status IN ('unused', 'sogon')")
     List<Socon> getSoconByStoreId(Integer storeId);
+
+    @Query("SELECT COUNT(s) FROM SOCON s WHERE s.issue.id = :issueId AND (s.status = 'used') AND YEAR(s.usedAt) = :year AND MONTH(s.usedAt) = :month")
+    int countUsedSoconByIssueId(Integer issueId, int year, int month);
+
+    @Query("SELECT COUNT(s) FROM SOCON s WHERE s.issue.id = :issueId AND YEAR(s.purchasedAt) = :year AND MONTH(s.purchasedAt) = :month")
+    int countIssuedSoconByIssueId(int issueId, int year, int month);
+
+    @Query("SELECT COUNT(s) FROM SOCON s WHERE s.issue.item.store.id = :storeId AND YEAR(s.purchasedAt) = :year AND MONTH(s.purchasedAt) = :month AND DAY(s.purchasedAt) = :day")
+    int countWeeklyIssuedSoconByIssueId(int storeId, int year, int month, int day);
+
+    @Query("SELECT COUNT(s) FROM SOCON s WHERE s.issue.item.store.id = :storeId AND YEAR(s.usedAt) = :year AND MONTH(s.usedAt) = :month AND DAY(s.usedAt) = :day")
+    int countWeeklyUsedSoconByIssueId(int storeId, int year, int month, int day);
+
+
+    @Query("SELECT SUM(CASE WHEN s.issue.isDiscounted = true THEN s.issue.price ELSE s.issue.discountedPrice END)\n" +
+            "FROM SOCON s \n" +
+            "WHERE s.issue.item.store.id = :storeId \n" +
+            "AND YEAR(s.usedAt) = :year \n" +
+            "AND MONTH(s.usedAt) = :month")
+    int sumMothlyUsedSoconByStoreId(int storeId, int year, int month);
+        @Query("SELECT COUNT(DISTINCT s.issue.id) FROM SOCON s WHERE s.issue.item.store.id = :storeId AND YEAR(s.usedAt) = :year AND MONTH(s.usedAt) = :month")
+    int countDistinctUsedIssuedIdByStoreId(int storeId, int year, int month);
+
+    @Query("SELECT COUNT(DISTINCT s.issue.id) FROM SOCON s WHERE s.issue.item.store.id = :storeId AND YEAR(s.purchasedAt) = :year AND MONTH(s.purchasedAt) = :month")
+    int countDistinctIssuedIdByStoreId(int storeId, int year, int month);
+
 }
