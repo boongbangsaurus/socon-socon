@@ -64,6 +64,7 @@ void main() async {
 
   uriLinkStream.listen((Uri? uri) {
     print("딥링크 구현 $uri");
+    router.go("/info");
   }, onError: (Object error) {
     print("딥링크 이동 $error");
   }, onDone: (){

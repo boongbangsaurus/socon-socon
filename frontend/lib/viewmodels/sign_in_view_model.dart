@@ -15,6 +15,7 @@ class SignInViewModel extends ChangeNotifier {
     List? token = await _authService.signIn(user);
     if (token?[0] != null) {
       final prefs = await SharedPreferences.getInstance();
+      prefs.reload();
       await prefs.setString('accessToken', token?[0]);
       await prefs.setString('refreshToken', token?[1]);
       return true;

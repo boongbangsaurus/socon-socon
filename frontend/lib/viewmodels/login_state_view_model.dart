@@ -20,6 +20,7 @@ class LoginState with ChangeNotifier {
 
   Future<void> checkLoginStatus() async {
     final prefs = await SharedPreferences.getInstance();
+    prefs.reload();
     final token = prefs.getString('accessToken');
     _isLoggedIn = token != null;
     notifyListeners();
