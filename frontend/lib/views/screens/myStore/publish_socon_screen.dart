@@ -45,7 +45,7 @@ class _PublishSoconScreenState extends State<PublishSoconScreen> {
     super.initState();
     // Initialize _menu with actual Menu object
     _menu = Future.delayed(
-        Duration(milliseconds: 3000),
+        Duration(milliseconds: 1000),
         () => Menu(
               id: 0,
               name: "소금빵",

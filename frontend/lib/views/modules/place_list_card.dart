@@ -37,6 +37,8 @@ class _PlaceListCardState extends State<PlaceListCard> {
 
   @override
   Widget build(BuildContext context) {
+    // print('ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ');
+    // print(widget.storeInfo.storeId);
     return GestureDetector(
       onTap: () {
         print("장소리스트 클릭 ${widget.storeInfo.storeId}");

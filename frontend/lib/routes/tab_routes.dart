@@ -40,7 +40,7 @@ class TabRoutes {
         // path: "/",
         path: "detail/:storeId",
         builder: (BuildContext context, GoRouterState state) {
-          return StoreDetailScreen(state.pathParameters['storeId']);
+          return StoreDetailScreen(state.pathParameters['storeId']!);
         },
         routes: [
           getBuyMenuDetailRoute(),
@@ -171,7 +171,7 @@ class TabRoutes {
         },
         routes: [
           getMenuDetailRoute(),
-          getProductRegisterRoute(),
+          // getProductRegisterRoute(),
         ]);
   }
 
@@ -185,15 +185,15 @@ class TabRoutes {
         });
   }
 
-
-  static RouteBase getProductRegisterRoute() {
-    return GoRoute(
-        path: "register",
-        builder: (BuildContext context, GoRouterState state) {
-          return ProductRegister(state.pathParameters['storeId']!,);
-        });
-  }
-
+  //
+  // static RouteBase getProductRegisterRoute() {
+  //   return GoRoute(
+  //       path: "register",
+  //       builder: (BuildContext context, GoRouterState state) {
+  //         return ProductRegister(state.pathParameters['storeId']!,);
+  //       });
+  // }
+  //
 
 
   static RouteBase getBossVerification() {

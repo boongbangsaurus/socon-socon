@@ -15,67 +15,73 @@ import 'package:http/http.dart' as http;
 import 'dart:convert'; // JSON 처리를 위한 패키지
 import 'package:shared_preferences/shared_preferences.dart';
 
+final List<Socon> saleMenuList = [
+  Socon.fromJson({
+    "id": 0, // issue id
+    "name": "소금빵",
+    "price": 3000, // 정가(할인 전 가격)
+    "is_main": true, // 대표 상품 여부
+    "image": "https://cataas.com/cat",
+    "issued_quantity": 3, // 현재 발행량 (구매된 갯수)
+    "left_quantity": 4, // 남은 갯수
+    "is_discounted": true, // 할인 여부
+    "discounted_price": 2500, // 할인 적용된 가격
+    // "created_at": 2024-03-24 // 발행 정보 등록된 날짜
+  }),
+  Socon.fromJson({
+    "id": 1, // issue id
+    "is_main": false, // 대표 상품 여부
+    "name": "소금빵",
+    "image": "https://cataas.com/cat",
+    "issued_quantity": 3, // 현재 발행량 (구매된 갯수)
+    "left_quantity": 4, // 남은 갯수
+    "is_discounted": true, // 할인 여부
+    "price": 3000, // 정가(할인 전 가격)
+    "discounted_price": 2500, // 할인 적용된 가격
+    // "created_at": 2024-03-24 // 발행 정보 등록된 날짜
+  }),
+  Socon.fromJson({
+    "id": 2, // issue id
+    "is_main": false, // 대표 상품 여부
+    "name": "소금빵",
+    "image": "https://cataas.com/cat",
+    "issued_quantity": 3, // 현재 발행량 (구매된 갯수)
+    "left_quantity": 4, // 남은 갯수
+    "is_discounted": false, // 할인 여부
+    "price": 3000, // 정가(할인 전 가격)
+    "discounted_price": 2500, // 할인 적용된 가격
+    // "created_at": 2024-03-24 // 발행 정보 등록된 날짜
+  }),
+  Socon.fromJson({
+    "id": 3, // issue id
+    "is_main": false, // 대표 상품 여부
+    "name": "소금빵",
+    "image": "https://cataas.com/cat",
+    "issued_quantity": 3, // 현재 발행량 (구매된 갯수)
+    "left_quantity": 4, // 남은 갯수
+    "is_discounted": false, // 할인 여부
+    "price": 3000, // 정가(할인 전 가격)
+    "discounted_price": 2500, // 할인 적용된 가격
+    // "created_at": 2024-03-24 // 발행 정보 등록된 날짜
+  }),
+];
 
-class StoreDetailScreen extends StatelessWidget {
-  final String? pathParameter;
+
+class StoreDetailScreen extends StatefulWidget {
+  final String pathParameter;
 
   StoreDetailScreen( this.pathParameter, {super.key});
 
-  final List<Socon> saleMenuList = [
-    Socon.fromJson({
-      "id": 0, // issue id
-      "name": "소금빵",
-      "price": 3000, // 정가(할인 전 가격)
-      "is_main": true, // 대표 상품 여부
-      "image": "https://cataas.com/cat",
-      "issued_quantity": 3, // 현재 발행량 (구매된 갯수)
-      "left_quantity": 4, // 남은 갯수
-      "is_discounted": true, // 할인 여부
-      "discounted_price": 2500, // 할인 적용된 가격
-      // "created_at": 2024-03-24 // 발행 정보 등록된 날짜
-    }),
-    Socon.fromJson({
-      "id": 1, // issue id
-      "is_main": false, // 대표 상품 여부
-      "name": "소금빵",
-      "image": "https://cataas.com/cat",
-      "issued_quantity": 3, // 현재 발행량 (구매된 갯수)
-      "left_quantity": 4, // 남은 갯수
-      "is_discounted": true, // 할인 여부
-      "price": 3000, // 정가(할인 전 가격)
-      "discounted_price": 2500, // 할인 적용된 가격
-      // "created_at": 2024-03-24 // 발행 정보 등록된 날짜
-    }),
-    Socon.fromJson({
-      "id": 2, // issue id
-      "is_main": false, // 대표 상품 여부
-      "name": "소금빵",
-      "image": "https://cataas.com/cat",
-      "issued_quantity": 3, // 현재 발행량 (구매된 갯수)
-      "left_quantity": 4, // 남은 갯수
-      "is_discounted": false, // 할인 여부
-      "price": 3000, // 정가(할인 전 가격)
-      "discounted_price": 2500, // 할인 적용된 가격
-      // "created_at": 2024-03-24 // 발행 정보 등록된 날짜
-    }),
-    Socon.fromJson({
-      "id": 3, // issue id
-      "is_main": false, // 대표 상품 여부
-      "name": "소금빵",
-      "image": "https://cataas.com/cat",
-      "issued_quantity": 3, // 현재 발행량 (구매된 갯수)
-      "left_quantity": 4, // 남은 갯수
-      "is_discounted": false, // 할인 여부
-      "price": 3000, // 정가(할인 전 가격)
-      "discounted_price": 2500, // 할인 적용된 가격
-      // "created_at": 2024-03-24 // 발행 정보 등록된 날짜
-    }),
-  ];
+  @override
+  State<StoreDetailScreen> createState() => _StoreDetailScreenState();
+}
 
+class _StoreDetailScreenState extends State<StoreDetailScreen> {
+  // int test = int.parse(widget.pathParameter!);
 
   @override
   Widget build(BuildContext context) {
-    int storeId = int.parse(pathParameter!);
+    int storeId = int.parse(widget.pathParameter);
     bool isOwner = false;
 
     return Scaffold(

@@ -13,48 +13,76 @@ import 'package:socon/views/modules/mystore_menu_management.dart';
 import 'package:socon/views/modules/mystore_rigister_menu_lists.dart';
 import 'package:socon/views/screens/my_store_list_screen.dart';
 
-class StoreDetailTopCard extends StatefulWidget {
+class StoreTopCard extends StatefulWidget {
   final int storeId;
   final bool isOwner;
 
 
-  const StoreDetailTopCard({
+  const StoreTopCard({
     super.key,
     required this.storeId,
     required this.isOwner,
   });
 
   @override
-  State<StoreDetailTopCard> createState() => _StoreDetailTopCardState();
+  State<StoreTopCard> createState() => _StoreTopCardState();
 }
 
-class _StoreDetailTopCardState extends State<StoreDetailTopCard> {
+class _StoreTopCardState extends State<StoreTopCard> {
+  // 내 발급 목록 리스트 불러오기
+  Map<String, dynamic> storeInfos = {};
 
+  void initState() {
+    super.initState();
+    loadMyStores();
+  }
+
+  MystoreMenuListViewModel viewModel = MystoreMenuListViewModel();
+  void loadMyStores() async {
+    debugPrint('내점포 상세조회 - 발행소콘 목록!');
+    var infos = await viewModel.storeDetailInfos(widget.storeId);
+    // print('njnjnjnjnjnjnjnjnjnjn');
+    // print(infos);
+    // print('njnjnjnjnjnjnjnjnjnjn');
+    setState(() {
+      storeInfos = infos['store'];
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    print('7777777777777777777');
+    print(storeInfos);
+    print(widget.storeId);
+    print('77777777777777777777');
 
 
+    if(viewModel.isLoading == false) {
       return SafeArea(
           child: Container(
             color: AppColors.WHITE,
             child: Stack(
               children: [
                 Container(
-                  child: Image.network('https://cataas.com/cat',
+                  // child: Image.network('https://cataas.com/cat',
+                  child: Image.network(storeInfos['image'] ?? {},
                       fit: BoxFit.cover,
                       height: ResponsiveUtils.getHeightWithPixels(context, 160),
                       width: ResponsiveUtils.getWidthPercent(context, 100)),
                 ),
-                shortStoreInfoWithBar(context),
+                shortStoreInfoWithBar(context, storeInfos),
               ],
             ),
           )
       );
+    } else {
+      return Center(child: CircularProgressIndicator(),);
+    }
+
     // bottomNavigationBar: null,
   }
 
-  Widget shortStoreInfoWithBar(BuildContext context) {
+  Widget shortStoreInfoWithBar(BuildContext context, storeInfos) {
     return Column(
       children: [
         // 매장 정보에 대한 상단 바
@@ -88,13 +116,13 @@ class _StoreDetailTopCardState extends State<StoreDetailTopCard> {
           ),
         ),
         SizedBox(height: ResponsiveUtils.getHeightWithPixels(context, 50)),
-        shortStoreInfoCard(context),
+        shortStoreInfoCard(context, storeInfos),
       ],
     );
   }
 
 //////////////////////////////////
-  Widget shortStoreInfoCard(BuildContext context) {
+  Widget shortStoreInfoCard(BuildContext context, storeInfos) {
     return // 매장 정보 카드
         Container(
       width: ResponsiveUtils.getWidthWithPixels(context, 330),
@@ -121,7 +149,7 @@ class _StoreDetailTopCardState extends State<StoreDetailTopCard> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                '오소유',
+                storeInfos['name'] ?? {},
                 style: TextStyle(
                   fontSize: ResponsiveUtils.calculateResponsiveFontSize(
                       context, FontSizes.XLARGE),
@@ -129,7 +157,7 @@ class _StoreDetailTopCardState extends State<StoreDetailTopCard> {
                 ),
               ),
               TagIcon(
-                buttonText: '빵집',
+                buttonText: storeInfos['category'] ?? {},
                 buttonColor: Colors.brown,
                 buttonTextColor: AppColors.WHITE,
                 width: ResponsiveUtils.getWidthWithPixels(context, 42),
@@ -139,12 +167,12 @@ class _StoreDetailTopCardState extends State<StoreDetailTopCard> {
           ),
           SizedBox(height: 2),
           Text(
-            '광주 광역시 광산구',
+            storeInfos['address'] ?? {},
             style: TextStyle(color: AppColors.GRAY500),
           ),
           SizedBox(height: 10),
           Text(
-            '가게 상세 설명',
+            storeInfos['introduction'] ?? {},
             maxLines: 3,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
@@ -218,7 +246,7 @@ class _StoreDetailTopCardState extends State<StoreDetailTopCard> {
                       ),
                       SizedBox(width: 6),
                       Text(
-                        '123',
+                        storeInfos['favorite_count'] ?? {},
                         style: TextStyle(
                           color: AppColors.BLACK,
                           fontSize: ResponsiveUtils.calculateResponsiveFontSize(

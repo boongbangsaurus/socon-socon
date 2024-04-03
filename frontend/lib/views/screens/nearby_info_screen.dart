@@ -91,7 +91,7 @@ class _NearbyInfoScreen extends State<NearbyInfoScreen> {
 }
 
 Store tempStore = Store(
-    storeId: 0,
+    storeId: 20,
     name: "오소유",
     imageUrl: "https://cataas.com/cat",
     address: "광주 광산구 장덕로40번길 13-1 1층",

@@ -13,6 +13,8 @@ class PlaceList extends StatelessWidget {
       itemCount: stores.length,
       itemBuilder: (BuildContext context, int index) {
         final storeInfo = stores[index];
+        // debugPrint('11111111111111111111111111111111111111');
+        // debugPrint('ㅂㅂ ${storeInfo.storeId}');
 
         return PlaceListCard(storeInfo : storeInfo);
       },
