@@ -46,14 +46,8 @@ public class SearchService {
         int size = searchRequest.getSize() == null ? 0 : searchRequest.getSize(); // Number of items per page
 
         // Define sorting method
-        Sort sort = null;
-        if(searchRequest.getSort() == "distance"){
-            sort = Sort.by(Sort.Direction.ASC, "location").and(Sort.by(Sort.Direction.ASC, "name")); // Assuming location field name is "location"
-        } else if (searchRequest.getSort() == "name") {
-            sort = Sort.by(Sort.Direction.ASC, "name"); // Assuming location field name is "location"
-        }
-
-        Pageable pageable = PageRequest.of(page, size, sort);
+        Pageable pageable = pageable = PageRequest.of(page, size);
+        log.info(searchRequest.toString());
         Page<StoreDocument> foundStores = null;
         List<FavStore> favStoreList =null;
         Set<Integer> favStoreIdList = null;
@@ -64,14 +58,17 @@ public class SearchService {
                     .map(FavStore::getStoreId)
                     .collect(Collectors.toSet()) : Collections.emptySet();
         } catch (RuntimeException e){
+            log.warn(e.getStackTrace().toString());
             throw new SearchException(SearchErrorCode.SEARCH_FAIL);
         }
         try {
-            if(searchRequest.getSearchType() == SearchType.address){
-                foundStores = searchRepository.findStoreDocumentsByLocationNear(location, pageable);
+            if(searchRequest.getSearchType().equals(SearchType.address)){
+                log.info(searchRequest.getSearchType().name());
+                foundStores = searchRepository.findStoreDocumentsByLocationNear(location, pageable,searchRequest.getSort());
             }
-            else if(searchRequest.getSearchType() == SearchType.category ||searchRequest.getSearchType() == SearchType.name){
-                foundStores = searchRepository.findStoreDocumentsByLocationNearAndContent(location, searchRequest.getSearchType().name(), searchRequest.getContent(), pageable);
+            else if(searchRequest.getSearchType().equals(SearchType.category) ||searchRequest.getSearchType().equals(SearchType.name)){
+                log.info(searchRequest.getSearchType().name());
+                foundStores = searchRepository.findStoreDocumentsByLocationNearAndContent(location, searchRequest.getSearchType().name(), searchRequest.getContent(), pageable,searchRequest.getSort());
             }else {
                 log.error(SearchType.address.toString());
                 throw new SearchException(SearchErrorCode.INVALID_FORMAT);

@@ -30,9 +30,11 @@ public class SearchController {
 
     @PostMapping("/me")
     public ResponseEntity sendNotification(
-            @RequestBody StoreNearMe storeNearMe,
-            @RequestHeader("X-Authorization-Id") int memberId){
-        soconRedisService.findAndNotify(storeNearMe, memberId);
+            @RequestBody StoreNearMe storeNearMe){
+//        ,
+//        @RequestHeader("X-Authorization-Id") int memberId
+//        soconRedisService.findAndNotify(storeNearMe, memberId);
+        soconRedisService.findAndNotify(storeNearMe, 1);
         return ResponseEntity.ok().body(MessageUtils.success());
     }
 
