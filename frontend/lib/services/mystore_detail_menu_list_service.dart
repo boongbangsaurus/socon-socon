@@ -89,7 +89,7 @@ class MystoreMenuService {
 
 
   // 가게 상세조회
-  Future<List<dynamic>?> getStoreDetailInfos(int id) async {
+  Future<Map<String, dynamic>> getStoreDetailInfos(int id) async {
     final prefs = await SharedPreferences.getInstance();
     final accessToken = prefs.getString('accessToken');
 
@@ -112,16 +112,16 @@ class MystoreMenuService {
       debugPrint(
           '내발행소콘 메뉴리스트 res 200 ################################################');
 
-      return dataBody['store'];
+      return dataBody;
 
     } else {
       debugPrint(
-          '내발행소콘 메뉴리스트 res not 200 ################################################');
+          '내발행소콘 메뉴리스트 XXXXXXXXXXXXXXXXXXres not 200 ################################################');
       print(utf8.decode(response.bodyBytes));
       debugPrint(
-          '내발행소콘 메뉴리스트 res not 200 ################################################');
+          '내발행소콘 메뉴리스트 XXXXXXXXXXXXXXXXXres not 200 ################################################');
 
-      return null;
+      return {};
     }
   }
 

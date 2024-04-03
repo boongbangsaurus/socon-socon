@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:socon/utils/fontSizes.dart';
 import 'package:socon/utils/icons.dart';
 import 'package:socon/utils/responsive_utils.dart';
+import 'package:socon/utils/string_utils.dart';
 import 'package:socon/viewmodels/socon_coupon_view_model.dart';
 import 'package:socon/views/atoms/qr_code.dart';
 
@@ -10,6 +11,7 @@ import '../../utils/colors.dart';
 class SoconCouponCard extends StatelessWidget {
   late Map<String, dynamic>? soconInfo;
   late String soconId;
+
   SoconCouponCard({super.key, required this.soconInfo, required this.soconId});
 
   @override
@@ -42,7 +44,8 @@ class SoconCouponCard extends StatelessWidget {
           const SizedBox(
             height: 25,
           ),
-          QrCodeSocon(soconId: int.parse(soconId), soconImage : soconInfo!["image"]),
+          QrCodeSocon(
+              soconId: int.parse(soconId), soconImage: soconInfo!["image"]),
           const SizedBox(
             height: 40,
           ),
@@ -59,7 +62,7 @@ class SoconCouponCard extends StatelessWidget {
                           context, FontSizes.XXSMALL)),
                 ),
                 Text(
-                  soconInfo!["purchased_at"],
+                  StringAndDateUtils.formatDateTime(soconInfo!["purchased_at"]),
                   style: TextStyle(
                       fontWeight: FontWeight.w500,
                       fontSize: ResponsiveUtils.calculateResponsiveFontSize(
@@ -81,7 +84,7 @@ class SoconCouponCard extends StatelessWidget {
                           context, FontSizes.XXSMALL)),
                 ),
                 Text(
-                  soconInfo!["expired_at"],
+                  StringAndDateUtils.formatDateTime(soconInfo!["expired_at"]),
                   style: TextStyle(
                       fontWeight: FontWeight.w500,
                       fontSize: ResponsiveUtils.calculateResponsiveFontSize(
@@ -125,7 +128,10 @@ class SoconCoupon extends StatelessWidget {
   late Map<String, dynamic>? soconInfo;
   late String soconId;
 
-  SoconCoupon({this.onPressed = _defaultOnPressed, required this.soconInfo, required this.soconId});
+  SoconCoupon(
+      {this.onPressed = _defaultOnPressed,
+      required this.soconInfo,
+      required this.soconId});
 
   static void _defaultOnPressed() {
     print("mySocon입니다.");
@@ -142,7 +148,7 @@ class SoconCoupon extends StatelessWidget {
             SizedBox(height: ResponsiveUtils.getHeightWithPixels(context, 20)),
             RepaintBoundary(
               key: _repaintBoundaryKey,
-              child: SoconCouponCard(soconInfo: soconInfo, soconId : soconId),
+              child: SoconCouponCard(soconInfo: soconInfo, soconId: soconId),
             ),
             SizedBox(
               height: ResponsiveUtils.getHeightWithPixels(context, 15),

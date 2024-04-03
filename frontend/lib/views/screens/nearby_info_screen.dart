@@ -41,6 +41,7 @@ class _NearbyInfoScreenState extends State<NearbyInfoScreen> {
 
       List<Store>? storesData = await _storesViewModel.searchStores();
 
+
       print("_fetchStores result: $storesData");
       return storesData;
     } catch (error) {
@@ -129,3 +130,18 @@ class _NearbyInfoScreenState extends State<NearbyInfoScreen> {
     );
   }
 }
+
+
+
+Store tempStore = Store(
+    storeId: 20,
+    name: "오소유",
+    imageUrl: "https://cataas.com/cat",
+    address: "광주 광산구 장덕로40번길 13-1 1층",
+    category: "음식점",
+    createdAt: "2024-03-22",
+    isLike: true,
+    mainSocon: "소금빵",
+    distance: 15);
+
+

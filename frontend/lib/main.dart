@@ -1,4 +1,3 @@
-
 import 'dart:isolate';
 import 'dart:ui';
 
@@ -46,7 +45,6 @@ import 'package:socon/views/screens/bossVerification/boss_verification.dart';
 import 'provider/Address.dart';
 import 'models/location.dart';
 
-
 import 'package:google_maps_flutter_android/google_maps_flutter_android.dart';
 import 'package:google_maps_flutter_platform_interface/google_maps_flutter_platform_interface.dart';
 
@@ -71,11 +69,15 @@ void main() async {
   await getPermissionHandler();
 
   uriLinkStream.listen((Uri? uri) {
-    print("딥링크 구현 $uri");
-    router.go("/info");
+    if (uri != null) {
+      print("딥링크 구현 $uri");
+      String url = uri.toString();
+      String extractedPart = url.replaceFirst("socon://", "");
+      router.go("/$extractedPart");
+    }
   }, onError: (Object error) {
     print("딥링크 이동 $error");
-  }, onDone: (){
+  }, onDone: () {
     print("딥링크 이동 완료");
   });
 
@@ -89,7 +91,6 @@ void main() async {
   // 백그라운드 메시지 핸들러 설정
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
-
   // google map 설정
   final GoogleMapsFlutterPlatform mapsImplementation =
       GoogleMapsFlutterPlatform.instance;
@@ -102,13 +103,13 @@ void main() async {
   final bool? isOwner = prefs.getBool('isOwner');
 
   runApp(MyApp());
-
 }
 
 class MyApp extends StatefulWidget {
   final bool? isOwner;
 
   const MyApp({super.key, this.isOwner});
+
   @override
   _MyAppState createState() => _MyAppState();
 }
@@ -118,7 +119,6 @@ class _MyAppState extends State<MyApp> {
   late bool isRunning = false;
   late LocationDto lastLocation;
   String logStr = '';
-
 
   @override
   void initState() {
@@ -136,7 +136,7 @@ class _MyAppState extends State<MyApp> {
 
     initPlatformState();
 
-    // _onStart();  // 잠시 주석 처리
+    _onStart();  // 잠시 주석 처리
   }
 
   @override
@@ -167,6 +167,7 @@ class _MyAppState extends State<MyApp> {
       msg: "${DateTime.now()}",
       bigMsg: "${data.latitude}, ${data.longitude}",
     );
+
   }
 
   Future<void> updateUI(dynamic data) async {
@@ -226,7 +227,8 @@ class _MyAppState extends State<MyApp> {
       providers: [
         ChangeNotifierProvider(create: (_) => BossVerificationViewModel()),
         ChangeNotifierProvider(create: (context) => LoginState()),
-        ChangeNotifierProvider(create: (context) => PaymentVerificationViewModel()),
+        ChangeNotifierProvider(
+            create: (context) => PaymentVerificationViewModel()),
         ChangeNotifierProvider(create: (_) => BossProvider()),
         ChangeNotifierProvider(create: (context) => StoreRegisterViewModel()),
         ChangeNotifierProvider(create: (_) => MySoconViewModel()),

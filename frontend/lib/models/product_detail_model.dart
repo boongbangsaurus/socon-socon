@@ -38,6 +38,9 @@ class ProductDetailModel {
   }
 
 
+
+
+
   Map<String, dynamic> toJsonPayment() => {
     'issuedId': '',
     'itemName': '',
@@ -55,3 +58,38 @@ class ProductDetailModel {
 }
 
 
+class GetProductDetailModel {
+  int id;
+  String name;
+  String item_image;
+  String store_image;
+  int price;
+  String? summary;
+  String? description;
+
+  int? quantity;
+
+  GetProductDetailModel({
+    required this.id,
+    required this.name,
+    this.item_image = '',
+    this.store_image = '',
+    required this.price,
+    this.summary = '',
+    this.description = '',
+
+  });
+
+  factory GetProductDetailModel.fromJson(Map<String, dynamic> json) {
+    return GetProductDetailModel(
+      id: json['id'],
+      name: json['name'],
+      item_image: json['image'],
+      store_image: json['store_image'],
+      price: json['price'],
+      summary: json['summary'],
+      description: json['description'],
+    );
+  }
+
+}

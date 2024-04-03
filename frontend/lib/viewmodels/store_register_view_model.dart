@@ -30,8 +30,8 @@ class StoreRegisterViewModel extends ChangeNotifier {
   String? get image => storeModel.image;
   String? get phoneNumber => storeModel.phoneNumber;
   String? get address => storeModel.address;
-  double? get lat => storeModel.lat;
-  double? get lng => storeModel.lng;
+  double get lat => storeModel.lat;
+  double get lng => storeModel.lng;
   String? get introduction => storeModel.introduction;
   int? get registrationNumberId => storeModel.registrationNumberId;
   List? get businessHours => storeModel.businessHours;

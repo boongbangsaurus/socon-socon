@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:socon/views/screens/stores/buy_menu_screen.dart';
 import 'dart:math';
 
 import '../../utils/responsive_utils.dart';
@@ -51,8 +52,12 @@ class StoreSoconLists extends StatelessWidget {
 
     return GestureDetector(
       onTap: (){
-        print("메뉴 클릭 $id  & 소콘 발행 페이지 이동");
-        GoRouter.of(context).go("/detail/${storeId}/menu/${id}");
+        print("$storeId 번째 가게의 메뉴 클릭 $id  & 소콘 발행 페이지 이동");
+        // GoRouter.of(context).go("/detail/${storeId}/menu/${id}");
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => BuyMenuDetailScreen(storeId, id)),
+        );
       },
       child: Container(
         width: ResponsiveUtils.getWidthWithPixels(context, 154),

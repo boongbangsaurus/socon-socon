@@ -19,6 +19,7 @@ const String infoVerifyRoute = "/info/verify";
 final RegExp successRegExp = RegExp(r'^/info/.*/success$');
 final RegExp failRegExp = RegExp(r'^/info/.*/fail$');
 const String soconBookDetailRoute = "/soconbook/detail";
+final RegExp approvalRegExp = RegExp(r'^/approval');
 
 final GoRouter router = GoRouter(
     initialLocation: "/",
@@ -67,6 +68,8 @@ final GoRouter router = GoRouter(
       TabRoutes.getSignInRoute(),
       TabRoutes.getSignUpRoute(),
       TabRoutes.getSerachAddressRoute(),
+      TabRoutes.getAddressRoute(),
+      TabRoutes.getApprovalRoute(),
     ]);
 
 Widget _bottomNavBar(StatefulNavigationShell navigationShell, BuildContext context) {
@@ -75,9 +78,10 @@ Widget _bottomNavBar(StatefulNavigationShell navigationShell, BuildContext conte
       currentRoute.uri.toString() == infoContactRoute ||
           currentRoute.uri.toString() == infoVerifyRoute ||
           successRegExp.hasMatch(currentRoute.uri.toString()) ||
+          approvalRegExp.hasMatch(currentRoute.uri.toString()) ||
           failRegExp.hasMatch(currentRoute.uri.toString()) ||
           currentRoute.uri.toString() == soconBookDetailRoute ||
-          currentRoute.uri.toString() == "/sogon";
+          currentRoute.uri.toString() == "/sogon" ;
 
   debugPrint(
       '################## 현재 uri/showBottomNavBar ##############################');

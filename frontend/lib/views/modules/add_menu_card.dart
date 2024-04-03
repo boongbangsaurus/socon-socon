@@ -4,6 +4,7 @@ import 'package:socon/utils/colors.dart';
 import 'package:socon/utils/fontSizes.dart';
 import 'package:socon/utils/responsive_utils.dart';
 import 'package:socon/views/atoms/icon_loader.dart';
+import 'package:socon/views/screens/myStore/store_product_register.dart';
 
 import '../../utils/icons.dart';
 
@@ -17,7 +18,10 @@ class AddMenuCard extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         print("상품 등록");
-        GoRouter.of(context).go("/myStores/${storeId}/register");
+        Navigator.push( context,
+          MaterialPageRoute(builder: (context) => ProductRegister(storeId: storeId)),
+        );
+        // GoRouter.of(context).go("/myStores/${storeId}/register");
       },
       child: Container(
         width: ResponsiveUtils.getWidthWithPixels(context, 154),

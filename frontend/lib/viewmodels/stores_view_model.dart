@@ -33,9 +33,9 @@ class StoresViewModel extends ChangeNotifier {
   });
 
 
-  Future<List<Store>> searchStores() async {
+  Future<List<Store>?> searchStores() async {
     print("검색을 시작해볼게");
-    // await _storesService.searchStores();
+    List<Store>? stores = await _storesService.searchStores();
     return stores;
   }
 }

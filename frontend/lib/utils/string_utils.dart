@@ -11,5 +11,11 @@ class StringAndDateUtils {
     String formattedToday = DateFormat("yyyy-MM-dd").format(today);
     return formattedToday;
   }
+
+  static String formatDateTime(String dateTimeString) {
+    DateTime dateTime = DateTime.parse(dateTimeString);
+    String formattedDate = DateFormat("yyyy-MM-dd").format(dateTime);
+    return formattedDate;
+  }
 }
 
