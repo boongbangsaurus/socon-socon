@@ -1,9 +1,7 @@
 package site.soconsocon.socon.search.repository.elasticsearch;
 
 import co.elastic.clients.elasticsearch._types.*;
-import co.elastic.clients.elasticsearch._types.query_dsl.GeoDistanceQuery;
-import co.elastic.clients.elasticsearch._types.query_dsl.MatchQuery;
-import co.elastic.clients.elasticsearch._types.query_dsl.Query;
+import co.elastic.clients.elasticsearch._types.query_dsl.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -107,9 +105,9 @@ public class CustomSearchRepositoryImpl implements CustomSearchRepository {
                                 .build())
                         .build())
                 .withQuery(new Query.Builder()
-                        .match(new MatchQuery.Builder()
-                                .field(type)
-                                .query(content)
+                        .queryString(new QueryStringQuery.Builder()
+                                .defaultField(type)
+                                .query("*" + content + "*")
                                 .build()
                         )
                         .build())
