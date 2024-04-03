@@ -41,6 +41,7 @@ class _NearbyInfoScreenState extends State<NearbyInfoScreen> {
 
       List<Store>? storesData = await _storesViewModel.searchStores();
 
+
       print("_fetchStores result: $storesData");
       return storesData;
     } catch (error) {

@@ -23,7 +23,7 @@ class ApiUtils {
       final accessToken = prefs.getString('accessToken');
       _customHeader = {
         'Authorization': 'Bearer $accessToken',
-        'Content-Type': 'application/json',
+        'Content-Type': "application/json",
       };
     }
   }
@@ -55,11 +55,13 @@ class ApiUtils {
   }
 
   static FutureOr<String> postDataWithToken(String endPoint, dynamic data ) async {
+    print(jsonEncode(data));
     await _loadHeaderWithToken(); // 헤더 로드
     final response = await http.post(
       Uri.parse('$baseUrl$endPoint'),
       headers: _customHeader,
       body: jsonEncode(data),
+      // body: data,
     );
     if (response.statusCode == 200) {
       return jsonDecode(response.body).toString();

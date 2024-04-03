@@ -11,6 +11,8 @@ import 'package:socon/views/screens/myStore/store_detail_screen.dart';
 import 'package:socon/views/screens/myStore/store_product_register.dart';
 import 'package:socon/views/screens/my_info_screen.dart';
 import 'package:socon/views/screens/my_store_list_screen.dart';
+import 'package:socon/views/screens/payment/approval_screen.dart';
+import 'package:socon/views/screens/payment/approval_success_screen.dart';
 import 'package:socon/views/screens/sign_in_screen.dart';
 import 'package:socon/views/screens/sign_up_screen.dart';
 import 'package:socon/views/screens/soconBook/socon_book_detail_screen.dart';
@@ -47,6 +49,7 @@ class TabRoutes {
       name : "nearby",
         path: "/",
         builder: (BuildContext context, GoRouterState state) {
+          // return NearbyInfoScreen();
           return NearbyInfoScreen();
         },
         routes: [
@@ -137,6 +140,29 @@ class TabRoutes {
           getContactRoute(),
           getBossVerification(),
         ]);
+  }
+
+
+  static RouteBase getApprovalRoute() {
+    return GoRoute(
+        name: "approval",
+        path: "/approval/:soconId",
+        builder: (BuildContext context, GoRouterState state) {
+          return ApprovalScreen(state.pathParameters['soconId']!);
+        },
+        routes: [
+          getApprovalSuccessRoute(),
+        ]);
+  }
+
+  static RouteBase getApprovalSuccessRoute() {
+    return GoRoute(
+      name: "approvalSuccess",
+      path: "success",
+      builder: (BuildContext context, GoRouterState state) {
+        return ApprovalSuccessScreen();
+      },
+    );
   }
 
   static RouteBase getContactRoute() {
