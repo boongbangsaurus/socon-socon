@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:socon/models/location.dart';
+import 'package:socon/models/socon_book.dart';
+import 'package:socon/models/sogon_register.dart';
 import 'package:socon/services/sogon_service.dart';
 
 import '../models/locations.dart';
@@ -20,7 +20,7 @@ class SogonViewModel {
     }
   }
 
-  // 소곤 상세 조회 api 요청
+  // 소곤 상세 조회 GET api 요청
   Future<Map<String, dynamic>> sogonDetail(int id) async {
     Map<String, dynamic>? sogons = await _sogonService.getSogonDetail(id);
     if (sogons != null) {
@@ -31,12 +31,34 @@ class SogonViewModel {
   }
 
   // 보유 소콘
-  Future<Map<String, dynamic>?> socons() async {
-    Map<String, dynamic>? socons = await _sogonService.getSocons();
+  Future<List<dynamic>> socons() async {
+    List<dynamic> res = await _sogonService.getSocons();
+    List<SoconBook> socons = [];
+
+    for (var item in res) {
+      SoconBook soconBook = SoconBook.fromJson(item);
+      if (soconBook.status == "unused") {
+        socons.add(soconBook);
+      }
+    }
+    print("=============== my soconBook list ===============");
+    print(socons.toString());
+    print("=============== my soconBook list ===============");
+
     if (socons != null) {
       return socons;
     } else {
-      return null;
+      return [];
+    }
+  }
+
+  Future<bool> sogonRegister(SogonRegister sogonRegister) async {
+    bool res = await _sogonService.sogonRegister(sogonRegister);
+
+    if (res != null) {
+      return false;
+    } else {
+      return true;
     }
   }
 }
