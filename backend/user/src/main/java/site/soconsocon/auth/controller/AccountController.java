@@ -35,7 +35,7 @@ public class AccountController {
     }
 
     //출금 계좌번호 등록 API
-    @PutMapping("/")
+    @PutMapping("")
     public ResponseEntity registerAccount(@RequestHeader("X-Authorization-Id") int memberId, @RequestBody AccountNoRequestDto accountNoRequestDto) throws AccountException, MemberException {
         return ResponseEntity.ok().body(MessageUtils.success(accountService.saveAccountNo(memberId, accountNoRequestDto)));
 

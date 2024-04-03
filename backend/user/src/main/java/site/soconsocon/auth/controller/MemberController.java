@@ -10,9 +10,11 @@ import site.soconsocon.auth.domain.dto.request.MemberLoginRequestDto;
 import site.soconsocon.auth.domain.dto.request.MemberRegisterRequestDto;
 import site.soconsocon.auth.domain.dto.response.MemberFeignResponse;
 import site.soconsocon.auth.domain.dto.response.MemberLoginResponseDto;
+import site.soconsocon.auth.domain.dto.response.MemberResponseDto;
 import site.soconsocon.auth.domain.entity.jpa.Member;
 import site.soconsocon.auth.domain.entity.jpa.RefreshToken;
 import site.soconsocon.auth.exception.MemberException;
+import site.soconsocon.auth.feign.domain.dto.feign.MemberRoleRequest;
 import site.soconsocon.auth.repository.RefreshTokenRepository;
 import site.soconsocon.auth.security.MemberDetailService;
 import site.soconsocon.auth.security.MemberDetails;
@@ -29,11 +31,6 @@ import java.io.IOException;
 public class MemberController {
 
     private final MemberService memberService;
-    private final PasswordEncoder passwordEncoder;
-    private final JwtUtil jwtUtil;
-    private final RefreshTokenRepository refreshTokenRepository;
-    private final MemberDetailService memberDetailService;
-
     /**
      * 회원가입
      *
@@ -41,9 +38,9 @@ public class MemberController {
      * @return
      */
     @PostMapping("")
-    public ResponseEntity register(@RequestBody MemberRegisterRequestDto registerDto) throws MemberException {
-        log.info(registerDto);
-        return ResponseEntity.ok().body(MessageUtils.success(memberService.register(registerDto)));
+    public ResponseEntity register(@RequestBody MemberRegisterRequestDto registerDto) throws MemberException{
+        Member member = memberService.register(registerDto);
+        return ResponseEntity.ok().body(MessageUtils.success(member));
     }
 
     /**
@@ -53,45 +50,17 @@ public class MemberController {
      * @return
      */
     @PostMapping("/auth")
-    public ResponseEntity login(@RequestBody MemberLoginRequestDto loginDto) throws IOException, MemberException {
-        String email = loginDto.getEmail();
-        String password = loginDto.getPassword();
-        String fcmToken = loginDto.getFcmToken();
-        log.info(loginDto);
-
-        Member member = memberService.getMemberByEmail(email);
-        String memberId = String.valueOf(member.getId());
-
-        // 로그인 요청한 유저로부터 입력된 패스워드 와 디비에 저장된 유저의 암호화된 패스워드가 같은지 확인.(유효한 패스워드인지 여부 확인)
-        if (passwordEncoder.matches(password, member.getPassword())) {
-            // 유효한 패스워드가 맞는 경우, 로그인 성공으로 응답.(액세스 토큰을 포함하여 응답값 전달)
-            MemberDetails memberDetails = (MemberDetails) memberDetailService.loadUserByUsername(memberId);
-            String accessToken = jwtUtil.generateToken(memberDetails);
-            String refreshToken = jwtUtil.generateRefreshToken(memberDetails);
-
-            RefreshToken redis = new RefreshToken(member.getId(), refreshToken);
-            refreshTokenRepository.save(redis);
-            MemberLoginResponseDto memberLoginResponseDto = new MemberLoginResponseDto(accessToken, refreshToken, member.getNickname());
-
-            //FCM 토큰 발급
-//            deleteAndSaveFCMToken(memberId, fcmToken);
-//
-//            if (fcmRepository.findByMember(member).isEmpty()) {
-//                fcmRepository.save(FCMToken.builder().member(member).fireBaseToken(fcmToken).build());
-//            } else { //이미 fcm 토큰이 있는 유저라면
-//                fcmRepository.findByMember(member).orElseThrow().update(fcmToken);
-//            }
-            return ResponseEntity.ok().body(MessageUtils.success(memberLoginResponseDto));
-        }
+    public ResponseEntity login(@RequestBody MemberLoginRequestDto loginDto) throws MemberException{
+        MemberLoginResponseDto memberLoginResponseDto = memberService.login(loginDto);
         // 유효하지 않는 패스워드인 경우, 로그인 실패로 응답.
-        return ResponseEntity.status(401).body(MessageUtils.fail("401", "Invalid Password"));
+        return ResponseEntity.ok().body(MessageUtils.success(memberLoginResponseDto));
     }
 
     //마이페이지
     @GetMapping("/mypage")
     public ResponseEntity getUserInfo(@RequestHeader("X-Authorization-Id") int memberId) throws MemberException {
-        return ResponseEntity.ok().body(MessageUtils.success(memberService.getUserInfo(memberId)));
-
+        MemberResponseDto memberResponseDto = memberService.getUserInfo(memberId);
+        return ResponseEntity.ok().body(MessageUtils.success(memberResponseDto));
     }
 
     /**
@@ -100,20 +69,19 @@ public class MemberController {
      * @param refreshToken
      * @return
      */
-    @PostMapping("/access-token")
-    public ResponseEntity<?> generateAccessToken(@RequestBody RefreshToken refreshToken, Authentication authentication) throws IOException {
+    @GetMapping("/access-token")
+    public ResponseEntity<?> generateAccessToken(@RequestBody RefreshToken refreshToken, Authentication authentication) {
         MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
-        String memberId = memberDetails.getUsername();
-
-        return ResponseEntity.ok().body(MessageUtils.success(memberService.createAccessToken(memberDetails, refreshToken.getRefreshToken())));
+        String accessToken = memberService.createAccessToken(memberDetails, refreshToken.getRefreshToken());
+        return ResponseEntity.ok().body(MessageUtils.success(accessToken));
     }
 
     @PostMapping("/refresh-token")
     public ResponseEntity<?> generateRefreshToken(Authentication authentication) {
         MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
-        String memberId = memberDetails.getUsername();
+        String refreshToken = memberService.createRefreshToken(memberDetails);
 
-        return ResponseEntity.ok().body(MessageUtils.success(memberService.createRefreshToken(memberDetails)));
+        return ResponseEntity.ok().body(MessageUtils.success(refreshToken));
 
     }
 
@@ -128,12 +96,14 @@ public class MemberController {
     @GetMapping("/me")
     public ResponseEntity getMember(@RequestHeader("X-Authorization-Id") int memberId) throws MemberException {
         log.info("gateway success!");
-        return ResponseEntity.ok().body(MessageUtils.success(memberService.findMemberByMemberId(memberId)));
+        MemberFeignResponse member = memberService.findMemberByMemberId(memberId);
+        return ResponseEntity.ok().body(MessageUtils.success(member));
     }
 
     @GetMapping("/email")
     public ResponseEntity getMemberByEmail(@RequestParam("email") String email) throws MemberException {
-        return ResponseEntity.ok().body(MessageUtils.success(memberService.getMemberByEmail(email)));
+        Member member = memberService.getMemberByEmail(email);
+        return ResponseEntity.ok().body(MessageUtils.success(member));
     }
 
     @GetMapping("/{memberId}")
@@ -141,6 +111,15 @@ public class MemberController {
         log.info("open feign communication success!");
         log.info("getMemberByMemberId() 메소드 호출");
         return memberService.findMemberByMemberId(memberId);
+    }
+
+    @PutMapping("/role")
+    public ResponseEntity modifyMemberRole(@RequestBody MemberRoleRequest memberRoleRequest) {
+        log.info("open feign communication success!");
+        log.info("modifyMemberRole() 메소드 호출");
+
+        memberService.updateRole(memberRoleRequest);
+        return ResponseEntity.ok().body(null);
     }
 
 }

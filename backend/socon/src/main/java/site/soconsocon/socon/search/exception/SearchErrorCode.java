@@ -9,6 +9,7 @@ import site.soconsocon.utils.exception.CustomError;
 @AllArgsConstructor
 public enum SearchErrorCode implements CustomError {
     INVALID_FORMAT(HttpStatus.BAD_REQUEST, "400", "잘못된 요청 형식입니다."),
+    SAVE_DOCUMENT_FAIL(HttpStatus.BAD_REQUEST, "400", "도큐먼트 추가에 실패했습니다."),
     SEARCH_FAIL(HttpStatus.BAD_REQUEST, "400", "검색에 실패했습니다.");
 
     private HttpStatus httpStatus;

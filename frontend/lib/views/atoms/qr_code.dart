@@ -34,7 +34,7 @@ class _QrCodeSoconState extends State<QrCodeSocon> {
   void initState() {
     super.initState();
 
-    var soconData = "https://www.google.com/"; // 이동할 링크 /api/v1/socons/{socon_id}/approval
+    var soconData = "socon://info"; // 이동할 링크 /api/v1/socons/{socon_id}/approval
     qrCode = QrCode(6, QrErrorCorrectLevel.H);
     qrCode.addData(soconData);
 

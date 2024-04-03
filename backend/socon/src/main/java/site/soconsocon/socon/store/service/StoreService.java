@@ -3,13 +3,13 @@ package site.soconsocon.socon.store.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import site.soconsocon.socon.global.domain.ErrorCode;
 import site.soconsocon.socon.global.exception.SoconException;
+import site.soconsocon.socon.search.domain.dto.request.StoreCreateDocument;
+import site.soconsocon.socon.search.service.SearchService;
 import site.soconsocon.socon.store.domain.dto.request.*;
-import site.soconsocon.socon.store.domain.dto.response.BusinessHourResponse;
-import site.soconsocon.socon.store.domain.dto.response.FavoriteStoresListResponse;
-import site.soconsocon.socon.store.domain.dto.response.StoreInfoResponse;
-import site.soconsocon.socon.store.domain.dto.response.StoreListResponse;
+import site.soconsocon.socon.store.domain.dto.response.*;
 import site.soconsocon.socon.store.domain.entity.feign.Member;
 import site.soconsocon.socon.store.domain.entity.jpa.*;
 import site.soconsocon.socon.store.exception.StoreErrorCode;
@@ -19,15 +19,15 @@ import site.soconsocon.socon.store.repository.jpa.*;
 
 import java.sql.Time;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 
 @Slf4j
 @RequiredArgsConstructor
 @Service
 public class StoreService {
+
+    private final SearchService searchService;
 
     private final StoreRepository storeRepository;
     private final BusinessRegistrationRepository businessRegistrationRepository;
@@ -37,6 +37,7 @@ public class StoreService {
     private final SoconRepository soconRepository;
     private final FeignServiceClient feignServiceClient;
 
+    @Transactional
     // 가게 정보 등록
     public void saveStore(AddStoreRequest request, int memberId) {
 
@@ -67,7 +68,21 @@ public class StoreService {
             throw new StoreException(StoreErrorCode.ALREADY_SAVED_STORE);
         }
 
-        storeRepository.save(store);
+        try {
+            storeRepository.save(store);
+            searchService.addStores(StoreCreateDocument.builder()
+                    .id(store.getId())
+                    .name(store.getName())
+                    .category(store.getCategory())
+                    .phoneNumber(store.getPhoneNumber())
+                    .lat(store.getLat())
+                    .lng(store.getLng())
+                    .address(store.getAddress())
+                    .introduction(store.getIntroduction())
+                    .build());
+        }catch (RuntimeException e){
+            throw new StoreException(StoreErrorCode.TRANSACTION_FAIL);
+        }
 
         // businessHourList 저장
         List<BusinessHourRequest> businessHours = request.getBusinessHour();
@@ -337,8 +352,7 @@ public class StoreService {
 
         List<FavoriteStoresListResponse> stores = new ArrayList<>();
 
-        List<FavStore> favStores = favStoreRepository.findByMemberId(memberId)
-                .orElseThrow(() -> new StoreException(StoreErrorCode.STORE_NOT_FOUND));
+        List<FavStore> favStores = favStoreRepository.findByMemberId(memberId);
 
         for (FavStore favStore : favStores) {
             Store store = storeRepository.findById(favStore.getStoreId())
@@ -362,5 +376,243 @@ public class StoreService {
                 .registrationAddress(request.getAddress())
                 .memberId(memberId)
                 .build());
+
+        feignServiceClient.changeRole(RoleRequest.builder().memberId(memberId).role("MANAGER").build());
+    }
+
+    // 가게 매출 데이터 분석 조회
+    public StoreAnalysisResponse getStoreAnalysis(Integer storeId, StoreAnalysisRequest request, int memberId) {
+
+        Store store = storeRepository.findById(storeId)
+                .orElseThrow(() -> new StoreException(StoreErrorCode.STORE_NOT_FOUND));
+
+        int section2IndexTotal = -1;
+        int section2IndexCount = soconRepository.countDistinctUsedIssuedIdByStoreId(storeId, request.getYear(), request.getMonth());
+        section2IndexTotal /= 6;
+        if(section2IndexCount % 6 != 0){
+            section2IndexTotal = section2IndexCount / 6 + 1;
+        }
+        int section3IndexTotal = -1;
+        int section3IndexCount = soconRepository.countDistinctIssuedIdByStoreId(storeId, request.getYear(), request.getMonth());
+        if(section3IndexCount % 6 != 0){
+            section3IndexTotal = section3IndexCount / 6 + 1;
+        }
+
+        Calendar cal = Calendar.getInstance();
+        cal.set(request.getYear(),request.getMonth()-1,1);
+        int lastDay = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+
+        IndexRequest indexRequest = IndexRequest.builder()
+                .year(request.getYear())
+                .month(request.getMonth())
+                .index(1)
+                .build();
+
+
+
+        // section1, section 2
+        List<SalesAnalysisResponse> salesAnalysisResponses = getSalesAnalysis(storeId, indexRequest, memberId);
+        List<SalesAnalysisResponse> section1 = new ArrayList<>(salesAnalysisResponses.subList(0, 3));
+
+        int nowTotal = soconRepository.sumMothlyUsedSoconByStoreId(storeId, request.getYear(), request.getMonth());
+        int last = nowTotal - (section1.get(0).getPrice() + section1.get(1).getPrice() + section1.get(2).getPrice()) ;
+
+        section1.add(SalesAnalysisResponse.builder()
+                .name("기타")
+                .price(last)
+                .used(0)
+                .build());
+
+        // section 3
+
+
+        List<WeeklyAnalysisResponse> weeklyAnalysisResponses = getWeeklyAnalysis(storeId, WeeklyRequest.builder()
+                .year(request.getYear())
+                .month(request.getMonth())
+                .week(1)
+                .build(),
+                memberId);
+
+        // section 4
+        List<IssuedAnalysisListResponse> issuedAnalysisListResponses = getIssueAnalysis(storeId, indexRequest, memberId);
+
+        return StoreAnalysisResponse.builder()
+                .storeName(store.getName())
+                .year(request.getYear())
+                .month(request.getMonth())
+                .nowTotal(nowTotal)
+                .lastTotal(soconRepository.sumMothlyUsedSoconByStoreId(storeId, request.getYear(), request.getMonth()-1))
+                .opendYear(store.getCreatedAt().getYear())
+                .opendMonth(store.getCreatedAt().getMonthValue())
+                .section1(section1)
+                .section2IndexTotal(section2IndexTotal)
+                .section2(salesAnalysisResponses)
+                .section3IndexTotal(lastDay <= 28? 4 : 5)
+                .section3(weeklyAnalysisResponses)
+                .section4IndexTotal(section3IndexTotal)
+                .section4(issuedAnalysisListResponses)
+                .build();
+
+
+    }
+
+    // 품목별 매출액
+    public List<SalesAnalysisResponse> getSalesAnalysis(
+            Integer storeId, IndexRequest request, int memberId) {
+
+        Store store = storeRepository.findById(storeId)
+                .orElseThrow(() -> new StoreException(StoreErrorCode.STORE_NOT_FOUND));
+
+        if(store.getMemberId()!= memberId){
+            throw new SoconException(ErrorCode.FORBIDDEN);
+        }
+
+        List<Integer> issueIds = issueRepository.findIssueIdsByStoreId(storeId);
+
+        List<SalesAnalysisResponse> response = new ArrayList<>();
+
+        for(int issueId : issueIds){
+            int usedCount = soconRepository.countUsedSoconByIssueId(issueId, request.getYear(), request.getMonth());
+            Issue issue = issueRepository.findById(issueId)
+                    .orElseThrow(() -> new StoreException(StoreErrorCode.ISSUE_NOT_FOUND));
+
+            if(issue.getIsDiscounted()){
+
+                response.add(SalesAnalysisResponse.builder()
+                        .name(issue.getName())
+                        .price(usedCount * issue.getDiscountedPrice())
+                                .used(usedCount)
+                        .build());
+            }else{
+                response.add(SalesAnalysisResponse.builder()
+                        .name(issue.getName())
+                        .price(usedCount * issue.getPrice())
+                        .used(usedCount)
+                        .build());
+            }
+        }
+        // 정렬
+        Comparator<SalesAnalysisResponse> priceComparator = new Comparator<SalesAnalysisResponse>() {
+            @Override
+            public int compare(SalesAnalysisResponse response1, SalesAnalysisResponse response2) {
+                return Double.compare(response2.getPrice(), response1.getPrice());
+            }
+        };
+
+        Collections.sort(response, priceComparator);
+
+        return response.subList((request.getIndex() - 1) * 6, Math.min(request.getIndex() * 6, response.size()));
+    }
+
+
+    // 품목별 발행 현황 리스트 조회
+    public List<IssuedAnalysisListResponse> getIssueAnalysis(Integer storeId, IndexRequest request, int memberId) {
+
+        Store store = storeRepository.findById(storeId)
+                .orElseThrow(() -> new StoreException(StoreErrorCode.STORE_NOT_FOUND));
+
+        if(store.getMemberId()!= memberId){
+            throw new SoconException(ErrorCode.FORBIDDEN);
+        }
+
+        List<Integer> issueIds = issueRepository.findIssueIdsByStoreId(storeId);
+
+        List<IssuedAnalysisListResponse> response = new ArrayList<>();
+
+        for(int issueId : issueIds) {
+
+            int issuedCount = soconRepository.countIssuedSoconByIssueId(issueId, request.getYear(), request.getMonth());
+            Issue issue = issueRepository.findById(issueId)
+                    .orElseThrow(() -> new StoreException(StoreErrorCode.ISSUE_NOT_FOUND));
+
+            if(issue.getIsDiscounted()){
+
+                response.add(IssuedAnalysisListResponse.builder()
+                        .name(issue.getName())
+                        .issuePrice(issue.getDiscountedPrice())
+                        .totalPrice(issuedCount * issue.getDiscountedPrice())
+                        .issued(issuedCount)
+                        .build());
+            }
+            else {
+                response.add(IssuedAnalysisListResponse.builder()
+                        .name(issue.getName())
+                        .issuePrice(issue.getPrice())
+                        .totalPrice(issuedCount * issue.getPrice())
+                        .issued(issuedCount)
+                        .build());
+            }
+        }
+// 정렬
+            Comparator<IssuedAnalysisListResponse> priceComparator = new Comparator<IssuedAnalysisListResponse>() {
+                @Override
+                public int compare(IssuedAnalysisListResponse response1, IssuedAnalysisListResponse response2) {
+                    return Double.compare(response2.getTotalPrice(), response1.getTotalPrice());
+                }
+            };
+
+            Collections.sort(response, priceComparator);
+
+            return response.subList((request.getIndex() - 1) * 6, Math.min(request.getIndex() * 6, response.size()));
+
+    }
+
+    // 기간별 추이 조회
+    public List<WeeklyAnalysisResponse> getWeeklyAnalysis(Integer storeId, WeeklyRequest request, int memberId) {
+
+        Store store = storeRepository.findById(storeId)
+                .orElseThrow(() -> new StoreException(StoreErrorCode.STORE_NOT_FOUND));
+
+        if(store.getMemberId()!= memberId){
+            throw new SoconException(ErrorCode.FORBIDDEN);
+        }
+
+        int day1 = -1;
+        int day2 = -1;
+        switch (request.getWeek()){
+            case 1:
+                day1 = 1;
+                day2 = 7;
+                break;
+            case 2:
+                day1 = 8;
+                day2 = 15;
+                break;
+            case 3:
+                day1 = 15;
+                day2 = 20;
+                break;
+            case 4:
+                day1 = 21;
+                day2 = 28;
+                break;
+            case 5:
+                day1 = 29;
+                Calendar cal = Calendar.getInstance();
+                cal.set(request.getYear(),request.getMonth()-1,1);
+                day2 = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+                break;
+        }
+        if(day1 < 0 || day2 < 0){
+            throw new SoconException(ErrorCode.BAD_REQUEST);
+        }
+
+        List<WeeklyAnalysisResponse> response = new ArrayList<>();
+
+        for(int i = day1; i <= day2; i++){
+            int issuedCount = soconRepository.countWeeklyIssuedSoconByIssueId(storeId, request.getYear(), request.getMonth(), i);
+            int usedCount = soconRepository.countWeeklyUsedSoconByIssueId(storeId, request.getYear(), request.getMonth(), i);
+
+            response.add(WeeklyAnalysisResponse.builder()
+                    .month(request.getMonth())
+                    .day(i)
+                    .issuedCount(issuedCount)
+                    .usedCount(usedCount)
+                    .build());
+        }
+
+
+        return response;
+
     }
 }

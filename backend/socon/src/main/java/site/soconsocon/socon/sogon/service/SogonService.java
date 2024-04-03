@@ -3,6 +3,7 @@ package site.soconsocon.socon.sogon.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import site.soconsocon.socon.global.domain.ErrorCode;
 import site.soconsocon.socon.global.exception.SoconException;
 import site.soconsocon.socon.sogon.domain.dto.request.AddCommentRequest;
@@ -12,6 +13,8 @@ import site.soconsocon.socon.sogon.domain.entity.jpa.Comment;
 import site.soconsocon.socon.sogon.domain.entity.jpa.Sogon;
 import site.soconsocon.socon.sogon.exception.SogonErrorCode;
 import site.soconsocon.socon.sogon.exception.SogonException;
+import site.soconsocon.socon.sogon.feign.NotificationFeignClient;
+import site.soconsocon.socon.sogon.feign.domain.dto.feign.FcmMessage;
 import site.soconsocon.socon.sogon.repository.jpa.CommentRepository;
 import site.soconsocon.socon.sogon.repository.jpa.SogonRepository;
 import site.soconsocon.socon.store.domain.entity.feign.Member;
@@ -24,10 +27,7 @@ import site.soconsocon.socon.store.repository.jpa.SoconRepository;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Service
@@ -38,6 +38,8 @@ public class SogonService {
     private final SogonRepository sogonRepository;
     private final CommentRepository commentRepository;
     private final FeignServiceClient feignServiceClient;
+    private final NotificationFeignClient notificationFeignClient;
+
 
 
     // 소곤 작성
@@ -64,6 +66,10 @@ public class SogonService {
             expired = socon.getExpiredAt();
         }
 
+        List<Double> random = Arrays.asList(0.000001, 0.000002, 0.000003, 0.000004, 0.000005, 0.000006, 0.000007, 0.000008, 0.000009, 0.00001
+                                        , -0.000001, -0.000002, -0.000003, -0.000004, -0.000005, -0.000006, -0.000007, -0.000008, -0.000009, -0.00001);
+        Random ran = new Random();
+
         socon.setStatus("sogon"); // 소콘의 상태를 "sogon"으로 업데이트
         soconRepository.save(socon);
 
@@ -76,8 +82,8 @@ public class SogonService {
                 .image1(request.getImage1())
                 .image2(request.getImage2())
                 .memberId(memberId)
-                .lat(request.getLat())
-                .lng(request.getLng())
+                .lat(request.getLat() + random.get(ran.nextInt(random.size())))
+                .lng(request.getLng() + request.getLng() + random.get(ran.nextInt(random.size())))
                 .socon(socon)
                 .build());
     }
@@ -98,8 +104,18 @@ public class SogonService {
                 .sogon(sogon)
                 .memberId(memberId)
                 .build());
-    }
 
+        try {
+            notificationFeignClient.sendMessageMember(FcmMessage.builder()
+                            .title("내 소곤에 댓글이 달렸어요!")
+                            .body(request.getContent())
+                            .memberId(sogon.getMemberId())
+                    .build());
+        } catch (RuntimeException e){
+            log.error("소곤 댓글 알림 발송에 실패했습니다.");
+        }
+    }
+    @Transactional
     // 소곤 댓글 채택
     public void pickSogonComment(Integer sogonId, Integer commentId, int memberId) {
 
@@ -126,9 +142,23 @@ public class SogonService {
         comment.setIsPicked(true);
         sogon.setIsPicked(true);
 
-        soconRepository.save(socon);
-        commentRepository.save(comment);
-        sogonRepository.save(sogon);
+        try {
+            soconRepository.save(socon);
+            commentRepository.save(comment);
+            sogonRepository.save(sogon);
+        } catch (RuntimeException e){
+            throw new SogonException(SogonErrorCode.SOGON_FAIL);
+        }
+
+        try {
+            notificationFeignClient.sendMessageMember(FcmMessage.builder()
+                    .title("댓글이 채택됐어요!")
+                    .body("["+sogon.getTitle()+"]\n"+"소곤의 댓글이 채택되어 소콘을 획득했습니다.")
+                    .memberId(comment.getMemberId())
+                    .build());
+        } catch (RuntimeException e){
+            log.error("소곤 댓글 채택 알림 발송에 실패했습니다.");
+        }
     }
 
     // 소곤 상세 조회

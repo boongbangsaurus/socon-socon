@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import "package:go_router/go_router.dart";
 import "package:provider/provider.dart";
 import "package:socon/models/business_owner.dart";
+import "package:socon/provider/Boss_provider.dart";
 import "package:socon/utils/fontSizes.dart";
 import "package:socon/utils/responsive_utils.dart";
 import "package:socon/utils/string_utils.dart";
@@ -10,10 +11,13 @@ import "package:socon/views/atoms/inputs.dart";
 import "package:socon/views/modules/app_bar.dart";
 import "package:socon/views/modules/success_card.dart";
 
+import "../../../provider/Address.dart";
 import "../../../utils/colors.dart";
 import "../../../utils/result_msg_type.dart";
 import "../../atoms/buttons.dart";
 import "../../atoms/icon_loader.dart";
+
+// import 'package:remedi_kopo/remedi_kopo.dart';
 
 class BossVerification extends StatefulWidget {
   const BossVerification({super.key});
@@ -35,8 +39,14 @@ class _BossVerificationState extends State<BossVerification> {
 
   @override
   Widget build(BuildContext context) {
+    final String number = '';
+    final String name = '';
     final bossVerificationMessage =
         ResultMessages.getMessage('bossVerification');
+    // final addressProvider = Provider.of<AddressProvider>(context);
+    final bossProvider = Provider.of<BossProvider>(context);
+
+    print("boss입니다 ${bossProvider.address} ${bossProvider.registrationNumber} ${bossProvider.owner}");
 
     return Scaffold(
       backgroundColor: AppColors.WHITE,
@@ -62,34 +72,57 @@ class _BossVerificationState extends State<BossVerification> {
                             type: "owner",
                             labelText: "대표자",
                             helperText: "외국인 사업자의 경우에는 영문명을 입력해주세요.",
-                            onSaved: (val) => businessOwner.owner = val ?? '',
+                            onSaved: (val) {
+                              businessOwner.owner = bossProvider.owner;
+                            },
                             validateInput: (String? val) {
                               if (val == null || val.isEmpty) {
                                 return "대표자 성함을 입력해주세요.";
                               }
                               return null;
                             },
+                            initialValue: bossProvider.owner,
+                            onChanged: (val) {
+                              if (val != null) {
+                                bossProvider.setBoss(owner: val ?? '');
+                              }
+                            },
                           ),
                           const SizedBox(height: 15),
                           BossInput(
                             type: "registrationNumber",
                             labelText: "사업자 등록 번호",
-                            helperText: "123-45-6789 형태로 사업자 등록 번호를 입력해주세요.",
+                            helperText: "123-45-67890 형태로 사업자 등록 번호를 입력해주세요.",
                             onSaved: (val) => {
-                              formattedValue = StringAndDateUtils.extractWithoutHyphen(
-                                  val.toString()),
+                              formattedValue =
+                                  StringAndDateUtils.extractWithoutHyphen(
+                                      bossProvider.registrationNumber.toString()),
                               print("보정 처리한 사업자 등록번호 $formattedValue"),
-                              businessOwner.registrationNumber = "1208765763",
+                              businessOwner.registrationNumber =
+                                 formattedValue,
                             },
+                            // onSaved: (val) {
+                            //   formattedValue = StringAndDateUtils.extractWithoutHyphen(val.toString());
+                            //   print("보정 처리한 사업자 등록번호 $formattedValue");
+                            //   Provider.of<BossProvider>(context, listen: false).setBoss(registrationNumber: formattedValue);
+                            // },
                             validateInput: (String? val) {
-                              final pattern = RegExp(r'^\d{3}-\d{2}-\d{4}$');
+                              final pattern = RegExp(r'^\d{3}-\d{2}-\d{5}$');
 
                               if (val == null || val.isEmpty) {
                                 return "사업자 등록 번호를 입력해주세요.";
                               } else if (!pattern.hasMatch(val)) {
-                                return "형태가 올바르지 않습니다. 123-45-6789 형태로 입력해주세요."; // 패턴과 일치하지 않을 때 반환할 에러 메시지
+                                return "형태가 올바르지 않습니다. 123-45-67890 형태로 입력해주세요."; // 패턴과 일치하지 않을 때 반환할 에러 메시지
                               } else {
                                 return null;
+                              }
+                            },
+                            initialValue: bossProvider.registrationNumber,
+                            onChanged: (val) {
+                              if (val != null) {
+
+                                bossProvider.setBoss(
+                                    registrationNumber: val ?? '');
                               }
                             },
                           ),
@@ -99,14 +132,18 @@ class _BossVerificationState extends State<BossVerification> {
                             labelText: "사업자 주소",
                             helperText: "사업자 등록증에 작성된 사업자 주소를 입력해주세요.",
                             showIcon: true,
-                            onSaved: (val) =>
-                                businessOwner.registrationAddress = val ?? '',
+                            onSaved: (val) {
+                              businessOwner.registrationAddress =
+                                  bossProvider.registrationAddress;
+                            },
                             validateInput: (String? val) {
                               if (val == null || val.isEmpty) {
                                 return "사업자 주소를 입력해주세요";
                               }
                               return null;
                             },
+                            initialValue: bossProvider.address,
+                            onChanged: (val) {},
                           ),
                         ],
                       ),
@@ -126,8 +163,7 @@ class _BossVerificationState extends State<BossVerification> {
                   var _bossVerificationViewModel =
                       Provider.of<BossVerificationViewModel>(context,
                           listen: false);
-                  await _bossVerificationViewModel
-                      .verifyBoss(businessOwner.registrationNumber);
+                  await _bossVerificationViewModel.verifyBoss(businessOwner);
 
                   if (_bossVerificationViewModel.isVerified) {
                     GoRouter.of(context).go("/info/verify/success");
@@ -152,6 +188,8 @@ class BossInput extends StatelessWidget {
   final bool showIcon;
   final Function(String?) onSaved;
   final String? Function(String?) validateInput;
+  final Function(String?) onChanged;
+  final String initialValue;
 
   BossInput({
     super.key,
@@ -160,7 +198,9 @@ class BossInput extends StatelessWidget {
     required this.helperText,
     this.showIcon = false,
     required this.onSaved,
+    required this.onChanged,
     required this.validateInput,
+    required this.initialValue,
   });
 
   @override
@@ -172,6 +212,7 @@ class BossInput extends StatelessWidget {
           labelText: labelText,
           helperText: helperText,
           textFormField: TextFormField(
+            initialValue: initialValue,
             decoration: CustomTextFormField.getDecoration(
                 suffixs: showIcon
                     ? IconLoader(
@@ -180,7 +221,8 @@ class BossInput extends StatelessWidget {
                         height:
                             ResponsiveUtils.getHeightWithPixels(context, 25),
                         onPressed: () {
-                          print("주소 검색할게");
+                          print("도로명 주소 검색 화면으로 이동합니다.");
+                          GoRouter.of(context).go("/kopo");
                         })
                     : null),
             style: TextStyle(
@@ -193,6 +235,7 @@ class BossInput extends StatelessWidget {
             // 실시간 검사
             keyboardType: TextInputType.name,
             onSaved: onSaved,
+            onChanged: onChanged,
             validator: validateInput,
           )),
     );

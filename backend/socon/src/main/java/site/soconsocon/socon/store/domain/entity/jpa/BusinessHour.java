@@ -11,7 +11,6 @@ import java.sql.Time;
 @AllArgsConstructor
 @Getter
 @Setter
-@Builder
 @ToString(exclude = "store")
 public class BusinessHour {
 

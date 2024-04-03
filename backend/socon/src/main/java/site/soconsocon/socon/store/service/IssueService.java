@@ -2,6 +2,8 @@ package site.soconsocon.socon.store.service;
 
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import site.soconsocon.socon.global.domain.ErrorCode;
 import site.soconsocon.socon.global.exception.SoconException;
@@ -26,6 +28,7 @@ import java.util.Objects;
 
 @RequiredArgsConstructor
 @Service
+@Log4j2
 public class IssueService {
 
     private final IssueRepository issueRepository;
@@ -87,8 +90,10 @@ public class IssueService {
 
     // 소콘북 저장
     public void saveMySocon(AddMySoconRequest request) {
-
-        Issue issue = issueRepository.findById(request.getIssueId())
+        log.info("AddMySoconRequest: {}", request);
+        log.info("issueId: {}", request.getIssueId());
+        Integer id = request.getIssueId();
+        Issue issue = issueRepository.findById(id)
                 .orElseThrow(() -> new StoreException(StoreErrorCode.ISSUE_NOT_FOUND));
         if (issue.getStatus() != 'A') {
             // 발행 중 아님

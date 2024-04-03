@@ -1,6 +1,7 @@
 package site.soconsocon.socon.search.domain.document;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.elasticsearch.annotations.*;
@@ -11,6 +12,7 @@ import org.springframework.data.elasticsearch.core.geo.GeoPoint;
 @Setter
 @Document(indexName = "stores")
 @Setting(replicas = 0)
+@Builder
 public class StoreDocument {
     @Id
     private Integer id;
