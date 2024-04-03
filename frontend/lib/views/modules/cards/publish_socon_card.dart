@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:socon/models/menu.dart';
+import 'package:socon/models/mystore_detail_menu.dart';
 
 import '../../../utils/colors.dart';
 import '../../../utils/fontSizes.dart';

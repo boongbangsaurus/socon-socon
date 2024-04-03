@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:socon/services/mystore_lists_service.dart';
 import 'package:socon/utils/colors.dart';
 import 'package:socon/utils/fontSizes.dart';
 import 'package:socon/utils/responsive_utils.dart';
+import 'package:socon/viewmodels/menu.dart';
 import 'package:socon/views/atoms/tag_icon.dart';
 import 'package:socon/views/modules/store_detail_top_card.dart';
 import 'package:socon/views/screens/myStore/store_register_view.dart';
@@ -22,6 +24,7 @@ class MyStoreLists extends StatefulWidget {
 }
 
 class _MyStoreListsState extends State<MyStoreLists> {
+  final viewModel = MystoreListsViewModel();
   @override
   Widget build(BuildContext context) {
     return Column(children: [
@@ -82,7 +85,6 @@ class _StoreListsState extends State<StoreLists> {
     debugPrint('내 점포리스트 요청중!');
     MystoreListsService service = MystoreListsService();
     var stores = await service.getMystoreLists();
-    // debugPrint(stores as String?);
     setState(() {
       myStores = stores;
     });
@@ -99,10 +101,13 @@ class _StoreListsState extends State<StoreLists> {
         itemCount: myStores.length,
         itemBuilder: (context, index) {
           final store = myStores[index];
+          // print('testtttttt');
+          // print(store);
+          // print('testtttttt');
           return InkWell(
             onTap: () {
               // Navigator.push(context, MaterialPageRoute(builder: (context) => StoreDetailTopCard(storeId : store.storeId)));
-              GoRouter.of(context).go("/myStores/${store.id}");
+              GoRouter.of(context).go("/myStores/${store['id']}");
             },
             child: Container(
               margin: EdgeInsets.all(10),
@@ -125,7 +130,8 @@ class _StoreListsState extends State<StoreLists> {
                       height: 80,
                       width: 80,
                       child: ImageLoader(
-                        imageUrl: store.image,
+                        // imageUrl: store.image,
+                        imageUrl: 'https://cataas.com/cat',
                         borderRadius: 15.0,
                       ),
                     ),
@@ -139,13 +145,13 @@ class _StoreListsState extends State<StoreLists> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              store.name,
+                              store['name'],
                               style: TextStyle(
                                   fontSize: FontSizes.LARGE,
                                   fontWeight: FontWeight.bold),
                             ),
                             TagIcon(
-                              buttonText: store.category,
+                              buttonText: store['category'],
                               buttonColor: Colors.amber,
                               buttonTextColor: Colors.white,
                             )
@@ -164,6 +170,10 @@ class _StoreListsState extends State<StoreLists> {
     );
   }
 }
+
+
+
+
 
 class NoStoreComment extends StatelessWidget {
   const NoStoreComment({super.key});

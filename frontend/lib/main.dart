@@ -4,6 +4,7 @@ import 'dart:ui';
 
 import 'package:background_locator_2/background_locator.dart';
 import 'package:background_locator_2/settings/android_settings.dart';
+import 'package:socon/viewmodels/menu.dart';
 
 import 'dart:async';
 
@@ -214,6 +215,7 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (context) => PaymentVerificationViewModel()),
         ChangeNotifierProvider(create: (context) => StoreRegisterViewModel()),
         ChangeNotifierProvider(create: (_) => BossProvider()),
+        // ChangeNotifierProvider(create: (context) => MystoreListsViewModel(),),
       ],
       child: MaterialApp.router(
         routerConfig: router,

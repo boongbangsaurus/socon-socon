@@ -4,7 +4,7 @@ import 'package:socon/utils/fontSizes.dart';
 import 'package:socon/views/atoms/image_loader.dart';
 import 'package:socon/views/modules/cards/publish_socon_card.dart';
 
-import '../../models/menu.dart';
+import '../../models/mystore_detail_menu.dart';
 import '../../utils/colors.dart';
 import '../../utils/icons.dart';
 import '../../utils/responsive_utils.dart';
