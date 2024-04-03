@@ -83,7 +83,7 @@ public class SogonService {
                 .image2(request.getImage2())
                 .memberId(memberId)
                 .lat(request.getLat() + random.get(ran.nextInt(random.size())))
-                .lng(request.getLng() + request.getLng() + random.get(ran.nextInt(random.size())))
+                .lng(request.getLng() + random.get(ran.nextInt(random.size())))
                 .socon(socon)
                 .build());
     }
