@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
@@ -53,7 +54,7 @@ class ApiUtils {
     }
   }
 
-  static Future<String> postDataWithToken(String endPoint, dynamic data ) async {
+  static FutureOr<String> postDataWithToken(String endPoint, dynamic data ) async {
     await _loadHeaderWithToken(); // 헤더 로드
     final response = await http.post(
       Uri.parse('$baseUrl$endPoint'),
@@ -61,7 +62,7 @@ class ApiUtils {
       body: jsonEncode(data),
     );
     if (response.statusCode == 200) {
-      return jsonDecode(response.body);
+      return jsonDecode(response.body).toString();
     } else {
       throw Exception('통신 실패: ${jsonDecode(response.body)}');
     }

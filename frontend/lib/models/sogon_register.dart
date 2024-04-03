@@ -3,9 +3,9 @@ class SogonRegister {
   String content;
   String? image1;
   String? image2;
-  double lat;
-  double lng;
-  int socon_id;
+  double? lat;
+  double? lng;
+  int? socon_id;
 
   SogonRegister(
       {required this.title,

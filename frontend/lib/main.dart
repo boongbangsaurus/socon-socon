@@ -4,9 +4,12 @@ import 'dart:ui';
 
 import 'package:background_locator_2/background_locator.dart';
 import 'package:background_locator_2/settings/android_settings.dart';
+
 import 'package:socon/viewmodels/menu.dart';
 import 'package:socon/viewmodels/mystore_detail_menu_list_view_model.dart%20%20%20%20%20%20%20';
 import 'package:socon/views/modules/mystore_menu_management.dart';
+
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'dart:async';
 
@@ -57,9 +60,9 @@ void main() async {
   }
 
   // FCM 토큰 가져오기
-  NotificationViewModel _notificationViewModel = NotificationViewModel();
-  var fcmToken = await _notificationViewModel.getFcmToken();
-  print("fcmToken: $fcmToken");
+  // NotificationViewModel _notificationViewModel = NotificationViewModel();
+  // var fcmToken = await _notificationViewModel.getFcmToken();
+  // print("fcmToken: $fcmToken");
   await FirebaseMessaging.instance.setAutoInitEnabled(true);
 
   // 위치 권한 요청
@@ -93,11 +96,17 @@ void main() async {
     initializeMapRenderer();
   }
 
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  final bool? isOwner = prefs.getBool('isOwner');
+
   runApp(MyApp());
 
 }
 
 class MyApp extends StatefulWidget {
+  final bool? isOwner;
+
+  const MyApp({super.key, this.isOwner});
   @override
   _MyAppState createState() => _MyAppState();
 }
@@ -107,6 +116,7 @@ class _MyAppState extends State<MyApp> {
   late bool isRunning = false;
   late LocationDto lastLocation;
   String logStr = '';
+
 
   @override
   void initState() {
@@ -220,6 +230,9 @@ class _MyAppState extends State<MyApp> {
       ],
       child: MaterialApp.router(
         routerConfig: router,
+        // routeInformationProvider: PlatformRouteInformationProvider(
+        //   initialRouteInformation: RouteInformation(uri: Uri.parse('/'), state: isOwner),
+        // ),
         debugShowCheckedModeBanner: false,
         title: 'Socon',
         theme: ThemeData(

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.soconsocon.socon.global.domain.ErrorCode;
 import site.soconsocon.socon.global.exception.SoconException;
+import site.soconsocon.socon.sogon.domain.dto.feign.FcmMessage;
 import site.soconsocon.socon.sogon.domain.dto.request.AddCommentRequest;
 import site.soconsocon.socon.sogon.domain.dto.request.AddSogonRequest;
 import site.soconsocon.socon.sogon.domain.dto.response.*;
@@ -14,7 +15,6 @@ import site.soconsocon.socon.sogon.domain.entity.jpa.Sogon;
 import site.soconsocon.socon.sogon.exception.SogonErrorCode;
 import site.soconsocon.socon.sogon.exception.SogonException;
 import site.soconsocon.socon.sogon.feign.NotificationFeignClient;
-import site.soconsocon.socon.sogon.feign.domain.dto.feign.FcmMessage;
 import site.soconsocon.socon.sogon.repository.jpa.CommentRepository;
 import site.soconsocon.socon.sogon.repository.jpa.SogonRepository;
 import site.soconsocon.socon.store.domain.entity.feign.Member;
@@ -83,7 +83,7 @@ public class SogonService {
                 .image2(request.getImage2())
                 .memberId(memberId)
                 .lat(request.getLat() + random.get(ran.nextInt(random.size())))
-                .lng(request.getLng() + request.getLng() + random.get(ran.nextInt(random.size())))
+                .lng(request.getLng() + random.get(ran.nextInt(random.size())))
                 .socon(socon)
                 .build());
     }

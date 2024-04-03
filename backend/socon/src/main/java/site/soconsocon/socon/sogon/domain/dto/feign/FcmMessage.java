@@ -1,4 +1,5 @@
-package site.soconsocon.socon.sogon.feign.domain.dto.feign;
+package site.soconsocon.socon.sogon.domain.dto.feign;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
