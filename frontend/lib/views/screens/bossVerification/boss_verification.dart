@@ -42,6 +42,7 @@ class _BossVerificationState extends State<BossVerification> {
         ResultMessages.getMessage('bossVerification');
     // final addressProvider = Provider.of<AddressProvider>(context);
     final bossProvider = Provider.of<BossProvider>(context);
+
     print(
         "boss입니다 ${bossProvider.address} ${bossProvider.registrationNumber} ${bossProvider.owner}");
 
@@ -126,6 +127,7 @@ class _BossVerificationState extends State<BossVerification> {
                             onSaved: (val) {
                               print(
                                   "---------------------------- ${bossProvider.registrationAddress}");
+
                               businessOwner.registrationAddress =
                                   bossProvider.registrationAddress;
                             },
@@ -202,9 +204,9 @@ class BossInput extends StatelessWidget {
   final String helperText;
   final bool showIcon;
   final Function(String?) onSaved;
-  final Function(String?) onChanged;
   final void Function() onPressed;
   final String? Function(String?) validateInput;
+  final Function(String?) onChanged;
   var initialValue;
 
   BossInput({
