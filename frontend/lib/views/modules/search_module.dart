@@ -1,14 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:socon/utils/fontSizes.dart';
 import 'package:socon/utils/responsive_utils.dart';
+import 'package:socon/viewmodels/stores_view_model.dart';
 import 'package:socon/views/atoms/checkbox.dart';
 import 'package:socon/views/atoms/search_box.dart';
 
 // type : "nearby" | "soconbook" | "like"
-class SearchModule extends StatelessWidget {
+class SearchModule extends StatefulWidget {
   final String type;
 
   SearchModule({required this.type});
+
+  @override
+  _SearchModuleState createState() => _SearchModuleState();
+}
+
+class _SearchModuleState extends State<SearchModule> {
+  bool isStoreNameChecked = false;
+  bool isItemNameChecked = false;
+  bool isCategoryChecked = false;
+  bool isRoadAddressChecked = false;
+  bool isGanadaChecked = false;
+  bool isShortestDistanceChecked = false;
+
+  StoresViewModel _storesViewModel = StoresViewModel();
+  void handleEnterKey() {
+    print('상호명: $isStoreNameChecked');
+    print('상품명: $isItemNameChecked');
+    print('카테고리: $isCategoryChecked');
+    print('도로명 주소: $isRoadAddressChecked');
+    print('가나다: $isGanadaChecked');
+    print('최단거리: $isShortestDistanceChecked');
+
+    _storesViewModel.searchStores();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,9 +41,10 @@ class SearchModule extends StatelessWidget {
       width: ResponsiveUtils.getWidthWithPixels(context, 320),
       // alignment: Alignment.center,
       child: SearchBox(
-        filterAppliedWidget: type == "soconbook"
+        filterAppliedWidget: widget.type == "soconbook"
             ? soconFilterBox(context)
             : nearbyFilterBox(context),
+        onEnterPressed: handleEnterKey,
       ),
     );
   }
@@ -45,24 +71,33 @@ class SearchModule extends StatelessWidget {
             children: [
               CheckBoxBtn(
                 Text: "상호명",
-                isChecked: false,
+                isChecked: isStoreNameChecked,
                 onCheckedChanged: (isChecked) {
-                  print('Checkbox is checked: $isChecked');
+                  setState(() {
+                    isStoreNameChecked = isChecked;
+                  });
+                  print("상호명 $isStoreNameChecked");
                 },
               ),
-              if (type == "nearby") ...[
+              if (widget.type == "nearby") ...[
                 CheckBoxBtn(
                   Text: "카테고리",
-                  isChecked: false,
+                  isChecked: isCategoryChecked,
                   onCheckedChanged: (isChecked) {
-                    print('Checkbox is checked: $isChecked');
+                    setState(() {
+                      isCategoryChecked = isChecked;
+                    });
+                    print("카테고리 $isCategoryChecked");
                   },
                 ),
                 CheckBoxBtn(
                   Text: "도로명 주소",
-                  isChecked: false,
+                  isChecked: isRoadAddressChecked,
                   onCheckedChanged: (isChecked) {
-                    print('Checkbox is checked: $isChecked');
+                    setState(() {
+                      isRoadAddressChecked = isChecked;
+                    });
+                    print("도로명 주소 $isRoadAddressChecked");
                   },
                 )
               ]
@@ -81,19 +116,25 @@ class SearchModule extends StatelessWidget {
               )),
           Row(
             children: [
-              if (type == "nearby")
+              if (widget.type == "nearby")
                 CheckBoxBtn(
                   Text: "가나다",
-                  isChecked: false,
+                  isChecked: isGanadaChecked,
                   onCheckedChanged: (isChecked) {
-                    print('Checkbox is checked: $isChecked');
+                    setState(() {
+                      isGanadaChecked = isChecked;
+                    });
+                    print("가나다 $isGanadaChecked");
                   },
                 ),
               CheckBoxBtn(
                 Text: "최단거리",
-                isChecked: false,
+                isChecked: isShortestDistanceChecked,
                 onCheckedChanged: (isChecked) {
-                  print('Checkbox is checked: $isChecked');
+                  setState(() {
+                    isShortestDistanceChecked = isChecked;
+                  });
+                  print("최단거리 $isShortestDistanceChecked");
                 },
               )
             ],
@@ -125,16 +166,22 @@ class SearchModule extends StatelessWidget {
             children: [
               CheckBoxBtn(
                 Text: "상호명",
-                isChecked: false,
+                isChecked: isStoreNameChecked,
                 onCheckedChanged: (isChecked) {
-                  print('Checkbox is checked: $isChecked');
+                  setState(() {
+                    isStoreNameChecked = isChecked;
+                  });
+                  print("상호명 $isStoreNameChecked");
                 },
               ),
               CheckBoxBtn(
                 Text: "상품명",
-                isChecked: false,
+                isChecked: isItemNameChecked,
                 onCheckedChanged: (isChecked) {
-                  print('Checkbox is checked: $isChecked');
+                  setState(() {
+                    isItemNameChecked = isChecked;
+                  });
+                  print("상품명 $isItemNameChecked");
                 },
               ),
             ],
