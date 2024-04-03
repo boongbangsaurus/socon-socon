@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.elasticsearch.core.geo.GeoPoint;
 import org.springframework.data.geo.Distance;
 import org.springframework.data.geo.Point;
 import org.springframework.stereotype.Service;
@@ -13,12 +14,15 @@ import site.soconsocon.socon.search.domain.document.StoreDocument;
 import site.soconsocon.socon.search.domain.dto.common.SearchType;
 import site.soconsocon.socon.search.domain.dto.request.SearchRequest;
 import site.soconsocon.socon.search.domain.dto.request.StoreCreateDocument;
+import site.soconsocon.socon.search.domain.dto.request.StoreNearMe;
 import site.soconsocon.socon.search.domain.dto.response.FoundStoreInfo;
 import site.soconsocon.socon.search.exception.SearchErrorCode;
 import site.soconsocon.socon.search.exception.SearchException;
 import site.soconsocon.socon.search.repository.elasticsearch.SearchRepository;
 import site.soconsocon.socon.store.domain.entity.jpa.FavStore;
+import site.soconsocon.socon.store.domain.entity.jpa.Store;
 import site.soconsocon.socon.store.repository.jpa.FavStoreRepository;
+import site.soconsocon.socon.store.repository.jpa.StoreRepository;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -101,5 +105,29 @@ public class SearchService {
         } catch (RuntimeException e){
             throw new SearchException(SearchErrorCode.SAVE_DOCUMENT_FAIL);
         }
+    }
+
+    private final StoreRepository storeRepository;
+    public void dumpStores() {
+        try {
+            List<Store> stores = storeRepository.findAll();
+            for(Store store : stores){
+                searchRepository.save(StoreDocument.builder()
+                        .id(store.getId())
+                        .image(store.getImage())
+                        .introduction(store.getIntroduction())
+                        .name(store.getName())
+                        .category(store.getCategory())
+                        .location(new GeoPoint(store.getLat(), store.getLng()))
+                        .build());
+            }
+        }catch (RuntimeException e){
+            throw new SearchException(SearchErrorCode.SEARCH_FAIL);
+        }
+
+    }
+
+    public void notifyNearMe(StoreNearMe storeNearMe, int memberId) {
+
     }
 }
