@@ -11,7 +11,9 @@ import 'package:socon/utils/responsive_utils.dart';
 import 'package:socon/views/atoms/bottom_sheet.dart';
 import 'package:socon/views/atoms/buttons.dart';
 import 'package:socon/views/payments/buy_socon_payment.dart';
-
+import 'package:http/http.dart' as http;
+import 'dart:convert'; // JSON 처리를 위한 패키지
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../viewmodels/payment_verification_view_model.dart';
 
 
@@ -104,12 +106,12 @@ class _BuyMenuDetailScreenState extends State<BuyMenuDetailScreen> {
       ));
 
 
+  int count = 1;
 
   @override
   Widget build(BuildContext context) {
     // final
     final Size _size = MediaQuery.of(context).size;
-    var count = 1;
     var total_price = count * myMenu['price'];
 
     return
@@ -165,47 +167,48 @@ class _BuyMenuDetailScreenState extends State<BuyMenuDetailScreen> {
                   children: [
 
                     Container(
-                      margin: EdgeInsets.symmetric(horizontal: 20),
+                      margin: EdgeInsets.symmetric(horizontal: 40),
                       child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              ElevatedButton(
-                                onPressed: (){
-                                  if(count > 0){
-                                    count -= 1;
-                                  }
-                                },
-                                child: Icon(Icons.remove, color: Colors.white, ),
-                              ),
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.orange,
-                                  shape: BoxShape.circle,
-                                ),
-                                child: IconButton(
-                                  onPressed: (){
-                                    if(count > 0){
-                                      count -= 1;
-                                    }
-                                  },
-                                  icon: Icon(Icons.remove, color: Colors.white, ),
-                                ),
-                              ),
-
-                              SizedBox(width: 10),
-                              Text(count.toString()),
-                              SizedBox(width: 10),
                               // '+' 아이콘 버튼
                               GestureDetector(
                                 onTap: () {
                                   setState(() {
-                                    count += 1;
+                                    if (count > 1 ){
+                                      count--;
+                                    }
                                   });
                                 },
                                 child: Container(
-                                  padding: EdgeInsets.all( 0),
+                                  padding: EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    color: Colors.orange,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    Icons.remove,
+                                    color: Colors.white,
+                                    size: 15,
+                                  ),
+                                ),
+                              ),
+
+                              SizedBox(width: 10),
+                              Text('$count', style: TextStyle(fontSize: 20),),
+                              SizedBox(width: 10),
+
+                              GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    count++;
+                                  });
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.all(8),
                                   decoration: BoxDecoration(
                                     color: Colors.orange,
                                     shape: BoxShape.circle,
@@ -219,7 +222,7 @@ class _BuyMenuDetailScreenState extends State<BuyMenuDetailScreen> {
                               ),
                             ],
                           ),
-                          Row(children: [Text('총 $total_price원')],),
+                          Row(children: [Text('총 $total_price원', style: TextStyle(fontSize: 20),)],),
                         ],
                       ),
                     ),
@@ -232,36 +235,23 @@ class _BuyMenuDetailScreenState extends State<BuyMenuDetailScreen> {
                       margin: EdgeInsets.symmetric(horizontal: 20),
                       child: BasicButton(
                         onPressed: () async {
-                          try {
-                            // var orderData = {
-                            //   "itemName": productDetailModel.name,
-                            //   "price": productDetailModel.price,
-                            //   "quantity": 1,
-                            //   "issueId": productDetailModel.id,
-                            // };
+                          var orderUid = await savePayment(myMenu['name'], myMenu['price'], count, widget.menuId);
+                          print(orderUid);
 
-                            // await viewModel.sendPaymentRequest(orderData);
-                            Navigator.of(context).push(
+                          await validatePayment('imp01516875', orderUid);
+                          Navigator.of(context).push(
                               MaterialPageRoute(
                                   builder: (context) => Payment(),
                                   settings: RouteSettings(arguments: {
-                                    // 'orderUid': viewModel.orderUid,
-                                    'orderUid': 'ac88940a-8b9b-4e5b-95f8-6782f970bb65',
-                                    'issueId': 1,
-                                    'name': "열무국수",
-                                    'amount': 300,
+                                    'orderUid': orderUid,
+                                    'issueId': widget.menuId,
+                                    'name': myMenu['name'],
+                                    'amount': myMenu['price'] * count,
                                     'buyerName': '김온유'
                                   }
                                   )
                               ),
                             );
-                            //   Navigator.push(
-                            //     context,
-                            //     MaterialPageRoute(builder: (context) => PaymentPage(orderUid: viewModel.orderUid)),
-                            //   );
-                          } catch (error) {
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("결제 실패: $error")));
-                          }
 
                         },
                         text: '구매하기',
@@ -273,29 +263,6 @@ class _BuyMenuDetailScreenState extends State<BuyMenuDetailScreen> {
             ],
           )
       );
-
-    // return FutureBuilder(
-    //     future: Provider.of<PaymentVerificationViewModel>(context, listen: false).getMenuDetail(widget.storeId, widget.menuId),
-    //     builder: (context, snapshot) {
-    //       if (snapshot.connectionState == ConnectionState.done) {
-    //         if (snapshot.hasError) {
-    //           print('ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ');
-    //           print(snapshot);
-    //           return Center(child: Text('오류가 발생했습니다.'),);
-    //         }
-    //         return Consumer<PaymentVerificationViewModel>(
-    //           builder: (context, viewModel, child) {
-    //             final productDetailModel = viewModel.productDetailModel;
-    //
-    //           },
-    //         );
-    //       } else {
-    //         // 로딩중 페이지
-    //         return Center(child: CircularProgressIndicator(),);
-    //       }
-    //     }
-    //  );
-    // bottomNavigationBar: null,
   }
 
   Widget shortStoreInfoWithBar(BuildContext context) {
@@ -470,8 +437,86 @@ class _BuyMenuDetailScreenState extends State<BuyMenuDetailScreen> {
   }
 }
 
-//
-// final PaymentVerificationViewModel _paymentVerificationViewModel = PaymentVerificationViewModel();
-// _paymentVerificationViewModel.sendPaymentRequest({
-//   ""
-// })
+
+// 기프티콘 주문저장 -> orderUid 발급
+Future<String> savePayment(String itemName, int price, int quantity, int issueId) async {
+  final String baseUrl = 'http://j10c207.p.ssafy.io:8000'; // 통신 url
+
+  final Uri url = Uri.parse('$baseUrl/api/v1/orders');
+  final prefs = await SharedPreferences.getInstance();
+  final accessToken = prefs.getString('accessToken');
+
+  final response = await http.post(
+    url,
+    headers: <String, String>{
+      'Authorization': 'Bearer $accessToken',
+      'Content-Type': 'application/json',
+    },
+    body: jsonEncode({
+      'itemName': itemName, // 아임포트 결제 고유 ID
+      'price': price, // 아임포트 결제 고유 ID
+      'quantity': quantity, // 아임포트 결제 고유 ID
+      'issueId': issueId, // 주문 고유 ID
+    }),
+  );
+  debugPrint('기프티콘 주문저장: ${response.statusCode}');
+
+  if (response.statusCode == 200) {
+    // 서버로부터 정상적인 응답을 받았을 때의 처리
+    debugPrint('기프티콘 주문저장 결제 검증 성공: ${response.body}');
+    debugPrint('기프티콘 주문저장 결제 검증 성공: ${response.headers}');
+    final String body = utf8.decode(response.bodyBytes);
+    final decodedBody = jsonDecode(body);
+    // final String dataBody = decodedBody['data_body'];
+    print('pppppppppppppppppppppp');
+    print(decodedBody['data_body']);
+    print('pppppppppppppppppppppp');
+    return decodedBody['data_body']['orderUid'];
+  } else {
+    // 서버로부터 오류 응답을 받았을 때의 처리
+    debugPrint('기프티콘 주문저장 결제 검증 실패: ${response.body}');
+    // Navigator를 사용하여 결제실패 페이지로 이동하거나, 오류 메시지 표시 등의 로직 추가
+    return '';
+  }
+}
+
+
+
+
+// 주문 결제 검증 요청
+Future<void> validatePayment(String impUid, String orderUid) async {
+  final String baseUrl = 'http://j10c207.p.ssafy.io:8000'; // 통신 url
+
+  final Uri url = Uri.parse('$baseUrl/api/v1/payments/validate');
+  final prefs = await SharedPreferences.getInstance();
+  final accessToken = prefs.getString('accessToken');
+
+  try {
+    final response = await http.post(
+      url,
+      headers: <String, String>{
+        'Authorization': 'Bearer $accessToken',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        'impUid': impUid, // 아임포트 결제 고유 ID
+        'orderUid': orderUid, // 주문 고유 ID
+      }),
+    );
+    debugPrint('결제 ~~: ${response.statusCode}');
+
+    if (response.statusCode == 200) {
+      // 서버로부터 정상적인 응답을 받았을 때의 처리
+      debugPrint('결제 검증 성공: ${response.body}');
+      debugPrint('결제 검증 성공: ${response.headers}');
+      // Navigator를 사용하여 결제완료 페이지로 이동하거나, 상태 업데이트 등의 로직 추가
+    } else {
+      // 서버로부터 오류 응답을 받았을 때의 처리
+      debugPrint('결제 검증 실패: ${response.body}');
+      // Navigator를 사용하여 결제실패 페이지로 이동하거나, 오류 메시지 표시 등의 로직 추가
+    }
+  } catch (e) {
+    debugPrint('결제 검증 중 예외 발생: $e');
+    // 예외 발생 시 처리 로직 추가
+  }
+}
