@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 /// author : 김아현
 class FontSizes {
   static const double LOGO = 60.0;
+  static const double XXXXLARGE = 48.0;
   static const double XXXLARGE = 32.0;
   static const double XXLARGE = 28.0;
   static const double XLARGE = 24.0;

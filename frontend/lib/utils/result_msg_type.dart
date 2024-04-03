@@ -37,6 +37,13 @@ class ResultMessages {
       failTitle: '',
       failComment: '',
     ),
+    'approval': Message(
+      name: '결제 승인',
+      successTitle: '승인 완료',
+      successComment: '결제가 성공적으로 완료되었습니다',
+      failTitle: '',
+      failComment: '',
+    ),
   };
 
   static Message getMessage(String key) {
