@@ -50,14 +50,40 @@ class StoreSoconLists extends StatelessWidget {
     final String randomImage = images[random.nextInt(images.length)];
 
 
-    return GestureDetector(
-      onTap: (){
-        print("$storeId 번째 가게의 메뉴 클릭 $id  & 소콘 발행 페이지 이동");
-        // GoRouter.of(context).go("/detail/${storeId}/menu/${id}");
-        Navigator.push(
+    return GestureDetector (
+      onTap: () async {
+        // 로딩 다이얼로그 표시
+        showDialog(
+          context: context,
+          barrierDismissible: true, // 사용자가 다이얼로그 바깥을 터치하면 닫힘
+          builder: (BuildContext context) {
+            return Dialog(
+              backgroundColor: Colors.black,
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CircularProgressIndicator(), // 로딩 인디케이터
+                    SizedBox(width: 20),
+                    Text("로딩 중..."), // 로딩 텍스트
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+
+        // 여기서 페이지 이동을 처리합니다.
+        // 예를 들어 Navigator.push를 사용하거나 다른 페이지 이동 메커니즘을 사용할 수 있습니다.
+        // 이 예시에서는 Navigator.push를 사용합니다.
+        await Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => BuyMenuDetailScreen(storeId, id)),
         );
+
+        // 페이지 이동이 완료되면 로딩 다이얼로그를 닫습니다.
+        // Navigator.pop(context); // 로딩 다이얼로그 닫기
       },
       child: Container(
         width: ResponsiveUtils.getWidthWithPixels(context, 154),
