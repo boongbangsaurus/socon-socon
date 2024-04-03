@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:socon/utils/colors.dart';
 import 'package:socon/utils/fontSizes.dart';
 import 'package:socon/utils/responsive_utils.dart';
@@ -7,11 +8,16 @@ import 'package:socon/views/atoms/icon_loader.dart';
 import '../../utils/icons.dart';
 
 class AddMenuCard extends StatelessWidget {
+  int storeId;
+
+  AddMenuCard({super.key, required this.storeId});
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
         print("상품 등록");
+        GoRouter.of(context).go("/myStores/${storeId}/register");
       },
       child: Container(
         width: ResponsiveUtils.getWidthWithPixels(context, 154),

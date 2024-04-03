@@ -19,7 +19,7 @@ public class BusinessRegistration {
     @Column(name = "registration_number", nullable = false)
     private String registrationNumber;
 
-    @Column(name = "registration_adress", nullable = false)
+    @Column(name = "registration_address", nullable = false)
     private String registrationAddress;
 
     @Column(name = "member_id", nullable = false)

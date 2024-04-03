@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.soconsocon.socon.global.domain.ErrorCode;
 import site.soconsocon.socon.global.exception.SoconException;
+import site.soconsocon.socon.sogon.domain.dto.feign.FcmMessage;
 import site.soconsocon.socon.sogon.domain.dto.request.AddCommentRequest;
 import site.soconsocon.socon.sogon.domain.dto.request.AddSogonRequest;
 import site.soconsocon.socon.sogon.domain.dto.response.*;
@@ -14,7 +15,6 @@ import site.soconsocon.socon.sogon.domain.entity.jpa.Sogon;
 import site.soconsocon.socon.sogon.exception.SogonErrorCode;
 import site.soconsocon.socon.sogon.exception.SogonException;
 import site.soconsocon.socon.sogon.feign.NotificationFeignClient;
-import site.soconsocon.socon.sogon.feign.domain.dto.feign.FcmMessage;
 import site.soconsocon.socon.sogon.repository.jpa.CommentRepository;
 import site.soconsocon.socon.sogon.repository.jpa.SogonRepository;
 import site.soconsocon.socon.store.domain.entity.feign.Member;
@@ -27,10 +27,7 @@ import site.soconsocon.socon.store.repository.jpa.SoconRepository;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Service
@@ -69,6 +66,10 @@ public class SogonService {
             expired = socon.getExpiredAt();
         }
 
+        List<Double> random = Arrays.asList(0.000001, 0.000002, 0.000003, 0.000004, 0.000005, 0.000006, 0.000007, 0.000008, 0.000009, 0.00001
+                                        , -0.000001, -0.000002, -0.000003, -0.000004, -0.000005, -0.000006, -0.000007, -0.000008, -0.000009, -0.00001);
+        Random ran = new Random();
+
         socon.setStatus("sogon"); // 소콘의 상태를 "sogon"으로 업데이트
         soconRepository.save(socon);
 
@@ -81,8 +82,8 @@ public class SogonService {
                 .image1(request.getImage1())
                 .image2(request.getImage2())
                 .memberId(memberId)
-                .lat(request.getLat())
-                .lng(request.getLng())
+                .lat(request.getLat() + random.get(ran.nextInt(random.size())))
+                .lng(request.getLng() + request.getLng() + random.get(ran.nextInt(random.size())))
                 .socon(socon)
                 .build());
     }
