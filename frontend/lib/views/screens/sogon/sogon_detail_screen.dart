@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:socon/utils/colors.dart';
 import 'package:socon/utils/fontSizes.dart';
 import 'package:socon/viewmodels/sogon_view_model.dart';
@@ -17,11 +18,23 @@ class SogonDetailScreen extends StatefulWidget {
 }
 
 class _SogonDetailScreenState extends State<SogonDetailScreen> {
+  late final nickname;
+
   @override
   void initState() {
     super.initState();
     Future.microtask(() => Provider.of<SogonViewModel>(context, listen: false)
         .getSogonDetail(widget.sogon_id));
+    loadUserNickname();
+  }
+
+  Future<String?> getUserNickname() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('userNickname');
+  }
+
+  void loadUserNickname() async {
+    nickname = await getUserNickname();
   }
 
   String calculateTimeDifference(DateTime createdAt) {
@@ -169,19 +182,46 @@ class _SogonDetailScreenState extends State<SogonDetailScreen> {
                               // 작성자 본인이고 아직 채택되지 않은 글이라면, 모든 사람에게 채택버튼이 존재한다.
                               // 채택 버튼을 누른경우 모달로 알림!
                               // 모든 사람은 채택된 소곤인 경우 채택 표시만 보인다.
-                              TextButton(
-                                  style: TextButton.styleFrom(
-                                      foregroundColor: AppColors.BLACK),
-                                  onPressed: () {},
-                                  child: Row(
-                                    children: [
-                                      Icon(
-                                        Icons.check_circle_outline,
-                                        size: 18,
-                                      ),
-                                      Text(' 채택'),
-                                    ],
-                                  ))
+                              (nickname == model.sogonDetail?.member_name &&
+                                      !model.sogonDetail!.expired)
+                                  ? TextButton(
+                                      style: TextButton.styleFrom(
+                                          foregroundColor: AppColors.BLACK),
+                                      onPressed: () {
+                                        final viewModel =
+                                            Provider.of<SogonViewModel>(context,
+                                                listen: false);
+                                        viewModel.setPicked(widget.sogon_id,
+                                            comment.id.toString());
+                                      },
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            Icons.check_circle_outline,
+                                            size: 18,
+                                          ),
+                                          Text(' 채택'),
+                                        ],
+                                      ))
+                                  : (model.sogonDetail!.expired &&
+                                          comment.is_picked)
+                                      ? TextButton(
+                                          style: TextButton.styleFrom(
+                                              foregroundColor: AppColors.BLACK,
+                                              backgroundColor: AppColors.GREEN),
+                                          onPressed: () {},
+                                          child: Row(
+                                            children: [
+                                              Icon(
+                                                Icons.check_circle_outline,
+                                                size: 18,
+                                              ),
+                                              Text(' 채택'),
+                                            ],
+                                          ))
+                                      : SizedBox(
+                                          width: 1,
+                                        )
                             ],
                           ),
                         ),

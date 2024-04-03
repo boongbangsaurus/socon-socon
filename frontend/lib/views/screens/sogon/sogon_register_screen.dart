@@ -1,10 +1,13 @@
 import 'dart:io';
 
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:location/location.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:socon/models/sogon_register.dart';
 import 'package:socon/utils/colors.dart';
 import 'package:socon/utils/icons.dart';
@@ -30,12 +33,25 @@ class _SogonRegisterScreenState extends State<SogonRegisterScreen> {
   bool isSelected = false;
   int selectSocon = 0;
   List<XFile?> images = []; // 갤러리에서 사진 선택
+  XFile? image;
+  String? nickname;
+
   void getImage(ImageSource source) async {
-    final XFile? image = await picker.pickImage(source: source);
+    image = await picker.pickImage(source: source);
 
     setState(() {
       images.add(image);
     });
+  }
+
+  void setImage() async {
+    final image = this.image;
+    if (image != null) {
+      File _file = File(image.path);
+      FirebaseStorage.instance
+          .ref('$nickname/picker/test_image')
+          .putFile(_file);
+    }
   }
 
   void setSelect(bool select) {
@@ -51,6 +67,21 @@ class _SogonRegisterScreenState extends State<SogonRegisterScreen> {
     setState(() {
       selectSocon = id;
     });
+  }
+
+  Future<String?> getUserNickname() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('userNickname');
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    loadUserNickname();
+  }
+
+  void loadUserNickname() async {
+    nickname = await getUserNickname();
   }
 
   @override
@@ -231,25 +262,29 @@ class _SogonRegisterScreenState extends State<SogonRegisterScreen> {
                       text: '소곤 작성',
                       onPressed: () async {
                         if (_formKey.currentState?.validate() ?? false) {
-                          _formKey.currentState!.save();
-                          Location location = Location(); // 내 위치
-                          var currentLocation = await location.getLocation();
-                          sogonRegister.lat = currentLocation.latitude;
-                          sogonRegister.lng = currentLocation.longitude;
+                          if (isSelected) {
+                            _formKey.currentState!.save();
+                            Location location = Location(); // 내 위치
+                            var currentLocation = await location.getLocation();
+                            sogonRegister.lat = currentLocation.latitude;
+                            sogonRegister.lng = currentLocation.longitude;
+                            setImage();
+                            sogonRegister.image1 =
+                                '$nickname/picker/test_image';
+                            debugPrint(
+                                'send sogon register ################################################');
+                            debugPrint('$sogonRegister');
+                            debugPrint(
+                                '################################################');
+                            bool isSuccess = await sogonViewModel
+                                .sogonRegister(sogonRegister);
 
-                          debugPrint(
-                              'send sogon register ################################################');
-                          debugPrint('$sogonRegister');
-                          debugPrint(
-                              '################################################');
-                          bool isSuccess =
-                              await sogonViewModel.sogonRegister(sogonRegister);
-
-                          debugPrint(
-                              '####$isSuccess############################################');
-                          if (isSuccess) {
-                            // 소곤 페이지로 이동
-                            GoRouter.of(context).go('/sogon');
+                            debugPrint(
+                                '####$isSuccess############################################');
+                            if (isSuccess) {
+                              // 소곤 페이지로 이동
+                              GoRouter.of(context).go('/sogon');
+                            }
                           } else {
                             return showDialog(
                                 context: context,

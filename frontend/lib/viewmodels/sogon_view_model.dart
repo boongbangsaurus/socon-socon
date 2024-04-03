@@ -92,4 +92,10 @@ class SogonViewModel extends ChangeNotifier {
     getSogonDetail(sogon_id);
     return res;
   }
+
+  Future<bool> setPicked(String sogon_id, String comment_id) async {
+    bool res = await _sogonService.setPicked(sogon_id, comment_id);
+    getSogonDetail(sogon_id);
+    return res;
+  }
 }
