@@ -1,0 +1,25 @@
+server:
+  port: 8030
+
+spring:
+  application:
+    name: socon-service
+  config:
+    import: optional:configserver:http://${CONFIG_USERNAME}:${CONFIG_PASSWORD}@config:9000
+  profiles:
+    active: prod
+  cache:
+    type: redis
+
+
+
+management:
+  endpoints:
+    enabled-by-default: false
+    web:
+      base-path: /actuator  # ?? ??
+      exposure:
+        include: ['refresh','info', 'health']
+    jmx:
+      exposure:
+        exclude: ['*']

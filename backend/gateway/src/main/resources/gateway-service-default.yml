@@ -1,0 +1,27 @@
+server:
+  port: 8000
+
+spring:
+  application:
+    name: gateway-service
+  config:
+    import: optional:configserver:http://${CONFIG_USERNAME}:${CONFIG_PASSWORD}@j10c207.p.ssafy.io:9000
+  profiles:
+    active: prod
+  cache:
+    type: redis
+
+  main:
+    web-application-type: reactive
+
+
+management:
+  endpoints:
+    enabled-by-default: false
+    web:
+      base-path: /actuator  # ?? ??
+      exposure:
+        include: ['refresh','info', 'health']
+    jmx:
+      exposure:
+        exclude: ['*']
