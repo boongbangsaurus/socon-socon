@@ -14,6 +14,7 @@ import site.soconsocon.auth.domain.dto.response.MemberResponseDto;
 import site.soconsocon.auth.domain.entity.jpa.Member;
 import site.soconsocon.auth.domain.entity.jpa.RefreshToken;
 import site.soconsocon.auth.exception.MemberException;
+import site.soconsocon.auth.feign.domain.dto.feign.MemberRoleRequest;
 import site.soconsocon.auth.repository.RefreshTokenRepository;
 import site.soconsocon.auth.security.MemberDetailService;
 import site.soconsocon.auth.security.MemberDetails;
@@ -68,7 +69,7 @@ public class MemberController {
      * @param refreshToken
      * @return
      */
-    @PostMapping("/access-token")
+    @GetMapping("/access-token")
     public ResponseEntity<?> generateAccessToken(@RequestBody RefreshToken refreshToken, Authentication authentication) {
         MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
         String accessToken = memberService.createAccessToken(memberDetails, refreshToken.getRefreshToken());
@@ -110,6 +111,15 @@ public class MemberController {
         log.info("open feign communication success!");
         log.info("getMemberByMemberId() 메소드 호출");
         return memberService.findMemberByMemberId(memberId);
+    }
+
+    @PutMapping("/role")
+    public ResponseEntity modifyMemberRole(@RequestBody MemberRoleRequest memberRoleRequest) {
+        log.info("open feign communication success!");
+        log.info("modifyMemberRole() 메소드 호출");
+
+        memberService.updateRole(memberRoleRequest);
+        return ResponseEntity.ok().body(null);
     }
 
 }

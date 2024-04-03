@@ -164,7 +164,7 @@ public class StoreApiController {
 
     // 사업자 번호 등록
     @PostMapping("/business")
-    public ResponseEntity<Object> saveBusinessNumvber(
+    public ResponseEntity<Object> saveBusinessNumber(
             @Valid
             @RequestBody
             AddBusinessNumberRequest request,
@@ -174,6 +174,14 @@ public class StoreApiController {
         storeService.saveBusinessNumber(request, memberId);
 
         return ResponseEntity.ok().body(MessageUtils.success(null, "201 CREATED", null));
+    }
+
+    // 사업자 번호 목록 조회
+    @GetMapping("/business")
+    public ResponseEntity<Object> getBusinessNumberList(
+            @RequestHeader("X-Authorization-Id") int memberId
+    ){
+        return ResponseEntity.ok().body(MessageUtils.success(storeService.getBusinessNumberList(memberId)));
     }
 
     // 가게 매출 데이터 분석 조회
@@ -225,4 +233,5 @@ public class StoreApiController {
 
         return ResponseEntity.ok().body(MessageUtils.success(storeService.getIssueAnalysis(storeId, request, memberId)));
     }
+
 }

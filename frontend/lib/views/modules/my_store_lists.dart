@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
+import 'package:socon/services/mystore_lists_service.dart';
 import 'package:socon/utils/colors.dart';
 import 'package:socon/utils/fontSizes.dart';
 import 'package:socon/utils/responsive_utils.dart';
@@ -10,9 +11,10 @@ import 'package:socon/views/atoms/tag_icon.dart';
 import 'package:socon/views/modules/store_detail_top_card.dart';
 import 'package:socon/views/screens/myStore/store_register_view.dart';
 import 'package:socon/views/atoms/image_loader.dart';
-import 'package:socon/models/my_store.dart';
+import 'package:socon/models/mystore_lists_model.dart';
 
 class MyStoreLists extends StatefulWidget {
+
   const MyStoreLists({super.key});
 
   @override
@@ -59,21 +61,48 @@ class _MyStoreListsState extends State<MyStoreLists> {
  }
 }
 
-class StoreLists extends StatelessWidget {
+class StoreLists extends StatefulWidget {
   const StoreLists({super.key});
 
   @override
+  State<StoreLists> createState() => _StoreListsState();
+}
+
+class _StoreListsState extends State<StoreLists> {
+
+  List<dynamic> myStores = [];
+
+  @override
+  void initState() {
+    super.initState();
+    loadMyStores();
+  }
+
+  void loadMyStores() async {
+    debugPrint('내 점포리스트 요청중!');
+    MystoreListsService service = MystoreListsService();
+    var stores = await service.getMystoreLists();
+    // debugPrint(stores as String?);
+    setState(() {
+      myStores = stores;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    print('8888888888888888888888888');
+    print(myStores);
+    print('8888888888888888888888888');
     return Expanded(
       child: ListView.builder(
         shrinkWrap: true,
-        itemCount: stores.length,
+        itemCount: myStores.length,
         itemBuilder: (context, index) {
-          final store = stores[index];
+          final store = myStores[index];
           return InkWell(
             onTap: () {
               // Navigator.push(context, MaterialPageRoute(builder: (context) => StoreDetailTopCard(storeId : store.storeId)));
-              GoRouter.of(context).go("/myStores/${store.storeId}");
+              GoRouter.of(context).go("/myStores/${store.id}");
             },
             child: Container(
               margin: EdgeInsets.all(10),
@@ -96,7 +125,7 @@ class StoreLists extends StatelessWidget {
                       height: 80,
                       width: 80,
                       child: ImageLoader(
-                        imageUrl: store.imageUrl,
+                        imageUrl: store.image,
                         borderRadius: 15.0,
                       ),
                     ),
@@ -116,7 +145,7 @@ class StoreLists extends StatelessWidget {
                                   fontWeight: FontWeight.bold),
                             ),
                             TagIcon(
-                              buttonText: store.tag,
+                              buttonText: store.category,
                               buttonColor: Colors.amber,
                               buttonTextColor: Colors.white,
                             )

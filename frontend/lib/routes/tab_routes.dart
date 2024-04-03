@@ -8,6 +8,7 @@ import 'package:socon/views/screens/contact/contact_sucess_screen.dart';
 import 'package:socon/views/screens/kpostal_screen.dart';
 import 'package:socon/views/screens/myStore/publish_socon_screen.dart';
 import 'package:socon/views/screens/myStore/store_detail_screen.dart';
+import 'package:socon/views/screens/myStore/store_product_register.dart';
 import 'package:socon/views/screens/my_info_screen.dart';
 import 'package:socon/views/screens/my_store_list_screen.dart';
 import 'package:socon/views/screens/sign_in_screen.dart';
@@ -150,6 +151,7 @@ class TabRoutes {
     );
   }
 
+  // 내점포 Listssss
   static RouteBase getMyStoreListRoute() {
     return GoRoute(
         path: "/myStores",
@@ -159,6 +161,8 @@ class TabRoutes {
         routes: [getMyStoreDetailRoute()]);
   }
 
+
+  // 내점포 Lists -> 내점포
   static RouteBase getMyStoreDetailRoute() {
     return GoRoute(
         path: ":storeId",
@@ -167,8 +171,10 @@ class TabRoutes {
         },
         routes: [
           getMenuDetailRoute(),
+          getProductRegisterRoute(),
         ]);
   }
+
 
   static RouteBase getMenuDetailRoute() {
     return GoRoute(
@@ -178,6 +184,17 @@ class TabRoutes {
               state.pathParameters['storeId']!);
         });
   }
+
+
+  static RouteBase getProductRegisterRoute() {
+    return GoRoute(
+        path: "register",
+        builder: (BuildContext context, GoRouterState state) {
+          return ProductRegister(state.pathParameters['storeId']!,);
+        });
+  }
+
+
 
   static RouteBase getBossVerification() {
     return GoRoute(
