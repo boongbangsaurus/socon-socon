@@ -376,6 +376,8 @@ public class StoreService {
                 .registrationAddress(request.getAddress())
                 .memberId(memberId)
                 .build());
+
+        feignServiceClient.changeRole(RoleRequest.builder().memberId(memberId).role("MANAGER").build());
     }
 
     // 가게 매출 데이터 분석 조회
