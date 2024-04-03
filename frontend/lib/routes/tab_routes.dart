@@ -101,7 +101,7 @@ class TabRoutes {
         name: "soconbookDetail",
         path: "detail/:soconId",
         builder: (BuildContext context, GoRouterState state) {
-          return SoconBookDetailScreen(state.pathParameters['soconId']);
+          return SoconBookDetailScreen(state.pathParameters['soconId']!);
         });
   }
 
