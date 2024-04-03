@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:socon/routes/tab_routes.dart';
 import 'package:socon/viewmodels/login_state_view_model.dart';
 import 'package:socon/views/atoms/bottom_bar.dart';
 
-final bool isOwner = true; // 상태 관리로 처리할 예정
 
+final bool isOwner = true; // 상태 관리로 처리할 예정
+//
+// Future<bool> getIsOwner() async {
+//   SharedPreferences prefs = await SharedPreferences.getInstance();
+//   return prefs.getBool('isOwner') ?? false; // 기본값은 false로 설정
+// }
 // 라우트 상수 정의
 const String signUpRoute = "/signup";
 const String infoContactRoute = "/info/contact";
@@ -15,7 +21,7 @@ final RegExp successRegExp = RegExp(r'^/info/.*/success$');
 final RegExp failRegExp = RegExp(r'^/info/.*/fail$');
 const String soconBookDetailRoute = "/soconbook/detail";
 
-final GoRouter router = GoRouter(
+final GoRouter router = GoRouter (
     initialLocation: "/",
     redirect: (BuildContext context, GoRouterState state) {
       final loginState = Provider.of<LoginState>(context, listen: false);

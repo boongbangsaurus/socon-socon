@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:socon/utils/responsive_utils.dart';
 import 'package:socon/views/atoms/icon_loader.dart';
 import 'package:socon/views/atoms/tag_icon.dart';
@@ -26,10 +27,28 @@ class MyInfoScreen extends StatefulWidget {
 class _MyInfoScreen extends State<MyInfoScreen> {
   bool _enableNotification = false;
   bool _enableWatchNotification = true;
-  bool _isOwnerVerified = true;
+  bool _isOwner = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadIsOwner();
+  }
+
+  Future<void> _loadIsOwner() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool isOwner = prefs.getBool('isOwner') ?? false;
+    print("사업자 인증 완료된 사용자 입니다. $isOwner");
+    setState(() {
+      _isOwner = isOwner;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+
+
+
     return Scaffold(
       appBar: CustomAppBar(title: "내 정보"),
       body: Container(
@@ -351,7 +370,7 @@ class _MyInfoScreen extends State<MyInfoScreen> {
                           fontSize: ResponsiveUtils.calculateResponsiveFontSize(
                               context, FontSizes.MEDIUM)),
                     ),
-                    _isOwnerVerified
+                    _isOwner
                         ? const TagIcon(
                             buttonText: "인증",
                             buttonColor: AppColors.SUCCESS500,
