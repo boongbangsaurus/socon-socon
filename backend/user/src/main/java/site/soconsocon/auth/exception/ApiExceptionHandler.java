@@ -8,7 +8,7 @@ import site.soconsocon.utils.MessageUtils;
 
 @RestControllerAdvice
 @Log4j2
-public class ApiExceptionHandler extends RuntimeException {
+public class ApiExceptionHandler {
 
     @ExceptionHandler(MemberException.class)
     public ResponseEntity memberExceptionHandler(MemberException e) {

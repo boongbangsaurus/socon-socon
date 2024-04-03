@@ -35,6 +35,7 @@ public class IssueService {
     private final ItemRepository itemRepository;
     private final SoconRepository soconRepository;
     private final StoreRepository storeRepository;
+    private final SoconRedisService soconRedisService;
 
 
     // 발행 목록 조회
@@ -107,14 +108,16 @@ public class IssueService {
         issueRepository.save(issue);
 
         for (int i = 0; i < request.getPurchasedQuantity(); i++) {
-            soconRepository.save(Socon.builder()
+            Socon newSocon = Socon.builder()
                     .purchasedAt(request.getPurchaseAt())
                     .expiredAt(request.getExpiredAt())
                     .usedAt(request.getUsedAt())
                     .status(request.getStatus())
                     .issue(issue)
                     .memberId(request.getMemberId())
-                    .build());
+                    .build();
+            soconRepository.save(newSocon);
+            soconRedisService.saveSocon(newSocon);
         }
     }
 

@@ -18,9 +18,10 @@ import 'package:socon/viewmodels/store_product_view_model.dart';
 
 
 class ProductRegister extends StatefulWidget {
-  final int storeId;
+  final String? storeId;
 
-  ProductRegister({super.key, required this.storeId});
+  ProductRegister(this.storeId, {super.key});
+
   @override
   State<ProductRegister> createState() => _ProductRegisterState();
 }
@@ -92,6 +93,7 @@ class _ProductRegisterState extends State<ProductRegister> {
   @override
 
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         title: Text('메뉴 등록'),

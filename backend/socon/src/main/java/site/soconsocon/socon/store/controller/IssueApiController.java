@@ -15,7 +15,7 @@ public class IssueApiController {
     private final IssueService issueService;
 
     // 소콘북 저장
-    @PostMapping("/socon")
+    @PostMapping(value = "/socon", produces = "application/json; charset=UTF-8")
     public ResponseEntity<Object> saveMySocon(
             @RequestBody AddMySoconRequest request
     ){
@@ -25,7 +25,7 @@ public class IssueApiController {
     }
 
     // 소콘 발행 중지
-    @PutMapping("/{issue_id}")
+    @PutMapping(value = "/{issue_id}", produces = "application/json; charset=UTF-8")
     public ResponseEntity<Object> stopIssue(
             @PathVariable("issue_id") Integer issueId,
             @RequestHeader("X-Authorization-Id") int memberId
@@ -36,7 +36,7 @@ public class IssueApiController {
     }
 
     // 발행 정보 상세 조회
-    @GetMapping("/{issue_id}")
+    @GetMapping(value = "/{issue_id}", produces = "application/json; charset=UTF-8")
     public ResponseEntity<Object> getIssueInfo(
             @PathVariable("issue_id") Integer issueId
     ){

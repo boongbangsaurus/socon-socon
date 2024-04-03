@@ -11,7 +11,7 @@ class StoreRegisterModel {
   double lng;
   String introduction;
   int registrationNumberId;
-  List<BusinessHour> businessHours;
+  List businessHours;
 
   StoreRegisterModel({
     this.name = '',
@@ -37,36 +37,42 @@ class StoreRegisterModel {
     'lng': lng,
     'introduction': introduction,
     'registration_number_id': registrationNumberId,
-    'business_hour': businessHours.map((bh) => bh.toJson()).toList(),
+    'business_hour': businessHours,
+    // 'business_hour': businessHours.map((bh) => bh.toJson()).toList(),
   };
+
+  @override
+  String toString() {
+    return 'StoreRegisterModel{name: $name, category: $category, image: $image, phoneNumber: $phoneNumber, address: $address, lat: $lat, lng: $lng, introduction: $introduction, registrationNumberId: $registrationNumberId, businessHours: $businessHours}';
+  }
 }
 
 class BusinessHour {
   String day;
-  bool isWorking;
-  String? openAt;
-  String? closeAt;
-  bool isBreaktime;
-  String? breaktimeStart;
-  String? breaktimeEnd;
+  bool is_working;
+  String? open_at;
+  String? close_at;
+  bool is_breaktime;
+  String? breaktime_start;
+  String? breaktime_end;
 
   BusinessHour({
     required this.day,
-    this.isWorking = false,
-    this.openAt,
-    this.closeAt,
-    this.isBreaktime = false,
-    this.breaktimeStart,
-    this.breaktimeEnd,
+    this.is_working = false,
+    this.open_at,
+    this.close_at,
+    this.is_breaktime = false,
+    this.breaktime_start,
+    this.breaktime_end,
   });
 
   Map<String, dynamic> toJson() => {
     'day': day,
-    'is_working': isWorking,
-    'open_at': openAt,
-    'close_at': closeAt,
-    'is_breaktime': isBreaktime,
-    'breaktime_start': breaktimeStart,
-    'breaktime_end': breaktimeEnd,
+    'is_working': is_working,
+    'open_at': open_at,
+    'close_at': close_at,
+    'is_breaktime': is_breaktime,
+    'breaktime_start': breaktime_start,
+    'breaktime_end': breaktime_end,
   };
 }

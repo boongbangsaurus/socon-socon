@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class BossProvider extends ChangeNotifier {
   String owner = ""; // 대표자 성함
-  // String registrationNumberId = ""; // 아이디
+  String registrationNumberId = ""; // 아이디
   String registrationNumber = ""; // 사업자 등록 번호
   String registrationAddress = ""; // 등록 주소
   String postCode = '-';
@@ -15,6 +15,7 @@ class BossProvider extends ChangeNotifier {
 
   void setBoss({
     String owner = "",
+    String registrationNumberId = "",
     String registrationNumber = "",
     String registrationAddress = "",
     String postCode = "",
@@ -25,6 +26,7 @@ class BossProvider extends ChangeNotifier {
     // String kakaoLongitude = "",
   }) {
     this.owner = owner;
+    this.registrationNumberId = registrationNumberId;
     this.registrationNumber = registrationNumber;
     this.registrationAddress = registrationAddress;
     this.postCode = postCode;
@@ -36,5 +38,10 @@ class BossProvider extends ChangeNotifier {
 
     // 상태가 변경되었음을 Provider에 알립니다.
     notifyListeners();
+  }
+
+  @override
+  String toString() {
+    return 'BossProvider{owner: $owner, registrationNumberId: $registrationNumberId, registrationNumber: $registrationNumber, registrationAddress: $registrationAddress, postCode: $postCode, address: $address, latitude: $latitude, longitude: $longitude}';
   }
 }

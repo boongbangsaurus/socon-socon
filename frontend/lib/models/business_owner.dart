@@ -16,7 +16,12 @@ class BusinessOwner {
     // required this.startDate,
   });
 
-  // JSON에서 BusinessOwner 객체로 변환
+
+  @override
+  String toString() {
+    return 'BusinessOwner{owner: $owner, registrationNumberId: $registrationNumberId, registrationNumber: $registrationNumber, registrationAddress: $registrationAddress}';
+  } // JSON에서 BusinessOwner 객체로 변환
+
   factory BusinessOwner.fromJson(Map<String, dynamic> json) {
     return BusinessOwner(
       owner: json['owner'] as String,

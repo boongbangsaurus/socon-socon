@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:socon/models/menu.dart';
 import 'package:socon/models/socon_card.dart';
 import 'package:socon/utils/responsive_utils.dart';
@@ -36,21 +37,21 @@ class MenuManagement extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        if (isOwner)
-          Container(
-            width: ResponsiveUtils.getWidthWithPixels(context, 320),
-            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            child: ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            ProductRegister(storeId: storeId)));
-              },
-              child: Text('상품 등록'),
-            ),
-          ),
+        // if (isOwner)
+        //   Container(
+        //     width: ResponsiveUtils.getWidthWithPixels(context, 320),
+        //     padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        //     child: ElevatedButton(
+        //       onPressed: () {
+        //         // Navigator.push(
+        //         //     context,
+        //         //     MaterialPageRoute(
+        //         //         builder: (context) =>
+        //         //             ProductRegister(storeId: storeId)));
+        //       },
+        //       child: Text('상품 등록'),
+        //     ),
+        //   ),
 
         SizedBox(height: 20.0,),
         Expanded(
@@ -68,11 +69,10 @@ class MenuManagement extends StatelessWidget {
             ),
             itemBuilder: (BuildContext context, index) {
               if(index == 0){
-                return AddMenuCard();
+                return AddMenuCard(storeId : storeId,);
               }else{
                 final storeMenu = storeMenuList[index -1];
                 return StoreMenuCard(
-
                   storeId : storeId,
                   id : storeMenu.id,
                   name : storeMenu.name,

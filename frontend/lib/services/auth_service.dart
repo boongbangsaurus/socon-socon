@@ -1,13 +1,15 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:socon/models/user.dart';
+import 'package:socon/services/notifications/firebase_messaging_service.dart';
 
 /// [AuthService]
 /// 백과 API 통신하기 위한 Class
 class AuthService {
   final String baseUrl = 'http://j10c207.p.ssafy.io:8000'; // 통신 url
-
+  FirebaseMessagingService _firebaseMessagingService = FirebaseMessagingService();
   // 회원가입 요청 api
   Future<bool> signUp(User user) async {
     // print(jsonEncode(user.toJson()));
@@ -34,13 +36,21 @@ class AuthService {
 
   // 로그인 요청 api
   Future<List?> signIn(User user) async {
-    print(jsonEncode(user.toJsonSignIn()));
+
+    var fcmToken = await _firebaseMessagingService.getFcmToken();
+    var userData = user.toJsonSignIn();
+    userData["fcmToken"] = fcmToken;
+
+    if (kDebugMode) {
+      print("${userData} 유저 데이터 fcmToken 포함");
+    }
+    
     final res = await http.post(
       Uri.parse('$baseUrl/api/v1/members/auth'),
       headers: <String, String>{
         'Content-Type': 'application/json',
       },
-      body: jsonEncode(user.toJsonSignIn()),
+      body: jsonEncode(userData),
     );
 
     if (res.statusCode == 200) {
