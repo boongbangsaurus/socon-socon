@@ -3,6 +3,7 @@ import 'package:socon/services/mystore_detail_menu_list_service.dart';
 /// [MystoreMenuListViewModel]
 /// 내 점포 상세 조회 (발행 소콘 목록) get
 class MystoreMenuListViewModel {
+
   final MystoreMenuService _mystoreMenuService = MystoreMenuService();
   bool isLoading = false;
 
@@ -31,10 +32,22 @@ class MystoreMenuListViewModel {
 
 
   // 가게 상세조회 detail
-  Future<Map<String, dynamic>> storeDetailInfos(int id) async {
+  // Future<Map<String, dynamic>> storeDetailInfos(int id) async {
+  Future storeDetailInfos(int id) async {
     isLoading = true;
-    Map<String, dynamic>? infos = (await _mystoreMenuService.getStoreDetailInfos(id));
-    // print(infos.runtimeType);
+    // Map<String, dynamic> infos = (await _mystoreMenuService.getStoreDetailInfos(id));
+    var  tmp = (await _mystoreMenuService.getStoreDetailInfos(id));
+    Map<String, dynamic> infos = tmp!;
+    // print('3.141519250');
+
+
+    // print(infos?['store']?? '');
+
+    // print('3.141519250');
+    // print('3.141519250');
+
+    // var k = infos?.map((key, value) => value);
+    // print(k.toString());
     if (infos != null) {
       isLoading = false;
       return infos;

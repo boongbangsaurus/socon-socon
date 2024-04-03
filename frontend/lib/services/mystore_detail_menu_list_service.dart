@@ -89,7 +89,7 @@ class MystoreMenuService {
 
 
   // 가게 상세조회
-  Future<Map<String, dynamic>?> getStoreDetailInfos(int id) async {
+  Future<Map<String, dynamic>> getStoreDetailInfos(int id) async {
     final prefs = await SharedPreferences.getInstance();
     final accessToken = prefs.getString('accessToken');
 
@@ -108,7 +108,7 @@ class MystoreMenuService {
 
       debugPrint(
           '###########내발행소콘 메뉴리스트 res 200 ################################################');
-      print(dataBody);   // [{id: 23, name: 늘솜꼬마김밥2, category: 음식점, image: https://cataas.com/cat, created_at: 2024-03-27}, {id: 24, name: 늘솜꼬마김밥, category: 음식점, image: https://cataas.com/cat, created_at: 2024-03-31}, {id: 28, name: asdfasg, category: 미용, image: , created_at: 2024-04-03}, {id: 29, name: weewe, category: 미용, image: /data/user/0/site.boongbang.socon/cache/5f1b0254-41d1-4ff8-97c6-b627cc3b7b3d/1000000034.jpg, created_at: 2024-04-03}, {id: 30, name: ruyiryi, category: 미용, image: /data/user/0/site.boongbang.socon/cache/5f1b0254-41d1-4ff8-97c6-b627cc3b7b3d/1000000034.jpg, created_at: 2024-04-03}, {id: 31, name: 상호명	, category: 음식점, image: /data/user/0/site.boongbang.socon/cache/4f9413d0-7d01-43c5-b5f5-be2378ffe942/1000000034.jpg, created_at: 2024-04-03}]
+      print(dataBody['store']);   // [{id: 23, name: 늘솜꼬마김밥2, category: 음식점, image: https://cataas.com/cat, created_at: 2024-03-27}, {id: 24, name: 늘솜꼬마김밥, category: 음식점, image: https://cataas.com/cat, created_at: 2024-03-31}, {id: 28, name: asdfasg, category: 미용, image: , created_at: 2024-04-03}, {id: 29, name: weewe, category: 미용, image: /data/user/0/site.boongbang.socon/cache/5f1b0254-41d1-4ff8-97c6-b627cc3b7b3d/1000000034.jpg, created_at: 2024-04-03}, {id: 30, name: ruyiryi, category: 미용, image: /data/user/0/site.boongbang.socon/cache/5f1b0254-41d1-4ff8-97c6-b627cc3b7b3d/1000000034.jpg, created_at: 2024-04-03}, {id: 31, name: 상호명	, category: 음식점, image: /data/user/0/site.boongbang.socon/cache/4f9413d0-7d01-43c5-b5f5-be2378ffe942/1000000034.jpg, created_at: 2024-04-03}]
       debugPrint(
           '내발행소콘 메뉴리스트 res 200 ################################################');
 
@@ -121,7 +121,7 @@ class MystoreMenuService {
       debugPrint(
           '내발행소콘 메뉴리스트 XXXXXXXXXXXXXXXXXres not 200 ################################################');
 
-      return null;
+      return {};
     }
   }
 

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:socon/models/socon_card.dart';
+import 'package:socon/services/mystore_detail_menu_list_service.dart';
 import 'package:socon/services/payment_service.dart';
 import 'package:socon/utils/colors.dart';
 import 'package:socon/utils/fontSizes.dart';
@@ -10,10 +11,13 @@ import 'package:socon/views/atoms/buttons.dart';
 import 'package:socon/views/modules/mystore_menu_card.dart';
 import 'package:socon/views/modules/socon_storesocon.dart';
 import 'package:socon/views/modules/store_detail_top_card.dart';
+import 'package:socon/views/modules/store_top_card.dart';
 import 'package:socon/views/payments/buy_socon_payment.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert'; // JSON 처리를 위한 패키지
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../../viewmodels/mystore_detail_menu_list_view_model.dart       ';
 
 final List<Socon> saleMenuList = [
   Socon.fromJson({
@@ -68,9 +72,9 @@ final List<Socon> saleMenuList = [
 
 
 class StoreDetailScreen extends StatefulWidget {
-  final String pathParameter;
+  final int storeId;
 
-  StoreDetailScreen( this.pathParameter, {super.key});
+  StoreDetailScreen({required this.storeId, super.key});
 
   @override
   State<StoreDetailScreen> createState() => _StoreDetailScreenState();
@@ -79,9 +83,36 @@ class StoreDetailScreen extends StatefulWidget {
 class _StoreDetailScreenState extends State<StoreDetailScreen> {
   // int test = int.parse(widget.pathParameter!);
 
+  // Map<String, dynamic> storeInfos = {};
+  List<dynamic> storeInfos = [];
+
+  void initState() {
+    super.initState();
+    loadMyStores();
+  }
+
+  MystoreMenuService service = MystoreMenuService();
+
+  void loadMyStores() async {
+    // debugPrint('내점포 상세조회 - 발행소콘 목록!');
+    // Map<String, dynamic>? infos = await  viewModel.storeDetailInfos(widget.storeId);
+     var  infos = await service.getStoreDetailInfos(widget.storeId);
+    // print('njnj4444444444444njnjnjnjnjnjnjnjn');
+    // print(infos.runtimeType);  //_Map<String, dynamic>
+    // print('아오 ${infos}');
+    // print('아오 ${infos['issues']}');
+
+    var stores = infos['stores'];
+    var issues = infos['issues'];
+    // print('njnjnj444444444444444444njnjnjnjnjnjnjn');
+    setState(() {
+      storeInfos = issues;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    int storeId = int.parse(widget.pathParameter);
+    // int storeId = int.parse(widget.pathParameter);
     bool isOwner = false;
 
     return Scaffold(
@@ -89,7 +120,7 @@ class _StoreDetailScreenState extends State<StoreDetailScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            StoreDetailTopCard(storeId: storeId, isOwner: isOwner),
+            // StoreTopCard(storeId: widget.storeId, isOwner: isOwner),
             SizedBox( height: 25.0,),
             Text('할인 소콘', style: TextStyle(fontSize: FontSizes.MEDIUM, fontWeight: FontWeight.bold,) ,),
             SizedBox( height: 5.0,),
@@ -107,19 +138,19 @@ class _StoreDetailScreenState extends State<StoreDetailScreen> {
                   crossAxisSpacing: 7, // 수직 Padding
                 ),
                 itemBuilder: (BuildContext context, index) {
-                  final saleMenu = saleMenuList[index];
+                  final saleMenu = storeInfos[index];
                   return StoreSoconLists(
-                    storeId: storeId,
-                    id: saleMenu.id,
-                    is_main: saleMenu.is_main,
-                    name: saleMenu.name,
-                    price: saleMenu.price,
-                    image: saleMenu.image,
-                    issued_quantity: saleMenu.issued_quantity,
-                    left_quantity: saleMenu.left_quantity,
-                    is_discounted: saleMenu.is_discounted,
-                    discounted_price: saleMenu.discounted_price,
-                    createdAt: saleMenu.createdAt,
+                    storeId: widget.storeId,
+                    id: saleMenu['id'],
+                    is_main: saleMenu['is_main'],
+                    name: saleMenu['name'],
+                    price: saleMenu['price'],
+                    image: saleMenu['image'],
+                    issued_quantity: saleMenu['issued_quantity'],
+                    left_quantity: saleMenu['left_quantity'],
+                    is_discounted: saleMenu['is_discounted'],
+                    discounted_price: saleMenu['discounted_price'],
+                    createdAt: saleMenu['createdAt'],
                   );
                 },
               ),
@@ -179,6 +210,7 @@ class _StoreDetailScreenState extends State<StoreDetailScreen> {
     );
   }
 }
+
 // 결제 검증 요청 (콜백함수)
 Future<void> validatePayment(String impUid, String orderUid) async {
   // final String baseUrl = 'http://j10c207.p.ssafy.io:8000'; // 통신 url

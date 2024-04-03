@@ -65,7 +65,7 @@ class _StoreTopCardState extends State<StoreTopCard> {
               children: [
                 Container(
                   // child: Image.network('https://cataas.com/cat',
-                  child: Image.network(storeInfos['image'] ?? {},
+                  child: Image.network(storeInfos['image'] ?? '',
                       fit: BoxFit.cover,
                       height: ResponsiveUtils.getHeightWithPixels(context, 160),
                       width: ResponsiveUtils.getWidthPercent(context, 100)),
@@ -149,7 +149,7 @@ class _StoreTopCardState extends State<StoreTopCard> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                storeInfos['name'] ?? {},
+                storeInfos['name'] ?? '',
                 style: TextStyle(
                   fontSize: ResponsiveUtils.calculateResponsiveFontSize(
                       context, FontSizes.XLARGE),
@@ -157,7 +157,7 @@ class _StoreTopCardState extends State<StoreTopCard> {
                 ),
               ),
               TagIcon(
-                buttonText: storeInfos['category'] ?? {},
+                buttonText: storeInfos['category'] ?? '',
                 buttonColor: Colors.brown,
                 buttonTextColor: AppColors.WHITE,
                 width: ResponsiveUtils.getWidthWithPixels(context, 42),
@@ -167,12 +167,12 @@ class _StoreTopCardState extends State<StoreTopCard> {
           ),
           SizedBox(height: 2),
           Text(
-            storeInfos['address'] ?? {},
+            storeInfos['address'] ?? '',
             style: TextStyle(color: AppColors.GRAY500),
           ),
           SizedBox(height: 10),
           Text(
-            storeInfos['introduction'] ?? {},
+            storeInfos['introduction'] ?? '',
             maxLines: 3,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
@@ -246,7 +246,7 @@ class _StoreTopCardState extends State<StoreTopCard> {
                       ),
                       SizedBox(width: 6),
                       Text(
-                        storeInfos['favorite_count'] ?? {},
+                        storeInfos['favorite_count'] ?? 0,
                         style: TextStyle(
                           color: AppColors.BLACK,
                           fontSize: ResponsiveUtils.calculateResponsiveFontSize(

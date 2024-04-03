@@ -23,8 +23,10 @@ class PaymentVerificationViewModel extends ChangeNotifier {
 
 
   // 상품 상세 데이터 호출 (get)
-  Future<void> getMenuDetail(String storeId, String menuId) async {
-    _productDetailModel = await _paymentService.getMenuDetail(storeId, menuId);
+  Future<void> getMenuDetail(int storeId, int menuId) async {
+    print('테스트중');
+    _productDetailModel = (await _paymentService.getMenuDetail(storeId, menuId)) as ProductDetailModel;
+
     notifyListeners();
   }
 
