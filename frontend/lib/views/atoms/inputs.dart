@@ -53,7 +53,7 @@ class CustomTextFormField {
   }
 
   // 입력 필드 스타일 설정
-  static InputDecoration getDecoration({Widget? suffixs}) {
+  static InputDecoration getDecoration({Widget? suffixs, Text? hintText}) {
     return InputDecoration(
       isDense: true,
       contentPadding: const EdgeInsets.only(bottom: 0.0),
