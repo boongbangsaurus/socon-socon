@@ -24,8 +24,27 @@ import '../views/screens/contact/contact_screen.dart';
 import '../views/screens/nearby_info_screen.dart';
 
 class TabRoutes {
+
+  static String getInitialRouteForIndex(int index) {
+    switch (index) {
+      case 0:
+        return "nearby";
+      case 1:
+        return "sogon";
+      case 2:
+        return "myStores";
+      case 3:
+        return "soconbook";
+      case 4:
+        return "myInfo";
+      default:
+        return "nearby";
+    }
+  }
+
   static RouteBase getNearbyRoute() {
     return GoRoute(
+      name : "nearby",
         path: "/",
         builder: (BuildContext context, GoRouterState state) {
           return NearbyInfoScreen();
@@ -67,6 +86,7 @@ class TabRoutes {
 
   static RouteBase getSogonMainRoute() {
     return GoRoute(
+        name : "sogon",
         path: "/sogon",
         builder: (BuildContext context, GoRouterState state) {
           return SogonMainScreen();
@@ -87,6 +107,7 @@ class TabRoutes {
 
   static RouteBase getSoconBookRoute() {
     return GoRoute(
+        name : "soconbook",
         path: "/soconbook",
         builder: (BuildContext context, GoRouterState state) {
           return SoconBookScreen();
@@ -154,6 +175,7 @@ class TabRoutes {
   // 내점포 Listssss
   static RouteBase getMyStoreListRoute() {
     return GoRoute(
+        name : "myStores",
         path: "/myStores",
         builder: (BuildContext context, GoRouterState state) {
           return const MyStoreListScreen();

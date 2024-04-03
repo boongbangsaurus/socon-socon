@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:socon/utils/colors.dart';
 
 class BottomNavBar extends StatefulWidget {
   final int currentIndex;
@@ -19,6 +20,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
+      backgroundColor: AppColors.WHITE,
       type: BottomNavigationBarType.fixed,
       showSelectedLabels: false,
       showUnselectedLabels: false,

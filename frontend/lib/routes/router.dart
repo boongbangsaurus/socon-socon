@@ -6,9 +6,8 @@ import 'package:socon/routes/tab_routes.dart';
 import 'package:socon/viewmodels/login_state_view_model.dart';
 import 'package:socon/views/atoms/bottom_bar.dart';
 
-
 final bool isOwner = true; // 상태 관리로 처리할 예정
-//
+
 // Future<bool> getIsOwner() async {
 //   SharedPreferences prefs = await SharedPreferences.getInstance();
 //   return prefs.getBool('isOwner') ?? false; // 기본값은 false로 설정
@@ -21,7 +20,7 @@ final RegExp successRegExp = RegExp(r'^/info/.*/success$');
 final RegExp failRegExp = RegExp(r'^/info/.*/fail$');
 const String soconBookDetailRoute = "/soconbook/detail";
 
-final GoRouter router = GoRouter (
+final GoRouter router = GoRouter(
     initialLocation: "/",
     redirect: (BuildContext context, GoRouterState state) {
       final loginState = Provider.of<LoginState>(context, listen: false);
@@ -52,14 +51,7 @@ final GoRouter router = GoRouter (
               StatefulNavigationShell navigationShell) {
             return Scaffold(
               body: navigationShell,
-              // bottomNavigationBar: BottomNavBar(
-              //   currentIndex: navigationShell.currentIndex,
-              //   onTap: (int index) {
-              //     navigationShell.goBranch(index);
-              //   },
-              //   isOwner: isOwner,
-              // ),
-              bottomNavigationBar: _bottomNavBar(navigationShell),
+              bottomNavigationBar: _bottomNavBar(navigationShell, context),
             );
           },
           branches: <StatefulShellBranch>[
@@ -77,7 +69,7 @@ final GoRouter router = GoRouter (
       TabRoutes.getSerachAddressRoute(),
     ]);
 
-Widget _bottomNavBar(StatefulNavigationShell navigationShell) {
+Widget _bottomNavBar(StatefulNavigationShell navigationShell, BuildContext context) {
   final currentRoute = navigationShell.shellRouteContext.routeMatchList;
   final bool showBottomNavBar =
       currentRoute.uri.toString() == infoContactRoute ||
@@ -90,7 +82,7 @@ Widget _bottomNavBar(StatefulNavigationShell navigationShell) {
   debugPrint(
       '################## 현재 uri/showBottomNavBar ##############################');
   // print(currentRoute.uri.toString().runtimeType); // 타입 확인
-  print(currentRoute.uri.toString());
+  print("현재 route ${currentRoute.uri.toString()}");
   print(showBottomNavBar);
   // /info/contact
   debugPrint(
@@ -103,7 +95,10 @@ Widget _bottomNavBar(StatefulNavigationShell navigationShell) {
     return BottomNavBar(
       currentIndex: navigationShell.currentIndex,
       onTap: (int index) {
-        navigationShell.goBranch(index);
+        // print("haha ${navigationShell.shellRouteContext.routerState}");
+        final initialRoute = TabRoutes.getInitialRouteForIndex(index);
+        // navigationShell.goBranch(index);
+        GoRouter.of(context).goNamed(initialRoute);
       },
       isOwner: isOwner,
     );
