@@ -3,7 +3,6 @@ package site.soconsocon.auth.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import site.soconsocon.auth.domain.dto.request.MemberLoginRequestDto;
@@ -24,7 +23,6 @@ import site.soconsocon.auth.repository.RefreshTokenRepository;
 import site.soconsocon.auth.security.MemberDetailService;
 import site.soconsocon.auth.security.MemberDetails;
 import site.soconsocon.auth.util.JwtUtil;
-import site.soconsocon.utils.MessageUtils;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -53,7 +51,7 @@ public class MemberService {
      * @param requestDto
      * @return
      */
-    public Member register(MemberRegisterRequestDto requestDto) throws MemberException {
+    public Member register(MemberRegisterRequestDto requestDto) {
         //이메일 중복체크
         if (!dupleEmailCheck(requestDto.getEmail())) {
             throw new MemberException(ErrorCode.DUPLE_EMAIL); //이미 있는 이메일
@@ -152,7 +150,7 @@ public class MemberService {
     }
 
 
-    public MemberResponseDto getUserInfo(int memberId) throws MemberException {
+    public MemberResponseDto getUserInfo(int memberId) {
         Member member = memberRepository.findMemberById(memberId).orElseThrow(
                 () -> new MemberException(ErrorCode.USER_NOT_FOUND)
         );
@@ -174,7 +172,7 @@ public class MemberService {
         return member;
     }
 
-    public MemberFeignResponse findMemberByMemberId(int memberId) throws MemberException {
+    public MemberFeignResponse findMemberByMemberId(int memberId) {
         Member member = memberRepository.findMemberById(memberId).orElseThrow(
                 () -> new MemberException(ErrorCode.USER_NOT_FOUND)
         );

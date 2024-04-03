@@ -69,7 +69,7 @@ public class MemberController {
      * @param refreshToken
      * @return
      */
-    @PostMapping("/access-token")
+    @GetMapping("/access-token")
     public ResponseEntity<?> generateAccessToken(@RequestBody RefreshToken refreshToken, Authentication authentication) {
         MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
         String accessToken = memberService.createAccessToken(memberDetails, refreshToken.getRefreshToken());
