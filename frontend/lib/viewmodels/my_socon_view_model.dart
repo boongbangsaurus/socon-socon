@@ -14,4 +14,15 @@ class MySoconViewModel extends ChangeNotifier {
       return null; // 예외 발생 시 null 반환
     }
   }
+
+  Future<Map<String, dynamic>?> getSoconInfo(String soconId) async {
+    try {
+      Map<String, dynamic> soconInfo = await _mySoconService.getSoconInfo(soconId);
+      print("[viewModel] 소콘 상세 정보 가져오기 성공 $soconInfo");
+      return soconInfo;
+    } catch (error) {
+      print("[viewModel] 소콘 상세 정보 가져오기 실패 $error");
+      return null; // 예외 발생 시 null 반환
+    }
+  }
 }
