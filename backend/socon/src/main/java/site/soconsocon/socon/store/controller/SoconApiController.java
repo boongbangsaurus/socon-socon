@@ -27,7 +27,7 @@ public class SoconApiController {
     }
 
     // 소콘북 목록 조회
-    @GetMapping("/book")
+    @GetMapping(value = "/book", produces = "application/json; charset=UTF-8")
     public ResponseEntity<Object> soconBook(
             @RequestHeader("X-Authorization-Id") int memberId
     ) {
