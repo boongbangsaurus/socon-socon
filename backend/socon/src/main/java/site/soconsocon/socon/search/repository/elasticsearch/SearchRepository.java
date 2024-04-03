@@ -10,12 +10,5 @@ import site.soconsocon.socon.search.domain.document.StoreDocument;
 
 import java.util.Optional;
 
-public interface SearchRepository extends ElasticsearchRepository<StoreDocument, Integer> {
-    /**
-     * 단위가 명시되지 않은 경우 기본적으로 킬로미터를 단위로 사용(Distance)
-     * @param point
-     * @param distance
-     * @return
-     */
-    Optional<Page<StoreDocument>> findStoreDocumentsByLocationNear(Point point, Distance distance, Pageable pageable);
+public interface SearchRepository extends ElasticsearchRepository<StoreDocument, Integer>, CustomSearchRepository {
 }

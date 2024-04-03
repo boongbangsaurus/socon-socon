@@ -1,52 +1,54 @@
 package site.soconsocon.socon.search.repository.elasticsearch;
 
-import lombok.RequiredArgsConstructor;
-import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
-import org.springframework.data.elasticsearch.core.query.Query;
-import org.springframework.data.geo.Point;
+import org.springframework.data.elasticsearch.core.SearchHit;
+import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.geo.GeoPoint;
+import org.springframework.data.elasticsearch.core.query.Criteria;
+import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
+import org.springframework.data.geo.Point;
+import org.springframework.stereotype.Repository;
 import site.soconsocon.socon.search.domain.document.StoreDocument;
 
-@RequiredArgsConstructor
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Repository
 public class CustomSearchRepositoryImpl implements CustomSearchRepository {
+
+    private final ElasticsearchOperations elasticsearchOperations;
+
+    public CustomSearchRepositoryImpl(ElasticsearchOperations elasticsearchOperations) {
+        this.elasticsearchOperations = elasticsearchOperations;
+    }
+
     @Override
     public Page<StoreDocument> findStoreDocumentsByLocationNear(Point point, Pageable pageable) {
-        // GeoPoint 인스턴스를 생성합니다.
-        GeoPoint geoPoint = new GeoPoint(point.getX(), point.getY());
+        Criteria criteria = new Criteria("location").within(GeoPoint.fromPoint(point), "3km");
+        CriteriaQuery query = new CriteriaQuery(criteria, pageable);
 
-        // 위치 기반 쿼리를 구성합니다.
-        Query searchQuery = new NativeSearchQuery(
-                .withFilter(QueryBuilders.geoDistanceQuery("location")
-                        .point(geoPoint.getLat(), geoPoint.getLon())
-                        .distance("3km"))
-                .withPageable(pageable)
-                .build();
+        SearchHits<StoreDocument> searchHits = elasticsearchOperations.search(query, StoreDocument.class);
+        List<StoreDocument> storeDocuments = searchHits.getSearchHits().stream()
+                .map(SearchHit::getContent)
+                .collect(Collectors.toList());
 
-        // queryForPage 메서드를 사용하여 쿼리를 실행하고 결과를 가져옵니다.
-        return elasticsearchOperations.queryForPage(searchQuery, StoreDocument.class);
+        return new PageImpl<>(storeDocuments, pageable, searchHits.getTotalHits());
     }
     @Override
-    public Page<StoreDocument> findStoreDocumentsByLocationNearAndContent(Point point,String type,String content, Pageable pageable) {
-        // GeoPoint 인스턴스를 생성합니다.
-        GeoPoint geoPoint = new GeoPoint(point.getX(), point.getY());
+    public Page<StoreDocument> findStoreDocumentsByLocationNearAndContent(Point point, String type, String content, Pageable pageable) {
+        Criteria criteria = new Criteria("location").within(GeoPoint.fromPoint(point), "3km")
+                .and(new Criteria(type).is(content));
 
-        // 위치 기반 쿼리를 구성합니다.
-        NativeSearchQuery searchQuery = new NativeSearchQueryBuilder()
-                .withFilter(QueryBuilders
-                        .geoDistanceQuery("location")
-                            .point(geoPoint.getLat(), geoPoint.getLon())
-                            .distance("3km")
-                )
-                .withQuery(QueryBuilders.matchQuery(type, content))
-                .withPageable(pageable)
-                .build();
+        CriteriaQuery query = new CriteriaQuery(criteria, pageable);
 
-        // queryForPage 메서드를 사용하여 쿼리를 실행하고 결과를 가져옵니다.
-        return elasticsearchOperations.queryForPage(searchQuery, StoreDocument.class);
+        SearchHits<StoreDocument> searchHits = elasticsearchOperations.search(query, StoreDocument.class);
+        List<StoreDocument> storeDocuments = searchHits.getSearchHits().stream()
+                .map(SearchHit::getContent)
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(storeDocuments, pageable, searchHits.getTotalHits());
     }
 }

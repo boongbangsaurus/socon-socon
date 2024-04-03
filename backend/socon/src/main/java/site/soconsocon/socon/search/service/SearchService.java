@@ -50,21 +50,29 @@ public class SearchService {
 
         Pageable pageable = PageRequest.of(page, size, sort);
         Page<StoreDocument> foundStores = null;
-
-        // create set for field isLike
-        List<FavStore> favStoreList = favStoreRepository.findByMemberId(memberId);
-        Set<Integer> favStoreIdList = favStoreList != null ? favStoreList.stream()
-                .map(FavStore::getStoreId)
-                .collect(Collectors.toSet()) : Collections.emptySet();
-
-        if(searchRequest.getSearchType() == SearchType.address){
-            foundStores = searchRepository.findStoreDocumentsByLocationNear(location, pageable);
+        List<FavStore> favStoreList =null;
+        Set<Integer> favStoreIdList = null;
+        try {
+            // create set for field isLike
+            favStoreList = favStoreRepository.findByMemberId(memberId);
+            favStoreIdList = favStoreList != null ? favStoreList.stream()
+                    .map(FavStore::getStoreId)
+                    .collect(Collectors.toSet()) : Collections.emptySet();
+        } catch (RuntimeException e){
+            throw new SearchException(SearchErrorCode.SEARCH_FAIL);
         }
-        else if(searchRequest.getSearchType() == SearchType.category ||searchRequest.getSearchType() == SearchType.name){
-            foundStores = searchRepository.findStoreDocumentsByLocationNearAndContent(location, searchRequest.getSearchType().name(), searchRequest.getContent(), pageable);
-        }else {
-            log.error(SearchType.address.toString());
-            throw new SearchException(SearchErrorCode.INVALID_FORMAT);
+        try {
+            if(searchRequest.getSearchType() == SearchType.address){
+                foundStores = searchRepository.findStoreDocumentsByLocationNear(location, pageable);
+            }
+            else if(searchRequest.getSearchType() == SearchType.category ||searchRequest.getSearchType() == SearchType.name){
+                foundStores = searchRepository.findStoreDocumentsByLocationNearAndContent(location, searchRequest.getSearchType().name(), searchRequest.getContent(), pageable);
+            }else {
+                log.error(SearchType.address.toString());
+                throw new SearchException(SearchErrorCode.INVALID_FORMAT);
+            }
+        }catch (RuntimeException e){
+            throw new SearchException(SearchErrorCode.SEARCH_FAIL);
         }
         // generate FoundStoreInfo DTO
         for (StoreDocument storeDocument:foundStores) {
