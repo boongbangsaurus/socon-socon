@@ -18,29 +18,11 @@ class MyStoreListScreen extends StatefulWidget {
 }
 
 class _MyStoreListScreen extends State<MyStoreListScreen> {
-  List<dynamic> myStores = [];
 
-  @override
-  void initState() {
-    super.initState();
-    loadMyStores();
-  }
-
-  void loadMyStores() async {
-    debugPrint('내 점포리스트 요청중!');
-    MystoreListsService service = MystoreListsService();
-    var stores = await service.getMystoreLists();
-    // debugPrint(stores as String?);
-    setState(() {
-      myStores = stores;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
-    print('8888888888888888888888888');
-    print(myStores);
-    print('8888888888888888888888888');
+
 
     return Scaffold(
         appBar: AppBar(

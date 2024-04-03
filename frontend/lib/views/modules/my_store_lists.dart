@@ -14,6 +14,7 @@ import 'package:socon/views/atoms/image_loader.dart';
 import 'package:socon/models/mystore_lists_model.dart';
 
 class MyStoreLists extends StatefulWidget {
+
   const MyStoreLists({super.key});
 
   @override
@@ -60,17 +61,44 @@ class _MyStoreListsState extends State<MyStoreLists> {
  }
 }
 
-class StoreLists extends StatelessWidget {
+class StoreLists extends StatefulWidget {
   const StoreLists({super.key});
 
   @override
+  State<StoreLists> createState() => _StoreListsState();
+}
+
+class _StoreListsState extends State<StoreLists> {
+
+  List<dynamic> myStores = [];
+
+  @override
+  void initState() {
+    super.initState();
+    loadMyStores();
+  }
+
+  void loadMyStores() async {
+    debugPrint('내 점포리스트 요청중!');
+    MystoreListsService service = MystoreListsService();
+    var stores = await service.getMystoreLists();
+    // debugPrint(stores as String?);
+    setState(() {
+      myStores = stores;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    print('8888888888888888888888888');
+    print(myStores);
+    print('8888888888888888888888888');
     return Expanded(
       child: ListView.builder(
         shrinkWrap: true,
-        itemCount: stores.length,
+        itemCount: myStores.length,
         itemBuilder: (context, index) {
-          final store = stores[index];
+          final store = myStores[index];
           return InkWell(
             onTap: () {
               // Navigator.push(context, MaterialPageRoute(builder: (context) => StoreDetailTopCard(storeId : store.storeId)));

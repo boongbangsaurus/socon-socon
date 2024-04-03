@@ -2,6 +2,12 @@ import 'dart:convert';
 
 class MyStoreListModel {
   final int id;
+
+  @override
+  String toString() {
+    return 'MyStoreListModel{id: $id, name: $name, category: $category, image: $image, created_at: $created_at}';
+  }
+
   final String name;
   final String category;
   final String image;
@@ -20,8 +26,8 @@ class MyStoreListModel {
     id: json['id'],
     name: json['name'],
     category: json['category'],
-    image: json['image'],
-    created_at: json['created_at'] != null ? DateTime.parse(json['created_at']) : null,
+    image: json['image'] ?? '',
+    created_at: DateTime.parse(json['created_at'])
   );
 
 }
