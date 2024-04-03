@@ -165,7 +165,7 @@ public class MemberService {
         return memberResponseDto;
     }
 
-    public Member getMemberByEmail(String email) throws MemberException {
+    public Member getMemberByEmail(String email) {
         Member member = memberRepository.findMemberByEmail(email).orElseThrow(
                 () -> new MemberException(ErrorCode.USER_NOT_FOUND)
         );
