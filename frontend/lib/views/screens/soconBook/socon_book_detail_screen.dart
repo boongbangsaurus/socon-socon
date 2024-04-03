@@ -111,10 +111,17 @@ class SoconBookDetailScreen extends StatelessWidget {
   MySoconViewModel _mySoconViewModel = MySoconViewModel();
 
   Future<Map<String, dynamic>?> getSoconInfo() async {
-    await Future.delayed(Duration(seconds: 2));
-    Map<String, dynamic>? soconInfo =
-        await _mySoconViewModel.getSoconInfo(pathParameter!);
-    print("getSoconInfo $soconInfo");
-    return soconInfo;
+    try {
+      await Future.delayed(Duration(seconds: 2));
+      if (pathParameter == null) {
+        throw Exception('Path parameter is null');
+      }
+      Map<String, dynamic>? soconInfo = await _mySoconViewModel.getSoconInfo(pathParameter!);
+      print("getSoconInfo result: $soconInfo");
+      return soconInfo;
+    } catch (e) {
+      print("Error fetching soconInfo: $e");
+      return null;
+    }
   }
 }

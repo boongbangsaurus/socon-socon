@@ -6,6 +6,7 @@ import 'package:background_locator_2/background_locator.dart';
 import 'package:background_locator_2/settings/android_settings.dart';
 
 import 'package:socon/viewmodels/menu.dart';
+import 'package:socon/viewmodels/my_socon_view_model.dart';
 import 'package:socon/viewmodels/mystore_detail_menu_list_view_model.dart%20%20%20%20%20%20%20';
 import 'package:socon/views/modules/mystore_menu_management.dart';
 
@@ -227,6 +228,7 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (context) => PaymentVerificationViewModel()),
         ChangeNotifierProvider(create: (_) => BossProvider()),
         ChangeNotifierProvider(create: (context) => StoreRegisterViewModel()),
+        ChangeNotifierProvider(create: (_) => MySoconViewModel()),
       ],
       child: MaterialApp.router(
         routerConfig: router,
