@@ -106,10 +106,10 @@ class SoconBookDetailScreen extends StatelessWidget {
   }
 
   MySoconViewModel _mySoconViewModel = MySoconViewModel();
-  Future<String> getSoconInfo() async {
 
-    await Future.delayed(Duration(seconds: 2), () => _mySoconViewModel.getSoconInfo(pathParameter!));
+  Future<String> getSoconInfo() async {
+    await Future.delayed(Duration(seconds: 2),
+        () => _mySoconViewModel.getSoconInfo(pathParameter!));
     return 'Data Loaded';
   }
 }
-
