@@ -10,6 +10,6 @@ import site.soconsocon.payment.service.feign.request.AddMySoconRequest;
 public interface SoconFeignClient {
 
     //소콘북 저장
-    @PostMapping("/socon")
+    @PostMapping(value = "/socon", produces = "application/json", consumes = "application/json")
     ResponseEntity<Object> saveMySocon(@RequestBody AddMySoconRequest addMySoconRequest);
 }

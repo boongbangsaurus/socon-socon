@@ -7,6 +7,8 @@ import 'package:background_locator_2/settings/android_settings.dart';
 
 import 'dart:async';
 
+import 'package:uni_links/uni_links.dart';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +16,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 
 import 'package:socon/firebase_options.dart';
+import 'package:socon/provider/Boss_provider.dart';
 import 'package:socon/routes/router.dart';
 import 'package:socon/services/notifications/background_location_service.dart';
 import 'package:socon/services/notifications/background_message_handler.dart';
@@ -30,7 +33,9 @@ import 'package:socon/viewmodels/payment_verification_view_model.dart';
 import 'package:socon/viewmodels/store_register_view_model.dart';
 
 import 'package:socon/viewmodels/notification_view_model.dart';
+import 'package:socon/views/screens/bossVerification/boss_verification.dart';
 
+import 'provider/Address.dart';
 import 'models/location.dart';
 
 
@@ -39,6 +44,7 @@ import 'package:google_maps_flutter_platform_interface/google_maps_flutter_platf
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // runApp을 호출하기 전 위젯 바인딩 초기화
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -53,9 +59,17 @@ void main() async {
   print("fcmToken: $fcmToken");
   await FirebaseMessaging.instance.setAutoInitEnabled(true);
 
-
   // 위치 권한 요청
   await getPermissionHandler();
+
+  uriLinkStream.listen((Uri? uri) {
+    print("딥링크 구현 $uri");
+    router.go("/info");
+  }, onError: (Object error) {
+    print("딥링크 이동 $error");
+  }, onDone: (){
+    print("딥링크 이동 완료");
+  });
 
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
     // foreground에서 fcm 메세지 처리
@@ -107,7 +121,7 @@ class _MyAppState extends State<MyApp> {
 
     initPlatformState();
 
-    _onStart();
+    // _onStart();  // 잠시 주석 처리
   }
 
   @override
@@ -199,6 +213,7 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (context) => LoginState()),
         ChangeNotifierProvider(create: (context) => PaymentVerificationViewModel()),
         ChangeNotifierProvider(create: (context) => StoreRegisterViewModel()),
+        ChangeNotifierProvider(create: (_) => BossProvider()),
       ],
       child: MaterialApp.router(
         routerConfig: router,
