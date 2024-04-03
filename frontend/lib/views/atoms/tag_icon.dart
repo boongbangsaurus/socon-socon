@@ -25,7 +25,7 @@ class TagIcon extends StatelessWidget {
   factory TagIcon.NEW() {
     return TagIcon(
       buttonText: 'NEW',
-      buttonColor: AppColors.WARNING25,
+      buttonColor: AppColors.YELLOW,
       buttonTextColor: AppColors.WHITE,
       fontSize: 8,
     );
