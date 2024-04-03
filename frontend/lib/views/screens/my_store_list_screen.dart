@@ -7,6 +7,7 @@ import 'package:socon/views/atoms/tab.dart';
 import 'package:socon/views/modules/my_store_lists.dart';
 import 'package:socon/views/modules/my_store_analysis.dart';
 import 'package:socon/viewmodels/menu.dart';
+import 'package:socon/views/screens/stores/store_detail.dart';
 
 class MyStoreListScreen extends StatefulWidget {
   const MyStoreListScreen({super.key});
@@ -35,7 +36,8 @@ class _MyStoreListScreen extends State<MyStoreListScreen> {
             child: Container(
               child: TabBarScreen(marginTop: 0, tabHeight: 600, contents: {
                 '내 점포': MyStoreLists(),
-                '점포 분석': MyStoreAnalysis(),
+                // '점포 분석': MyStoreAnalysis(),
+                '점포 분석': StoreDetailScreen(storeId : 23),
               }),
             ),
           ),

@@ -7,6 +7,7 @@ import 'package:socon/views/screens/contact/contact_fail_screen.dart';
 import 'package:socon/views/screens/contact/contact_sucess_screen.dart';
 import 'package:socon/views/screens/kpostal_screen.dart';
 import 'package:socon/views/screens/myStore/publish_socon_screen.dart';
+import 'package:socon/views/screens/myStore/search_address.dart';
 import 'package:socon/views/screens/myStore/store_detail_screen.dart';
 import 'package:socon/views/screens/myStore/store_product_register.dart';
 import 'package:socon/views/screens/my_info_screen.dart';
@@ -53,30 +54,31 @@ class TabRoutes {
           return NearbyInfoScreen();
         },
         routes: [
-          getStoreDetailRoute(),
+          // getStoreDetailRoute(),
         ]);
   }
 
-  static RouteBase getStoreDetailRoute() {
-    return GoRoute(
-        // path: "/",
-        path: "detail/:storeId",
-        builder: (BuildContext context, GoRouterState state) {
-          return StoreDetailScreen(state.pathParameters['storeId']);
-        },
-        routes: [
-          getBuyMenuDetailRoute(),
-        ]);
-  }
+  // static RouteBase getStoreDetailRoute() {
+  //   return GoRoute(
+  //       // path: "/",
+  //       path: "detail/:storeId",
+  //       builder: (BuildContext context, GoRouterState state) {
+  //         return StoreDetailScreen(state.pathParameters['storeId']!);
+  //       },
+  //       routes: [
+  //         getBuyMenuDetailRoute(),
+  //       ]);
+  // }
 
-  static RouteBase getBuyMenuDetailRoute() {
-    return GoRoute(
-        path: "menu/:menuId",
-        builder: (BuildContext context, GoRouterState state) {
-          return BuyMenuDetailScreen(state.pathParameters['menuId']!,
-              state.pathParameters['storeId']!);
-        });
-  }
+  // 점포 상세조회 - 물건 상세조회
+  // static RouteBase getBuyMenuDetailRoute() {
+  //   return GoRoute(
+  //       path: "menu/:menuId",
+  //       builder: (BuildContext context, GoRouterState state) {
+  //         return BuyMenuDetailScreen(state.pathParameters['menuId']!,
+  //             state.pathParameters['storeId']!);
+  //       });
+  // }
 
   // static RouteBase getNearbyRoute() {
   //   return GoRoute(
@@ -219,7 +221,7 @@ class TabRoutes {
         },
         routes: [
           getMenuDetailRoute(),
-          getProductRegisterRoute(),
+          // getProductRegisterRoute(),
         ]);
   }
 
@@ -233,15 +235,15 @@ class TabRoutes {
         });
   }
 
-
-  static RouteBase getProductRegisterRoute() {
-    return GoRoute(
-        path: "register",
-        builder: (BuildContext context, GoRouterState state) {
-          return ProductRegister(state.pathParameters['storeId']!,);
-        });
-  }
-
+  //
+  // static RouteBase getProductRegisterRoute() {
+  //   return GoRoute(
+  //       path: "register",
+  //       builder: (BuildContext context, GoRouterState state) {
+  //         return ProductRegister(state.pathParameters['storeId']!,);
+  //       });
+  // }
+  //
 
 
   static RouteBase getBossVerification() {
@@ -291,4 +293,13 @@ class TabRoutes {
           return KpostalScreen();
         });
   }
+
+  static RouteBase getAddressRoute() {
+    return GoRoute(
+        path: "/address",
+        builder: (BuildContext context, GoRouterState state) {
+          return SearchAddress();
+        });
+  }
+
 }

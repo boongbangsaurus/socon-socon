@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:socon/models/product_detail_model.dart';
 
@@ -13,11 +14,15 @@ class PaymentService {
 
   // 상품 주문 요청
   Future<String> sendPaymentRequest(Map<String, dynamic> orderData) async {
+    final prefs = await SharedPreferences.getInstance();
+    final accessToken = prefs.getString('accessToken');
+
     final response = await http.post(
       Uri.parse('$baseUrl/api/v1/orders'),
-      // headers: <String, String>{
-      //   'Content-Type': 'application/json; charset=UTF-8',
-      // },
+      headers: <String, String>{
+        'Authorization': 'Bearer $accessToken',
+        'Content-Type': 'application/json',
+      },
       body: jsonEncode(orderData),
     );
 
@@ -35,21 +40,37 @@ class PaymentService {
 
 
   // 상품 상세조회
-  Future<ProductDetailModel> getMenuDetail(String storeId, String menuId) async {
+  Future<Map<String, dynamic>> getMenuDetail(int storeId, int menuId) async {
+    final prefs = await SharedPreferences.getInstance();
+    final accessToken = prefs.getString('accessToken');
+    print('get 요청 전전전전전');
     final response = await http.get(
-      Uri.parse('$baseUrl/api/v1/stores/{$storeId}/items/{$menuId}'),
+      Uri.parse('$baseUrl/api/v1/stores/$storeId/items/$menuId'),
+      headers: <String, String>{
+        'Authorization': 'Bearer $accessToken',
+        'Content-Type': 'application/json',
+      },
     );
+    print('get 요청 후후후후후후후');
 
     if (response.statusCode == 200) {
       debugPrint(
           '상품 상세페이지 조회 성공 ################################################');
-      return ProductDetailModel.fromJson(json.decode(response.body));
+      // print(utf8.decode(response.bodyBytes));
+      final String body = utf8.decode(response.bodyBytes);
+      final decodedBody = jsonDecode(body);
+      final Map<String, dynamic> dataBody = decodedBody['data_body'];
+      print(dataBody);
+      print("?????????????????????????");
+      // print(GetProductDetailModel.fromJson(dataBody));
+      print("?????????????????????????");
+      return dataBody;
+      // return GetProductDetailModel.fromJson(dataBody);
+      // return ProductDetailModel.fromJson(json.decode(response.body));
+
 
     } else {
       throw Exception('상세 조회 실패');
     }
   }
-
-
-
 }

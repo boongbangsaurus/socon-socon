@@ -14,13 +14,16 @@ import 'package:socon/views/atoms/buttons.dart';
 import 'package:socon/views/atoms/input_form.dart';
 import 'package:socon/views/screens/myStore/product_register_toast.dart';
 import 'package:socon/viewmodels/store_product_view_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 
 
 class ProductRegister extends StatefulWidget {
-  final String? storeId;
+  // final String? storeId;
+  final int storeId;
 
-  ProductRegister(this.storeId, {super.key});
+  ProductRegister({super.key, required this.storeId});
 
   @override
   State<ProductRegister> createState() => _ProductRegisterState();
@@ -53,6 +56,9 @@ class _ProductRegisterState extends State<ProductRegister> {
 
 
   Future<void> fetchData() async {
+    final String baseUrl = 'http://j10c207.p.ssafy.io:8000'; // 통신 url
+    final prefs = await SharedPreferences.getInstance();
+    final accessToken = prefs.getString('accessToken');
     try {
       String base64Image1 = "";
 
@@ -63,10 +69,15 @@ class _ProductRegisterState extends State<ProductRegister> {
         base64Image1 = base64Encode(bytes); //불러온 byte를 base64 압축하여 base64Image1 변수에 저장 만약 null이였다면 가장 위에 선언된것처럼 공백으로 처리됨
       }
 
-      final response = await http.post(Uri.parse('http://j10c207.p.ssafy.io:8000/api/v1/stores/${widget.storeId}/items'),
+      final response = await http.post(Uri.parse('${baseUrl}/api/v1/stores/${widget.storeId}/items'),
+          headers: <String, String>{
+            'Content-Type': 'application/json',
+            'authorization': 'Bearer $accessToken',
+          },
           body: json.encode({
             "name" : menuName,
-            "image" : base64Image1,
+            "image" : "https://cataas.com/cat",
+            // "image" : base64Image1,
             "price" : productPrice,
             "summary" : summary,
             "description" : description,
@@ -254,16 +265,15 @@ class _ProductRegisterState extends State<ProductRegister> {
               text: '상품 등록',
               color: 'yellow',
               onPressed: () => {
-                fetchData(),
 
-                // if(isInputValid()){
-                //   fetchData(),
-                //   Navigator.push( context,
-                //     MaterialPageRoute(builder: (context) => RegisterToastMsg(storeId: widget.storeId)),
-                //   ),
-                // } else {
-                //   ToastUtil.showCustomToast(context, 'filedAlert')
-                // },
+                if(isInputValid()){
+                  fetchData(),
+                  Navigator.push( context,
+                    MaterialPageRoute(builder: (context) => RegisterToastMsg(storeId: widget.storeId)),
+                  ),
+                } else {
+                  ToastUtil.showCustomToast(context, 'filedAlert')
+                },
               }
             ),
           ],

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:socon/models/product_detail_model.dart';
+import 'package:socon/services/payment_service.dart';
 import 'package:socon/utils/colors.dart';
 import 'package:socon/utils/fontSizes.dart';
 import 'package:socon/utils/icons.dart';
@@ -10,26 +11,13 @@ import 'package:socon/utils/responsive_utils.dart';
 import 'package:socon/views/atoms/bottom_sheet.dart';
 import 'package:socon/views/atoms/buttons.dart';
 import 'package:socon/views/payments/buy_socon_payment.dart';
-
+import 'package:http/http.dart' as http;
+import 'dart:convert'; // JSON 처리를 위한 패키지
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../viewmodels/payment_verification_view_model.dart';
 
 
 
-// 가게 -> 상품 상세보기
-class BuyMenuDetailScreen extends StatefulWidget {
-  final String storeId;
-  final String menuId;
-  var data = '';
-
-
-  BuyMenuDetailScreen(this.storeId, this.menuId, {super.key});
-
-  @override
-  State<BuyMenuDetailScreen> createState() => _BuyMenuDetailScreenState();
-}
-
-class _BuyMenuDetailScreenState extends State<BuyMenuDetailScreen> {
-  @override
 
   final List<ProductDetailModel> menuDetail = [
     ProductDetailModel.fromJson({
@@ -51,6 +39,49 @@ class _BuyMenuDetailScreenState extends State<BuyMenuDetailScreen> {
     //
     // }),
   ];
+
+
+
+// 가게 -> 상품 상세보기
+class BuyMenuDetailScreen extends StatefulWidget {
+  // final String storeId;
+  // final String menuId;
+  final int storeId;
+  final int menuId;
+
+  var data = '';
+
+
+  BuyMenuDetailScreen(this.storeId, this.menuId, {super.key});
+
+  @override
+  State<BuyMenuDetailScreen> createState() => _BuyMenuDetailScreenState();
+}
+
+class _BuyMenuDetailScreenState extends State<BuyMenuDetailScreen> {
+
+  Map<String, dynamic> myMenu = {};
+
+  @override
+  void initState() {
+    super.initState();
+    loadMyStores();
+  }
+
+  void loadMyStores() async {
+    debugPrint('내 점포리스트 요청중!');
+    PaymentService service = PaymentService();
+    var menus = await service.getMenuDetail(widget.storeId, widget.menuId);
+    print('pppppppppppppppppp');
+    print('pppppppppppppppppp');
+    setState(() {
+      myMenu = menus;
+    print(myMenu);
+    });
+  }
+
+
+  @override
 
   final Widget _header = Container(
       alignment: Alignment.center,
@@ -75,197 +106,163 @@ class _BuyMenuDetailScreenState extends State<BuyMenuDetailScreen> {
       ));
 
 
-
-
+  int count = 1;
 
   @override
   Widget build(BuildContext context) {
     // final
     final Size _size = MediaQuery.of(context).size;
-    var count = 1;
-    var total_price = count * menuDetail[0].price;
-    
+    var total_price = count * myMenu['price'];
 
-    return FutureBuilder(
-        future: Provider.of<PaymentVerificationViewModel>(context, listen: false).getMenuDetail(widget.storeId, widget.menuId),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            if (snapshot.hasError) {
-              return Center(child: Text('오류가 발생했습니다.'),);
-            }
-            return Consumer<PaymentVerificationViewModel>(
-              builder: (context, viewModel, child) {
-                final productDetailModel = viewModel.productDetailModel;
-                return
-                  SafeArea(
-                    child: Column(
-                      children: [
-                        Expanded(
-                            child:SingleChildScrollView(
-                              child: Container(
-                                color: AppColors.WHITE,
-                                child: Stack(
-                                  children: [
-                                    Container(
-                                      child: Image.network(menuDetail[0].image ?? '',
-                                          fit: BoxFit.cover,
-                                          height: ResponsiveUtils.getHeightWithPixels(context, 160),
-                                          width: ResponsiveUtils.getWidthPercent(context, 100)),
-                                    ),
-                                    shortStoreInfoWithBar(context),
-                                    Container(
-                                      height: _size.height,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            )
-                        ),
-                        Positioned(
-                          left: 0.0,
-                          right: 0.0,
-                          bottom: 0.0,
-                          child: CustomBottomSheet(
+    return
+      SafeArea(
+          child: Column(
+            children: [
+              Expanded(
+                  child:SingleChildScrollView(
+                    child: Container(
+                      color: AppColors.WHITE,
+                      child: Stack(
+                        children: [
+                          Container(
+                            child: Image.network(myMenu['store_image'] ?? '',
+                                fit: BoxFit.cover,
+                                height: ResponsiveUtils.getHeightWithPixels(context, 160),
+                                width: ResponsiveUtils.getWidthPercent(context, 100)),
+                          ),
+                          shortStoreInfoWithBar(context),
+                          Container(
+                            height: _size.height,
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+              ),
+              Positioned(
+                left: 0.0,
+                right: 0.0,
+                bottom: 0.0,
+                child: CustomBottomSheet(
 
-                            // maxHeight: _size.height * 0.745,
-                            maxHeight: _size.height * 0.245,
-                            headerHeight: 50.0,
-                            header: this._header,
-                            borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(25.0),
-                                topRight: Radius.circular(25.0)),
-                            boxShadow: <BoxShadow>[
-                              BoxShadow(
-                                  color: Colors.black26,
-                                  blurRadius: 10.0,
-                                  spreadRadius: -1.0,
-                                  offset: Offset(0.0, 3.0)),
-                              BoxShadow(
-                                  color: Colors.black26,
-                                  blurRadius: 4.0,
-                                  spreadRadius: -1.0,
-                                  offset: Offset(0.0, 0.0)),
-                            ],
+                  // maxHeight: _size.height * 0.745,
+                  maxHeight: _size.height * 0.245,
+                  headerHeight: 50.0,
+                  header: this._header,
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(25.0),
+                      topRight: Radius.circular(25.0)),
+                  boxShadow: <BoxShadow>[
+                    BoxShadow(
+                        color: Colors.black26,
+                        blurRadius: 10.0,
+                        spreadRadius: -1.0,
+                        offset: Offset(0.0, 3.0)),
+                    BoxShadow(
+                        color: Colors.black26,
+                        blurRadius: 4.0,
+                        spreadRadius: -1.0,
+                        offset: Offset(0.0, 0.0)),
+                  ],
+                  children: [
+
+                    Container(
+                      margin: EdgeInsets.symmetric(horizontal: 40),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-
-                              Container(
-                                margin: EdgeInsets.symmetric(horizontal: 20),
-                                child: Row(
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        ElevatedButton(
-                                          onPressed: (){
-                                            if(count > 0){
-                                              count -= 1;
-                                            }
-                                          },
-                                          child: Icon(Icons.remove, color: Colors.white, ),
-                                        ),
-                                        Container(
-                                          decoration: BoxDecoration(
-                                            color: Colors.orange,
-                                            shape: BoxShape.circle,
-                                          ),
-                                          child: IconButton(
-                                            onPressed: (){
-                                              if(count > 0){
-                                                count -= 1;
-                                              }
-                                            },
-                                            icon: Icon(Icons.remove, color: Colors.white, ),
-                                          ),
-                                        ),
-
-                                        SizedBox(width: 10),
-                                        Text(count.toString()),
-                                        SizedBox(width: 10),
-                                        // '+' 아이콘 버튼
-                                        GestureDetector(
-                                          onTap: () {
-                                            setState(() {
-                                              count += 1;
-                                            });
-                                          },
-                                          child: Container(
-                                            padding: EdgeInsets.all( 0),
-                                            decoration: BoxDecoration(
-                                              color: Colors.orange,
-                                              shape: BoxShape.circle,
-                                            ),
-                                            child: Icon(
-                                              Icons.add,
-                                              color: Colors.white,
-                                              size: 15,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    Row(children: [Text('총 $total_price원')],),
-                                  ],
+                              // '+' 아이콘 버튼
+                              GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    if (count > 1 ){
+                                      count--;
+                                    }
+                                  });
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    color: Colors.orange,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    Icons.remove,
+                                    color: Colors.white,
+                                    size: 15,
+                                  ),
                                 ),
                               ),
-                              SizedBox(
-                                height: 40,
-                              ),
 
-                              // 결제 상세 페이지 이동
-                              Container(
-                                margin: EdgeInsets.symmetric(horizontal: 20),
-                                child: BasicButton(
-                                  onPressed: () async {
-                                    try {
-                                      var orderData = {
-                                        "itemName": productDetailModel.name,
-                                        "price": productDetailModel.price,
-                                        "quantity": 1,
-                                        "issueId": productDetailModel.id,
-                                      };
+                              SizedBox(width: 10),
+                              Text('$count', style: TextStyle(fontSize: 20),),
+                              SizedBox(width: 10),
 
-                                      // await viewModel.sendPaymentRequest(orderData);
-                                      Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                            builder: (context) => Payment(),
-                                            settings: RouteSettings(arguments: {
-                                              // 'orderUid': viewModel.orderUid,
-                                              'orderUid': 'ac88940a-8b9b-4e5b-95f8-6782f970bb65',
-                                              'issueId': 1,
-                                              'name': "열무국수",
-                                              'amount': 300,
-                                              'buyerName': '김온유'
-                                            }
-                                          )
-                                        ),
-                                      );
-                                    //   Navigator.push(
-                                    //     context,
-                                    //     MaterialPageRoute(builder: (context) => PaymentPage(orderUid: viewModel.orderUid)),
-                                    //   );
-                                    } catch (error) {
-                                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("결제 실패: $error")));
-                                    }
-
-                                  },
-                                  text: '구매하기',
+                              GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    count++;
+                                  });
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    color: Colors.orange,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    Icons.add,
+                                    color: Colors.white,
+                                    size: 15,
+                                  ),
                                 ),
                               ),
                             ],
                           ),
-                        ),
-                      ],
-                    )
-                );
-              },
-            );
-          } else {
-            // 로딩중 페이지
-            return Center(child: CircularProgressIndicator(),);
-          }
-        }
-     );
-    // bottomNavigationBar: null,
+                          Row(children: [Text('총 $total_price원', style: TextStyle(fontSize: 20),)],),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      height: 40,
+                    ),
+
+                    // 결제 상세 페이지 이동
+                    Container(
+                      margin: EdgeInsets.symmetric(horizontal: 20),
+                      child: BasicButton(
+                        onPressed: () async {
+                          var orderUid = await savePayment(myMenu['name'], myMenu['price'], count, widget.menuId);
+                          print(orderUid);
+
+                          await validatePayment('imp01516875', orderUid);
+                          Navigator.of(context).push(
+                              MaterialPageRoute(
+                                  builder: (context) => Payment(),
+                                  settings: RouteSettings(arguments: {
+                                    'orderUid': orderUid,
+                                    'issueId': widget.menuId,
+                                    'name': myMenu['name'],
+                                    'amount': myMenu['price'] * count,
+                                    'buyerName': '김온유'
+                                  }
+                                  )
+                              ),
+                            );
+
+                        },
+                        text: '구매하기',
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          )
+      );
   }
 
   Widget shortStoreInfoWithBar(BuildContext context) {
@@ -332,11 +329,12 @@ class _BuyMenuDetailScreenState extends State<BuyMenuDetailScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(menuDetail[0].name,
-              style: TextStyle(fontSize: FontSizes.XLARGE, fontWeight: FontWeight.bold),),
-              Text(menuDetail[0].summary ?? '',
+              Text(myMenu['name'],
+              style: TextStyle(fontSize: FontSizes.XXLARGE, fontWeight: FontWeight.bold),),
+
+              Text(myMenu['summary'],
               style: TextStyle(fontWeight: FontWeight.bold),),
-              SizedBox(height: 10,),
+              SizedBox(height: 20,),
               // Column(
               //   children: [
               //     TagIcon.NEW(),
@@ -347,7 +345,7 @@ class _BuyMenuDetailScreenState extends State<BuyMenuDetailScreen> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20), // 모서리의 곡률을 20으로 설정
                   image: DecorationImage(
-                    image: NetworkImage(menuDetail[0].image ?? ''), // 이미지 URL
+                    image: NetworkImage(myMenu['item_image']), // 이미지 URL
                     fit: BoxFit.cover, // 이미지를 컨테이너에 맞춤
                   ),
                 ),
@@ -370,8 +368,9 @@ class _BuyMenuDetailScreenState extends State<BuyMenuDetailScreen> {
               //     ]
               //   ],
               // ),
+              SizedBox(height: 10,),
 
-              Text('${menuDetail[0].price.toString()}원',
+              Text('${myMenu['price']}원',
               style: TextStyle(fontSize: FontSizes.XXXLARGE, fontWeight: FontWeight.bold, color: AppColors.ERROR500),),
             ],
           ),
@@ -399,7 +398,7 @@ class _BuyMenuDetailScreenState extends State<BuyMenuDetailScreen> {
               Text('상세설명',
               style: TextStyle(fontSize: FontSizes.SMALL),),
               SizedBox(height: 10,),
-              Text(menuDetail[0].description ?? '',
+              Text(myMenu['description'] ?? '',
                 style: TextStyle(fontSize: FontSizes.XXSMALL),),
             ],
           ),
@@ -438,8 +437,86 @@ class _BuyMenuDetailScreenState extends State<BuyMenuDetailScreen> {
   }
 }
 
-//
-// final PaymentVerificationViewModel _paymentVerificationViewModel = PaymentVerificationViewModel();
-// _paymentVerificationViewModel.sendPaymentRequest({
-//   ""
-// })
+
+// 기프티콘 주문저장 -> orderUid 발급
+Future<String> savePayment(String itemName, int price, int quantity, int issueId) async {
+  final String baseUrl = 'http://j10c207.p.ssafy.io:8000'; // 통신 url
+
+  final Uri url = Uri.parse('$baseUrl/api/v1/orders');
+  final prefs = await SharedPreferences.getInstance();
+  final accessToken = prefs.getString('accessToken');
+
+  final response = await http.post(
+    url,
+    headers: <String, String>{
+      'Authorization': 'Bearer $accessToken',
+      'Content-Type': 'application/json',
+    },
+    body: jsonEncode({
+      'itemName': itemName, // 아임포트 결제 고유 ID
+      'price': price, // 아임포트 결제 고유 ID
+      'quantity': quantity, // 아임포트 결제 고유 ID
+      'issueId': issueId, // 주문 고유 ID
+    }),
+  );
+  debugPrint('기프티콘 주문저장: ${response.statusCode}');
+
+  if (response.statusCode == 200) {
+    // 서버로부터 정상적인 응답을 받았을 때의 처리
+    debugPrint('기프티콘 주문저장 결제 검증 성공: ${response.body}');
+    debugPrint('기프티콘 주문저장 결제 검증 성공: ${response.headers}');
+    final String body = utf8.decode(response.bodyBytes);
+    final decodedBody = jsonDecode(body);
+    // final String dataBody = decodedBody['data_body'];
+    print('pppppppppppppppppppppp');
+    print(decodedBody['data_body']);
+    print('pppppppppppppppppppppp');
+    return decodedBody['data_body']['orderUid'];
+  } else {
+    // 서버로부터 오류 응답을 받았을 때의 처리
+    debugPrint('기프티콘 주문저장 결제 검증 실패: ${response.body}');
+    // Navigator를 사용하여 결제실패 페이지로 이동하거나, 오류 메시지 표시 등의 로직 추가
+    return '';
+  }
+}
+
+
+
+
+// 주문 결제 검증 요청
+Future<void> validatePayment(String impUid, String orderUid) async {
+  final String baseUrl = 'http://j10c207.p.ssafy.io:8000'; // 통신 url
+
+  final Uri url = Uri.parse('$baseUrl/api/v1/payments/validate');
+  final prefs = await SharedPreferences.getInstance();
+  final accessToken = prefs.getString('accessToken');
+
+  try {
+    final response = await http.post(
+      url,
+      headers: <String, String>{
+        'Authorization': 'Bearer $accessToken',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        'impUid': impUid, // 아임포트 결제 고유 ID
+        'orderUid': orderUid, // 주문 고유 ID
+      }),
+    );
+    debugPrint('결제 ~~: ${response.statusCode}');
+
+    if (response.statusCode == 200) {
+      // 서버로부터 정상적인 응답을 받았을 때의 처리
+      debugPrint('결제 검증 성공: ${response.body}');
+      debugPrint('결제 검증 성공: ${response.headers}');
+      // Navigator를 사용하여 결제완료 페이지로 이동하거나, 상태 업데이트 등의 로직 추가
+    } else {
+      // 서버로부터 오류 응답을 받았을 때의 처리
+      debugPrint('결제 검증 실패: ${response.body}');
+      // Navigator를 사용하여 결제실패 페이지로 이동하거나, 오류 메시지 표시 등의 로직 추가
+    }
+  } catch (e) {
+    debugPrint('결제 검증 중 예외 발생: $e');
+    // 예외 발생 시 처리 로직 추가
+  }
+}
