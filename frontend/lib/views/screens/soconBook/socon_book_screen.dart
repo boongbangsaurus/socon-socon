@@ -168,7 +168,11 @@ class _SoconBookScreenState extends State<SoconBookScreen> {
                       // dueDate: dueDate[index],
                       // imageUrl: imageUrl[index],
                       onPressed: () {
-                        GoRouter.of(context).go("/soconbook/detail");
+                        print("${usableList![index]['socon_id']} ");
+                        GoRouter.of(context).go("/soconbook/detail/${usableList![index]['socon_id']}");
+                        // String soconId = usableList![index]['socon_id'];
+                        // print("소콘 아이디야 $soconId");
+                        // GoRouter.of(context).go("/soconbook/detail/${soconId}");
                       },
                     );
                   },

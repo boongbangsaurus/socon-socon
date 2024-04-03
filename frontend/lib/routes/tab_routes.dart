@@ -99,9 +99,9 @@ class TabRoutes {
   static RouteBase getMySoconDetailRoute() {
     return GoRoute(
         name: "soconbookDetail",
-        path: "detail",
+        path: "detail/:soconId",
         builder: (BuildContext context, GoRouterState state) {
-          return SoconBookDetailScreen();
+          return SoconBookDetailScreen(state.pathParameters['soconId']);
         });
   }
 
