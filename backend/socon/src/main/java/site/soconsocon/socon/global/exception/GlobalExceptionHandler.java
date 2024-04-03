@@ -32,6 +32,14 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(SoconException.class)
+    public ResponseEntity<Object> SearchExceptionHandler(SoconException e) {
+        log.debug(Arrays.toString(e.getStackTrace()));
+        return ResponseEntity.status(e.getErrorCode().getHttpStatus())
+                .body(MessageUtils.fail(String.valueOf(e.getErrorCode()), e.getMessage()));
+
+    }
+
+    @ExceptionHandler(SearchException.class)
     public ResponseEntity<Object> SearchExceptionHandler(SearchException e) {
         log.debug(Arrays.toString(e.getStackTrace()));
         return ResponseEntity.status(e.getErrorCode().getHttpStatus())
@@ -39,8 +47,7 @@ public class GlobalExceptionHandler {
 
     }
 
-
-    @ExceptionHandler(SearchException.class)
+    @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleOtherExceptions(Exception e) {
         log.error("An unexpected error occurred", e);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

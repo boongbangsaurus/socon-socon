@@ -6,6 +6,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
@@ -14,9 +15,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableFeignClients
 @EnableJpaRepositories(basePackages = {
 		"site.soconsocon.socon.*.repository.jpa"
-})
-@EnableElasticsearchRepositories(basePackages = {
-		"site.soconsocon.socon.*.repository.elasticsearch"
 })
 public class SoconApplication {
 

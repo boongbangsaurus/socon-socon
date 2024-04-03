@@ -11,7 +11,6 @@ import org.springframework.data.elasticsearch.core.geo.GeoPoint;
 @Getter
 @Setter
 @Document(indexName = "stores")
-@Setting(replicas = 0)
 @Builder
 public class StoreDocument {
     @Id
