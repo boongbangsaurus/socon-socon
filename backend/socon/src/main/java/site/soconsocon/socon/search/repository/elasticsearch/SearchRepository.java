@@ -3,6 +3,7 @@ package site.soconsocon.socon.search.repository.elasticsearch;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.elasticsearch.core.RefreshPolicy;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 import org.springframework.data.geo.Distance;
 import org.springframework.data.geo.Point;
@@ -17,5 +18,6 @@ public interface SearchRepository extends ElasticsearchRepository<StoreDocument,
      * @param distance
      * @return
      */
-    Optional<Page<StoreDocument>> findStoreDocumentsByLocationNear(Point point, Distance distance);
+    Optional<Page<StoreDocument>> findStoreDocumentsByLocationNear(Point point, Distance distance, Pageable pageable);
+
 }

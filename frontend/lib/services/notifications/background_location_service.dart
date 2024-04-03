@@ -1,5 +1,5 @@
 import 'package:background_locator_2/background_locator.dart';
-import '../../utils/location_callback_handler.dart';
+import '../../utils/location/location_callback_handler.dart';
 
 class BackgroundLocationService {
   static Future<void> startLocator() async {

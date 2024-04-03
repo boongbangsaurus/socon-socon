@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:socon/services/boss_verification_service.dart';
 
+import '../models/business_owner.dart';
+
 class BossVerificationViewModel extends ChangeNotifier {
   final BossVerificationService _bossVerificationService =
   BossVerificationService();
@@ -8,8 +10,8 @@ class BossVerificationViewModel extends ChangeNotifier {
 
   bool get isVerified => _isVerified;
 
-  Future<void> verifyBoss(String registrationNumber) async {
-    _isVerified = await _bossVerificationService.verifyBoss(registrationNumber);
+  Future<void> verifyBoss(BusinessOwner businessOwner) async {
+    _isVerified = await _bossVerificationService.verifyBoss(businessOwner);
     notifyListeners();
   }
 }

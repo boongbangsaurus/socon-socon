@@ -81,11 +81,12 @@ class TagButton extends StatefulWidget {
   final String buttonText;
   final Color buttonColor;
   final Color buttonTextColor;
-  final VoidCallback? onPressed;
+  final VoidCallback onPressed;
   final Function(bool) onSelected;
 
   final double minWidth;
   final double minHeight;
+
 
   const TagButton({
     super.key,
@@ -93,8 +94,9 @@ class TagButton extends StatefulWidget {
     required this.buttonText,
     required this.buttonColor,
     required this.buttonTextColor,
-    this.onPressed,
+    required this.onPressed,
     required this.onSelected,
+
     this.minWidth = 10.0, // 최소 가로 크기
     this.minHeight = 30.0, // 최소 세로 크기
   });
@@ -117,30 +119,29 @@ class _TagButtonState extends State<TagButton> {
   Widget build(BuildContext context) {
     final buttonStyle = _isSelected
         ? ElevatedButton.styleFrom(
-            backgroundColor: widget.buttonColor,
-            minimumSize: Size(widget.minWidth, widget.minHeight),
-          )
+      backgroundColor: widget.buttonColor,
+      minimumSize: Size(widget.minWidth, widget.minHeight),
+    )
         : ElevatedButton.styleFrom(
-            backgroundColor: Colors.white,
-            foregroundColor: Colors.grey,
-            side: BorderSide(color: AppColors.GRAY400),
-            minimumSize: Size(widget.minWidth, widget.minHeight),
-          );
+      backgroundColor: AppColors.WHITE,
+      foregroundColor: AppColors.GRAY500,
+      side: BorderSide(color: Colors.grey),
+      minimumSize: Size(widget.minWidth, widget.minHeight),
+    );
 
     return TextButton(
-      onPressed: widget.onPressed != null ? () {
+      onPressed: () {
         setState(() {
           _isSelected = !_isSelected;
-          widget.onPressed!();
+          widget.onPressed();
         });
         widget.onSelected(_isSelected);
-      } : null,
+      },
       style: buttonStyle,
-      child: Text(widget.buttonText,
-          style: TextStyle(
-              color: _isSelected ? widget.buttonTextColor : AppColors.GRAY500,
-              fontSize: FontSizes.XXXSMALL,
-              fontWeight: FontWeight.bold)),
+      child: Text(
+          widget.buttonText,
+          style: TextStyle( color: _isSelected ? widget.buttonTextColor : AppColors.GRAY500, fontSize: FontSizes.XXXSMALL, fontWeight: FontWeight.bold)),
     );
   }
 }
+
