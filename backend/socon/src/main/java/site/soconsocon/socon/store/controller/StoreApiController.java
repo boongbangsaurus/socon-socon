@@ -30,7 +30,7 @@ public class StoreApiController {
     private final ItemService itemService;
 
     // 가게 정보 등록
-    @PostMapping("")
+    @PostMapping(value = "", produces = "application/json; charset=UTF-8")
     public ResponseEntity<Object> saveStore(
             @Valid
             @RequestBody
@@ -44,14 +44,14 @@ public class StoreApiController {
     }
 
     // 점주 등록 가게 정보 목록 조회
-    @GetMapping("")
+    @GetMapping(value = "", produces = "application/json; charset=UTF-8")
     public ResponseEntity<Object> getStoreList(@RequestHeader("X-Authorization-Id") int memberId) {
 
         return ResponseEntity.ok().body(MessageUtils.success(storeService.getStoreList(memberId)));
     }
 
     // 가게 정보 상세 조회
-    @GetMapping("/{store_id}/info")
+    @GetMapping(value = "/{store_id}/info", produces = "application/json; charset=UTF-8")
     public ResponseEntity<Object> getStoreInfo(
             @PathVariable("store_id") Integer storeId
     ) {
@@ -66,7 +66,7 @@ public class StoreApiController {
     }
 
     // 점주 가게 상세 정보 조회`
-    @GetMapping("/{store_id}/manage/info")
+    @GetMapping(value = "/{store_id}/manage/info", produces = "application/json; charset=UTF-8")
     public ResponseEntity<Object> getDetailStoreInfo(
             @PathVariable("store_id") Integer storeId,
             @RequestHeader("X-Authorization-Id") int memberId
@@ -82,7 +82,7 @@ public class StoreApiController {
     }
 
     // 가게 정보 수정
-    @PutMapping("/{store_id}/info")
+    @PutMapping(value = "/{store_id}/info", produces = "application/json; charset=UTF-8")
     public ResponseEntity<Object> updateStoreInfo(
             @RequestBody UpdateStoreInfoRequest request,
             @PathVariable("store_id") Integer storeId,
@@ -95,7 +95,7 @@ public class StoreApiController {
     }
 
     // 가게 폐업 정보 업데이트
-    @PutMapping("/{store_id}/manage/info")
+    @PutMapping(value = "/{store_id}/manage/info", produces = "application/json; charset=UTF-8")
     public ResponseEntity<Object> updateClosedPlanned(
             @PathVariable("store_id") Integer storeId,
             @RequestBody UpdateClosedPlannedRequest request,
@@ -107,7 +107,7 @@ public class StoreApiController {
     }
 
     // 상품 정보 등록
-    @PostMapping("/{store_id}/items")
+    @PostMapping(value ="/{store_id}/items", produces = "application/json; charset=UTF-8")
     public ResponseEntity<Object> saveStoreItem(
             @PathVariable("store_id") Integer storeId,
             @RequestBody AddItemRequest request,
@@ -120,7 +120,7 @@ public class StoreApiController {
     }
 
     // 상품 정보 상세 조회
-    @GetMapping("/{store_id}/items/{item_id}")
+    @GetMapping(value = "/{store_id}/items/{item_id}", produces = "application/json; charset=UTF-8")
     public ResponseEntity<Object> getDetailItemInfo(
             @PathVariable("store_id") Integer storeId,
             @PathVariable("item_id") Integer itemId,
@@ -130,7 +130,7 @@ public class StoreApiController {
     }
 
     // 상품 발행 정보 등록
-    @PostMapping("/{store_id}/items/{item_id}")
+    @PostMapping(value = "/{store_id}/items/{item_id}", produces = "application/json; charset=UTF-8")
     public ResponseEntity<Object> saveIssue(
             @PathVariable("store_id") Integer storeId,
             @PathVariable("item_id") Integer itemId,
@@ -143,7 +143,7 @@ public class StoreApiController {
     }
 
     // 관심 가게 추가, 취소
-    @PostMapping("/favorite/{store_id}")
+    @PostMapping(value = "/favorite/{store_id}", produces = "application/json; charset=UTF-8")
     public ResponseEntity<Object> favoriteStore(
             @PathVariable("store_id") Integer storeId,
             @RequestHeader("X-Authorization-Id") int memberId
@@ -154,7 +154,7 @@ public class StoreApiController {
     }
 
     // 관심 가게 목록 조회
-    @GetMapping("/favorite")
+    @GetMapping(value = "/favorite" , produces = "application/json; charset=UTF-8")
     public ResponseEntity<Object> getFavoriteList(
             @RequestHeader("X-Authorization-Id") int memberId
     ) {
@@ -163,7 +163,7 @@ public class StoreApiController {
     }
 
     // 사업자 번호 등록
-    @PostMapping("/business")
+    @PostMapping(value = "/business" , produces = "application/json; charset=UTF-8")
     public ResponseEntity<Object> saveBusinessNumber(
             @Valid
             @RequestBody
@@ -177,7 +177,7 @@ public class StoreApiController {
     }
 
     // 사업자 번호 목록 조회
-    @GetMapping("/business")
+    @GetMapping(value = "/business", produces = "application/json; charset=UTF-8")
     public ResponseEntity<Object> getBusinessNumberList(
             @RequestHeader("X-Authorization-Id") int memberId
     ){
@@ -185,7 +185,7 @@ public class StoreApiController {
     }
 
     // 가게 매출 데이터 분석 조회
-    @PostMapping("/{store_id}/analysis")
+    @PostMapping(value = "/{store_id}/analysis", produces = "application/json; charset=UTF-8")
     public ResponseEntity<Object> getStoreAnalysis(
             @PathVariable("store_id") Integer storeId,
             @RequestBody StoreAnalysisRequest request,
@@ -196,7 +196,7 @@ public class StoreApiController {
     }
 
     // 품목별 매출액 리스트 조회
-    @PostMapping("/{store_id}/analysis/sales")
+    @PostMapping(value = "/{store_id}/analysis/sales", produces = "application/json; charset=UTF-8")
     public ResponseEntity<Object> getSalesAnalysis(
             @PathVariable("store_id") Integer storeId,
             @RequestBody IndexRequest request,
@@ -212,7 +212,7 @@ public class StoreApiController {
 
 
     // 기간별 추이 리스트 조회
-    @PostMapping("/{store_id}/analysis/weekly")
+    @PostMapping(value = "/{store_id}/analysis/weekly", produces = "application/json; charset=UTF-8")
     public ResponseEntity<Object> getWeeklyAnalysis(
             @PathVariable("store_id") Integer storeId,
             @RequestBody WeeklyRequest request,
@@ -224,7 +224,7 @@ public class StoreApiController {
 
 
 // 품목별 발행 현황 리스트 조회
-    @PostMapping("/{store_id}/analysis/issues")
+    @PostMapping(value = "/{store_id}/analysis/issues", produces = "application/json; charset=UTF-8")
     public ResponseEntity<Object> getIssueAnalysis(
             @PathVariable("store_id") Integer storeId,
             @RequestBody IndexRequest request,

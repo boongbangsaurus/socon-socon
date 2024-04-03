@@ -17,7 +17,7 @@ public class SoconApiController {
     private final SoconService soconService;
 
     // 소콘 상세 조회
-    @GetMapping("/{socon_id}")
+    @GetMapping(value = "/{socon_id}" , produces = "application/json; charset=UTF-8")
     public ResponseEntity<Object> getSoconInfo(
             @PathVariable("socon_id") Integer soconId
     ) {
@@ -35,7 +35,7 @@ public class SoconApiController {
     }
 
     // 소콘 사용 승인
-    @GetMapping("/{socon_id}/approval")
+    @GetMapping(value = "/{socon_id}/approval" , produces = "application/json; charset=UTF-8")
     public ResponseEntity<Object> soconApproval(
             @PathVariable("socon_id") Integer soconId,
             @RequestHeader("X-Authorization-Id") int memberId) {
@@ -46,7 +46,7 @@ public class SoconApiController {
     }
 
     // 소콘북 검색
-    @PostMapping("/book/search")
+    @PostMapping(value = "/book/search" , produces = "application/json; charset=UTF-8")
     public ResponseEntity<Object> soconBookSearch(
             @RequestBody SoconBookSearchRequest request,
             @RequestHeader("X-Authorization-Id") int memberId

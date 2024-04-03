@@ -12,14 +12,14 @@ import site.soconsocon.utils.MessageUtils;
 
 @RestController
 @Slf4j
-@RequestMapping("/api/v1/sogons")
+@RequestMapping(value = "/api/v1/sogons", produces = "application/json; charset=UTF-8")
 @RequiredArgsConstructor
 public class SogonController {
 
     private final SogonService sogonService;
 
     // 소곤 작성
-    @PostMapping("")
+    @PostMapping(value = "", produces = "application/json; charset=UTF-8")
     public ResponseEntity<Object> saveSogon(
             @RequestBody AddSogonRequest request,
             @RequestHeader("X-Authorization-Id") int memberId
@@ -31,7 +31,7 @@ public class SogonController {
     }
 
     // 소곤 댓글 추가
-    @PostMapping("/{sogon_id}/comment")
+    @PostMapping(value = "/{sogon_id}/comment", produces = "application/json; charset=UTF-8")
     public ResponseEntity<Object> addSogonComment(
         @PathVariable ("sogon_id") Integer sogonId,
         @RequestBody AddCommentRequest request,
@@ -43,7 +43,7 @@ public class SogonController {
     }
 
     // 댓글 채택
-    @GetMapping("/{sogon_id}/comment/{comment_id}")
+    @GetMapping(value = "/{sogon_id}/comment/{comment_id}", produces = "application/json; charset=UTF-8")
     public ResponseEntity<Object> pickSogonComment(
             @PathVariable ("sogon_id") Integer sogonId,
             @PathVariable ("comment_id") Integer commentId,
@@ -55,7 +55,7 @@ public class SogonController {
     }
 
     // 소곤 상세 조회
-    @GetMapping("/{sogon_id}")
+    @GetMapping(value = "/{sogon_id}", produces = "application/json; charset=UTF-8")
     public ResponseEntity<Object> getSogon(
             @PathVariable ("sogon_id") Integer sogonId
     ){
@@ -63,7 +63,7 @@ public class SogonController {
     }
 
     // 작성 소곤 목록 조회
-    @GetMapping("/mine")
+    @GetMapping(value = "/mine", produces = "application/json; charset=UTF-8")
     public ResponseEntity<Object> getMySogons(
             @RequestHeader("X-Authorization-Id") int memberId
     ){
@@ -71,7 +71,7 @@ public class SogonController {
     }
 
     // 작성 댓글 목록 조회
-    @GetMapping("/mine/comments")
+    @GetMapping(value = "/mine/comments", produces = "application/json; charset=UTF-8")
     public ResponseEntity<Object> getMyComments(
             @RequestHeader("X-Authorization-Id") int memberId
     ){
@@ -79,7 +79,7 @@ public class SogonController {
     }
 
     // 반경 내 소곤 목록 조회
-    @PostMapping("/list")
+    @PostMapping(value = "/list", produces = "application/json; charset=UTF-8")
     public ResponseEntity<Object> getSogonList(
         @RequestBody GetSogonListRequest request
     ){
