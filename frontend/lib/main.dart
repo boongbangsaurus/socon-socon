@@ -48,9 +48,9 @@ void main() async {
   }
 
   // FCM 토큰 가져오기
-  NotificationViewModel _notificationViewModel = NotificationViewModel();
-  var fcmToken = await _notificationViewModel.getFcmToken();
-  print("fcmToken: $fcmToken");
+  // NotificationViewModel _notificationViewModel = NotificationViewModel();
+  // var fcmToken = await _notificationViewModel.getFcmToken();
+  // print("fcmToken: $fcmToken");
   await FirebaseMessaging.instance.setAutoInitEnabled(true);
 
 
