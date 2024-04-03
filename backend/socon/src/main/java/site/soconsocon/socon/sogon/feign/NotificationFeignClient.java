@@ -7,6 +7,6 @@ import site.soconsocon.socon.sogon.domain.dto.feign.FcmMessage;
 
 @FeignClient(name = "notification", url = "${feign.urls.notification}")
 public interface NotificationFeignClient{
-    @PostMapping("/user")
+    @PostMapping("/notification/fcm/user")
     public ResponseEntity sendMessageMember(@RequestBody FcmMessage fcmMessage);
 }
