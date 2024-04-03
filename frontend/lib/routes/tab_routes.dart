@@ -15,6 +15,7 @@ import 'package:socon/views/screens/sign_in_screen.dart';
 import 'package:socon/views/screens/sign_up_screen.dart';
 import 'package:socon/views/screens/soconBook/socon_book_detail_screen.dart';
 import 'package:socon/views/screens/soconBook/socon_book_screen.dart';
+import 'package:socon/views/screens/sogon/sogon_detail_screen.dart';
 import 'package:socon/views/screens/sogon/sogon_register_screen.dart';
 import 'package:socon/views/screens/sogon_main_screen.dart';
 import 'package:socon/views/screens/stores/buy_menu_screen.dart';
@@ -73,6 +74,7 @@ class TabRoutes {
         },
         routes: [
           getSogonRegisterRoute(),
+          getSogonDetailRoute(),
         ]);
   }
 
@@ -82,6 +84,15 @@ class TabRoutes {
         path: "register",
         builder: (BuildContext context, GoRouterState state) {
           return SogonRegisterScreen();
+        });
+  }
+
+  static RouteBase getSogonDetailRoute() {
+    return GoRoute(
+        name: "sogonDetail",
+        path: ":sogon_id",
+        builder: (BuildContext context, GoRouterState state) {
+          return SogonDetailScreen(state.pathParameters['sogon_id']!);
         });
   }
 
@@ -161,7 +172,6 @@ class TabRoutes {
         routes: [getMyStoreDetailRoute()]);
   }
 
-
   // 내점포 Lists -> 내점포
   static RouteBase getMyStoreDetailRoute() {
     return GoRoute(
@@ -175,7 +185,6 @@ class TabRoutes {
         ]);
   }
 
-
   static RouteBase getMenuDetailRoute() {
     return GoRoute(
         path: "menu/:menuId",
@@ -185,16 +194,15 @@ class TabRoutes {
         });
   }
 
-
   static RouteBase getProductRegisterRoute() {
     return GoRoute(
         path: "register",
         builder: (BuildContext context, GoRouterState state) {
-          return ProductRegister(state.pathParameters['storeId']!,);
+          return ProductRegister(
+            state.pathParameters['storeId']!,
+          );
         });
   }
-
-
 
   static RouteBase getBossVerification() {
     return GoRoute(

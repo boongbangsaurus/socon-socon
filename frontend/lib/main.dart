@@ -1,4 +1,3 @@
-
 import 'dart:isolate';
 import 'dart:ui';
 
@@ -7,6 +6,7 @@ import 'package:background_locator_2/settings/android_settings.dart';
 
 import 'package:socon/viewmodels/menu.dart';
 import 'package:socon/viewmodels/mystore_detail_menu_list_view_model.dart%20%20%20%20%20%20%20';
+import 'package:socon/viewmodels/sogon_view_model.dart';
 import 'package:socon/views/modules/mystore_menu_management.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
@@ -44,7 +44,6 @@ import 'package:socon/views/screens/bossVerification/boss_verification.dart';
 import 'provider/Address.dart';
 import 'models/location.dart';
 
-
 import 'package:google_maps_flutter_android/google_maps_flutter_android.dart';
 import 'package:google_maps_flutter_platform_interface/google_maps_flutter_platform_interface.dart';
 
@@ -73,7 +72,7 @@ void main() async {
     router.go("/info");
   }, onError: (Object error) {
     print("딥링크 이동 $error");
-  }, onDone: (){
+  }, onDone: () {
     print("딥링크 이동 완료");
   });
 
@@ -87,7 +86,6 @@ void main() async {
   // 백그라운드 메시지 핸들러 설정
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
-
   // google map 설정
   final GoogleMapsFlutterPlatform mapsImplementation =
       GoogleMapsFlutterPlatform.instance;
@@ -100,13 +98,13 @@ void main() async {
   final bool? isOwner = prefs.getBool('isOwner');
 
   runApp(MyApp());
-
 }
 
 class MyApp extends StatefulWidget {
   final bool? isOwner;
 
   const MyApp({super.key, this.isOwner});
+
   @override
   _MyAppState createState() => _MyAppState();
 }
@@ -116,7 +114,6 @@ class _MyAppState extends State<MyApp> {
   late bool isRunning = false;
   late LocationDto lastLocation;
   String logStr = '';
-
 
   @override
   void initState() {
@@ -224,9 +221,11 @@ class _MyAppState extends State<MyApp> {
       providers: [
         ChangeNotifierProvider(create: (_) => BossVerificationViewModel()),
         ChangeNotifierProvider(create: (context) => LoginState()),
-        ChangeNotifierProvider(create: (context) => PaymentVerificationViewModel()),
+        ChangeNotifierProvider(
+            create: (context) => PaymentVerificationViewModel()),
         ChangeNotifierProvider(create: (_) => BossProvider()),
         ChangeNotifierProvider(create: (context) => StoreRegisterViewModel()),
+        ChangeNotifierProvider(create: (context) => SogonViewModel()),
       ],
       child: MaterialApp.router(
         routerConfig: router,

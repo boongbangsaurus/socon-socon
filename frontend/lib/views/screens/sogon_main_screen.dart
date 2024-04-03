@@ -87,9 +87,6 @@ class _SogonMainScreen extends State<SogonMainScreen> {
   @override
   void initState() {
     _requestLocationPermission();
-    // _loadMarkers();
-    // _initializeAsync();
-    // _initFuture = _initializeAsync();
     _refreshData();
     super.initState();
   }
@@ -101,8 +98,6 @@ class _SogonMainScreen extends State<SogonMainScreen> {
   }
 
   Future<void> _initializeAsync() async {
-    // await _requestLocationPermission();
-    // _loadMarkers(); 필요하다면 이 곳에서 호출
     ClusterManager<ClusterItem> manager = await _initClusterManager();
     setState(() {
       _manager = manager;
@@ -264,7 +259,6 @@ class _SogonMainScreen extends State<SogonMainScreen> {
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
-
     return Container(
         height: height,
         width: width,
@@ -316,6 +310,7 @@ class _SogonMainScreen extends State<SogonMainScreen> {
                               markers: sogonMarker,
                               myLocationEnabled: true,
                               myLocationButtonEnabled: false,
+                              zoomControlsEnabled: false,
                             ),
                             Container(
                                 padding:
@@ -368,10 +363,7 @@ class _SogonMainScreen extends State<SogonMainScreen> {
                                       onPressed: () {
                                         print('go 새글작성');
                                         GoRouter.of(context)
-                                            .push('/sogon/register', extra: {
-                                          'lat': 37.5665,
-                                          'lng': 126.9780,
-                                        });
+                                            .push('/sogon/register');
                                       },
                                       shape: RoundedRectangleBorder(
                                           borderRadius:
@@ -479,6 +471,10 @@ class _SogonMainScreen extends State<SogonMainScreen> {
                                                                 print(_sogons[
                                                                         index]
                                                                     ["id"]);
+                                                                GoRouter.of(
+                                                                        context)
+                                                                    .push(
+                                                                        '/sogon/${_sogons[index]["id"]}');
                                                               },
                                                               style: TextButton
                                                                   .styleFrom(
