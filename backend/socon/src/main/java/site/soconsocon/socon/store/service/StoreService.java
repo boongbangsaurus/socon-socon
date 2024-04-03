@@ -37,6 +37,21 @@ public class StoreService {
     private final SoconRepository soconRepository;
     private final FeignServiceClient feignServiceClient;
 
+    // 사업자 번호 목록 조회
+    public List<GetBusinessNumberListResponse> getBusinessNumberList(int memberId) {
+
+        List<GetBusinessNumberListResponse> response = new ArrayList<>();
+        List<BusinessRegistration> result = businessRegistrationRepository.getBusinessNumberList(memberId);
+        for(BusinessRegistration regi : result){
+            response.add(GetBusinessNumberListResponse.builder()
+                    .registrationNumber(regi.getRegistrationNumber())
+                    .id(regi.getId())
+                    .build());
+        }
+
+        return response;
+    }
+
     @Transactional
     // 가게 정보 등록
     public void saveStore(AddStoreRequest request, int memberId) {
@@ -175,7 +190,7 @@ public class StoreService {
                 .createdAt(store.getCreatedAt())
                 .registrationNumber(businessRegistration.getRegistrationNumber())
                 .registrationAddress(businessRegistration.getRegistrationAddress())
-                .owner(member.getName()) // 사업자 나중에 수정
+                .owner(member.getName())
                 .build();
     }
 
