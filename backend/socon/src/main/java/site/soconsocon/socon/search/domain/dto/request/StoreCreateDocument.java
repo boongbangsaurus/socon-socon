@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.elasticsearch.core.geo.GeoPoint;
 import org.springframework.data.geo.Point;
 import site.soconsocon.socon.search.domain.document.StoreDocument;
@@ -14,8 +15,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
 @AllArgsConstructor
+@NoArgsConstructor
+@Data
 @Builder
 public class StoreCreateDocument {
     private Integer id;
