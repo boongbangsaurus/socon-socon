@@ -65,6 +65,7 @@ public class Issue {
     private Item item;
 
     @OneToMany(mappedBy = "issue")
+    @Builder.Default
     private List<Socon> socons = new ArrayList<>();
 
 }

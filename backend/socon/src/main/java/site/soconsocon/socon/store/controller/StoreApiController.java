@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import site.soconsocon.socon.store.domain.dto.request.*;
 import site.soconsocon.socon.store.domain.dto.response.IssueListResponse;
 import site.soconsocon.socon.store.domain.dto.response.ItemListResponse;
+import site.soconsocon.socon.store.domain.dto.response.SalesAnalysisResponse;
 import site.soconsocon.socon.store.domain.dto.response.StoreInfoResponse;
 import site.soconsocon.socon.store.service.IssueService;
 import site.soconsocon.socon.store.service.ItemService;
@@ -163,7 +164,7 @@ public class StoreApiController {
 
     // 사업자 번호 등록
     @PostMapping("/business")
-    public ResponseEntity<Object> saveBusinessNumvber(
+    public ResponseEntity<Object> saveBusinessNumber(
             @Valid
             @RequestBody
             AddBusinessNumberRequest request,
@@ -173,6 +174,64 @@ public class StoreApiController {
         storeService.saveBusinessNumber(request, memberId);
 
         return ResponseEntity.ok().body(MessageUtils.success(null, "201 CREATED", null));
+    }
+
+    // 사업자 번호 목록 조회
+    @GetMapping("/business")
+    public ResponseEntity<Object> getBusinessNumberList(
+            @RequestHeader("X-Authorization-Id") int memberId
+    ){
+        return ResponseEntity.ok().body(MessageUtils.success(storeService.getBusinessNumberList(memberId)));
+    }
+
+    // 가게 매출 데이터 분석 조회
+    @PostMapping("/{store_id}/analysis")
+    public ResponseEntity<Object> getStoreAnalysis(
+            @PathVariable("store_id") Integer storeId,
+            @RequestBody StoreAnalysisRequest request,
+            @RequestHeader("X-Authorization-Id") int memberId
+    ){
+
+        return ResponseEntity.ok().body(MessageUtils.success(storeService.getStoreAnalysis(storeId, request, memberId)));
+    }
+
+    // 품목별 매출액 리스트 조회
+    @PostMapping("/{store_id}/analysis/sales")
+    public ResponseEntity<Object> getSalesAnalysis(
+            @PathVariable("store_id") Integer storeId,
+            @RequestBody IndexRequest request,
+            @RequestHeader("X-Authorization-Id") int memberId
+    ){
+
+        List<SalesAnalysisResponse> response = storeService.getSalesAnalysis(storeId, request, memberId);
+
+
+
+        return ResponseEntity.ok().body(MessageUtils.success(response));
+    }
+
+
+    // 기간별 추이 리스트 조회
+    @PostMapping("/{store_id}/analysis/weekly")
+    public ResponseEntity<Object> getWeeklyAnalysis(
+            @PathVariable("store_id") Integer storeId,
+            @RequestBody WeeklyRequest request,
+            @RequestHeader("X-Authorization-Id") int memberId
+    ){
+
+        return ResponseEntity.ok().body(MessageUtils.success(storeService.getWeeklyAnalysis(storeId, request, memberId)));
+    }
+
+
+// 품목별 발행 현황 리스트 조회
+    @PostMapping("/{store_id}/analysis/issues")
+    public ResponseEntity<Object> getIssueAnalysis(
+            @PathVariable("store_id") Integer storeId,
+            @RequestBody IndexRequest request,
+            @RequestHeader("X-Authorization-Id") int memberId
+    ){
+
+        return ResponseEntity.ok().body(MessageUtils.success(storeService.getIssueAnalysis(storeId, request, memberId)));
     }
 
 }

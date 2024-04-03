@@ -53,12 +53,12 @@ class BossVerificationService {
   }
 
   // 사장님 인증
+
   Future<bool> checkBossAgain(Map<String, String> businessOwner) async {
     print("사장님 인증 2차 시작 $businessOwner");
     try {
       final response = await ApiUtils.postDataWithToken(
           '/api/v1/stores/business', businessOwner);
-
 
       // 파싱된 JSON 응답을 가지고 처리할 코드
       // 예를 들어, 응답이 성공했는지 여부를 확인하고 그에 따라 true 또는 false를 반환

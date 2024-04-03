@@ -56,6 +56,7 @@ public class Sogon {
     private Socon socon;
 
     @OneToMany(mappedBy = "sogon")
+    @Builder.Default
     private List<Comment> comments = new ArrayList<>();
 
 }

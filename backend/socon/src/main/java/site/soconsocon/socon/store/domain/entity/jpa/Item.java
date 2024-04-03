@@ -40,6 +40,7 @@ public class Item {
     private Store store;
 
     @OneToMany(mappedBy = "item")
+    @Builder.Default
     private List<Issue> issues = new ArrayList<>();
 
 }
