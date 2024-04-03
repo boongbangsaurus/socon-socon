@@ -12,7 +12,7 @@ class MySoconViewModel extends ChangeNotifier {
       print("[viewModel] 소콘북 소콘 목록 가져오기 성공 $soconList");
       usableList = soconList['usable'];
       usedMysoconList = soconList['unusable'];
-      print("사용가능 $usableList");
+      print("[viewModel] 사용가능 $usableList");
       notifyListeners();
       return soconList;
     } catch (error) {
