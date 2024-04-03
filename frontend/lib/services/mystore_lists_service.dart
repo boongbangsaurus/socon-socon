@@ -26,23 +26,19 @@ class MystoreListsService {
       },
     );
     if (response.statusCode == 200) {
-      final String body = utf8.decode(response.bodyBytes);
-      final decodedBody = jsonDecode(body);
-      debugPrint(body);
-      debugPrint(
-          '###########MystoreListsService res 200 ################################################');
-      final List<dynamic> dataBody = decodedBody['data_body'];
-      debugPrint(
-          'MystoreListsService res 200 ################################################');
-      print(dataBody);
-    //   print(dataBody);
-    //   debugPrint(
-    //       'MystoreListsService res 200 ################################################');
-    //
-    //   // final List dataBody = body['data_body'];
-    //   // final String accessToken = body['data_body']['accessToken'];
-    //   // final String refreshToken = body['data_body']['refreshToken'];
-      return dataBody; // accessToken, refreshToken 반환
+      // final String body = utf8.decode(response.bodyBytes);
+      // final decodedBody = jsonDecode(body);
+      // debugPrint(body);    // {"data_header":{"success_code":0,"result_code":"200 OK","result_message":null},"data_body":[{"id":23,"name":"늘솜꼬마김밥2","category":"음식점","image":"https://cataas.com/cat","created_at":"2024-03-27"},{"id":24,"name":"늘솜꼬마김밥","category":"음식점","image":"https://cataas.com/cat","created_at":"2024-03-31"},{"id":28,"name":"asdfasg","category":"미용","image":"","created_at":"2024-04-03"},{"id":29,"name":"weewe","category":"미용","image":"/data/user/0/site.boongbang.socon/cache/5f1b0254-41d1-4ff8-97c6-b627cc3b7b3d/1000000034.jpg","created_at":"2024-04-03"},{"id":30,"name":"ruyiryi","category":"미용","image":"/data/user/0/site.boongbang.socon/cache/5f1b0254-41d1-4ff8-97c6-b627cc3b7b3d/1000000034.jpg","created_at":"2024-04-03"},{"id":31,"name":"상호명\t","category":"음식점","image":"/data/user/0/site.boongbang.socon/cache/4f9413d0-7d01-43c5-b5f5-be2378ffe942/1000000034.jpg","created_at":"2024-04-03"}]}
+      // debugPrint(
+      //     '###########MystoreListsService res 200 ################################################');
+      // final List<dynamic> dataBody = decodedBody['data_body'];
+      // debugPrint(
+      //     'MystoreListsService res 200 ################################################');
+      // print(dataBody);   // [{id: 23, name: 늘솜꼬마김밥2, category: 음식점, image: https://cataas.com/cat, created_at: 2024-03-27}, {id: 24, name: 늘솜꼬마김밥, category: 음식점, image: https://cataas.com/cat, created_at: 2024-03-31}, {id: 28, name: asdfasg, category: 미용, image: , created_at: 2024-04-03}, {id: 29, name: weewe, category: 미용, image: /data/user/0/site.boongbang.socon/cache/5f1b0254-41d1-4ff8-97c6-b627cc3b7b3d/1000000034.jpg, created_at: 2024-04-03}, {id: 30, name: ruyiryi, category: 미용, image: /data/user/0/site.boongbang.socon/cache/5f1b0254-41d1-4ff8-97c6-b627cc3b7b3d/1000000034.jpg, created_at: 2024-04-03}, {id: 31, name: 상호명	, category: 음식점, image: /data/user/0/site.boongbang.socon/cache/4f9413d0-7d01-43c5-b5f5-be2378ffe942/1000000034.jpg, created_at: 2024-04-03}]
+      // return dataBody;
+      final List<dynamic> decodedBody = jsonDecode(utf8.decode(response.bodyBytes))['data_body'];
+      // 데이터를 MyStoreListModel 리스트로 변환
+      return decodedBody.map((data) => MyStoreListModel.fromJson(data)).toList();
     } else {
     //   debugPrint(
     //       'MystoreListsService res not 200 ################################################');

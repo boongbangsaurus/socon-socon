@@ -29,15 +29,11 @@ class _MyStoreListsState extends State<MyStoreLists> {
         width: ResponsiveUtils.getWidthPercent(context, 100),
         margin: EdgeInsets.only(bottom: 10),
         child: OutlinedButton(
-          onPressed: () async{
-            MystoreListsService service = MystoreListsService();
-
-          // 생성한 인스턴스를 통해 getMystoreLists 메서드를 호출합니다.
-            await service.getMystoreLists();
-          //   Navigator.push(
-          //     context,
-          //     MaterialPageRoute(builder: (context) => RegisterPage()),
-          //   );
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => RegisterPage()),
+            );
           },
           child: Text(
             '+ 점포 등록',
