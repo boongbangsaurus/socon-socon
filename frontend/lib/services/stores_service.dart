@@ -13,12 +13,12 @@ import 'package:geolocator/geolocator.dart';
 class StoresService {
   Future<List<Store>?> searchStores() async {
     var params = {
-      "content": "오소유",
+      "content": "",
       // "lat": 37.1820489,
       // "lng": 131.7718627,
       "searchType": "name", //상호명 : name, 카테고리 : category,  도로명 주소 : address
       "sort": "distance", //최단거리 : distance, 가나다 : name,
-      "isFavoriteSearch": true,
+      "isFavoriteSearch": false,
       "page": 0, //offset,
       "size": 10, //default
     };

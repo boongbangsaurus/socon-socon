@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:go_router/go_router.dart';
 import 'package:socon/utils/responsive_utils.dart';
+import 'package:socon/utils/string_utils.dart';
 import 'package:socon/utils/toast_utils.dart';
 import 'package:socon/viewmodels/my_socon_view_model.dart';
 import 'package:socon/viewmodels/socon_coupon_view_model.dart';
@@ -155,7 +156,7 @@ class _SoconBookScreenState extends State<SoconBookScreen> {
                       available: true,
                       soconName: data![index]['item_name'],
                       storeName: data![index]['store_name'],
-                      dueDate: data![index]['expired_at'],
+                      dueDate : StringAndDateUtils.formatDateTime(data![index]['expired_at']),
                       imageUrl: data![index]['item_image'],
                       // soconName: soconNames[index],
                       // storeName: storeNames[index],
@@ -226,7 +227,7 @@ class _SoconBookScreenState extends State<SoconBookScreen> {
                       available: false,
                       soconName: data![index]['item_name'],
                       storeName: data![index]['store_name'],
-                      dueDate: data![index]['expired_at'],
+                      dueDate: StringAndDateUtils.formatDateTime(data![index]['expired_at']),
                       imageUrl: data![index]['item_image'],
                     );
                   },

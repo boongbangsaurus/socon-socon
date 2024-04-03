@@ -5,6 +5,7 @@ import 'package:socon/utils/colors.dart';
 import 'package:socon/utils/fontSizes.dart';
 import 'package:socon/utils/responsive_utils.dart';
 import 'package:socon/views/atoms/icon_loader.dart';
+import '../../utils/string_utils.dart';
 import '../atoms/image_card.dart';
 
 class MySocon extends StatelessWidget {
@@ -78,7 +79,7 @@ class MySocon extends StatelessWidget {
                   margin: EdgeInsets.symmetric(horizontal: 10),
                   padding: EdgeInsets.only(bottom: 10),
                   child: Text(
-                    '$dueDate 까지',
+                    '${ StringAndDateUtils.formatDateTime(dueDate)} 까지',
                     style: const TextStyle(
                       fontSize: FontSizes.XXXSMALL,
                       fontWeight: FontWeight.bold,
