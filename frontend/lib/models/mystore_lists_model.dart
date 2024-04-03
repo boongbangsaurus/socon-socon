@@ -1,13 +1,15 @@
 import 'dart:convert';
 
+
+// 내 점포 목록들 조회 get
 class MyStoreListModel {
-  final int id;
 
   @override
   String toString() {
     return 'MyStoreListModel{id: $id, name: $name, category: $category, image: $image, created_at: $created_at}';
   }
 
+  final int id;
   final String name;
   final String category;
   final String image;

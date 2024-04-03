@@ -20,7 +20,7 @@ public class SearchController {
 
     private final SearchService searchService;
     private final SoconRedisService soconRedisService;
-    @PostMapping("/detail")
+    @PostMapping(value = "/detail", produces = "application/json; charset=UTF-8")
     public ResponseEntity getStoresDetail(
             @RequestBody SearchRequest searchRequest,
             @RequestHeader("X-Authorization-Id") int memberId){

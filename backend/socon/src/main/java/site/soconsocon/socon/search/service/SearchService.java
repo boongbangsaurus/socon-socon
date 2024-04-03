@@ -23,6 +23,7 @@ import site.soconsocon.socon.store.domain.entity.jpa.FavStore;
 import site.soconsocon.socon.store.domain.entity.jpa.Store;
 import site.soconsocon.socon.store.repository.jpa.FavStoreRepository;
 import site.soconsocon.socon.store.repository.jpa.StoreRepository;
+import site.soconsocon.socon.store.service.SoconRedisService;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -37,7 +38,7 @@ public class SearchService {
         ArrayList<FoundStoreInfo> foundStoreInfoList = new ArrayList<>();
         log.warn(searchRequest.toString());
         log.warn("memberId : "+memberId);
-        Point location = new Point(Double.parseDouble(searchRequest.getLng()), Double.parseDouble(searchRequest.getLat()));
+        Point location = new Point(searchRequest.getLng(), searchRequest.getLat());
         Distance distance = new Distance(3);
 
         // default pagination value
@@ -124,10 +125,6 @@ public class SearchService {
         }catch (RuntimeException e){
             throw new SearchException(SearchErrorCode.SEARCH_FAIL);
         }
-
-    }
-
-    public void notifyNearMe(StoreNearMe storeNearMe, int memberId) {
 
     }
 }

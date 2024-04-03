@@ -27,15 +27,14 @@ class SogonMainScreen extends StatefulWidget {
 }
 
 class _SogonMainScreen extends State<SogonMainScreen> {
-  // GoogleMapController? _controller; // 지도 컨트롤러
   Location _location = Location(); // 내 위치
-  // List<Marker> _markers = []; // 소곤 리스트
   List<dynamic> _sogons = []; // 소곤 리스트 바텀 시트
   // ###### google_maps_cluster_manager
   Set<Marker> sogonMarker = {}; // 소곤 위치 마커
   List<SogonPlace> sogonItems = []; // 소곤 마커 정보
   late ClusterManager _manager; // 클러스터링 매니저
   Completer<GoogleMapController> _controller = Completer(); // 구글 맵 컨트롤러
+
   // 지도 좌표 초기화
   final CameraPosition _initCameraPosition =
       CameraPosition(target: LatLng(35.2041112343, 126.807181835), zoom: 15);
@@ -58,8 +57,6 @@ class _SogonMainScreen extends State<SogonMainScreen> {
     final res = await sogonViewModel.sogonList(now);
     print(res);
     print("############## now sogons list ##############");
-    // BitmapDescriptor markerIcon = await BitmapDescriptor.fromAssetImage(
-    //     const ImageConfiguration(), "assets/images/sogonMarker.png");
 
     setState(() {
       if (res == null) {
@@ -92,8 +89,15 @@ class _SogonMainScreen extends State<SogonMainScreen> {
     _requestLocationPermission();
     // _loadMarkers();
     // _initializeAsync();
-    _initFuture = _initializeAsync();
+    // _initFuture = _initializeAsync();
+    _refreshData();
     super.initState();
+  }
+
+  void _refreshData() {
+    setState(() {
+      _initFuture = _initializeAsync();
+    });
   }
 
   Future<void> _initializeAsync() async {
@@ -266,276 +270,263 @@ class _SogonMainScreen extends State<SogonMainScreen> {
         width: width,
         child: SafeArea(
             child: Scaffold(
-                body:
-                    // FutureBuilder<LatLng>(
-                    //     future: _getCurrentLocation(),
-                    //     builder: (context, snapshot) {
-                    //       if (snapshot.connectionState == ConnectionState.waiting) {
-                    //         return Center(child: CircularProgressIndicator());
-                    //       } else if (snapshot.hasError) {
-                    //         return Center(child: Text("위치 정보를 가져오는 데 실패했습니다."));
-                    //       } else {
-                    //         return
-                    FutureBuilder<void>(
-                        future: _initFuture, // FutureBuilder를 사용하여 비동기 초기화
-                        builder: (BuildContext context,
-                            AsyncSnapshot<void> snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            // 데이터 로딩 중인 경우 로딩 인디케이터 표시
-                            return Center(child: CircularProgressIndicator());
-                          } else if (snapshot.hasError) {
-                            // 오류 발생 시
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text('오류가 발생했습니다.'),
-                                SizedBox(
-                                  height: 40,
-                                ),
-                                BasicButton(
-                                  text: '돌아가기',
+                body: FutureBuilder<void>(
+                    future: _initFuture, // FutureBuilder를 사용하여 비동기 초기화
+                    builder:
+                        (BuildContext context, AsyncSnapshot<void> snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Center(child: CircularProgressIndicator());
+                      } else if (snapshot.hasError) {
+                        return Center(
+                            child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text('오류가 발생했습니다.'),
+                            SizedBox(
+                              height: 40,
+                            ),
+                            BasicButton(
+                              text: '돌아가기',
+                              onPressed: () {
+                                _refreshData();
+                                GoRouter.of(context).go('/');
+                              },
+                            )
+                          ],
+                        ));
+                      } else {
+                        return Stack(
+                          children: <Widget>[
+                            GoogleMap(
+                              mapType: MapType.normal,
+                              initialCameraPosition: _initCameraPosition,
+                              // CameraPosition(
+                              //   target: snapshot.data!,
+                              //   zoom: 18.0,
+                              // ),
+                              onMapCreated: (GoogleMapController controller) {
+                                _controller.complete(controller);
+                                // _manager = _initClusterManager();
+                                _manager.setMapId(controller.mapId);
+                              },
+                              onCameraMove: _manager.onCameraMove,
+                              onCameraIdle: _manager.updateMap,
+                              // markers: Set.from(_markers),
+                              markers: sogonMarker,
+                              myLocationEnabled: true,
+                              myLocationButtonEnabled: false,
+                            ),
+                            Container(
+                                padding:
+                                    const EdgeInsets.only(top: 12, left: 12),
+                                alignment: Alignment.topLeft,
+                                child: TextButton(
+                                  style: TextButton.styleFrom(
+                                    backgroundColor: AppColors.BLACK,
+                                    foregroundColor: AppColors.WHITE,
+                                    textStyle: const TextStyle(
+                                        fontSize: FontSizes.XXXSMALL,
+                                        fontWeight: FontWeight.bold),
+                                  ),
                                   onPressed: () {
                                     GoRouter.of(context).go('/');
                                   },
-                                )
-                              ],
-                            );
-                          } else {
-                            return Stack(
-                              children: <Widget>[
-                                GoogleMap(
-                                  mapType: MapType.normal,
-                                  initialCameraPosition: _initCameraPosition,
-                                  // CameraPosition(
-                                  //   target: snapshot.data!,
-                                  //   zoom: 18.0,
-                                  // ),
-                                  onMapCreated:
-                                      (GoogleMapController controller) {
-                                    _controller.complete(controller);
-                                    // _manager = _initClusterManager();
-                                    _manager.setMapId(controller.mapId);
-                                  },
-                                  onCameraMove: _manager.onCameraMove,
-                                  onCameraIdle: _manager.updateMap,
-                                  // markers: Set.from(_markers),
-                                  markers: sogonMarker,
-                                  myLocationEnabled: true,
-                                  myLocationButtonEnabled: false,
-                                ),
-                                Container(
-                                    padding: const EdgeInsets.only(
-                                        top: 12, left: 12),
-                                    alignment: Alignment.topLeft,
-                                    child: TextButton(
-                                      style: TextButton.styleFrom(
-                                        backgroundColor: AppColors.BLACK,
-                                        foregroundColor: AppColors.WHITE,
-                                        textStyle: const TextStyle(
-                                            fontSize: FontSizes.XXXSMALL,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      onPressed: () =>
-                                          GoRouter.of(context).go('/'),
-                                      child: const Text(
-                                        '나가기',
-                                      ),
-                                    )),
-                                Container(
-                                  padding:
-                                      const EdgeInsets.only(top: 12, right: 12),
-                                  alignment: Alignment.topRight,
-                                  child: FloatingActionButton(
-                                    backgroundColor: AppColors.WHITE,
-                                    onPressed: () {
-                                      // _updateMapForCurrentLocation();
-                                      _loadMarkers();
-                                    },
-                                    child: const Icon(Icons.gps_fixed),
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(50)),
+                                  child: const Text(
+                                    '나가기',
                                   ),
-                                ),
-                                Positioned(
-                                  left: 0.0,
-                                  right: 0.0,
-                                  bottom: 0.0,
-                                  child: Column(
+                                )),
+                            Container(
+                              padding:
+                                  const EdgeInsets.only(top: 12, right: 12),
+                              alignment: Alignment.topRight,
+                              child: FloatingActionButton(
+                                heroTag: "nowLocation",
+                                backgroundColor: AppColors.WHITE,
+                                onPressed: () {
+                                  // _updateMapForCurrentLocation();
+                                  _loadMarkers();
+                                },
+                                child: const Icon(Icons.gps_fixed),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(50)),
+                              ),
+                            ),
+                            Positioned(
+                              left: 0.0,
+                              right: 0.0,
+                              bottom: 0.0,
+                              child: Column(
+                                children: [
+                                  Container(
+                                    margin: EdgeInsets.all(10.0),
+                                    alignment: Alignment.centerRight,
+                                    child: FloatingActionButton(
+                                      heroTag: "register",
+                                      child: Icon(AppIcons.PLUS),
+                                      backgroundColor: AppColors.WHITE,
+                                      onPressed: () {
+                                        print('go 새글작성');
+                                        GoRouter.of(context)
+                                            .push('/sogon/register', extra: {
+                                          'lat': 37.5665,
+                                          'lng': 126.9780,
+                                        });
+                                      },
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(50)),
+                                    ),
+                                  ),
+                                  CustomBottomSheet(
+                                    // maxHeight: _size.height * 0.745,
+                                    maxHeight: _sogons.isNotEmpty
+                                        ? height * 0.22
+                                        : height * 0.13,
+                                    headerHeight: 50.0,
+                                    header: _header,
+                                    borderRadius: const BorderRadius.only(
+                                        topLeft: Radius.circular(25.0),
+                                        topRight: Radius.circular(25.0)),
+                                    boxShadow: const <BoxShadow>[
+                                      BoxShadow(
+                                          color: Colors.black26,
+                                          blurRadius: 10.0,
+                                          spreadRadius: -1.0,
+                                          offset: Offset(0.0, 3.0)),
+                                      BoxShadow(
+                                          color: Colors.black26,
+                                          blurRadius: 4.0,
+                                          spreadRadius: -1.0,
+                                          offset: Offset(0.0, 0.0)),
+                                    ],
                                     children: [
-                                      Container(
-                                        margin: EdgeInsets.all(10.0),
-                                        alignment: Alignment.centerRight,
-                                        child: FloatingActionButton(
-                                          child: Icon(AppIcons.PLUS),
-                                          backgroundColor: AppColors.WHITE,
-                                          onPressed: () {
-                                            print('go 새글작성');
-                                            GoRouter.of(context)
-                                                .push('/sogon/register');
-                                          },
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(50)),
-                                        ),
-                                      ),
-                                      CustomBottomSheet(
-                                        // maxHeight: _size.height * 0.745,
-                                        maxHeight: _sogons.isNotEmpty
-                                            ? height * 0.22
-                                            : height * 0.13,
-                                        headerHeight: 50.0,
-                                        header: _header,
-                                        borderRadius: const BorderRadius.only(
-                                            topLeft: Radius.circular(25.0),
-                                            topRight: Radius.circular(25.0)),
-                                        boxShadow: const <BoxShadow>[
-                                          BoxShadow(
-                                              color: Colors.black26,
-                                              blurRadius: 10.0,
-                                              spreadRadius: -1.0,
-                                              offset: Offset(0.0, 3.0)),
-                                          BoxShadow(
-                                              color: Colors.black26,
-                                              blurRadius: 4.0,
-                                              spreadRadius: -1.0,
-                                              offset: Offset(0.0, 0.0)),
-                                        ],
-                                        children: [
-                                          _sogons.isNotEmpty
-                                              ? Container(
-                                                  width: MediaQuery.of(context)
-                                                      .size
-                                                      .width,
-                                                  height: 168,
-                                                  decoration: BoxDecoration(
-                                                      color: Colors.white,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              20)),
-                                                  child: ListView.builder(
-                                                    scrollDirection:
-                                                        Axis.horizontal,
-                                                    itemCount: _sogons.length,
-                                                    padding:
-                                                        EdgeInsets.symmetric(
-                                                            horizontal: 10.0),
-                                                    itemBuilder:
-                                                        (context, index) {
-                                                      return GestureDetector(
-                                                        onTap: () async {
-                                                          final GoogleMapController
-                                                              controller =
-                                                              await _controller
-                                                                  .future; // GoogleMapController 인스턴스를 얻음
-                                                          controller.moveCamera(
-                                                            CameraUpdate
-                                                                .newLatLngZoom(
-                                                              LatLng(
-                                                                (_sogons[index][
-                                                                            'lat']
-                                                                        as num)
-                                                                    .toDouble(),
-                                                                (_sogons[index][
-                                                                            'lng']
-                                                                        as num)
-                                                                    .toDouble(),
-                                                              ),
-                                                              18.0,
-                                                            ),
-                                                          );
-                                                        },
-                                                        child: Container(
-                                                          width: 100,
-                                                          height: 100,
-                                                          margin:
-                                                              EdgeInsets.only(
-                                                                  right: 10),
-                                                          child: Column(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .start,
-                                                            children: [
-                                                              ImageCard(
-                                                                imgUrl: _sogons[
-                                                                            index]
-                                                                        [
-                                                                        'socon_img']
-                                                                    .toString(),
-                                                                borderRadius:
-                                                                    50,
-                                                              ),
-                                                              Text(
-                                                                _sogons[index]
-                                                                    ["title"],
-                                                                style:
-                                                                    const TextStyle(
-                                                                  color: Colors
-                                                                      .black,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w600,
-                                                                  overflow:
-                                                                      TextOverflow
-                                                                          .ellipsis,
-                                                                ),
-                                                              ),
-                                                              TextButton(
-                                                                  onPressed:
-                                                                      () {
-                                                                    print(_sogons[
-                                                                            index]
-                                                                        ["id"]);
-                                                                  },
-                                                                  style: TextButton
-                                                                      .styleFrom(
-                                                                    backgroundColor:
-                                                                        AppColors
-                                                                            .BLACK,
-                                                                    foregroundColor:
-                                                                        AppColors
-                                                                            .WHITE,
-                                                                    textStyle: const TextStyle(
-                                                                        fontSize:
-                                                                            FontSizes
-                                                                                .XXXSMALL,
-                                                                        fontWeight:
-                                                                            FontWeight.bold),
-                                                                  ),
-                                                                  child: const Text(
-                                                                      '글 보기')),
-                                                            ],
+                                      _sogons.isNotEmpty
+                                          ? Container(
+                                              width: MediaQuery.of(context)
+                                                  .size
+                                                  .width,
+                                              height: 168,
+                                              decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          20)),
+                                              child: ListView.builder(
+                                                scrollDirection:
+                                                    Axis.horizontal,
+                                                itemCount: _sogons.length,
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 10.0),
+                                                itemBuilder: (context, index) {
+                                                  return GestureDetector(
+                                                    onTap: () async {
+                                                      final GoogleMapController
+                                                          controller =
+                                                          await _controller
+                                                              .future; // GoogleMapController 인스턴스를 얻음
+                                                      controller.moveCamera(
+                                                        CameraUpdate
+                                                            .newLatLngZoom(
+                                                          LatLng(
+                                                            (_sogons[index]
+                                                                        ['lat']
+                                                                    as num)
+                                                                .toDouble(),
+                                                            (_sogons[index]
+                                                                        ['lng']
+                                                                    as num)
+                                                                .toDouble(),
                                                           ),
+                                                          18.0,
                                                         ),
                                                       );
                                                     },
-                                                  ))
-                                              : Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceEvenly,
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.center,
-                                                  children: [
-                                                      Text('주변에 소곤이 없어요..'),
-                                                      BasicButton(
-                                                        text: '새 소곤 작성하러 가기',
-                                                        onPressed: () {
-                                                          GoRouter.of(context).push(
-                                                              '/sogon/register');
-                                                        },
-                                                      )
-                                                    ])
-                                        ],
-                                      ),
+                                                    child: Container(
+                                                      width: 100,
+                                                      height: 100,
+                                                      margin: EdgeInsets.only(
+                                                          right: 10),
+                                                      child: Column(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          ImageCard(
+                                                            imgUrl: _sogons[
+                                                                        index][
+                                                                    'socon_img']
+                                                                .toString(),
+                                                            borderRadius: 50,
+                                                          ),
+                                                          Text(
+                                                            _sogons[index]
+                                                                ["title"],
+                                                            style:
+                                                                const TextStyle(
+                                                              color:
+                                                                  Colors.black,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600,
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                            ),
+                                                          ),
+                                                          TextButton(
+                                                              onPressed: () {
+                                                                print(_sogons[
+                                                                        index]
+                                                                    ["id"]);
+                                                              },
+                                                              style: TextButton
+                                                                  .styleFrom(
+                                                                backgroundColor:
+                                                                    AppColors
+                                                                        .BLACK,
+                                                                foregroundColor:
+                                                                    AppColors
+                                                                        .WHITE,
+                                                                textStyle: const TextStyle(
+                                                                    fontSize:
+                                                                        FontSizes
+                                                                            .XXXSMALL,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold),
+                                                              ),
+                                                              child: const Text(
+                                                                  '글 보기')),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  );
+                                                },
+                                              ))
+                                          : Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceEvenly,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                  Text('주변에 소곤이 없어요..'),
+                                                  BasicButton(
+                                                    text: '새 소곤 작성하러 가기',
+                                                    onPressed: () {
+                                                      GoRouter.of(context).push(
+                                                          '/sogon/register');
+                                                    },
+                                                  )
+                                                ])
                                     ],
                                   ),
-                                ),
-                              ],
-                            );
-                          }
-                        }))));
+                                ],
+                              ),
+                            ),
+                          ],
+                        );
+                      }
+                    }))));
   }
 }

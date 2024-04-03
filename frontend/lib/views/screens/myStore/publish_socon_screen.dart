@@ -5,7 +5,7 @@ import 'package:socon/views/atoms/icon_loader.dart';
 import 'package:socon/views/modules/cards/detail_info_card.dart';
 import 'package:socon/views/modules/menu_detail_top_card.dart';
 
-import '../../../models/menu.dart';
+import '../../../models/mystore_detail_menu.dart';
 import '../../../utils/colors.dart';
 import '../../../utils/fontSizes.dart';
 import '../../../utils/responsive_utils.dart';

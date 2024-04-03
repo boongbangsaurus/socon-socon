@@ -7,8 +7,10 @@ import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:socon/models/store_register_model.dart';
 import 'dart:io';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:socon/utils/colors.dart';
 import 'package:socon/utils/fontSizes.dart';
@@ -18,29 +20,11 @@ import 'package:socon/views/atoms/buttons.dart';
 import 'package:socon/views/atoms/checkbox.dart';
 import 'package:socon/views/atoms/dropdown.dart';
 import 'package:socon/views/atoms/input_form.dart';
+import 'package:socon/models/store_register_model.dart';
 import 'package:socon/views/atoms/tag_icon.dart';
 import 'package:socon/viewmodels/store_register_view_model.dart';
 import 'package:socon/views/screens/myStore/store_register_success_screen.dart';
 
-class BusinessHour {
-  String day;
-  bool isWorking;
-  String? openAt;
-  String? closeAt;
-  bool? isBreaktime;
-  String? breaktimeStart;
-  String? breaktimeEnd;
-
-  BusinessHour({
-    required this.day,
-    required this.isWorking,
-    this.openAt,
-    this.closeAt,
-    this.isBreaktime = false,
-    this.breaktimeStart,
-    this.breaktimeEnd,
-  });
-}
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -50,7 +34,6 @@ class RegisterPage extends StatefulWidget {
 class _RegisterPageState extends State<RegisterPage> {
   final PageController _pageController = PageController();
 
-  // final StoreRegisterViewModel viewModel;
 
   int _currentPageIndex = 0;
 
@@ -65,8 +48,6 @@ class _RegisterPageState extends State<RegisterPage> {
     }
   }
 
-  // 데이터
-  List<BusinessHour> BusinessHours = [];
 
   @override
   Widget build(BuildContext context) {
@@ -98,10 +79,7 @@ class _RegisterPageState extends State<RegisterPage> {
               children: [
                 Step1(pageController: _pageController),
                 Step2(pageController: _pageController),
-                Step3(
-                  pageController: _pageController,
-                  BusinessHours: BusinessHours,
-                ),
+                Step3(pageController: _pageController),
                 SummaryPage(pageController: _pageController),
               ],
             ),
@@ -112,14 +90,81 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 }
 
-class Step1 extends StatelessWidget {
+
+
+
+class Step1 extends StatefulWidget {
   final PageController pageController;
 
   Step1({required this.pageController});
 
   @override
+  State<Step1> createState() => _Step1State();
+}
+
+class _Step1State extends State<Step1> {
+  List<dynamic> businesses = [];
+  //[{id: 4, registration_number: 123-45-67890}, {id: 5, registration_number: 123-45-67891}, {id: 6, registration_number: 332-05-23141}]
+
+  @override
+  void initState() {
+    super.initState();
+    loadMyStores();
+  }
+
+  void loadMyStores() async {
+    debugPrint('내 가게 id 요청중!');
+    var stores = await getBusinesses();
+    setState(() {
+      businesses = stores;
+    });
+  }
+
+  Future<List> getBusinesses() async {
+    final String baseUrl = 'http://j10c207.p.ssafy.io:8000'; // 통신 url
+    final url = Uri.parse('$baseUrl/api/v1/stores/business');
+    final prefs = await SharedPreferences.getInstance();
+    final accessToken = prefs.getString('accessToken');
+    debugPrint('cccccccccccccccccccccccccc');
+    // print(myStoreListModel.toJson());
+
+    final response = await http.get(url,
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+        'authorization': 'Bearer $accessToken',
+      },
+    );
+    print('............................');
+    print(response.statusCode);
+    print('............................');
+
+    if (response.statusCode == 200) {
+      final String body = utf8.decode(response.bodyBytes);
+      final decodedBody = jsonDecode(body);
+      debugPrint(body);
+      debugPrint(
+          '###########getBusinesses res 200 ################################################');
+      final List<dynamic> dataBody = decodedBody['data_body'];
+      debugPrint(
+          'getBusinesses res 200 ################################################');
+      print(dataBody);
+      return dataBody;
+    } else {
+      return [];
+    }
+  }
+
+
+
+  @override
   Widget build(BuildContext context) {
     final viewModel = Provider.of<StoreRegisterViewModel>(context);
+
+    final List<String> dropdownItems = businesses.map((business) {
+      return business['registration_number'].toString();
+    }).toList();
+
+
     return Scaffold(
       body: Container(
           padding: EdgeInsets.all(20.0),
@@ -138,13 +183,31 @@ class Step1 extends StatelessWidget {
                       ),
                       SizedBox(height: 10),
                       Text('김싸피', style: TextStyle(fontSize: 18)),
+
                       SizedBox(height: 40),
-                      CustomInputField(
-                          labelText: '사업자 등록 번호',
-                          onChanged: (value) {
-                            viewModel.setRegistrationNumberId(int.parse(value));
-                            print(viewModel.registrationNumberId);
-                          }),
+
+                      Text(
+                        '사업자 등록 번호',
+                        style: TextStyle(
+                            fontSize: FontSizes.SMALL,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(height: 10),
+                      Dropdown(
+                        title: '등록된 사업자 주소를 선택해 주세요',  // 드롭다운 초기 메시지
+                        dropdownItems: dropdownItems,
+                        onItemSelected: (item) {
+                          print(item);
+                            var selectedItem = businesses.firstWhere(
+                                    (business) => business['registration_number'] == item,
+                                orElse: () => {'id': null} // 조건에 맞는 요소가 없을 경우 반환할 기본값
+                            )['id'];
+                            viewModel.setRegistrationNumberId(selectedItem);
+                            // print(selectedItem);
+                        },
+                      ),
+                      SizedBox(height: 40),
+
                       CustomInputField(
                         labelText: '사업자 주소',
                         onChanged: (value) => {viewModel.setAddress(value)},
@@ -163,7 +226,7 @@ class Step1 extends StatelessWidget {
               BasicButton(
                 text: '다음',
                 color: 'yellow',
-                onPressed: () => pageController.nextPage(
+                onPressed: () => widget.pageController.nextPage(
                   duration: Duration(milliseconds: 300),
                   curve: Curves.easeInOut,
                 ),
@@ -390,9 +453,8 @@ class _Step2State extends State<Step2> {
 class Step3 extends StatefulWidget {
   final PageController pageController;
 
-  final List<BusinessHour>? BusinessHours;
 
-  Step3({required this.pageController, this.BusinessHours});
+  Step3({required this.pageController});
 
   @override
   State<Step3> createState() => _Step3State();
@@ -462,15 +524,7 @@ class _Step3State extends State<Step3> {
 
   List<String> dropdownItems = [ '08:00', '08:30', '09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30',  '13:00', '13:30', '14:00', '14:30','15:00', '15:30', '16:00', '16:30', '17:00', '17:30', '18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00', '21:30'];
   List<String> Days = ['월', '화', '수', '목', '금', '토', '일'];
-  // Map<String, dynamic> operationDaysMap = {
-  //   '월': {'isWorking': false},
-  //   '화': {'isWorking': false},
-  //   '수': {'isWorking': false},
-  //   '목': {'isWorking': false},
-  //   '금': {'isWorking': false},
-  //   '토': {'isWorking': false},
-  //   '일': {'isWorking': false},
-  // };
+
 
   List<String> selectedDay = [];
   String selectedStartTime = '';
@@ -479,8 +533,6 @@ class _Step3State extends State<Step3> {
   String breaktimeStart = '';
   String breaktimeEnd = '';
 
-
-  Map<String, String> selectedStartTimes = {};
 
 
   @override

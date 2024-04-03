@@ -10,7 +10,7 @@ import '../atoms/tag_icon.dart';
 class StoreMenuCard extends StatelessWidget {
   final bool isOwner;
   final int storeId;
-  final int id;
+  final int? id;
   final String name;
   final int price;     // 상품가격(정가)
   final String image;
@@ -29,7 +29,7 @@ class StoreMenuCard extends StatelessWidget {
     super.key,
     required this.storeId,
     this.isOwner = false,
-    required this.id,
+    this.id,
     required this.name,
     required this.price,
     required this.image,

@@ -8,7 +8,7 @@ import site.soconsocon.auth.feign.domain.dto.feign.SaveTokenRequest;
 @FeignClient(name = "notification", url = "${feign.urls.notification}")
 public interface NotificationFeignClient {
 
-    @PostMapping("/notification/fcm/user/save")
+    @PostMapping("/notification/fcm/save")
     ResponseEntity saveDeviceToken(@RequestBody SaveTokenRequest saveTokenRequest);
 
 }

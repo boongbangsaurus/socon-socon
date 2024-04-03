@@ -18,8 +18,8 @@ import site.soconsocon.socon.search.domain.dto.common.SearchType;
 @Data
 public class SearchRequest {
     private String content;
-    private String lat;
-    private String lng;
+    private Double lat;
+    private Double lng;
     private SearchType searchType;
     private String sort;
     private Boolean isFavoriteSearch;

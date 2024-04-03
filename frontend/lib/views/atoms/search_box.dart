@@ -7,7 +7,8 @@ import 'package:socon/views/atoms/icon_loader.dart';
 // 검색 상자 위젯 클래스
 class SearchBox extends StatefulWidget {
   final Widget filterAppliedWidget;
-  const SearchBox({super.key, required this.filterAppliedWidget });
+  final void Function() onEnterPressed;
+  const SearchBox({super.key, required this.filterAppliedWidget, required this.onEnterPressed });
 
   @override
   _SearchBoxState createState() => _SearchBoxState();
@@ -70,6 +71,7 @@ class _SearchBoxState extends State<SearchBox> {
                 if (isFilterApplied) {
                   isFilterApplied = !isFilterApplied; // 필터 토글
                 }
+                widget.onEnterPressed();
               });
             },
             onTap: () {

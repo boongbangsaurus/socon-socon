@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'package:socon/models/location.dart';
+import 'package:socon/models/sogon_register.dart';
 
 import '../models/locations.dart';
 
@@ -103,7 +104,7 @@ class SogonService {
   }
 
   // 보유 소콘 조회
-  Future<Map<String, dynamic>?> getSocons() async {
+  Future<List<dynamic>> getSocons() async {
     final prefs = await SharedPreferences.getInstance();
     final accessToken = prefs.getString('accessToken');
     final res = await http.get(
@@ -120,14 +121,14 @@ class SogonService {
       debugPrint(
           'getSocons res 200 ################################################');
       print(body);
-      print(dataBody);
+      print(dataBody['usable'].runtimeType);
       debugPrint(
           'getSocons res 200 ################################################');
 
       // final List dataBody = body['data_body'];
       // final String accessToken = body['data_body']['accessToken'];
       // final String refreshToken = body['data_body']['refreshToken'];
-      return dataBody; // accessToken, refreshToken 반환
+      return dataBody['usable']; // accessToken, refreshToken 반환
     } else {
       debugPrint(
           'getSocons res not 200 ################################################');
@@ -137,9 +138,46 @@ class SogonService {
       debugPrint(
           'getSocons res not 200 ################################################');
 
-      return null;
+      return [];
     }
   }
 
-//
+  // 소곤 작성 POST api 요청
+  Future<bool> sogonRegister(SogonRegister sogonRegister) async {
+    final prefs = await SharedPreferences.getInstance();
+    final accessToken = prefs.getString('accessToken');
+    print("############ get Token, local: getMarker ###########");
+    print(jsonEncode(sogonRegister.toJson()));
+    print(accessToken);
+    print("############ get Token: getMarker ###########");
+
+    final res = await http.post(
+      Uri.parse('$baseUrl/api/v1/sogons'),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+        'authorization': 'Bearer $accessToken',
+      },
+      body: jsonEncode(sogonRegister.toJson()),
+    );
+    if (res.statusCode == 201) {
+      final String body = utf8.decode(res.bodyBytes);
+      print(body);
+      final List<dynamic> dataBody =
+          jsonDecode(body)['data_body'] as List<dynamic>;
+      debugPrint(
+          'sogonRegister res 201 ################################################');
+      print(dataBody);
+      debugPrint(
+          'sogonRegister res 201 ################################################');
+
+      return true;
+    } else {
+      debugPrint(
+          'sogonRegister res not 201 ################################################');
+      print(jsonDecode(utf8.decode(res.bodyBytes)));
+      debugPrint(
+          'sogonRegister res not 201 ################################################');
+      return false;
+    }
+  }
 }

@@ -1,17 +1,19 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:socon/services/mystore_lists_service.dart';
 import 'package:socon/utils/colors.dart';
 import 'package:socon/utils/fontSizes.dart';
 import 'package:socon/utils/responsive_utils.dart';
 import 'package:socon/utils/icons.dart';
+import 'package:socon/viewmodels/mystore_detail_menu_list_view_model.dart';
 import 'package:socon/views/atoms/tab.dart';
 import 'package:socon/views/atoms/tag_icon.dart';
 import 'package:socon/views/modules/mystore_menu_management.dart';
 import 'package:socon/views/modules/mystore_rigister_menu_lists.dart';
 import 'package:socon/views/screens/my_store_list_screen.dart';
 
-class StoreDetailTopCard extends StatelessWidget {
+class StoreDetailTopCard extends StatefulWidget {
   final int storeId;
   final bool isOwner;
 
@@ -22,26 +24,68 @@ class StoreDetailTopCard extends StatelessWidget {
   });
 
   @override
+  State<StoreDetailTopCard> createState() => _StoreDetailTopCardState();
+}
+
+class _StoreDetailTopCardState extends State<StoreDetailTopCard> {
+  // 내 발급 목록 리스트 불러오기
+  List<dynamic> storeInfos = [];
+
+  void initState() {
+    super.initState();
+    loadMyStores();
+  }
+
+  void loadMyStores() async {
+    debugPrint('내점포 상세조회 - 발행소콘 목록!');
+    MystoreMenuListViewModel viewModel = MystoreMenuListViewModel();
+    var infos = await viewModel.storeDetailInfos(widget.storeId);
+    // print('njnjnjnjnjnjnjnjnjnjn');
+    // print(menus);
+    // print('njnjnjnjnjnjnjnjnjnjn');
+    setState(() {
+      storeInfos = infos as List;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return SafeArea(
-        child: Container(
-      color: AppColors.WHITE,
-      child: Stack(
-        children: [
-          Container(
-            child: Image.network('https://cataas.com/cat',
-                fit: BoxFit.cover,
-                height: ResponsiveUtils.getHeightWithPixels(context, 160),
-                width: ResponsiveUtils.getWidthPercent(context, 100)),
-          ),
-          shortStoreInfoWithBar(context),
-        ],
-      ),
-    ));
+    print('777777777777777777777777777777777');
+    print(storeInfos);
+    print(widget.storeId);
+    print('777777777777777777777777777777777');
+
+    var matchingStore = storeInfos.firstWhere(
+          (store) => store['id'] == widget.storeId,
+      orElse: () => null,
+    );
+
+    if (matchingStore != null){
+      return SafeArea(
+          child: Container(
+            color: AppColors.WHITE,
+            child: Stack(
+              children: [
+                Container(
+                  // child: Image.network('https://cataas.com/cat',
+                  child: Image.network(matchingStore['image'],
+                      fit: BoxFit.cover,
+                      height: ResponsiveUtils.getHeightWithPixels(context, 160),
+                      width: ResponsiveUtils.getWidthPercent(context, 100)),
+                ),
+                shortStoreInfoWithBar(context, matchingStore),
+              ],
+            ),
+          )
+      );
+    } else {
+      return Container(child: Text('매장이 존재하지 않아요!'),);
+    }
+
     // bottomNavigationBar: null,
   }
 
-  Widget shortStoreInfoWithBar(BuildContext context) {
+  Widget shortStoreInfoWithBar(BuildContext context, dynamic matchingStore) {
     return Column(
       children: [
         // 매장 정보에 대한 상단 바
@@ -75,12 +119,12 @@ class StoreDetailTopCard extends StatelessWidget {
           ),
         ),
         SizedBox(height: ResponsiveUtils.getHeightWithPixels(context, 50)),
-        shortStoreInfoCard(context),
+        shortStoreInfoCard(context, matchingStore),
       ],
     );
   }
 
-  Widget shortStoreInfoCard(BuildContext context) {
+  Widget shortStoreInfoCard(BuildContext context, dynamic matchingStore) {
     return // 매장 정보 카드
         Container(
       width: ResponsiveUtils.getWidthWithPixels(context, 330),
@@ -107,7 +151,7 @@ class StoreDetailTopCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                '오소유',
+                matchingStore['name'],
                 style: TextStyle(
                   fontSize: ResponsiveUtils.calculateResponsiveFontSize(
                       context, FontSizes.XLARGE),
@@ -115,7 +159,7 @@ class StoreDetailTopCard extends StatelessWidget {
                 ),
               ),
               TagIcon(
-                buttonText: '카페',
+                buttonText: matchingStore['category'],
                 buttonColor: Colors.brown,
                 buttonTextColor: AppColors.WHITE,
                 width: ResponsiveUtils.getWidthWithPixels(context, 42),
@@ -142,7 +186,7 @@ class StoreDetailTopCard extends StatelessWidget {
           ),
           SizedBox(height: 10),
 
-          isOwner?
+          widget.isOwner?
             GestureDetector(
               onTap: () {
                 print("매장 정보 수정 버튼 클릭");
