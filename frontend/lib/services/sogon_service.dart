@@ -60,7 +60,7 @@ class SogonService {
   }
 
   // 소곤 상세 조회 요청 api
-  Future<Map<String, dynamic>?> getSogonDetail(int id) async {
+  Future<Map<String, dynamic>?> getSogonDetail(String id) async {
     final prefs = await SharedPreferences.getInstance();
     final accessToken = prefs.getString('accessToken');
     print("############ get Token, id ###########");
@@ -81,21 +81,15 @@ class SogonService {
           jsonDecode(body)['data_body'] as Map<String, dynamic>;
       debugPrint(
           'getSogonDetail res 200 ################################################');
-      print(body);
       print(dataBody);
       debugPrint(
           'getSogonDetail res 200 ################################################');
 
-      // final List dataBody = body['data_body'];
-      // final String accessToken = body['data_body']['accessToken'];
-      // final String refreshToken = body['data_body']['refreshToken'];
-      return dataBody; // accessToken, refreshToken 반환
+      return dataBody;
     } else {
       debugPrint(
           'getSogonDetail res not 200 ################################################');
       print(utf8.decode(res.bodyBytes));
-
-      // print(jsonDecode(res.body));
       debugPrint(
           'getSogonDetail res not 200 ################################################');
 
@@ -142,7 +136,7 @@ class SogonService {
     }
   }
 
-  // 소곤 작성 POST api 요청
+  // 소곤 등록 POST api 요청
   Future<bool> sogonRegister(SogonRegister sogonRegister) async {
     final prefs = await SharedPreferences.getInstance();
     final accessToken = prefs.getString('accessToken');
@@ -161,12 +155,9 @@ class SogonService {
     );
     if (res.statusCode == 201) {
       final String body = utf8.decode(res.bodyBytes);
-      print(body);
-      final List<dynamic> dataBody =
-          jsonDecode(body)['data_body'] as List<dynamic>;
       debugPrint(
           'sogonRegister res 201 ################################################');
-      print(dataBody);
+      print(body);
       debugPrint(
           'sogonRegister res 201 ################################################');
 
@@ -177,6 +168,67 @@ class SogonService {
       print(jsonDecode(utf8.decode(res.bodyBytes)));
       debugPrint(
           'sogonRegister res not 201 ################################################');
+      return false;
+    }
+  }
+
+  // 댓글 등록 POST api 요청
+  Future<bool> commentRegister(String sogon_id, String comment) async {
+    final prefs = await SharedPreferences.getInstance();
+    final accessToken = prefs.getString('accessToken');
+    print("############ sogon_id, comment ###########");
+    print('$sogon_id, $comment');
+    print("############ sogon_id, comment ###########");
+
+    final res = await http.post(
+      Uri.parse('$baseUrl/api/v1/sogons/$sogon_id/comment'),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+        'authorization': 'Bearer $accessToken',
+      },
+      body: jsonEncode({'content': comment}),
+    );
+    if (res.statusCode == 200) {
+      final String body = utf8.decode(res.bodyBytes);
+      debugPrint(
+          'commentRegister res 201 ################################################');
+      print(body);
+      debugPrint(
+          'commentRegister res 201 ################################################');
+
+      return true;
+    } else {
+      debugPrint(
+          'commentRegister res not 201 ################################################');
+      print(jsonDecode(utf8.decode(res.bodyBytes)));
+      debugPrint(
+          'commentRegister res not 201 ################################################');
+      return false;
+    }
+  }
+
+  // 소곤 댓글 채택 GET요청
+  Future<bool> setPicked(String sogon_id, String comment_id) async {
+    final prefs = await SharedPreferences.getInstance();
+    final accessToken = prefs.getString('accessToken');
+    final res = await http.get(
+      Uri.parse('$baseUrl/api/v1/sogons/$sogon_id/comment/$comment_id'),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+        'authorization': 'Bearer $accessToken',
+      },
+    );
+    if (res.statusCode == 200) {
+      debugPrint(
+          'setPicked res 200 ################################################');
+      return true;
+    } else {
+      debugPrint(
+          'setPicked res not 200 ################################################');
+      print(utf8.decode(res.bodyBytes));
+      debugPrint(
+          'setPicked res not 200 ################################################');
+
       return false;
     }
   }

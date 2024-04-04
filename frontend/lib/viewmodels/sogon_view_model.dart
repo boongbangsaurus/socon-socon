@@ -1,4 +1,8 @@
+import 'package:flutter/cupertino.dart';
+import 'package:intl/intl.dart';
+import 'package:socon/models/comment.dart';
 import 'package:socon/models/socon_book.dart';
+import 'package:socon/models/sogon_detail.dart';
 import 'package:socon/models/sogon_register.dart';
 import 'package:socon/services/sogon_service.dart';
 
@@ -7,8 +11,10 @@ import '../models/locations.dart';
 
 /// [SogonViewModel]
 /// view의 실제 로직 구현 (폼 검증, 서비스 호출)
-class SogonViewModel {
+class SogonViewModel extends ChangeNotifier {
   final SogonService _sogonService = SogonService();
+  SogonDetail? sogonDetail;
+  List<SogonComment>? comments;
 
   // 소곤 리스트 api 요청
   Future<List?> sogonList(Locations location) async {
@@ -21,13 +27,35 @@ class SogonViewModel {
   }
 
   // 소곤 상세 조회 GET api 요청
-  Future<Map<String, dynamic>> sogonDetail(int id) async {
-    Map<String, dynamic>? sogons = await _sogonService.getSogonDetail(id);
-    if (sogons != null) {
-      return sogons;
-    } else {
-      return {};
+  Future<Map<String, dynamic>> getSogonDetail(String sogon_id) async {
+    Map<String, dynamic>? sogons = await _sogonService.getSogonDetail(sogon_id);
+    if (sogons != null &&
+        sogons.containsKey('sogon') &&
+        sogons.containsKey('comments')) {
+      var sogonData = sogons['sogon'];
+      sogonDetail = SogonDetail(
+          id: (sogonData['id'] as num).toInt(),
+          title: sogonData['title'],
+          member_name: sogonData['member_name'],
+          member_img: sogonData['member_img'],
+          content: sogonData['content'],
+          image1: sogonData['image1'],
+          image2: sogonData['image2'],
+          socon_img: sogonData['socon_img'],
+          create_at: DateFormat("yyyy-MM-dd'T'HH:mm:ss")
+              .parse(sogonData['created_at']),
+          expired_at: DateFormat("yyyy-MM-dd'T'HH:mm:ss")
+              .parse(sogonData['expired_at']),
+          expired: sogonData['expired']);
+
+      var commentsData = List.from(sogons['comments']);
+      comments = commentsData
+          .map((commentData) => SogonComment.fromJson(commentData))
+          .toList();
+
+      notifyListeners(); // 상태가 변경되었음을 알림
     }
+    return sogons ?? {};
   }
 
   // 보유 소콘
@@ -52,13 +80,23 @@ class SogonViewModel {
     }
   }
 
+  // 소곤 등록 POST API
   Future<bool> sogonRegister(SogonRegister sogonRegister) async {
     bool res = await _sogonService.sogonRegister(sogonRegister);
+    print('====================== sogonRegister');
+    print(res);
+    return res;
+  }
 
-    if (res != null) {
-      return false;
-    } else {
-      return true;
-    }
+  Future<bool> commentRegister(String sogon_id, String comment) async {
+    bool res = await _sogonService.commentRegister(sogon_id, comment);
+    getSogonDetail(sogon_id);
+    return res;
+  }
+
+  Future<bool> setPicked(String sogon_id, String comment_id) async {
+    bool res = await _sogonService.setPicked(sogon_id, comment_id);
+    getSogonDetail(sogon_id);
+    return res;
   }
 }

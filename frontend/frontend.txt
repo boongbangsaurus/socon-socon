@@ -1,0 +1,283 @@
+.
+├── README.md
+├── analysis_options.yaml
+├── android
+│   ├── app
+│   │   ├── build.gradle
+│   │   └── src
+│   │       ├── debug
+│   │       │   └── AndroidManifest.xml
+│   │       ├── main
+│   │       │   ├── AndroidManifest.xml
+│   │       │   ├── ic_launcher-playstore.png
+│   │       │   ├── java
+│   │       │   │   └── site
+│   │       │   │       └── boongbang
+│   │       │   │           └── socon
+│   │       │   │               └── MainActivity.java
+│   │       │   ├── kotlin
+│   │       │   │   └── site
+│   │       │   │       └── boongbang
+│   │       │   │           └── frontend
+│   │       │   │               └── MainActivity.kt
+│   │       │   └── res
+│   │       │       ├── drawable
+│   │       │       │   └── launch_background.xml
+│   │       │       ├── drawable-v21
+│   │       │       │   └── launch_background.xml
+│   │       │       ├── mipmap-anydpi-v26
+│   │       │       │   ├── ic_launcher.xml
+│   │       │       │   └── ic_launcher_round.xml
+│   │       │       ├── mipmap-hdpi
+│   │       │       │   ├── ic_launcher.webp
+│   │       │       │   ├── ic_launcher_foreground.webp
+│   │       │       │   └── ic_launcher_round.webp
+│   │       │       ├── mipmap-mdpi
+│   │       │       │   ├── ic_launcher.webp
+│   │       │       │   ├── ic_launcher_foreground.webp
+│   │       │       │   └── ic_launcher_round.webp
+│   │       │       ├── mipmap-xhdpi
+│   │       │       │   ├── ic_launcher.webp
+│   │       │       │   ├── ic_launcher_foreground.webp
+│   │       │       │   └── ic_launcher_round.webp
+│   │       │       ├── mipmap-xxhdpi
+│   │       │       │   ├── ic_launcher.webp
+│   │       │       │   ├── ic_launcher_foreground.webp
+│   │       │       │   └── ic_launcher_round.webp
+│   │       │       ├── mipmap-xxxhdpi
+│   │       │       │   ├── ic_launcher.webp
+│   │       │       │   ├── ic_launcher_foreground.webp
+│   │       │       │   └── ic_launcher_round.webp
+│   │       │       ├── values
+│   │       │       │   ├── colors.xml
+│   │       │       │   ├── ic_launcher_background.xml
+│   │       │       │   └── styles.xml
+│   │       │       └── values-night
+│   │       │           └── styles.xml
+│   │       └── profile
+│   │           └── AndroidManifest.xml
+│   ├── build.gradle
+│   ├── gradle
+│   │   └── wrapper
+│   │       └── gradle-wrapper.properties
+│   ├── gradle.properties
+│   └── settings.gradle
+├── assets
+│   ├── fonts
+│   │   ├── bagelFatOne
+│   │   │   └── BagelFatOne-Regular.ttf
+│   │   └── pretendard
+│   │       ├── Pretendard-Black.otf
+│   │       ├── Pretendard-Bold.otf
+│   │       ├── Pretendard-ExtraBold.otf
+│   │       ├── Pretendard-ExtraLight.otf
+│   │       ├── Pretendard-Light.otf
+│   │       ├── Pretendard-Medium.otf
+│   │       ├── Pretendard-Regular.otf
+│   │       ├── Pretendard-SemiBold.otf
+│   │       └── Pretendard-Thin.otf
+│   ├── icons
+│   │   ├── arrow_back.svg
+│   │   ├── avatar.svg
+│   │   ├── calendar.svg
+│   │   ├── filter.svg
+│   │   ├── heart_empty.svg
+│   │   ├── heart_fill.svg
+│   │   ├── home.svg
+│   │   ├── minus_btn.svg
+│   │   ├── notifications.svg
+│   │   ├── plus_btn.svg
+│   │   └── search.svg
+│   └── images
+│       ├── backgroundImg_1.JPG
+│       ├── backgroundImg_2.png
+│       ├── bukjeokMarker.png
+│       ├── osou.jpg
+│       ├── sogonMarker.png
+│       ├── sogumbbang.png
+│       └── sugeunMarker.png
+├── devtools_options.yaml
+├── frontend.txt
+├── lib
+│   ├── firebase_options.dart
+│   ├── main.dart
+│   ├── models
+│   │   ├── business_owner.dart
+│   │   ├── location.dart
+│   │   ├── locations.dart
+│   │   ├── mystore_detail_menu.dart
+│   │   ├── mystore_detail_menu_list_model.dart
+│   │   ├── mystore_lists_model.dart
+│   │   ├── notification.dart
+│   │   ├── place_params.dart
+│   │   ├── product_detail_model.dart
+│   │   ├── socon_add.dart
+│   │   ├── socon_book.dart
+│   │   ├── socon_card.dart
+│   │   ├── sogon_detail.dart
+│   │   ├── sogon_place.dart
+│   │   ├── sogon_register.dart
+│   │   ├── store.dart
+│   │   ├── store_register_model.dart
+│   │   └── user.dart
+│   ├── provider
+│   │   ├── Address.dart
+│   │   └── Boss_provider.dart
+│   ├── routes
+│   │   ├── router.dart
+│   │   └── tab_routes.dart
+│   ├── services
+│   │   ├── auth_service.dart
+│   │   ├── boss_verification_service.dart
+│   │   ├── image_manager_service.dart
+│   │   ├── my_socon_service.dart
+│   │   ├── mystore_detail_menu_list_service.dart
+│   │   ├── mystore_lists_service.dart
+│   │   ├── notifications
+│   │   │   ├── background_location_service.dart
+│   │   │   ├── background_message_handler.dart
+│   │   │   └── firebase_messaging_service.dart
+│   │   ├── payment_service.dart
+│   │   ├── permission_handler.dart
+│   │   ├── qr_publishing_service.dart
+│   │   ├── sogon_service.dart
+│   │   ├── store_register_service.dart
+│   │   └── stores_service.dart
+│   ├── utils
+│   │   ├── api
+│   │   │   ├── api_utils.dart
+│   │   │   └── users
+│   │   │       └── fetch_boss_data.dart
+│   │   ├── colors.dart
+│   │   ├── firebase_utils.dart
+│   │   ├── fontSizes.dart
+│   │   ├── icon_paths.dart
+│   │   ├── icons.dart
+│   │   ├── location
+│   │   │   ├── location_callback_handler.dart
+│   │   │   └── location_service_repository.dart
+│   │   ├── responsive_utils.dart
+│   │   ├── result_msg_type.dart
+│   │   ├── string_utils.dart
+│   │   └── toast_utils.dart
+│   ├── viewmodels
+│   │   ├── boss_verification_view_model.dart
+│   │   ├── login_state_view_model.dart
+│   │   ├── menu.dart
+│   │   ├── my_socon_view_model.dart
+│   │   ├── mystore_detail_menu_list_view_model.dart
+│   │   ├── notification_view_model.dart
+│   │   ├── payment_verification_view_model.dart
+│   │   ├── qr_generate_view_model.dart
+│   │   ├── sign_in_view_model.dart
+│   │   ├── sign_up_view_model.dart
+│   │   ├── socon_coupon_view_model.dart
+│   │   ├── sogon_view_model.dart
+│   │   ├── store_product_view_model.dart
+│   │   ├── store_register_view_model.dart
+│   │   ├── store_socon_card_view_model.dart
+│   │   └── stores_view_model.dart
+│   └── views
+│       ├── atoms
+│       │   ├── bottom_bar.dart
+│       │   ├── bottom_sheet.dart
+│       │   ├── buttons.dart
+│       │   ├── checkbox.dart
+│       │   ├── dropdown.dart
+│       │   ├── icon_loader.dart
+│       │   ├── image_card.dart
+│       │   ├── image_loader.dart
+│       │   ├── input_form.dart
+│       │   ├── inputs.dart
+│       │   ├── modal.dart
+│       │   ├── qr_code.dart
+│       │   ├── search_box.dart
+│       │   ├── socon_menu_management.dart
+│       │   ├── socon_storesocon.dart
+│       │   ├── switch.dart
+│       │   ├── tab.dart
+│       │   ├── tag_icon.dart
+│       │   ├── text_area.dart
+│       │   └── toast.dart
+│       ├── modules
+│       │   ├── add_menu_card.dart
+│       │   ├── app_bar.dart
+│       │   ├── cards
+│       │   │   ├── detail_info_card.dart
+│       │   │   └── publish_socon_card.dart
+│       │   ├── fail_card.dart
+│       │   ├── menu_detail_top_card.dart
+│       │   ├── my_store_analysis.dart
+│       │   ├── my_store_lists.dart
+│       │   ├── mystore_menu_card.dart
+│       │   ├── mystore_menu_management.dart
+│       │   ├── mystore_rigister_menu_lists.dart
+│       │   ├── place_list.dart
+│       │   ├── place_list_card.dart
+│       │   ├── plus_minus_btn.dart
+│       │   ├── search_module.dart
+│       │   ├── socon_coupon.dart
+│       │   ├── socon_mysocon.dart
+│       │   ├── socon_storesocon.dart
+│       │   ├── store_detail_top_card.dart
+│       │   ├── store_top_card.dart
+│       │   └── success_card.dart
+│       ├── payments
+│       │   └── buy_socon_payment.dart
+│       └── screens
+│           ├── bossVerification
+│           │   ├── boss_verification.dart
+│           │   ├── boss_verification_fail_screen.dart
+│           │   └── boss_verification_success_screen.dart
+│           ├── contact
+│           │   ├── contact_fail_screen.dart
+│           │   ├── contact_screen.dart
+│           │   └── contact_sucess_screen.dart
+│           ├── kpostal_screen.dart
+│           ├── myStore
+│           │   ├── product_register_toast.dart
+│           │   ├── publish_socon_screen.dart
+│           │   ├── search_address.dart
+│           │   ├── store_detail_screen.dart
+│           │   ├── store_product_register.dart
+│           │   ├── store_register_success_screen.dart
+│           │   ├── store_register_view.dart
+│           │   └── temp_store_register_view.dart
+│           ├── my_info_screen.dart
+│           ├── my_store_list_screen.dart
+│           ├── nearby_info_screen.dart
+│           ├── payment
+│           │   ├── approval_fail_screen.dart
+│           │   ├── approval_screen.dart
+│           │   └── approval_success_screen.dart
+│           ├── sign_in_screen.dart
+│           ├── sign_up_screen.dart
+│           ├── soconBook
+│           │   ├── socon_book_detail_screen.dart
+│           │   └── socon_book_screen.dart
+│           ├── sogon
+│           │   ├── sogon_detail_screen.dart
+│           │   └── sogon_register_screen.dart
+│           ├── sogon_main_screen.dart
+│           ├── stores
+│           │   ├── buy_menu_screen.dart
+│           │   └── store_detail.dart
+│           └── webView
+│               └── web_view_screen.dart
+├── linux
+│   └── flutter
+│       ├── generated_plugin_registrant.cc
+│       └── generated_plugins.cmake
+├── macos
+│   └── Flutter
+│       └── GeneratedPluginRegistrant.swift
+├── pubspec.lock
+├── pubspec.yaml
+├── test
+│   └── widget_test.dart
+└── windows
+    └── flutter
+        ├── generated_plugin_registrant.cc
+        └── generated_plugins.cmake
+
+66 directories, 215 files

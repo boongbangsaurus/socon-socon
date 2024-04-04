@@ -18,6 +18,7 @@ import 'package:socon/views/screens/sign_in_screen.dart';
 import 'package:socon/views/screens/sign_up_screen.dart';
 import 'package:socon/views/screens/soconBook/socon_book_detail_screen.dart';
 import 'package:socon/views/screens/soconBook/socon_book_screen.dart';
+import 'package:socon/views/screens/sogon/sogon_detail_screen.dart';
 import 'package:socon/views/screens/sogon/sogon_register_screen.dart';
 import 'package:socon/views/screens/sogon_main_screen.dart';
 import 'package:socon/views/screens/stores/buy_menu_screen.dart';
@@ -27,7 +28,6 @@ import '../views/screens/contact/contact_screen.dart';
 import '../views/screens/nearby_info_screen.dart';
 
 class TabRoutes {
-
   static String getInitialRouteForIndex(int index) {
     switch (index) {
       case 0:
@@ -47,7 +47,7 @@ class TabRoutes {
 
   static RouteBase getNearbyRoute() {
     return GoRoute(
-      name : "nearby",
+        name: "nearby",
         path: "/",
         builder: (BuildContext context, GoRouterState state) {
           // return NearbyInfoScreen();
@@ -91,13 +91,14 @@ class TabRoutes {
 
   static RouteBase getSogonMainRoute() {
     return GoRoute(
-        name : "sogon",
+        name: "sogon",
         path: "/sogon",
         builder: (BuildContext context, GoRouterState state) {
           return SogonMainScreen();
         },
         routes: [
           getSogonRegisterRoute(),
+          getSogonDetailRoute(),
         ]);
   }
 
@@ -110,9 +111,18 @@ class TabRoutes {
         });
   }
 
+  static RouteBase getSogonDetailRoute() {
+    return GoRoute(
+        name: "sogonDetail",
+        path: ":sogon_id",
+        builder: (BuildContext context, GoRouterState state) {
+          return SogonDetailScreen(state.pathParameters['sogon_id']!);
+        });
+  }
+
   static RouteBase getSoconBookRoute() {
     return GoRoute(
-        name : "soconbook",
+        name: "soconbook",
         path: "/soconbook",
         builder: (BuildContext context, GoRouterState state) {
           return SoconBookScreen();
@@ -143,7 +153,6 @@ class TabRoutes {
           getBossVerification(),
         ]);
   }
-
 
   static RouteBase getApprovalRoute() {
     return GoRoute(
@@ -203,14 +212,13 @@ class TabRoutes {
   // 내점포 Listssss
   static RouteBase getMyStoreListRoute() {
     return GoRoute(
-        name : "myStores",
+        name: "myStores",
         path: "/myStores",
         builder: (BuildContext context, GoRouterState state) {
           return const MyStoreListScreen();
         },
         routes: [getMyStoreDetailRoute()]);
   }
-
 
   // 내점포 Lists -> 내점포
   static RouteBase getMyStoreDetailRoute() {
@@ -224,7 +232,6 @@ class TabRoutes {
           // getProductRegisterRoute(),
         ]);
   }
-
 
   static RouteBase getMenuDetailRoute() {
     return GoRoute(
@@ -244,7 +251,6 @@ class TabRoutes {
   //       });
   // }
   //
-
 
   static RouteBase getBossVerification() {
     return GoRoute(
@@ -301,5 +307,4 @@ class TabRoutes {
           return SearchAddress();
         });
   }
-
 }

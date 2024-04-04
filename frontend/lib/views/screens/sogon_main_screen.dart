@@ -37,7 +37,7 @@ class _SogonMainScreen extends State<SogonMainScreen> {
 
   // 지도 좌표 초기화
   final CameraPosition _initCameraPosition =
-      CameraPosition(target: LatLng(35.2041112343, 126.807181835), zoom: 15);
+  CameraPosition(target: LatLng(35.2041112343, 126.807181835), zoom: 15);
   Future<void>? _initFuture;
 
   // 현재 위치 받기
@@ -87,9 +87,6 @@ class _SogonMainScreen extends State<SogonMainScreen> {
   @override
   void initState() {
     _requestLocationPermission();
-    // _loadMarkers();
-    // _initializeAsync();
-    // _initFuture = _initializeAsync();
     _refreshData();
     super.initState();
   }
@@ -101,8 +98,6 @@ class _SogonMainScreen extends State<SogonMainScreen> {
   }
 
   Future<void> _initializeAsync() async {
-    // await _requestLocationPermission();
-    // _loadMarkers(); 필요하다면 이 곳에서 호출
     ClusterManager<ClusterItem> manager = await _initClusterManager();
     setState(() {
       _manager = manager;
@@ -197,7 +192,8 @@ class _SogonMainScreen extends State<SogonMainScreen> {
     // _manager = _initClusterManager();
   }
 
-  Future<Marker> Function(dynamic) get _markerBuilder => (cluster) async {
+  Future<Marker> Function(dynamic) get _markerBuilder =>
+          (cluster) async {
         String iconPath;
         print('#######################count ');
         print(cluster.count);
@@ -262,9 +258,14 @@ class _SogonMainScreen extends State<SogonMainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var height = MediaQuery.of(context).size.height;
-    var width = MediaQuery.of(context).size.width;
-
+    var height = MediaQuery
+        .of(context)
+        .size
+        .height;
+    var width = MediaQuery
+        .of(context)
+        .size
+        .width;
     return Container(
         height: height,
         width: width,
@@ -279,22 +280,22 @@ class _SogonMainScreen extends State<SogonMainScreen> {
                       } else if (snapshot.hasError) {
                         return Center(
                             child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text('오류가 발생했습니다.'),
-                            SizedBox(
-                              height: 40,
-                            ),
-                            BasicButton(
-                              text: '돌아가기',
-                              onPressed: () {
-                                _refreshData();
-                                GoRouter.of(context).go('/');
-                              },
-                            )
-                          ],
-                        ));
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text('오류가 발생했습니다.'),
+                                SizedBox(
+                                  height: 40,
+                                ),
+                                BasicButton(
+                                  text: '돌아가기',
+                                  onPressed: () {
+                                    _refreshData();
+                                    GoRouter.of(context).go('/');
+                                  },
+                                )
+                              ],
+                            ));
                       } else {
                         return Stack(
                           children: <Widget>[
@@ -316,10 +317,11 @@ class _SogonMainScreen extends State<SogonMainScreen> {
                               markers: sogonMarker,
                               myLocationEnabled: true,
                               myLocationButtonEnabled: false,
+                              zoomControlsEnabled: false,
                             ),
                             Container(
                                 padding:
-                                    const EdgeInsets.only(top: 12, left: 12),
+                                const EdgeInsets.only(top: 12, left: 12),
                                 alignment: Alignment.topLeft,
                                 child: TextButton(
                                   style: TextButton.styleFrom(
@@ -338,14 +340,55 @@ class _SogonMainScreen extends State<SogonMainScreen> {
                                 )),
                             Container(
                               padding:
-                                  const EdgeInsets.only(top: 12, right: 12),
+                              const EdgeInsets.only(top: 12, right: 12),
                               alignment: Alignment.topRight,
                               child: FloatingActionButton(
                                 heroTag: "nowLocation",
                                 backgroundColor: AppColors.WHITE,
-                                onPressed: () {
+                                onPressed: () async {
                                   // _updateMapForCurrentLocation();
-                                  _loadMarkers();
+                                  var currentLocation =
+                                  await _location.getLocation();
+                                  Locations now = Locations(
+                                      lat: currentLocation.latitude!,
+                                      lng: currentLocation.longitude!);
+                                  SogonViewModel sogonViewModel =
+                                  SogonViewModel();
+                                  final res =
+                                  await sogonViewModel.sogonList(now);
+                                  sogonItems = res!.map((item) {
+                                    return SogonPlace(
+                                        id: item["id"],
+                                        latLng: LatLng(
+                                          (item["lat"] as num).toDouble(),
+                                          (item["lng"] as num).toDouble(),
+                                        ),
+                                        soconImg: item['socon_img'].toString(),
+                                        memberName:
+                                        item['member_name'].toString(),
+                                        lastTime: item['last_time'],
+                                        isPicked: item['is_picked'],
+                                        commentCount: item['comment_count'],
+                                        title: item['title']);
+                                  }).toList();
+                                  setState(() {
+                                    _sogons = res;
+                                  });
+                                  _manager.setItems(sogonItems);
+                                  // _loadMarkers();
+                                  final GoogleMapController controller =
+                                  await _controller.future;
+                                  controller.moveCamera(
+                                    CameraUpdate.newLatLngZoom(
+                                      LatLng(
+                                        (currentLocation.latitude! as num)
+                                            .toDouble(),
+                                        (currentLocation.longitude! as num)
+                                            .toDouble(),
+                                      ),
+                                      18.0,
+                                    ),
+                                  );
                                 },
                                 child: const Icon(Icons.gps_fixed),
                                 shape: RoundedRectangleBorder(
@@ -368,14 +411,11 @@ class _SogonMainScreen extends State<SogonMainScreen> {
                                       onPressed: () {
                                         print('go 새글작성');
                                         GoRouter.of(context)
-                                            .push('/sogon/register', extra: {
-                                          'lat': 37.5665,
-                                          'lng': 126.9780,
-                                        });
+                                            .push('/sogon/register');
                                       },
                                       shape: RoundedRectangleBorder(
                                           borderRadius:
-                                              BorderRadius.circular(50)),
+                                          BorderRadius.circular(50)),
                                     ),
                                   ),
                                   CustomBottomSheet(
@@ -403,122 +443,127 @@ class _SogonMainScreen extends State<SogonMainScreen> {
                                     children: [
                                       _sogons.isNotEmpty
                                           ? Container(
-                                              width: MediaQuery.of(context)
-                                                  .size
-                                                  .width,
-                                              height: 168,
-                                              decoration: BoxDecoration(
-                                                  color: Colors.white,
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          20)),
-                                              child: ListView.builder(
-                                                scrollDirection:
-                                                    Axis.horizontal,
-                                                itemCount: _sogons.length,
-                                                padding: EdgeInsets.symmetric(
-                                                    horizontal: 10.0),
-                                                itemBuilder: (context, index) {
-                                                  return GestureDetector(
-                                                    onTap: () async {
-                                                      final GoogleMapController
-                                                          controller =
-                                                          await _controller
-                                                              .future; // GoogleMapController 인스턴스를 얻음
-                                                      controller.moveCamera(
-                                                        CameraUpdate
-                                                            .newLatLngZoom(
-                                                          LatLng(
-                                                            (_sogons[index]
-                                                                        ['lat']
-                                                                    as num)
-                                                                .toDouble(),
-                                                            (_sogons[index]
-                                                                        ['lng']
-                                                                    as num)
-                                                                .toDouble(),
-                                                          ),
-                                                          18.0,
-                                                        ),
-                                                      );
-                                                    },
-                                                    child: Container(
-                                                      width: 100,
-                                                      height: 100,
-                                                      margin: EdgeInsets.only(
-                                                          right: 10),
-                                                      child: Column(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          ImageCard(
-                                                            imgUrl: _sogons[
-                                                                        index][
-                                                                    'socon_img']
-                                                                .toString(),
-                                                            borderRadius: 50,
-                                                          ),
-                                                          Text(
-                                                            _sogons[index]
-                                                                ["title"],
-                                                            style:
-                                                                const TextStyle(
-                                                              color:
-                                                                  Colors.black,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w600,
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
-                                                            ),
-                                                          ),
-                                                          TextButton(
-                                                              onPressed: () {
-                                                                print(_sogons[
-                                                                        index]
-                                                                    ["id"]);
-                                                              },
-                                                              style: TextButton
-                                                                  .styleFrom(
-                                                                backgroundColor:
-                                                                    AppColors
-                                                                        .BLACK,
-                                                                foregroundColor:
-                                                                    AppColors
-                                                                        .WHITE,
-                                                                textStyle: const TextStyle(
-                                                                    fontSize:
-                                                                        FontSizes
-                                                                            .XXXSMALL,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold),
-                                                              ),
-                                                              child: const Text(
-                                                                  '글 보기')),
-                                                        ],
+                                          width: MediaQuery
+                                              .of(context)
+                                              .size
+                                              .width,
+                                          height: 168,
+                                          decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius:
+                                              BorderRadius.circular(
+                                                  20)),
+                                          child: ListView.builder(
+                                            scrollDirection:
+                                            Axis.horizontal,
+                                            itemCount: _sogons.length,
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 10.0),
+                                            itemBuilder: (context, index) {
+                                              return GestureDetector(
+                                                onTap: () async {
+                                                  final GoogleMapController
+                                                  controller =
+                                                  await _controller
+                                                      .future; // GoogleMapController 인스턴스를 얻음
+                                                  controller.moveCamera(
+                                                    CameraUpdate
+                                                        .newLatLngZoom(
+                                                      LatLng(
+                                                        (_sogons[index]
+                                                        ['lat']
+                                                        as num)
+                                                            .toDouble(),
+                                                        (_sogons[index]
+                                                        ['lng']
+                                                        as num)
+                                                            .toDouble(),
                                                       ),
+                                                      18.0,
                                                     ),
                                                   );
                                                 },
-                                              ))
+                                                child: Container(
+                                                  width: 100,
+                                                  height: 100,
+                                                  margin: EdgeInsets.only(
+                                                      right: 10),
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .start,
+                                                    children: [
+                                                      ImageCard(
+                                                        imgUrl: _sogons[
+                                                        index][
+                                                        'socon_img']
+                                                            .toString(),
+                                                        borderRadius: 50,
+                                                      ),
+                                                      Text(
+                                                        _sogons[index]
+                                                        ["title"],
+                                                        style:
+                                                        const TextStyle(
+                                                          color:
+                                                          Colors.black,
+                                                          fontWeight:
+                                                          FontWeight
+                                                              .w600,
+                                                          overflow:
+                                                          TextOverflow
+                                                              .ellipsis,
+                                                        ),
+                                                      ),
+                                                      TextButton(
+                                                          onPressed: () {
+                                                            print(_sogons[
+                                                            index]
+                                                            ["id"]);
+                                                            GoRouter.of(
+                                                                context)
+                                                                .push(
+                                                                '/sogon/${_sogons[index]["id"]}');
+                                                          },
+                                                          style: TextButton
+                                                              .styleFrom(
+                                                            backgroundColor:
+                                                            AppColors
+                                                                .BLACK,
+                                                            foregroundColor:
+                                                            AppColors
+                                                                .WHITE,
+                                                            textStyle: const TextStyle(
+                                                                fontSize:
+                                                                FontSizes
+                                                                    .XXXSMALL,
+                                                                fontWeight:
+                                                                FontWeight
+                                                                    .bold),
+                                                          ),
+                                                          child: const Text(
+                                                              '글 보기')),
+                                                    ],
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                          ))
                                           : Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceEvenly,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: [
-                                                  Text('주변에 소곤이 없어요..'),
-                                                  BasicButton(
-                                                    text: '새 소곤 작성하러 가기',
-                                                    onPressed: () {
-                                                      GoRouter.of(context).push(
-                                                          '/sogon/register');
-                                                    },
-                                                  )
-                                                ])
+                                          mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                          crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                          children: [
+                                            Text('주변에 소곤이 없어요..'),
+                                            BasicButton(
+                                              text: '새 소곤 작성하러 가기',
+                                              onPressed: () {
+                                                GoRouter.of(context).push(
+                                                    '/sogon/register');
+                                              },
+                                            )
+                                          ])
                                     ],
                                   ),
                                 ],

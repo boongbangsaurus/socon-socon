@@ -9,7 +9,9 @@ import 'package:socon/services/notifications/firebase_messaging_service.dart';
 /// 백과 API 통신하기 위한 Class
 class AuthService {
   final String baseUrl = 'http://j10c207.p.ssafy.io:8000'; // 통신 url
-  FirebaseMessagingService _firebaseMessagingService = FirebaseMessagingService();
+  FirebaseMessagingService _firebaseMessagingService =
+      FirebaseMessagingService();
+
   // 회원가입 요청 api
   Future<bool> signUp(User user) async {
     // print(jsonEncode(user.toJson()));
@@ -36,7 +38,6 @@ class AuthService {
 
   // 로그인 요청 api
   Future<List?> signIn(User user) async {
-
     var fcmToken = await _firebaseMessagingService.getFcmToken();
     var userData = user.toJsonSignIn();
     userData["fcmToken"] = fcmToken;
@@ -44,7 +45,7 @@ class AuthService {
     if (kDebugMode) {
       print("${userData} 유저 데이터 fcmToken 포함");
     }
-    
+
     final res = await http.post(
       Uri.parse('$baseUrl/api/v1/members/auth'),
       headers: <String, String>{
@@ -56,14 +57,19 @@ class AuthService {
     if (res.statusCode == 200) {
       debugPrint(
           'signIn res 200 ################################################');
-      print(jsonDecode(res.body));
+      print(jsonDecode(utf8.decode(res.bodyBytes)));
       debugPrint(
           'signIn res 200 ################################################');
 
-      final body = jsonDecode(res.body);
+      final body = jsonDecode(utf8.decode(res.bodyBytes));
       final String accessToken = body['data_body']['accessToken'];
       final String refreshToken = body['data_body']['refreshToken'];
-      return [accessToken, refreshToken]; // accessToken, refreshToken 반환
+      final String nickname = body['data_body']['nickname'];
+      return [
+        accessToken,
+        refreshToken,
+        nickname
+      ]; // accessToken, refreshToken 반환
     } else {
       debugPrint(
           'signIn res not 200 ################################################');

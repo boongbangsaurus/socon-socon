@@ -7,6 +7,8 @@ import 'package:background_locator_2/settings/android_settings.dart';
 import 'package:socon/viewmodels/menu.dart';
 import 'package:socon/viewmodels/my_socon_view_model.dart';
 import 'package:socon/viewmodels/mystore_detail_menu_list_view_model.dart%20%20%20%20%20%20%20';
+
+import 'package:socon/viewmodels/sogon_view_model.dart';
 import 'package:socon/viewmodels/stores_view_model.dart';
 import 'package:socon/views/modules/mystore_menu_management.dart';
 
@@ -136,7 +138,7 @@ class _MyAppState extends State<MyApp> {
 
     initPlatformState();
 
-    _onStart();  // 잠시 주석 처리
+    _onStart(); // 잠시 주석 처리
   }
 
   @override
@@ -167,7 +169,6 @@ class _MyAppState extends State<MyApp> {
       msg: "${DateTime.now()}",
       bigMsg: "${data.latitude}, ${data.longitude}",
     );
-
   }
 
   Future<void> updateUI(dynamic data) async {
@@ -231,6 +232,7 @@ class _MyAppState extends State<MyApp> {
             create: (context) => PaymentVerificationViewModel()),
         ChangeNotifierProvider(create: (_) => BossProvider()),
         ChangeNotifierProvider(create: (context) => StoreRegisterViewModel()),
+        ChangeNotifierProvider(create: (context) => SogonViewModel()),
         ChangeNotifierProvider(create: (_) => MySoconViewModel()),
         ChangeNotifierProvider(create: (_) => StoresViewModel()),
       ],
