@@ -9,12 +9,6 @@ class Store {
   final String mainSocon;
   final int distance;
 
-
-  @override
-  String toString() {
-    return 'Store{storeId: $storeId, name: $name, imageUrl: $imageUrl, address: $address, category: $category, createdAt: $createdAt, isLike: $isLike, mainSocon: $mainSocon, distance: $distance}';
-  }
-
   Store({
     required this.storeId,
     required this.name,
@@ -26,18 +20,23 @@ class Store {
     required this.mainSocon,
     required this.distance,
   });
+
+  factory Store.fromJson(Map<String, dynamic> json) {
+    return Store(
+      storeId: json['store_id'],
+      name: json['name'],
+      imageUrl: json['imageUrl'] ?? "https://cataas.com/cat",
+      address: json['address'],
+      category: json['category'],
+      createdAt: json['created_at'],
+      isLike: json['isLike'],
+      mainSocon: json['mainSocon'],
+      distance: json['distance'],
+    );
+  }
+
+  @override
+  String toString() {
+    return 'Store{storeId: $storeId, name: $name, imageUrl: $imageUrl, address: $address, category: $category, createdAt: $createdAt, isLike: $isLike, mainSocon: $mainSocon, distance: $distance}';
+  }
 }
-
-
-// 더미데이터
-// {
-//   "store_id": 0,
-//   "name": "늘솜꼬마김밥",
-//   "imageUrl": "https://cataas.com/cat", // 매장 대표 이미지 없을 경우 null
-//   "address" : "광주 광산구 장덕로40번길 13-1 1층"
-//   "category": "음식점",
-//   "created_at": "YYYY-MM-DD" // 등록일,
-//   "isLike" : true,
-//   "mainSocon" : "소금빵",
-//   "distance" : 15
-// }
