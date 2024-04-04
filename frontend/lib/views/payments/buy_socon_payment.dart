@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 
 /* 아임포트 결제 모듈을 불러옵니다. */
@@ -80,7 +84,7 @@ class Payment extends StatelessWidget {
 
         GoRouter.of(context).go("/");
         // 결제 검증 함수 호출
-        // await validatePayment(result['imp_uid'].toString(), orderUid);
+        await validatePayment(result['imp_uid'].toString(), orderUid);
 
 
         // Navigator.of(context).push(
@@ -94,41 +98,41 @@ class Payment extends StatelessWidget {
 }
 
 // 결제 검증 요청 (콜백함수)
-// Future<void> validatePayment(String impUid, String orderUid) async {
-//   final String baseUrl = 'http://j10c207.p.ssafy.io:8000'; // 통신 url
-//   // final String baseUrl = 'https://f7a9-121-178-98-30.ngrok-free.app';
-//   // 통신 url
-//   final Uri url = Uri.parse('$baseUrl/api/v1/payments/validate');
-//   final prefs = await SharedPreferences.getInstance();
-//   final accessToken = prefs.getString('accessToken');
-//
-//   print('$accessToken >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
-//   try {
-//     final response = await http.post(
-//       url,
-//       headers: <String, String>{
-//         'Authorization': 'Bearer $accessToken',
-//         'Content-Type': 'application/json',
-//       },
-//       body: jsonEncode({
-//         'impUid': impUid, // 아임포트 결제 고유 ID
-//         'orderUid': orderUid, // 주문 고유 ID
-//       }),
-//     );
-//     debugPrint('결제 ~~: ${response.statusCode}');
-//
-//     if (response.statusCode == 200) {
-//       // 서버로부터 정상적인 응답을 받았을 때의 처리
-//       debugPrint('결제 검증 성공: ${response.body}');
-//       debugPrint('결제 검증 성공: ${response.headers}');
-//       // Navigator를 사용하여 결제완료 페이지로 이동하거나, 상태 업데이트 등의 로직 추가
-//     } else {
-//       // 서버로부터 오류 응답을 받았을 때의 처리
-//       debugPrint('결제 검증 실패: ${response.body}');
-//       // Navigator를 사용하여 결제실패 페이지로 이동하거나, 오류 메시지 표시 등의 로직 추가
-//     }
-//   } catch (e) {
-//     debugPrint('결제 검증 중 예외 발생: $e');
-//     // 예외 발생 시 처리 로직 추가
-//   }
-// }
+Future<void> validatePayment(String impUid, String orderUid) async {
+  final String baseUrl = 'http://j10c207.p.ssafy.io:8000'; // 통신 url
+  // final String baseUrl = 'https://f7a9-121-178-98-30.ngrok-free.app';
+  // 통신 url
+  final Uri url = Uri.parse('$baseUrl/api/v1/payments/validate');
+  final prefs = await SharedPreferences.getInstance();
+  final accessToken = prefs.getString('accessToken');
+
+  print('$accessToken >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
+  try {
+    final response = await http.post(
+      url,
+      headers: <String, String>{
+        'Authorization': 'Bearer $accessToken',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        'impUid': impUid, // 아임포트 결제 고유 ID
+        'orderUid': orderUid, // 주문 고유 ID
+      }),
+    );
+    debugPrint('결제 ~~: ${response.statusCode}');
+
+    if (response.statusCode == 200) {
+      // 서버로부터 정상적인 응답을 받았을 때의 처리
+      debugPrint('결제 검증 성공: ${response.body}');
+      debugPrint('결제 검증 성공: ${response.headers}');
+      // Navigator를 사용하여 결제완료 페이지로 이동하거나, 상태 업데이트 등의 로직 추가
+    } else {
+      // 서버로부터 오류 응답을 받았을 때의 처리
+      debugPrint('결제 검증 실패: ${response.body}');
+      // Navigator를 사용하여 결제실패 페이지로 이동하거나, 오류 메시지 표시 등의 로직 추가
+    }
+  } catch (e) {
+    debugPrint('결제 검증 중 예외 발생: $e');
+    // 예외 발생 시 처리 로직 추가
+  }
+}

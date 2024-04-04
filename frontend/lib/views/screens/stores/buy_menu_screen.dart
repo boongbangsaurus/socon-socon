@@ -239,7 +239,7 @@ class _BuyMenuDetailScreenState extends State<BuyMenuDetailScreen> {
                           print(orderUid.runtimeType);
                           print(';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;');
 
-                          await validatePayment('imp01516875', orderUid);
+                          // await validatePayment('imp01516875', orderUid);
                           Navigator.of(context).push(
                               MaterialPageRoute(
                                   builder: (context) => Payment(),
