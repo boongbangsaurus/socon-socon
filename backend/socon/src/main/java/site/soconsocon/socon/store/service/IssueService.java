@@ -14,12 +14,14 @@ import site.soconsocon.socon.store.domain.dto.response.IssueListResponse;
 import site.soconsocon.socon.store.domain.entity.jpa.Issue;
 import site.soconsocon.socon.store.domain.entity.jpa.Item;
 import site.soconsocon.socon.store.domain.entity.jpa.Socon;
+import site.soconsocon.socon.store.domain.entity.redis.IssueRedis;
 import site.soconsocon.socon.store.exception.StoreErrorCode;
 import site.soconsocon.socon.store.exception.StoreException;
 import site.soconsocon.socon.store.repository.jpa.IssueRepository;
 import site.soconsocon.socon.store.repository.jpa.ItemRepository;
 import site.soconsocon.socon.store.repository.jpa.SoconRepository;
 import site.soconsocon.socon.store.repository.jpa.StoreRepository;
+import site.soconsocon.socon.store.repository.redis.IssueRedisRepository;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -32,8 +34,11 @@ import java.util.Objects;
 public class IssueService {
 
     private final IssueRepository issueRepository;
+    private final IssueRedisRepository issueRedisRepository;
+
     private final ItemRepository itemRepository;
     private final SoconRepository soconRepository;
+
     private final StoreRepository storeRepository;
     private final SoconRedisService soconRedisService;
 
@@ -70,23 +75,42 @@ public class IssueService {
         }
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new StoreException(StoreErrorCode.ITEM_NOT_FOUND));
+        Issue issue =null;
+        try {
+            issue = issueRepository.save(Issue.builder()
+                    .storeName(storeRepository.findNameByStoreId(storeId))
+                    .name(item.getName())
+                    .image(item.getImage())
+                    .isMain(request.getIsMain())
+                    .price(item.getPrice())
+                    .isDiscounted(request.getIsDiscounted())
+                    .discountedPrice(request.getDiscountedPrice())
+                    .maxQuantity(request.getMaxQuantity())
+                    .issuedQuantity(0)
+                    .used(0)
+                    .period(request.getPeriod())
+                    .createdAt(LocalDate.now())
+                    .item(item)
+                    .status('A')
+                    .build());
+        }catch (RuntimeException e){
+            throw new StoreException(StoreErrorCode.TRANSACTION_FAIL);
+        }
 
-        issueRepository.save(Issue.builder()
-                .storeName(storeRepository.findNameByStoreId(storeId))
-                .name(item.getName())
-                .image(item.getImage())
-                .isMain(request.getIsMain())
-                .price(item.getPrice())
-                .isDiscounted(request.getIsDiscounted())
-                .discountedPrice(request.getDiscountedPrice())
-                .maxQuantity(request.getMaxQuantity())
-                .issuedQuantity(0)
-                .used(0)
-                .period(request.getPeriod())
-                .createdAt(LocalDate.now())
-                .item(item)
-                .status('A')
-                .build());
+        if(request.getIsMain()){
+            IssueRedis redis = IssueRedis.builder()
+                    .issueId(issue.getId())
+                    .storeId(issue.getItem().getStore().getId())
+                    .name(issue.getName())
+                    .build();
+            try {
+                issueRedisRepository.save(redis);
+            }catch (RuntimeException e){
+                throw new StoreException(StoreErrorCode.REDIS_TRANSACTION_FAIL);
+            }
+        }
+
+
     }
 
     // 소콘북 저장
@@ -155,4 +179,5 @@ public class IssueService {
                 .description(item.getDescription())
                 .build();
     }
+
 }
