@@ -117,7 +117,7 @@ public class IssueService {
                     .memberId(request.getMemberId())
                     .build();
             soconRepository.save(newSocon);
-            soconRedisService.saveSocon(newSocon);
+//            soconRedisService.saveSocon(newSocon);
         }
     }
 
