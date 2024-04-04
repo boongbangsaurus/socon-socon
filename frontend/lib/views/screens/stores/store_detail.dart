@@ -83,6 +83,8 @@ class _StoreDetailScreenState extends State<StoreDetailScreen> {
 
   // Map<String, dynamic> storeInfos = {};
   List<dynamic> storeInfos = [];
+  List<dynamic> discountedMenus = []; // 할인된 이슈들을 저장할 리스트
+
 
   void initState() {
     super.initState();
@@ -95,16 +97,22 @@ class _StoreDetailScreenState extends State<StoreDetailScreen> {
     // debugPrint('내점포 상세조회 - 발행소콘 목록!');
     // Map<String, dynamic>? infos = await  viewModel.storeDetailInfos(widget.storeId);
      var  infos = await service.getStoreDetailInfos(widget.storeId);
-    // print('njnj4444444444444njnjnjnjnjnjnjnjn');
+    print('njnj4444444444444njnjnjnjnjnjnjnjn');
     // print(infos.runtimeType);  //_Map<String, dynamic>
     // print('아오 ${infos}');
-    // print('아오 ${infos['issues']}');
+    print('아오 ${infos['issues']}');
 
+    // 가게 정보
     var stores = infos['stores'];
+
+    // 전체 상품 목록
     var issues = infos['issues'];
-    // print('njnjnj444444444444444444njnjnjnjnjnjnjn');
+    // 할인 상품 목록
+    var discountedIssues = issues.where((issue) => issue['is_discounted'] == true).toList();
+    print('njnjnj444444444444444444njnjnjnjnjnjnjn');
     setState(() {
       storeInfos = issues;
+      discountedMenus = discountedIssues;
     });
   }
 
@@ -117,17 +125,54 @@ class _StoreDetailScreenState extends State<StoreDetailScreen> {
       backgroundColor: AppColors.WHITE,
       body: SingleChildScrollView(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // StoreTopCard(storeId: widget.storeId, isOwner: isOwner),
             SizedBox( height: 25.0,),
-            Text('할인 소콘', style: TextStyle(fontSize: FontSizes.MEDIUM, fontWeight: FontWeight.bold,) ,),
-            SizedBox( height: 5.0,),
+            Text('  할인 소콘', style: TextStyle(fontSize: FontSizes.MEDIUM, fontWeight: FontWeight.bold,) ,),
+            SizedBox( height: 10.0,),
             Container(
               width: MediaQuery.of(context).size.width,
               child: GridView.builder(
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
                 itemCount: saleMenuList.length,
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2, // 1 개의 행에 보여줄 item 개수
+                  childAspectRatio: 1 / 1.2, // item 의 가로 세로의 비율
+                  mainAxisSpacing: 7, // 수평 Padding
+                  crossAxisSpacing: 7, // 수직 Padding
+                ),
+                itemBuilder: (BuildContext context, index) {
+                  final saleMenu = discountedMenus[index];
+                  return StoreSoconLists(
+                    storeId: widget.storeId,
+                    id: saleMenu['id'],
+                    is_main: saleMenu['is_main'],
+                    name: saleMenu['name'],
+                    price: saleMenu['price'],
+                    image: saleMenu['image'],
+                    issued_quantity: saleMenu['issued_quantity'],
+                    left_quantity: saleMenu['left_quantity'],
+                    is_discounted: saleMenu['is_discounted'],
+                    discounted_price: saleMenu['discounted_price'],
+                    createdAt: saleMenu['createdAt'],
+                  );
+                },
+              ),
+            ),
+
+            // 전체 소콘
+            SizedBox( height: 25.0,),
+            Text('  전체 소콘', style: TextStyle(fontSize: FontSizes.MEDIUM, fontWeight: FontWeight.bold,) ,),
+            SizedBox( height: 10.0,),
+            Container(
+              width: MediaQuery.of(context).size.width,
+              child: GridView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: storeInfos.length,
                 padding: EdgeInsets.symmetric(horizontal: 20),
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2, // 1 개의 행에 보여줄 item 개수
