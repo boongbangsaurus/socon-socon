@@ -79,13 +79,14 @@ public class SearchService {
         // generate FoundStoreInfo DTO
         for (StoreDocument storeDocument:foundStores) {
             boolean isLike = favStoreIdList.contains(storeDocument.getId());
+
             FoundStoreInfo storeInfo = FoundStoreInfo.builder()
-                    .storeId(storeDocument.getId())
-                    .name(storeDocument.getName())
-                    .imageUrl(storeDocument.getImage())
-                    .address(storeDocument.getAddress())
-                    .category(storeDocument.getCategory())
-                    .isLike(isLike)
+                    .storeId(storeDocument.getId()) // 예를 들어 기본값으로 0 사용
+                    .name(storeDocument.getName() != null ? storeDocument.getName() : "")
+                    .imageUrl(storeDocument.getImage() != null ? storeDocument.getImage() : "")
+                    .address(storeDocument.getAddress() != null ? storeDocument.getAddress() : "")
+                    .category(storeDocument.getCategory() != null ? storeDocument.getCategory() : "")
+                    .isLike(isLike) // Boolean은 null이 가능한 상황에서 기본값이 false인 경우를 다룰 수 있음
                     .build();
             // filter favourites
             if(searchRequest.getIsFavoriteSearch()){
