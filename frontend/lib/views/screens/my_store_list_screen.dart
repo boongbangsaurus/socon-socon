@@ -37,7 +37,7 @@ class _MyStoreListScreen extends State<MyStoreListScreen> {
               child: TabBarScreen(marginTop: 0, tabHeight: 600, contents: {
                 '내 점포': MyStoreLists(),
                 // '점포 분석': MyStoreAnalysis(),
-                '점포 분석': StoreDetailScreen(storeId : 23),
+                '구매 가능 소콘': StoreDetailScreen(storeId : 23),
               }),
             ),
           ),
