@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
@@ -12,7 +13,7 @@ import 'package:geolocator/geolocator.dart';
 
 class StoresService {
   Future<List<Store>?> searchStores() async {
-    var params = {
+    Map<String, dynamic> params = {
       "content": "",
       // "lat": 37.1820489,
       // "lng": 131.7718627,
@@ -30,7 +31,6 @@ class StoresService {
     // print(jsonParams);
 
     try {
-
       // 1. 위치 검색
       Position position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.high);
@@ -38,24 +38,31 @@ class StoresService {
       pLong = position.longitude;
 
       params["lat"] = pLat;
-      params["long"] = pLong;
+      params["lng"] = pLong;
       print("검색 params $params");
-      final response = await ApiUtils.postDataWithToken(
-          '/api/v1/search/detail', params
-         );
+      final List<dynamic> response =
+          await ApiUtils.postDataWithToken('/api/v1/search/detail', params);
 
-
-
-      final Map<String, dynamic> responseData = jsonDecode(response);
-      print("검색 성공 $response");
-      final List<Store> responseBody = responseData['data_body'];
-      // final int successCode = responseData['data_header']['success_code'];
-      if(responseBody.isEmpty ){
+      if (response == null) {
+        print('API 응답이 null입니다.');
         return null;
+      }else{
+        print(response);
       }
-      return responseBody;
+
+      final List<Store> responseData = response.map((item) => Store.fromJson(item)).toList();
+      // final List<Store> responseData = response.map((item) => Store.fromJson(item)).toList();
+      print("[service] response $responseData}");
+      return responseData;
+      // if (responseData.isNotEmpty) {
+      //   return responseData;
+      // } else {
+      //   return [];
+      // }
+
     } catch (error) {
       print('검색 실패 $error');
+      return null;
       // return false;
     }
   }

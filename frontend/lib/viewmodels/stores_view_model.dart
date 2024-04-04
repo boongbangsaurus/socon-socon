@@ -35,7 +35,16 @@ class StoresViewModel extends ChangeNotifier {
 
   Future<List<Store>?> searchStores() async {
     print("검색을 시작해볼게");
-    List<Store>? stores = await _storesService.searchStores();
-    return stores;
+
+    try {
+     List<Store>? stores = await _storesService.searchStores();
+
+      print("[viewModel] $stores");
+      return stores;
+    } catch (error) {
+      print("검색 중 오류가 발생했습니다: $error");
+      return null;
+    }
   }
+
 }

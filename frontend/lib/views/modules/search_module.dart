@@ -5,11 +5,19 @@ import 'package:socon/viewmodels/stores_view_model.dart';
 import 'package:socon/views/atoms/checkbox.dart';
 import 'package:socon/views/atoms/search_box.dart';
 
+import '../../models/store.dart';
+
 // type : "nearby" | "soconbook" | "like"
 class SearchModule extends StatefulWidget {
   final String type;
 
-  SearchModule({required this.type});
+  final Function(List<Store>) onUpdateStores; // Add onUpdateStores
+
+  SearchModule({required this.type, this.onUpdateStores=_defaultOnUpdateStores }); // Update constructor
+
+  static void _defaultOnUpdateStores(List<Store> stores) {
+    print("mySocon입니다.");
+  }
 
   @override
   _SearchModuleState createState() => _SearchModuleState();
@@ -24,7 +32,8 @@ class _SearchModuleState extends State<SearchModule> {
   bool isShortestDistanceChecked = false;
 
   StoresViewModel _storesViewModel = StoresViewModel();
-  void handleEnterKey() {
+
+  List<Store> handleEnterKey() {
     print('상호명: $isStoreNameChecked');
     print('상품명: $isItemNameChecked');
     print('카테고리: $isCategoryChecked');
@@ -32,7 +41,26 @@ class _SearchModuleState extends State<SearchModule> {
     print('가나다: $isGanadaChecked');
     print('최단거리: $isShortestDistanceChecked');
 
-    _storesViewModel.searchStores();
+    List<Store> stores = [
+      Store(
+        storeId: 20,
+        name: "오소유",
+        imageUrl:
+        "https://firebasestorage.googleapis.com/v0/b/socon-socon.appspot.com/o/images%2Fsocon%2Fsocon2.png?alt=media&token=e7736390-6c7b-4d96-97fa-02e9383ab60c",
+        address: "광주 광산구 장덕로40번길 13-1 1층",
+        category: "음식점",
+        createdAt: "2024-03-22",
+        isLike: true,
+        mainSocon: "소금빵",
+        distance: 15,
+      ),
+      // Add more stores as needed
+    ];
+
+    // Update the parent widget with the new stores
+    widget.onUpdateStores(stores);
+
+    return stores;
   }
 
   @override
