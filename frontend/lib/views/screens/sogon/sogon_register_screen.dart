@@ -267,7 +267,8 @@ class _SogonRegisterScreenState extends State<SogonRegisterScreen> {
                             sogonRegister.lat = currentLocation.latitude;
                             sogonRegister.lng = currentLocation.longitude;
                             setImage();
-                            sogonRegister.image1 = 'sogon/picker/test_image';
+                            sogonRegister.image1 =
+                                'https://firebasestorage.googleapis.com/v0/b/socon-socon.appspot.com/o/images%2Fsocon%2Fgimbap.png?alt=media&token=89ee3277-cf77-4e9d-b02e-8eb80996e965';
                             debugPrint(
                                 'send sogon register ################################################');
                             debugPrint('$sogonRegister');
