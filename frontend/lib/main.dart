@@ -5,8 +5,11 @@ import 'package:background_locator_2/background_locator.dart';
 import 'package:background_locator_2/settings/android_settings.dart';
 
 import 'package:socon/viewmodels/menu.dart';
+import 'package:socon/viewmodels/my_socon_view_model.dart';
 import 'package:socon/viewmodels/mystore_detail_menu_list_view_model.dart%20%20%20%20%20%20%20';
+
 import 'package:socon/viewmodels/sogon_view_model.dart';
+import 'package:socon/viewmodels/stores_view_model.dart';
 import 'package:socon/views/modules/mystore_menu_management.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
@@ -68,8 +71,12 @@ void main() async {
   await getPermissionHandler();
 
   uriLinkStream.listen((Uri? uri) {
-    print("딥링크 구현 $uri");
-    router.go("/info");
+    if (uri != null) {
+      print("딥링크 구현 $uri");
+      String url = uri.toString();
+      String extractedPart = url.replaceFirst("socon://", "");
+      router.go("/$extractedPart");
+    }
   }, onError: (Object error) {
     print("딥링크 이동 $error");
   }, onDone: () {
@@ -131,7 +138,7 @@ class _MyAppState extends State<MyApp> {
 
     initPlatformState();
 
-    // _onStart();  // 잠시 주석 처리
+    _onStart(); // 잠시 주석 처리
   }
 
   @override
@@ -226,6 +233,8 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (_) => BossProvider()),
         ChangeNotifierProvider(create: (context) => StoreRegisterViewModel()),
         ChangeNotifierProvider(create: (context) => SogonViewModel()),
+        ChangeNotifierProvider(create: (_) => MySoconViewModel()),
+        ChangeNotifierProvider(create: (_) => StoresViewModel()),
       ],
       child: MaterialApp.router(
         routerConfig: router,

@@ -4,6 +4,7 @@ import 'package:socon/utils/fontSizes.dart';
 import 'package:socon/utils/icons.dart';
 import 'package:socon/views/atoms/buttons.dart';
 import 'package:socon/views/modules/store_detail_top_card.dart';
+import 'package:socon/views/screens/my_store_list_screen.dart';
 
 
 class RegisterToastMsg extends StatelessWidget {
@@ -33,6 +34,7 @@ class RegisterToastMsg extends StatelessWidget {
           ],
         ),
         Spacer(), // 중간 공간을 채움
+        SizedBox(height: 10,),
         BasicButton(
             text: '다음',
             color: 'yellow',
@@ -40,11 +42,10 @@ class RegisterToastMsg extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => StoreDetailTopCard(storeId: storeId, isOwner: true,)),
+                    builder: (context) => MyStoreListScreen())
               )
             }
           ),
-        SizedBox(height: 10,),
       ],
     );
   }

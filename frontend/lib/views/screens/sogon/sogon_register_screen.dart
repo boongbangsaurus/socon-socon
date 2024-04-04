@@ -48,9 +48,7 @@ class _SogonRegisterScreenState extends State<SogonRegisterScreen> {
     final image = this.image;
     if (image != null) {
       File _file = File(image.path);
-      FirebaseStorage.instance
-          .ref('$nickname/picker/test_image')
-          .putFile(_file);
+      FirebaseStorage.instance.ref('sogon/picker/test_image').putFile(_file);
     }
   }
 
@@ -269,8 +267,7 @@ class _SogonRegisterScreenState extends State<SogonRegisterScreen> {
                             sogonRegister.lat = currentLocation.latitude;
                             sogonRegister.lng = currentLocation.longitude;
                             setImage();
-                            sogonRegister.image1 =
-                                '$nickname/picker/test_image';
+                            sogonRegister.image1 = 'sogon/picker/test_image';
                             debugPrint(
                                 'send sogon register ################################################');
                             debugPrint('$sogonRegister');

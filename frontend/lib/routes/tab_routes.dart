@@ -7,10 +7,13 @@ import 'package:socon/views/screens/contact/contact_fail_screen.dart';
 import 'package:socon/views/screens/contact/contact_sucess_screen.dart';
 import 'package:socon/views/screens/kpostal_screen.dart';
 import 'package:socon/views/screens/myStore/publish_socon_screen.dart';
+import 'package:socon/views/screens/myStore/search_address.dart';
 import 'package:socon/views/screens/myStore/store_detail_screen.dart';
 import 'package:socon/views/screens/myStore/store_product_register.dart';
 import 'package:socon/views/screens/my_info_screen.dart';
 import 'package:socon/views/screens/my_store_list_screen.dart';
+import 'package:socon/views/screens/payment/approval_screen.dart';
+import 'package:socon/views/screens/payment/approval_success_screen.dart';
 import 'package:socon/views/screens/sign_in_screen.dart';
 import 'package:socon/views/screens/sign_up_screen.dart';
 import 'package:socon/views/screens/soconBook/socon_book_detail_screen.dart';
@@ -25,37 +28,57 @@ import '../views/screens/contact/contact_screen.dart';
 import '../views/screens/nearby_info_screen.dart';
 
 class TabRoutes {
+  static String getInitialRouteForIndex(int index) {
+    switch (index) {
+      case 0:
+        return "nearby";
+      case 1:
+        return "sogon";
+      case 2:
+        return "myStores";
+      case 3:
+        return "soconbook";
+      case 4:
+        return "myInfo";
+      default:
+        return "nearby";
+    }
+  }
+
   static RouteBase getNearbyRoute() {
     return GoRoute(
+        name: "nearby",
         path: "/",
         builder: (BuildContext context, GoRouterState state) {
+          // return NearbyInfoScreen();
           return NearbyInfoScreen();
         },
         routes: [
-          getStoreDetailRoute(),
+          // getStoreDetailRoute(),
         ]);
   }
 
-  static RouteBase getStoreDetailRoute() {
-    return GoRoute(
-        // path: "/",
-        path: "detail/:storeId",
-        builder: (BuildContext context, GoRouterState state) {
-          return StoreDetailScreen(state.pathParameters['storeId']);
-        },
-        routes: [
-          getBuyMenuDetailRoute(),
-        ]);
-  }
+  // static RouteBase getStoreDetailRoute() {
+  //   return GoRoute(
+  //       // path: "/",
+  //       path: "detail/:storeId",
+  //       builder: (BuildContext context, GoRouterState state) {
+  //         return StoreDetailScreen(state.pathParameters['storeId']!);
+  //       },
+  //       routes: [
+  //         getBuyMenuDetailRoute(),
+  //       ]);
+  // }
 
-  static RouteBase getBuyMenuDetailRoute() {
-    return GoRoute(
-        path: "menu/:menuId",
-        builder: (BuildContext context, GoRouterState state) {
-          return BuyMenuDetailScreen(state.pathParameters['menuId']!,
-              state.pathParameters['storeId']!);
-        });
-  }
+  // 점포 상세조회 - 물건 상세조회
+  // static RouteBase getBuyMenuDetailRoute() {
+  //   return GoRoute(
+  //       path: "menu/:menuId",
+  //       builder: (BuildContext context, GoRouterState state) {
+  //         return BuyMenuDetailScreen(state.pathParameters['menuId']!,
+  //             state.pathParameters['storeId']!);
+  //       });
+  // }
 
   // static RouteBase getNearbyRoute() {
   //   return GoRoute(
@@ -68,6 +91,7 @@ class TabRoutes {
 
   static RouteBase getSogonMainRoute() {
     return GoRoute(
+        name: "sogon",
         path: "/sogon",
         builder: (BuildContext context, GoRouterState state) {
           return SogonMainScreen();
@@ -98,6 +122,7 @@ class TabRoutes {
 
   static RouteBase getSoconBookRoute() {
     return GoRoute(
+        name: "soconbook",
         path: "/soconbook",
         builder: (BuildContext context, GoRouterState state) {
           return SoconBookScreen();
@@ -110,9 +135,9 @@ class TabRoutes {
   static RouteBase getMySoconDetailRoute() {
     return GoRoute(
         name: "soconbookDetail",
-        path: "detail",
+        path: "detail/:soconId",
         builder: (BuildContext context, GoRouterState state) {
-          return SoconBookDetailScreen();
+          return SoconBookDetailScreen(state.pathParameters['soconId']!);
         });
   }
 
@@ -127,6 +152,28 @@ class TabRoutes {
           getContactRoute(),
           getBossVerification(),
         ]);
+  }
+
+  static RouteBase getApprovalRoute() {
+    return GoRoute(
+        name: "approval",
+        path: "/approval/:soconId",
+        builder: (BuildContext context, GoRouterState state) {
+          return ApprovalScreen(state.pathParameters['soconId']!);
+        },
+        routes: [
+          getApprovalSuccessRoute(),
+        ]);
+  }
+
+  static RouteBase getApprovalSuccessRoute() {
+    return GoRoute(
+      name: "approvalSuccess",
+      path: "success",
+      builder: (BuildContext context, GoRouterState state) {
+        return ApprovalSuccessScreen();
+      },
+    );
   }
 
   static RouteBase getContactRoute() {
@@ -165,6 +212,7 @@ class TabRoutes {
   // 내점포 Listssss
   static RouteBase getMyStoreListRoute() {
     return GoRoute(
+        name: "myStores",
         path: "/myStores",
         builder: (BuildContext context, GoRouterState state) {
           return const MyStoreListScreen();
@@ -181,7 +229,7 @@ class TabRoutes {
         },
         routes: [
           getMenuDetailRoute(),
-          getProductRegisterRoute(),
+          // getProductRegisterRoute(),
         ]);
   }
 
@@ -194,15 +242,15 @@ class TabRoutes {
         });
   }
 
-  static RouteBase getProductRegisterRoute() {
-    return GoRoute(
-        path: "register",
-        builder: (BuildContext context, GoRouterState state) {
-          return ProductRegister(
-            state.pathParameters['storeId']!,
-          );
-        });
-  }
+  //
+  // static RouteBase getProductRegisterRoute() {
+  //   return GoRoute(
+  //       path: "register",
+  //       builder: (BuildContext context, GoRouterState state) {
+  //         return ProductRegister(state.pathParameters['storeId']!,);
+  //       });
+  // }
+  //
 
   static RouteBase getBossVerification() {
     return GoRoute(
@@ -249,6 +297,14 @@ class TabRoutes {
         path: "/kopo",
         builder: (BuildContext context, GoRouterState state) {
           return KpostalScreen();
+        });
+  }
+
+  static RouteBase getAddressRoute() {
+    return GoRoute(
+        path: "/address",
+        builder: (BuildContext context, GoRouterState state) {
+          return SearchAddress();
         });
   }
 }

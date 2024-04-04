@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:socon/utils/colors.dart';
 import 'package:socon/utils/fontSizes.dart';
 import 'package:socon/views/atoms/image_card.dart';
@@ -7,6 +8,7 @@ import 'package:socon/views/modules/search_module.dart';
 
 import '../../models/store.dart';
 import '../../utils/responsive_utils.dart';
+import '../../viewmodels/stores_view_model.dart';
 import '../atoms/search_box.dart';
 import '../modules/place_list.dart';
 
@@ -17,11 +19,86 @@ class NearbyInfoScreen extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    return _NearbyInfoScreen();
+    return _NearbyInfoScreenState();
   }
 }
 
-class _NearbyInfoScreen extends State<NearbyInfoScreen> {
+class _NearbyInfoScreenState extends State<NearbyInfoScreen> {
+  List<Store>? stores;
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   Future.microtask(() {
+  //     Provider.of<StoresViewModel>(context, listen: false).searchStores();
+  //   });
+  // }
+  StoresViewModel _storesViewModel = StoresViewModel();
+
+  Future<List<Store>?> _fetchStores() async {
+    try {
+      await Future.delayed(Duration(seconds: 2));
+
+      List<Store>? storesData = await _storesViewModel.searchStores();
+
+
+      print("_fetchStores result: $storesData");
+      return storesData;
+    } catch (error) {
+      print("Error _fetchStores: $error");
+      return null;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.WHITE,
+      appBar: CustomAppBar(title: "소콘소콘"),
+      body: FutureBuilder<List<Store>?>(
+        future: _fetchStores(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else {
+            List<Store>? storesData = snapshot.data;
+            print("storesData를 찍어보자 $storesData");
+
+            if (storesData != null) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    // 상태가 변경될 때만 해당 부분을 다시 빌드하도록 Consumer를 사용
+                    ImageCard(
+                      imgUrl:
+                          "https://firebasestorage.googleapis.com/v0/b/socon-socon.appspot.com/o/images%2Fbanner%2Fbanner_maratang.png?alt=media&token=c3ac6662-a3da-49f1-b02b-b7c3db771180",
+                      width: ResponsiveUtils.getWidthWithPixels(context, 320),
+                      height: ResponsiveUtils.getHeightWithPixels(context, 88),
+                    ),
+                    const SizedBox(height: 15.0),
+                    SearchModule(type: "nearby"),
+                    SizedBox(height: 10.0),
+                    Expanded(
+                      child: SizedBox(
+                        width: ResponsiveUtils.getWidthWithPixels(context, 320),
+                        child: PlaceList(stores: storesData),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }
+          }
+          return SizedBox.shrink(); // 반환하지 않을 경우 에러 발생 가능
+        },
+      ),
+    );
+  }
+
   Widget availableSoconInfo() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -52,46 +129,12 @@ class _NearbyInfoScreen extends State<NearbyInfoScreen> {
       ],
     );
   }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.WHITE,
-      appBar: CustomAppBar(title : "소콘소콘"),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Container(
-                margin: const EdgeInsets.only(bottom: 5.0),
-                alignment: Alignment.center,
-                width: ResponsiveUtils.getWidthWithPixels(context, 320),
-                child: availableSoconInfo()),
-            ImageCard(
-              imgUrl:
-                  "https://firebasestorage.googleapis.com/v0/b/socon-socon.appspot.com/o/images%2Fbanner%2Fbanner_maratang.png?alt=media&token=c3ac6662-a3da-49f1-b02b-b7c3db771180",
-              width: ResponsiveUtils.getWidthWithPixels(context, 320),
-              height: ResponsiveUtils.getHeightWithPixels(context, 88),
-            ),
-
-            const SizedBox(height: 15.0),
-            SearchModule(type: "nearby"),
-            SizedBox(height: 10.0),
-            Expanded(
-                child: SizedBox(
-              width: ResponsiveUtils.getWidthWithPixels(context, 320),
-              child: PlaceList(stores: stores),
-            ))
-          ],
-        ),
-      ),
-    );
-  }
 }
 
+
+
 Store tempStore = Store(
-    storeId: 0,
+    storeId: 20,
     name: "오소유",
     imageUrl: "https://cataas.com/cat",
     address: "광주 광산구 장덕로40번길 13-1 1층",
@@ -101,16 +144,4 @@ Store tempStore = Store(
     mainSocon: "소금빵",
     distance: 15);
 
-List<Store> stores = List.generate(10, (index) {
-  return Store(
-    storeId: tempStore.storeId + index,
-    name: tempStore.name,
-    imageUrl: tempStore.imageUrl,
-    address: tempStore.address,
-    category: tempStore.category,
-    createdAt: tempStore.createdAt,
-    isLike: tempStore.isLike,
-    mainSocon: tempStore.mainSocon,
-    distance: tempStore.distance,
-  );
-});
+

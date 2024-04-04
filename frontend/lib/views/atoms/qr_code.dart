@@ -8,46 +8,43 @@ import 'package:socon/utils/responsive_utils.dart';
 
 class QrCodeSocon extends StatefulWidget {
   final int soconId;
+  final String soconImage;
 
   const QrCodeSocon({
-    super.key, required this.soconId,
+    required this.soconId,
+    this.soconImage = "https://firebasestorage.googleapis.com/v0/b/socon-socon.appspot.com/o/images%2Fsocon%2Fsocon4.png?alt=media&token=3b6beeab-c92f-45e7-82f2-15280678509c"
   });
 
   @override
   State<QrCodeSocon> createState() => _QrCodeSoconState();
 }
 
+
 class _QrCodeSoconState extends State<QrCodeSocon> {
-  @protected
   late QrCode qrCode;
-
-  @protected
   late QrImage qrImage;
-
-  @protected
   late PrettyQrDecoration decoration;
-
-  @protected
-  late PrettyQrDecorationImage decorationImage;
 
   @override
   void initState() {
     super.initState();
 
-    var soconData = "socon://info"; // 이동할 링크 /api/v1/socons/{socon_id}/approval
+    var soconData = "socon://approval/${widget.soconId}"; // 이동할 링크 /api/v1/socons/{socon_id}/approval
     qrCode = QrCode(6, QrErrorCorrectLevel.H);
     qrCode.addData(soconData);
 
     qrImage = QrImage(qrCode);
 
-    decoration = const PrettyQrDecoration(
+    // Here we pass the 'soconImage' from the widget to the '_PrettyQrSettings' class constructor
+    decoration = PrettyQrDecoration(
       shape: _PrettyQrSettings.kDefaultQrSmoothSymbol,
-      image: _PrettyQrSettings.kDefaultQrDecorationImage,
+      image: _PrettyQrSettings.kDefaultQrDecorationImage(widget.soconImage),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    print("[qrcode] 소콘 아이디 ${widget.soconId}");
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -65,19 +62,8 @@ class _QrCodeSoconState extends State<QrCodeSocon> {
 }
 
 class _PrettyQrSettings {
-  @protected
   final PrettyQrDecoration decoration;
-
-  @protected
-  @protected
   final ValueChanged<PrettyQrDecoration>? onChanged;
-
-  static const kDefaultQrDecorationImage = PrettyQrDecorationImage(
-    image: NetworkImage(
-        "https://firebasestorage.googleapis.com/v0/b/socon-socon.appspot.com/o/images%2Fsocon%2Fsocon4.png?alt=media&token=3b6beeab-c92f-45e7-82f2-15280678509c"),
-    position: PrettyQrDecorationImagePosition.embedded,
-    fit: BoxFit.fill,
-  );
 
   static const kDefaultQrDecorationBrush = AppColors.GRAY900;
 
@@ -86,8 +72,19 @@ class _PrettyQrSettings {
     roundFactor: 1,
   );
 
-  const _PrettyQrSettings({
+  // Modified constructor to accept 'soconImage' parameter
+  _PrettyQrSettings({
     required this.decoration,
     this.onChanged,
+    required String soconImage,
   });
+
+  // Modified default decoration image to accept 'soconImage'
+  static final kDefaultQrDecorationImage = (String soconImage) => PrettyQrDecorationImage(
+    image: NetworkImage(
+      soconImage,
+    ),
+    position: PrettyQrDecorationImagePosition.embedded,
+    fit: BoxFit.fill,
+  );
 }

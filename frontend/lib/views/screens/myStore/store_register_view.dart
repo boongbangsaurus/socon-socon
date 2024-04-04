@@ -23,6 +23,7 @@ import 'package:socon/views/atoms/input_form.dart';
 import 'package:socon/models/store_register_model.dart';
 import 'package:socon/views/atoms/tag_icon.dart';
 import 'package:socon/viewmodels/store_register_view_model.dart';
+import 'package:socon/views/screens/bossVerification/boss_verification.dart';
 import 'package:socon/views/screens/myStore/store_register_success_screen.dart';
 
 
@@ -340,7 +341,29 @@ class _Step2State extends State<Step2> {
                             viewModel.setAddress(value),
                           },
                       hintText: '도로명, 건물명 또는 지번으로 검색'),
-
+                  // BossInput(
+                  //   type: "address",
+                  //   labelText: "사업자 주소",
+                  //   helperText: "사업자 등록증에 작성된 사업자 주소를 입력해주세요.",
+                  //   showIcon: true,
+                  //   onSaved: (val) {
+                  //     viewModel.setAddress(val!);
+                  //   },
+                  //   validateInput: (String? val) {
+                  //     if (val == null || val.isEmpty) {
+                  //       return "사업자 주소를 입력해주세요";
+                  //     }
+                  //     return null;
+                  //   },
+                  //   initialValue: '',
+                  //   onChanged: (val) {
+                  //     viewModel.setAddress(val!);
+                  //
+                  //   },
+                  //   onPressed: () {
+                  //     GoRouter.of(context).go("/address");
+                  //   },
+                  // ),
                   CustomInputField(
                     labelText: '가게 소개를 입력해 주세요',
                     onChanged: (value) => {

@@ -83,7 +83,8 @@ class SogonViewModel extends ChangeNotifier {
   // 소곤 등록 POST API
   Future<bool> sogonRegister(SogonRegister sogonRegister) async {
     bool res = await _sogonService.sogonRegister(sogonRegister);
-
+    print('====================== sogonRegister');
+    print(res);
     return res;
   }
 

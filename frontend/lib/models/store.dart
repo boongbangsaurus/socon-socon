@@ -9,6 +9,12 @@ class Store {
   final String mainSocon;
   final int distance;
 
+
+  @override
+  String toString() {
+    return 'Store{storeId: $storeId, name: $name, imageUrl: $imageUrl, address: $address, category: $category, createdAt: $createdAt, isLike: $isLike, mainSocon: $mainSocon, distance: $distance}';
+  }
+
   Store({
     required this.storeId,
     required this.name,

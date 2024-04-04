@@ -17,12 +17,12 @@ import site.soconsocon.socon.search.domain.dto.common.SearchType;
 @NoArgsConstructor
 @Data
 public class SearchRequest {
-    private String content;
-    private Double lat;
-    private Double lng;
-    private SearchType searchType;
-    private String sort;
-    private Boolean isFavoriteSearch;
-    private Integer page;
-    private Integer size;
+    private String content = "";
+    private Double lat = 35.0644478;
+    private Double lng = 126.9866463;
+    private SearchType searchType = SearchType.address;
+    private String sort = "distance";
+    private Boolean isFavoriteSearch = false;
+    private Integer page = 0;
+    private Integer size = 10;
 }

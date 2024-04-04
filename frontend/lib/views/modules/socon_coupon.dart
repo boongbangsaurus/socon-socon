@@ -2,13 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:socon/utils/fontSizes.dart';
 import 'package:socon/utils/icons.dart';
 import 'package:socon/utils/responsive_utils.dart';
+import 'package:socon/utils/string_utils.dart';
 import 'package:socon/viewmodels/socon_coupon_view_model.dart';
 import 'package:socon/views/atoms/qr_code.dart';
 
 import '../../utils/colors.dart';
 
 class SoconCouponCard extends StatelessWidget {
-  const SoconCouponCard({super.key});
+  late Map<String, dynamic>? soconInfo;
+  late String soconId;
+
+  SoconCouponCard({super.key, required this.soconInfo, required this.soconId});
 
   @override
   Widget build(BuildContext context) {
@@ -24,14 +28,14 @@ class SoconCouponCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
-            "국밥집",
+            soconInfo!["store_name"],
             style: TextStyle(
                 fontWeight: FontWeight.w500,
                 fontSize: ResponsiveUtils.calculateResponsiveFontSize(
                     context, FontSizes.XXSMALL)),
           ),
           Text(
-            "육개장",
+            soconInfo!["item_name"],
             style: TextStyle(
                 fontWeight: FontWeight.w800,
                 fontSize: ResponsiveUtils.calculateResponsiveFontSize(
@@ -40,7 +44,8 @@ class SoconCouponCard extends StatelessWidget {
           const SizedBox(
             height: 25,
           ),
-          QrCodeSocon(soconId: 1),
+          QrCodeSocon(
+              soconId: int.parse(soconId), soconImage: soconInfo!["image"]),
           const SizedBox(
             height: 40,
           ),
@@ -57,7 +62,7 @@ class SoconCouponCard extends StatelessWidget {
                           context, FontSizes.XXSMALL)),
                 ),
                 Text(
-                  "2024-03-02",
+                  StringAndDateUtils.formatDateTime(soconInfo!["purchased_at"]),
                   style: TextStyle(
                       fontWeight: FontWeight.w500,
                       fontSize: ResponsiveUtils.calculateResponsiveFontSize(
@@ -79,7 +84,7 @@ class SoconCouponCard extends StatelessWidget {
                           context, FontSizes.XXSMALL)),
                 ),
                 Text(
-                  "2024-09-23",
+                  StringAndDateUtils.formatDateTime(soconInfo!["expired_at"]),
                   style: TextStyle(
                       fontWeight: FontWeight.w500,
                       fontSize: ResponsiveUtils.calculateResponsiveFontSize(
@@ -101,7 +106,7 @@ class SoconCouponCard extends StatelessWidget {
                           context, FontSizes.XXSMALL)),
                 ),
                 Text(
-                  "국밥집",
+                  soconInfo!["store_name"],
                   style: TextStyle(
                       fontWeight: FontWeight.w500,
                       fontSize: ResponsiveUtils.calculateResponsiveFontSize(
@@ -120,8 +125,13 @@ class SoconCoupon extends StatelessWidget {
   final VoidCallback onPressed;
   final GlobalKey _repaintBoundaryKey = GlobalKey();
   final SoconCouponViewModel _soconCouponViewModel = SoconCouponViewModel();
+  late Map<String, dynamic>? soconInfo;
+  late String soconId;
 
-  SoconCoupon({this.onPressed = _defaultOnPressed});
+  SoconCoupon(
+      {this.onPressed = _defaultOnPressed,
+      required this.soconInfo,
+      required this.soconId});
 
   static void _defaultOnPressed() {
     print("mySocon입니다.");
@@ -138,7 +148,7 @@ class SoconCoupon extends StatelessWidget {
             SizedBox(height: ResponsiveUtils.getHeightWithPixels(context, 20)),
             RepaintBoundary(
               key: _repaintBoundaryKey,
-              child: SoconCouponCard(),
+              child: SoconCouponCard(soconInfo: soconInfo, soconId: soconId),
             ),
             SizedBox(
               height: ResponsiveUtils.getHeightWithPixels(context, 15),

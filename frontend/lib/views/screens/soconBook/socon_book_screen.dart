@@ -3,7 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:go_router/go_router.dart';
 import 'package:socon/utils/responsive_utils.dart';
+import 'package:socon/utils/string_utils.dart';
 import 'package:socon/utils/toast_utils.dart';
+import 'package:socon/viewmodels/my_socon_view_model.dart';
+import 'package:socon/viewmodels/socon_coupon_view_model.dart';
+import '../../../models/socon_card.dart';
 import '../../../utils/colors.dart';
 import '../../../utils/fontSizes.dart';
 import '../../../viewmodels/notification_view_model.dart';
@@ -23,83 +27,89 @@ class SoconBookScreen extends StatefulWidget {
 
 class _SoconBookScreenState extends State<SoconBookScreen> {
   final NotificationViewModel notificationViewModel = NotificationViewModel();
-  final List<String> soconNames = [
-    '소금빵',
-    '마카롱',
-    '상추',
-    '소금빵',
-    '마카롱',
-    '상추',
-    '소금빵',
-    '마카롱',
-    '상추',
-  ];
-  final List<String> storeNames = [
-    '오소유',
-    '빵집1',
-    '마트1',
-    '오소유',
-    '빵집1',
-    '마트1',
-    '오소유',
-    '빵집1',
-    '빵집1'
-  ];
+  late List<Socon> soconList;
+  List<dynamic>? usableList;
+  List<dynamic>? usedMysoconList;
 
-  final List<String> dueDate = [
-    '2024-02-11',
-    '2024-02-10',
-    '2025-06-09',
-    '2024-02-11',
-    '2024-02-10',
-    '2025-06-09',
-    '2024-02-11',
-    '2024-02-10',
-    '2025-06-09',
-  ];
-  final List<String> imageUrl = [
-    "https://cataas.com/cat",
-    "https://cataas.com/cat",
-    "https://cataas.com/cat",
-    "https://cataas.com/cat",
-    "https://cataas.com/cat",
-    "https://cataas.com/cat",
-    "https://cataas.com/cat",
-    "https://cataas.com/cat",
-    "https://cataas.com/cat",
-  ];
+  late Future<Map<String, dynamic>?> _getMySoconList;
+
+  MySoconViewModel _mySoconViewModel = MySoconViewModel();
+
+  Future<Map<String, dynamic>?> _fetchMySoconList() async {
+    try {
+      await Future.delayed(Duration(seconds: 2));
+
+      Map<String, dynamic>? mySoconListData =
+          await _mySoconViewModel.getMySoconList();
+
+      print("_fetchMySoconList result: $mySoconListData");
+      return mySoconListData;
+    } catch (error) {
+      print("Error _fetchMySoconList: $error");
+      return null;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: AppColors.WHITE,
-        appBar: CustomAppBar(title: "소콘북"),
-        body: Container(
-            color: AppColors.WHITE,
-            width: ResponsiveUtils.getWidthWithPixels(context, 320),
-            margin: EdgeInsets.symmetric(
-                horizontal: ResponsiveUtils.getWidthWithPixels(context, 20)),
-            child: Column(
-              children: [
-                const SizedBox(height: 15.0),
-                SearchModule(type: "soconbook"),
-                const SizedBox(height: 10.0),
-                Expanded(
-                  child: TabBarScreen(
-                    contents: {
-                      '사용가능': availableMySoconList(),
-                      '사용완료': usedMySoconList(),
-                    },
-                    marginTop: 0,
-                    tabHeight: ResponsiveUtils.getHeightWithPixels(context, 450),
-                  ),
-                )
-              ],
-            )));
+      backgroundColor: AppColors.WHITE,
+      appBar: CustomAppBar(title: "소콘북"),
+      body: FutureBuilder<Map<String, dynamic>?>(
+        future: _fetchMySoconList(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else {
+            Map<String, dynamic>? mySoconListData = snapshot.data;
+            print("스냅샷을 찍어보자 $mySoconListData");
+
+            if (mySoconListData != null) {
+              usableList = mySoconListData["usable"];
+              usedMysoconList = mySoconListData["unusable"];
+
+              return Container(
+                color: AppColors.WHITE,
+                width: ResponsiveUtils.getWidthWithPixels(context, 320),
+                margin: EdgeInsets.symmetric(
+                  horizontal: ResponsiveUtils.getWidthWithPixels(context, 20),
+                ),
+                child: Column(
+                  children: [
+                    const SizedBox(height: 15.0),
+                    SearchModule(type: "soconbook"),
+                    const SizedBox(height: 10.0),
+                    Expanded(
+                      child: TabBarScreen(
+                        contents: {
+                          '사용가능':
+                              availableMySoconList(usableList) ?? Container(),
+                          '사용완료':
+                              usedMySoconList(usedMysoconList) ?? Container(),
+                        },
+                        marginTop: 0,
+                        tabHeight:
+                            ResponsiveUtils.getHeightWithPixels(context, 450),
+                      ),
+                    )
+                  ],
+                ),
+              );
+            } else {
+              return Center(child: Text('데이터가 없습니다.'));
+            }
+          }
+        },
+      ),
+    );
   }
 
   // 소콘 리스트
-  Widget availableMySoconList() {
+  Widget availableMySoconList(data) {
+    print("availableMySoconList $data");
+
     return SingleChildScrollView(
       child: Container(
           color: AppColors.WHITE,
@@ -127,38 +137,51 @@ class _SoconBookScreenState extends State<SoconBookScreen> {
               const SizedBox(
                 height: 10.0,
               ),
-              GridView.builder(
-                shrinkWrap: true,
-                // child 위젯의 크기를 정해주지 않은 경우 true로 지정해야됨
-                physics: NeverScrollableScrollPhysics(),
-                itemCount: soconNames.length,
-                //item 개수
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2, //1 개의 행에 보여줄 item 개수
-                  childAspectRatio: 1 / 1.2, //item 의 가로 세로의 비율
-                  mainAxisSpacing: 5, //수평 Padding
-                  crossAxisSpacing: 5, //수직 Padding
+              if (usableList != null)
+                GridView.builder(
+                  key: ObjectKey('available_my_socon_grid'),
+                  shrinkWrap: true,
+                  // child 위젯의 크기를 정해주지 않은 경우 true로 지정해야됨
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: usableList!.length,
+                  //item 개수
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2, //1 개의 행에 보여줄 item 개수
+                    childAspectRatio: 1 / 1.2, //item 의 가로 세로의 비율
+                    mainAxisSpacing: 5, //수평 Padding
+                    crossAxisSpacing: 5, //수직 Padding
+                  ),
+                  itemBuilder: (BuildContext context, index) {
+                    return MySocon(
+                      available: true,
+                      soconName: data![index]['item_name'],
+                      storeName: data![index]['store_name'],
+                      dueDate : StringAndDateUtils.formatDateTime(data![index]['expired_at']),
+                      imageUrl: data![index]['item_image'],
+                      // soconName: soconNames[index],
+                      // storeName: storeNames[index],
+                      // dueDate: dueDate[index],
+                      // imageUrl: imageUrl[index],
+                      onPressed: () {
+                        print("${data![index]['socon_id']} ");
+                        GoRouter.of(context).go(
+                            "/soconbook/detail/${data![index]['socon_id']}");
+                        // String soconId = usableList![index]['socon_id'];
+                        // print("소콘 아이디야 $soconId");
+                        // GoRouter.of(context).go("/soconbook/detail/${soconId}");
+                      },
+                    );
+                  },
                 ),
-                itemBuilder: (BuildContext context, index) {
-                  return MySocon(
-                    available: true,
-                    soconName: soconNames[index],
-                    storeName: storeNames[index],
-                    dueDate: dueDate[index],
-                    imageUrl: imageUrl[index],
-                    onPressed: () {
-                      GoRouter.of(context).go("/soconbook/detail");
-                    },
-                  );
-                },
-              ),
             ],
           )),
     );
   }
 
-  Widget usedMySoconList() {
+  Widget usedMySoconList(data) {
+    print("usedMySoconList $data");
     return SingleChildScrollView(
+      key: ObjectKey('used_my_socon_list'),
       child: Container(
           color: AppColors.WHITE,
           width: ResponsiveUtils.getWidthPercent(context, 100),
@@ -185,28 +208,30 @@ class _SoconBookScreenState extends State<SoconBookScreen> {
               const SizedBox(
                 height: 10.0,
               ),
-              GridView.builder(
-                shrinkWrap: true,
-                // child 위젯의 크기를 정해주지 않은 경우 true로 지정해야됨
-                physics: NeverScrollableScrollPhysics(),
-                itemCount: soconNames.length,
-                //item 개수
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2, //1 개의 행에 보여줄 item 개수
-                  childAspectRatio: 1 / 1.2, //item 의 가로 세로의 비율
-                  mainAxisSpacing: 5, //수평 Padding
-                  crossAxisSpacing: 5, //수직 Padding
+              if (usableList != null)
+                GridView.builder(
+                  key: ObjectKey('used_my_socon_grid'),
+                  shrinkWrap: true,
+                  // child 위젯의 크기를 정해주지 않은 경우 true로 지정해야됨
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: usedMysoconList!.length,
+                  //item 개수
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2, //1 개의 행에 보여줄 item 개수
+                    childAspectRatio: 1 / 1.2, //item 의 가로 세로의 비율
+                    mainAxisSpacing: 5, //수평 Padding
+                    crossAxisSpacing: 5, //수직 Padding
+                  ),
+                  itemBuilder: (BuildContext context, index) {
+                    return MySocon(
+                      available: false,
+                      soconName: data![index]['item_name'],
+                      storeName: data![index]['store_name'],
+                      dueDate: StringAndDateUtils.formatDateTime(data![index]['expired_at']),
+                      imageUrl: data![index]['item_image'],
+                    );
+                  },
                 ),
-                itemBuilder: (BuildContext context, index) {
-                  return MySocon(
-                    available: false,
-                    soconName: soconNames[index],
-                    storeName: storeNames[index],
-                    dueDate: dueDate[index],
-                    imageUrl: imageUrl[index],
-                  );
-                },
-              ),
             ],
           )),
     );
