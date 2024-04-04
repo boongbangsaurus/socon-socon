@@ -5,6 +5,7 @@ import 'package:socon/utils/icons.dart';
 import 'package:socon/views/atoms/buttons.dart';
 import 'package:socon/views/modules/store_detail_top_card.dart';
 import 'package:socon/views/screens/my_store_list_screen.dart';
+import 'package:go_router/go_router.dart';
 
 
 class RegisterToastMsg extends StatelessWidget {
@@ -39,11 +40,13 @@ class RegisterToastMsg extends StatelessWidget {
             text: '다음',
             color: 'yellow',
             onPressed: () => {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => MyStoreListScreen())
-              )
+              GoRouter.of(context).go("/myStores")
+
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(
+              //       builder: (context) => MyStoreListScreen())
+              // )
             }
           ),
       ],

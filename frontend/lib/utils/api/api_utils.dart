@@ -54,7 +54,7 @@ class ApiUtils {
     }
   }
 
-  static FutureOr<String> postDataWithToken(String endPoint, dynamic data ) async {
+  static FutureOr<dynamic> postDataWithToken(String endPoint, dynamic data ) async {
     print(jsonEncode(data));
     await _loadHeaderWithToken(); // 헤더 로드
     final response = await http.post(
@@ -64,7 +64,9 @@ class ApiUtils {
       // body: data,
     );
     if (response.statusCode == 200) {
-      return jsonDecode(response.body).toString();
+      print("hihi");
+      print(jsonDecode(response.body)["data_body"]);
+      return jsonDecode(response.body)["data_body"];
     } else {
       throw Exception('통신 실패: ${jsonDecode(response.body)}');
     }

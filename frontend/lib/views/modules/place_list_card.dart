@@ -11,7 +11,7 @@ import 'package:socon/views/atoms/image_loader.dart';
 import 'package:socon/views/atoms/tag_icon.dart';
 
 // 상수 정의: imageUrl, borderRadius, 이미지 컨테이너 너비
-const imageUrl = "https://cataas.com/cat";
+// const imageUrl = "https://cataas.com/cat";
 const borderRadius = 15.0;
 const double imageContainerWidth = 70.0;
 
@@ -62,8 +62,8 @@ class _PlaceListCardState extends State<PlaceListCard> {
                 color: AppColors.WHITE,
                 borderRadius: BorderRadius.circular(borderRadius),
               ),
-              child: const ImageLoader(
-                imageUrl: "https://cataas.com/cat",
+              child: ImageLoader(
+                imageUrl: widget.storeInfo.imageUrl,
                 borderRadius: borderRadius,
               ),
             ),

@@ -79,7 +79,7 @@ class _SoconBookScreenState extends State<SoconBookScreen> {
                 child: Column(
                   children: [
                     const SizedBox(height: 15.0),
-                    SearchModule(type: "soconbook"),
+                    SearchModule(type: "soconbook", ),
                     const SizedBox(height: 10.0),
                     Expanded(
                       child: TabBarScreen(
@@ -91,7 +91,7 @@ class _SoconBookScreenState extends State<SoconBookScreen> {
                         },
                         marginTop: 0,
                         tabHeight:
-                            ResponsiveUtils.getHeightWithPixels(context, 450),
+                            ResponsiveUtils.getHeightWithPixels(context, 400),
                       ),
                     )
                   ],

@@ -236,9 +236,10 @@ class _BuyMenuDetailScreenState extends State<BuyMenuDetailScreen> {
                       child: BasicButton(
                         onPressed: () async {
                           var orderUid = await savePayment(myMenu['name'], myMenu['price'], count, widget.menuId);
-                          print(orderUid);
+                          print(orderUid.runtimeType);
+                          print(';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;');
 
-                          await validatePayment('imp01516875', orderUid);
+                          // await validatePayment('imp01516875', orderUid);
                           Navigator.of(context).push(
                               MaterialPageRoute(
                                   builder: (context) => Payment(),
@@ -427,7 +428,7 @@ class _BuyMenuDetailScreenState extends State<BuyMenuDetailScreen> {
                 style: TextStyle(fontSize: FontSizes.SMALL),),
               SizedBox(height: 10,),
               Text(
-                  '떠나는 길에 니가 내게 말했지 너는 바라는 게 너무나 많아 잠깐이라도 널 안 바라보면 머리에 불이 나버린다니까 나는 흐르려는 눈물을 참고 하려던 얘길 어렵게 누르고 그래 미안해라는 한 마디로 너랑 나눈 날들 마무리했었지 달디달고 달디달고 달디단 밤양갱 밤양갱 내가 먹고 싶었던 건 달디단 밤양갱 밤양갱이야 떠나는 길에 니가 내게 말했지 아냐 내가 늘 바란 건 하나야 한 개뿐이야 달디단 밤양갱 달디달고 달디달고 달디단 밤양갱 밤양갱 내가 먹고 싶었던 건 달디단 밤양갱 밤양갱이야 상다리가 부러지고 둘이서 먹다 하나가 쓰러져버려도 나라는 사람을 몰랐던 넌 떠나가다가 돌아서서 말했지',
+                "본 상품은 예시 이미지로써 실제 상품과 다를 수 있습니다. \n 매장 상황에 따라 해당 상품 이용이 제한 되거나 동일 상품으로 교환이 불가능 할 수 있습니다. \n 해당 상품 가격보다 저렴한 상품으로 교환하여 발생하는 차액은 환급이 불가하며 해당 상품 가격 이상의 상품으로 교환하는 경우 추가 결제 후 교환이 가능합니다. ",
                 style: TextStyle(fontSize: FontSizes.XXXSMALL),),
             ],
           ),
