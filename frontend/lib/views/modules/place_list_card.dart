@@ -42,7 +42,7 @@ class _PlaceListCardState extends State<PlaceListCard> {
     return GestureDetector(
       onTap: () {
         print("장소리스트 클릭 ${widget.storeInfo.storeId}");
-        GoRouter.of(context).go("/detail/${widget.storeInfo.storeId}");
+        GoRouter.of(context).go("/detail/${widget.storeInfo.storeId!}");
       },
       child: Container(
         margin: EdgeInsets.only(
@@ -145,7 +145,7 @@ class _PlaceListCardState extends State<PlaceListCard> {
 
   // 태그 및 거리 위젯
   Widget buildTagsAndDistance() {
-    final String mainSocon = widget.storeInfo.mainSocon;
+    final String mainSocon = widget.storeInfo.mainSocon!;
     final String category = widget.storeInfo.category;
 
     return Row(

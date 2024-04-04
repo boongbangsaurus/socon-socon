@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:socon/models/store.dart';
 
 class ApiUtils {
   static final String baseUrl = 'http://j10c207.p.ssafy.io:8000';
@@ -64,13 +65,14 @@ class ApiUtils {
       // body: data,
     );
     if (response.statusCode == 200) {
-      print("hihi");
+
       print(jsonDecode(response.body)["data_body"]);
       return jsonDecode(response.body)["data_body"];
     } else {
       throw Exception('통신 실패: ${jsonDecode(response.body)}');
     }
   }
+
 
 
   static Future<String> postVerifyBoss(String endPoint, dynamic data ) async {

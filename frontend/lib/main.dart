@@ -138,7 +138,7 @@ class _MyAppState extends State<MyApp> {
 
     initPlatformState();
 
-    _onStart(); // 잠시 주석 처리
+    // _onStart(); // 잠시 주석 처리
   }
 
   @override

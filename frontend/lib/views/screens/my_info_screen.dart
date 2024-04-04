@@ -27,7 +27,7 @@ class MyInfoScreen extends StatefulWidget {
 class _MyInfoScreen extends State<MyInfoScreen> {
   bool _enableNotification = false;
   bool _enableWatchNotification = true;
-  bool _isOwner = false;
+  bool _isOwner = true;
 
   @override
   void initState() {
