@@ -4,6 +4,7 @@ import 'package:socon/utils/colors.dart';
 import 'package:socon/utils/fontSizes.dart';
 import 'package:socon/views/atoms/image_card.dart';
 import 'package:socon/views/modules/app_bar.dart';
+import 'package:socon/views/modules/checkbox_group.dart';
 import 'package:socon/views/modules/search_module.dart';
 
 import '../../models/mystore_lists_model.dart';
@@ -39,7 +40,6 @@ class _NearbyInfoScreenState extends State<NearbyInfoScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     _preloadImage();
-
   }
 
   static String bannerUrl =
@@ -83,7 +83,8 @@ class _NearbyInfoScreenState extends State<NearbyInfoScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    // 상태가 변경될 때만 해당 부분을 다시 빌드하도록 Consumer를 사용
+
+                    CheckBoxGroup(),
                     ImageCard(
                       imgUrl: bannerUrl,
                       width: ResponsiveUtils.getWidthWithPixels(context, 320),
