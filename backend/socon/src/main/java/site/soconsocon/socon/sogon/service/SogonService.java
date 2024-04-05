@@ -19,6 +19,7 @@ import site.soconsocon.socon.sogon.repository.jpa.CommentRepository;
 import site.soconsocon.socon.sogon.repository.jpa.SogonRepository;
 import site.soconsocon.socon.store.domain.entity.feign.Member;
 import site.soconsocon.socon.store.domain.entity.jpa.Socon;
+import site.soconsocon.socon.store.domain.entity.jpa.SoconStatus;
 import site.soconsocon.socon.store.exception.StoreErrorCode;
 import site.soconsocon.socon.store.exception.StoreException;
 import site.soconsocon.socon.store.feign.FeignServiceClient;
@@ -70,7 +71,7 @@ public class SogonService {
                                         , -0.000001, -0.000002, -0.000003, -0.000004, -0.000005, -0.000006, -0.000007, -0.000008, -0.000009, -0.00001);
         Random ran = new Random();
 
-        socon.setStatus("sogon"); // 소콘의 상태를 "sogon"으로 업데이트
+        socon.setStatus(SoconStatus.sogon); // 소콘의 상태를 "sogon"으로 업데이트
         soconRepository.save(socon);
 
         sogonRepository.save(Sogon.builder()
@@ -138,7 +139,7 @@ public class SogonService {
 
         // 소콘 소유권 이전
         socon.setMemberId(comment.getMemberId());
-        socon.setStatus("unused");
+        socon.setStatus(SoconStatus.unused);
         comment.setIsPicked(true);
         sogon.setIsPicked(true);
 

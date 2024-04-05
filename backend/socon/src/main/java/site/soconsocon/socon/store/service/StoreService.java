@@ -304,7 +304,7 @@ public class StoreService {
         // 발행 중 소콘 발행 중지
         List<Issue> issues = issueRepository.findActiveIssuesByStoreId(storeId);
         for (Issue issue : issues) {
-            issue.setStatus('I');
+            issue.setStatus(IssueStatus.inactive);
             issueRepository.save(issue);
             // 발행 된 소콘 중 사용되지 않은 소콘 마감기한 업데이트
             List<Socon> socons = soconRepository.getUnusedSoconByIssueId(issue.getId());
@@ -335,7 +335,7 @@ public class StoreService {
                 // 사용되지 않은 소콘 상태 업데이트
                 List<Socon> socons = soconRepository.getSoconByStoreId(store.getId());
                 for(Socon socon : socons ){
-                    socon.setStatus("expired");
+                    socon.setStatus(SoconStatus.expired);
                     soconRepository.save(socon);
                 }
             }

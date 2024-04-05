@@ -12,6 +12,7 @@ import site.soconsocon.socon.store.domain.dto.request.AddMySoconRequest;
 import site.soconsocon.socon.store.domain.dto.response.IssueInfoResponse;
 import site.soconsocon.socon.store.domain.dto.response.IssueListResponse;
 import site.soconsocon.socon.store.domain.entity.jpa.Issue;
+import site.soconsocon.socon.store.domain.entity.jpa.IssueStatus;
 import site.soconsocon.socon.store.domain.entity.jpa.Item;
 import site.soconsocon.socon.store.domain.entity.jpa.Socon;
 import site.soconsocon.socon.store.domain.entity.redis.IssueRedis;
@@ -91,7 +92,7 @@ public class IssueService {
                     .period(request.getPeriod())
                     .createdAt(LocalDate.now())
                     .item(item)
-                    .status('A')
+                    .status(IssueStatus.active)
                     .build());
         }catch (RuntimeException e){
             throw new StoreException(StoreErrorCode.TRANSACTION_FAIL);
@@ -120,7 +121,7 @@ public class IssueService {
         Integer id = request.getIssueId();
         Issue issue = issueRepository.findById(id)
                 .orElseThrow(() -> new StoreException(StoreErrorCode.ISSUE_NOT_FOUND));
-        if (issue.getStatus() != 'A') {
+        if (issue.getStatus() != IssueStatus.active) {
             // 발행 중 아님
             throw new StoreException(StoreErrorCode.INVALID_ISSUE);
         }
@@ -155,11 +156,11 @@ public class IssueService {
             // 본인 점포의 상품이 아닐 경우
             throw new SoconException(ErrorCode.FORBIDDEN);
         }
-        if (issue.getStatus() != 'A') {
+        if (issue.getStatus() != IssueStatus.active) {
             // 발행 중 아님
             throw new SoconException(ErrorCode.BAD_REQUEST);
         }
-        issue.setStatus('I');
+        issue.setStatus(IssueStatus.inactive);
         issueRepository.save(issue);
     }
 
