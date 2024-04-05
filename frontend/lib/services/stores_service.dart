@@ -44,8 +44,10 @@ class StoresService {
 
       SearchParams _searchParams = SearchParams(
           content: "",
-          lat: pLat,
-          lng: pLng,
+          // lat: pLat,
+          // lng: pLng,
+          lat : 35.205742,
+          lng : 126.811538,
           searchType: "name",
           sort: "distance",
           isFavoriteSearch: false,
