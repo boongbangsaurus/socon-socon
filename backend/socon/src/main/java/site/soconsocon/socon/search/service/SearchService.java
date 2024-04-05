@@ -96,7 +96,7 @@ public class SearchService {
                     .address(storeDocument.getAddress() != null ? storeDocument.getAddress() : "")
                     .category(storeDocument.getCategory() != null ? storeDocument.getCategory() : "")
                     .isLike(isLike) // Boolean은 null이 가능한 상황에서 기본값이 false인 경우를 다룰 수 있음
-                    .mainSocon(issue != null ? issue.get(0).getName() : "")
+                    .mainSocon(issue != null && !issue.isEmpty() ? issue.get(0).getName() : "")
                     .build();
             // filter favourites
             if(searchRequest.getIsFavoriteSearch()){
