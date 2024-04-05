@@ -110,7 +110,6 @@ class _SogonDetailScreenState extends State<SogonDetailScreen> {
                                           // 컨텐츠 크기에 맞게 조절
                                           children: <Widget>[
                                             Expanded(
-                                              // 이미지가 Container를 꽉 채우도록 설정
                                               child: Image.network(
                                                 'https://firebasestorage.googleapis.com/v0/b/socon-socon.appspot.com/o/images%2Fsocon%2Fgimbap.png?alt=media&token=89ee3277-cf77-4e9d-b02e-8eb80996e965',
                                                 fit: BoxFit

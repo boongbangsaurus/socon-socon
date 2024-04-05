@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:socon/models/comment.dart';
@@ -88,15 +89,41 @@ class SogonViewModel extends ChangeNotifier {
     return res;
   }
 
+  // 소곤 댓글 POST API
   Future<bool> commentRegister(String sogon_id, String comment) async {
     bool res = await _sogonService.commentRegister(sogon_id, comment);
     getSogonDetail(sogon_id);
     return res;
   }
 
+  // 소곤 채택 API
   Future<bool> setPicked(String sogon_id, String comment_id) async {
     bool res = await _sogonService.setPicked(sogon_id, comment_id);
     getSogonDetail(sogon_id);
     return res;
+  }
+
+  // Firebase Authentication GET uid
+  Future<String> getUid() async {
+    String res = await _sogonService.getUid();
+    await signInWithCustomToken(res);
+
+    return res;
+  }
+
+  // Firebase Authentication 인증
+  Future<void> signInWithCustomToken(String customToken) async {
+    try {
+      // 사용자 정의 토큰으로 Firebase에 인증 요청
+      final UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithCustomToken(customToken);
+
+      // 인증 성공 후 작업, 예를 들어 홈 페이지로 이동
+      print("인증 성공: ${userCredential.user?.uid}");
+    } on FirebaseAuthException catch (e) {
+      print("Firebase 인증 에러: $e");
+    } catch (e) {
+      print("인증 에러: $e");
+    }
   }
 }

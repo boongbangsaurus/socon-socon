@@ -29,12 +29,13 @@ class SogonRegisterScreen extends StatefulWidget {
 class _SogonRegisterScreenState extends State<SogonRegisterScreen> {
   SogonViewModel sogonViewModel = SogonViewModel();
   final _formKey = GlobalKey<FormState>();
-  final picker = ImagePicker();
   bool isSelected = false;
   int selectSocon = 0;
+  final picker = ImagePicker();
   List<XFile?> images = []; // 갤러리에서 사진 선택
   XFile? image;
   String? nickname;
+  String? imageUrl;
 
   void getImage(ImageSource source) async {
     image = await picker.pickImage(source: source);
@@ -46,9 +47,36 @@ class _SogonRegisterScreenState extends State<SogonRegisterScreen> {
 
   void setImage() async {
     final image = this.image;
+
     if (image != null) {
-      File _file = File(image.path);
-      FirebaseStorage.instance.ref('sogon/picker/test_image').putFile(_file);
+      final imageFile = await image.readAsBytes();
+
+      imageUrl =
+          "images/sogon/${DateFormat('yyyy-MM-dd:HH:mm:ss').format(DateTime.now())}${image.name}";
+      print(imageUrl);
+      final ref = FirebaseStorage.instance.ref();
+      final child = ref.child(imageUrl!);
+      final uploadTask = child.putData(imageFile);
+
+      uploadTask.snapshotEvents.listen((TaskSnapshot taskSnapshot) {
+        switch (taskSnapshot.state) {
+          case TaskState.running:
+            final progress = 100.0 *
+                (taskSnapshot.bytesTransferred / taskSnapshot.totalBytes);
+            print("Upload is $progress% complete.");
+            break;
+          case TaskState.paused:
+            print("Upload is paused.");
+            break;
+          case TaskState.canceled:
+            print("Upload was canceled");
+            break;
+          case TaskState.error:
+            break;
+          case TaskState.success:
+            break;
+        }
+      });
     }
   }
 
@@ -267,16 +295,16 @@ class _SogonRegisterScreenState extends State<SogonRegisterScreen> {
                             sogonRegister.lat = currentLocation.latitude;
                             sogonRegister.lng = currentLocation.longitude;
                             setImage();
-                            sogonRegister.image1 =
-                                'https://firebasestorage.googleapis.com/v0/b/socon-socon.appspot.com/o/images%2Fsocon%2Fgimbap.png?alt=media&token=89ee3277-cf77-4e9d-b02e-8eb80996e965';
+                            // sogonRegister.image1 =
+                            'https://firebasestorage.googleapis.com/v0/b/socon-socon.appspot.com/o/images%2Fsocon%2Fgimbap.png?alt=media&token=89ee3277-cf77-4e9d-b02e-8eb80996e965';
                             debugPrint(
-                                'send sogon register ################################################');
+                                '========= send sogon register =========');
                             debugPrint('$sogonRegister');
                             debugPrint(
-                                '################################################');
-                            bool isSuccess = await sogonViewModel
-                                .sogonRegister(sogonRegister);
-
+                                '=======================================');
+                            // bool isSuccess = await sogonViewModel
+                            //     .sogonRegister(sogonRegister);
+                            bool isSuccess = false;
                             debugPrint(
                                 '####$isSuccess############################################');
                             if (isSuccess) {

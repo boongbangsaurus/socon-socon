@@ -232,4 +232,31 @@ class SogonService {
       return false;
     }
   }
+
+  // 소곤 firebase storage uid 생성 GET 요청
+  Future<String> getUid() async {
+    final prefs = await SharedPreferences.getInstance();
+    final accessToken = prefs.getString('accessToken');
+    final res = await http.get(
+      Uri.parse('$baseUrl/api/v1/notification/fcm/authenticate'),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+        'authorization': 'Bearer $accessToken',
+      },
+    );
+    final String body = utf8.decode(res.bodyBytes);
+    if (res.statusCode == 200) {
+      debugPrint(
+          'getUid res 200 ################################################');
+      return body;
+    } else {
+      debugPrint(
+          'getUid res not 200 ################################################');
+      print(utf8.decode(res.bodyBytes));
+      debugPrint(
+          'getUid res not 200 ################################################');
+
+      return body;
+    }
+  }
 }
