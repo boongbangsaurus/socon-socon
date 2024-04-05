@@ -37,8 +37,6 @@ class _PlaceListCardState extends State<PlaceListCard> {
 
   @override
   Widget build(BuildContext context) {
-    // print('ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ');
-    // print(widget.storeInfo.storeId);
     return GestureDetector(
       onTap: () {
         print("장소리스트 클릭 ${widget.storeInfo.storeId}");
@@ -159,11 +157,12 @@ class _PlaceListCardState extends State<PlaceListCard> {
               buttonTextColor: AppColors.WHITE,
             ),
             const SizedBox(width: 8.0),
-            TagIcon(
-              buttonText: mainSocon,
-              buttonColor: AppColors.YELLOW,
-              buttonTextColor: AppColors.WHITE,
-            ),
+            if (mainSocon != "")
+              TagIcon(
+                buttonText: mainSocon,
+                buttonColor: AppColors.YELLOW,
+                buttonTextColor: AppColors.WHITE,
+              ),
           ],
         ),
         Text(widget.storeInfo.distance.toString(),
