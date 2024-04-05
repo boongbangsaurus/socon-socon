@@ -2,6 +2,7 @@ package site.soconsocon.notification.fcm.service;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.messaging.*;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -51,6 +52,17 @@ public class FcmService {
         if(FirebaseApp.getApps().isEmpty()){
             FirebaseApp.initializeApp(options);
         }
+    }
+    public String createCustomToken(String uid) {
+        String customToken = null;
+
+        try {
+            customToken = FirebaseAuth.getInstance().createCustomToken(uid);
+        } catch (Exception e) {
+            throw new FcmException(FcmErrorCode.CREATE_TOKEN_FAIL);
+        }
+
+        return customToken;
     }
 
     public DeviceToken saveToken(SaveTokenRequest saveTokenRequest){
