@@ -554,12 +554,7 @@ public class StoreService {
             }
         }
 // 정렬
-            Comparator<IssuedAnalysisListResponse> priceComparator = new Comparator<IssuedAnalysisListResponse>() {
-                @Override
-                public int compare(IssuedAnalysisListResponse response1, IssuedAnalysisListResponse response2) {
-                    return Double.compare(response2.getTotalPrice(), response1.getTotalPrice());
-                }
-            };
+            Comparator<IssuedAnalysisListResponse> priceComparator = (response1, response2) -> Double.compare(response2.getTotalPrice(), response1.getTotalPrice());
 
             Collections.sort(response, priceComparator);
 
