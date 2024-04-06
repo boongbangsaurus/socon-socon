@@ -92,7 +92,7 @@ public class IssueService {
                     .period(request.getPeriod())
                     .createdAt(LocalDate.now())
                     .item(item)
-                    .status(IssueStatus.active)
+                    .status(IssueStatus.A)
                     .build());
         }catch (RuntimeException e){
             throw new StoreException(StoreErrorCode.TRANSACTION_FAIL);
@@ -121,7 +121,7 @@ public class IssueService {
         Integer id = request.getIssueId();
         Issue issue = issueRepository.findById(id)
                 .orElseThrow(() -> new StoreException(StoreErrorCode.ISSUE_NOT_FOUND));
-        if (issue.getStatus() != IssueStatus.active) {
+        if (issue.getStatus() != IssueStatus.A) {
             // 발행 중 아님
             throw new StoreException(StoreErrorCode.INVALID_ISSUE);
         }
@@ -130,8 +130,10 @@ public class IssueService {
             throw new StoreException(StoreErrorCode.ISSUE_MAX_QUANTITY);
         }
         issue.setIssuedQuantity(issue.getIssuedQuantity() + request.getPurchasedQuantity());
+        if(Objects.equals(issue.getIssuedQuantity(), issue.getMaxQuantity())){
+            issue.setStatus(IssueStatus.I);
+        }
         issueRepository.save(issue);
-
         for (int i = 0; i < request.getPurchasedQuantity(); i++) {
             Socon newSocon = Socon.builder()
                     .purchasedAt(request.getPurchaseAt())
@@ -156,11 +158,11 @@ public class IssueService {
             // 본인 점포의 상품이 아닐 경우
             throw new SoconException(ErrorCode.FORBIDDEN);
         }
-        if (issue.getStatus() != IssueStatus.active) {
+        if (issue.getStatus() != IssueStatus.A) {
             // 발행 중 아님
             throw new SoconException(ErrorCode.BAD_REQUEST);
         }
-        issue.setStatus(IssueStatus.inactive);
+        issue.setStatus(IssueStatus.I);
         issueRepository.save(issue);
     }
 
