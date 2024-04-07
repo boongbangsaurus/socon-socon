@@ -66,7 +66,7 @@ public class SoconService {
 //            LocalDateTime expiredAt = LocalDateTime.parse(socon.getExpiredAt().toString());
             LocalDateTime nowWithMilliseconds = LocalDateTime.now().withNano(0);
 
-             if (socon.getExpiredAt().toLocalDate().isEqual(nowWithMilliseconds.toLocalDate()) || socon.getExpiredAt().toLocalTime().isBefore(nowWithMilliseconds.toLocalTime())){
+             if (socon.getExpiredAt().toLocalDate().isEqual(nowWithMilliseconds.toLocalDate()) || socon.getExpiredAt().toLocalTime().isAfter(nowWithMilliseconds.toLocalTime())){
                 socon.setStatus(SoconStatus.expired);
                 soconRepository.save(socon);
             }
