@@ -21,4 +21,8 @@ public class MemberResponseDto {
     private int soconMoney;
 
     private String soconPassword;
+
+    private String profileUrl;
+
+    private String account;
 }

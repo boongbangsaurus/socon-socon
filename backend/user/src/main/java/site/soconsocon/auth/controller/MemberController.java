@@ -106,6 +106,7 @@ public class MemberController {
         return ResponseEntity.ok().body(MessageUtils.success(member));
     }
 
+    //Feign Client
     @GetMapping("/{memberId}")
     public MemberFeignResponse getMemberByMemberId(@PathVariable int memberId) throws MemberException {
         log.info("open feign communication success!");
