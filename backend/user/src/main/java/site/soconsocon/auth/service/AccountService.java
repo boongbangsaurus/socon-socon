@@ -10,13 +10,13 @@ import site.soconsocon.auth.domain.entity.jpa.Member;
 import site.soconsocon.auth.exception.AccountException;
 import site.soconsocon.auth.exception.ErrorCode;
 import site.soconsocon.auth.exception.MemberException;
-import site.soconsocon.auth.repository.MemberRepository;
+import site.soconsocon.auth.repository.MemberRepository1;
 
 @Service
 @RequiredArgsConstructor
 public class AccountService {
 
-    private final MemberRepository memberRepository;
+    private final MemberRepository1 memberRepository;
 
     /**
      * 입금

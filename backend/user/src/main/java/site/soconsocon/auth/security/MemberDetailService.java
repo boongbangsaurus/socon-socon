@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import site.soconsocon.auth.domain.entity.jpa.Member;
-import site.soconsocon.auth.repository.MemberRepository;
+import site.soconsocon.auth.repository.MemberRepository1;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -20,7 +20,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MemberDetailService implements UserDetailsService {
 
-    private final MemberRepository memberRepository;
+    private final MemberRepository1 memberRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

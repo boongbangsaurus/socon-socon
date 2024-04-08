@@ -8,8 +8,7 @@ import site.soconsocon.auth.domain.entity.jpa.Member;
 
 import java.util.Optional;
 
-@Repository
-public interface MemberRepository extends JpaRepository<Member, Integer> {
+public interface MemberRepository {
 
     Optional<Member> findMemberById(int memberId); //이메일로 유저찾기
 
