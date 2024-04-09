@@ -10,12 +10,14 @@ import site.soconsocon.auth.domain.dto.request.MemberRegisterRequestDto;
 import site.soconsocon.auth.domain.dto.response.MemberFeignResponse;
 import site.soconsocon.auth.domain.dto.response.MemberLoginResponseDto;
 import site.soconsocon.auth.domain.dto.response.MemberResponseDto;
+import site.soconsocon.auth.domain.dto.response.MyPageResponseDto;
 import site.soconsocon.auth.domain.entity.jpa.Member;
 import site.soconsocon.auth.domain.entity.jpa.RefreshToken;
 import site.soconsocon.auth.domain.entity.jpa.UserRole;
 import site.soconsocon.auth.exception.ErrorCode;
 import site.soconsocon.auth.exception.MemberException;
 import site.soconsocon.auth.feign.NotificationFeignClient;
+import site.soconsocon.auth.feign.SoconFeignClient;
 import site.soconsocon.auth.feign.domain.dto.feign.MemberRoleRequest;
 import site.soconsocon.auth.feign.domain.dto.feign.SaveTokenRequest;
 import site.soconsocon.auth.repository.MemberJpaRepository;
@@ -26,6 +28,7 @@ import site.soconsocon.auth.security.MemberDetails;
 import site.soconsocon.auth.util.JwtUtil;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Optional;
 
 
@@ -46,6 +49,8 @@ public class MemberService {
 
     private final NotificationFeignClient notificationFeignClient;
 
+    private final SoconFeignClient soconFeignClient;
+
     private final MemberDetailService memberDetailService;
 
 
@@ -55,7 +60,7 @@ public class MemberService {
      * @param requestDto
      * @return
      */
-    public Member register(MemberRegisterRequestDto requestDto) throws MemberException {
+    public Member register(MemberRegisterRequestDto requestDto) {
         //이메일 중복체크
         if (!dupleEmailCheck(requestDto.getEmail())) {
             throw new MemberException(ErrorCode.DUPLE_EMAIL); //이미 있는 이메일
@@ -160,7 +165,7 @@ public class MemberService {
      * @return
      * @throws IOException
      */
-    public String createAccessToken(MemberDetails memberDetails, String refreshToken){
+    public String createAccessToken(MemberDetails memberDetails, String refreshToken) {
         int memberId = memberDetails.getMember().getId();
         //Redis에 저장된 리프레시 토큰 가져오기
         RefreshToken refreshToken1 = refreshTokenRepository.findRefreshTokenByMemberId(memberId);
@@ -195,7 +200,7 @@ public class MemberService {
     }
 
 
-    public MemberResponseDto getUserInfo(int memberId) throws MemberException {
+    public MemberResponseDto getUserInfo(int memberId) {
         Member member = memberQueryRepository.findMemberById(memberId).orElseThrow(
                 () -> new MemberException(ErrorCode.USER_NOT_FOUND)
         );
@@ -210,14 +215,14 @@ public class MemberService {
         return memberResponseDto;
     }
 
-    public Member getMemberByEmail(String email) throws MemberException {
+    public Member getMemberByEmail(String email) {
         Member member = memberQueryRepository.findMemberByEmail(email).orElseThrow(
                 () -> new MemberException(ErrorCode.USER_NOT_FOUND)
         );
         return member;
     }
 
-    public MemberFeignResponse findMemberByMemberId(int memberId) throws MemberException {
+    public MemberFeignResponse findMemberByMemberId(int memberId) {
         Member member = memberQueryRepository.findMemberById(memberId).orElseThrow(
                 () -> new MemberException(ErrorCode.USER_NOT_FOUND)
         );
@@ -233,6 +238,39 @@ public class MemberService {
         memberFeignResponse.setSoconPassword(member.getSoconPassword());
 
         return memberFeignResponse;
+    }
+
+    public MyPageResponseDto getMyPage(int memberId) {
+        Member member = memberQueryRepository.findMemberById(memberId).orElseThrow(
+                () -> new MemberException(ErrorCode.USER_NOT_FOUND)
+        );
+
+        // 위의 메서드 호출
+        Object response = soconFeignClient.myPage(memberId);
+
+        // HashMap으로 형변환
+        HashMap<String, Object> resultMap = (HashMap<String, Object>) response;
+
+        // 소콘, 소곤, 댓글 갯수 가져오기
+        int soconCount = (int) resultMap.get("socon");
+        int sogonCount = (int) resultMap.get("sogon");
+        int commentCount = (int) resultMap.get("comment");
+
+        MyPageResponseDto myPageResponseDto = new MyPageResponseDto();
+
+        myPageResponseDto.setEmail(member.getEmail());
+        myPageResponseDto.setNickname(member.getNickname());
+        myPageResponseDto.setName(member.getName());
+        myPageResponseDto.setPhoneNumber(member.getPhoneNumber());
+        myPageResponseDto.setProfileUrl(member.getProfileUrl());
+        myPageResponseDto.setAccount(member.getAccountNo());
+        myPageResponseDto.setSoconMoney(member.getSoconMoney());
+        myPageResponseDto.setSoconPassword(member.getSoconPassword());
+        myPageResponseDto.setSoconCnt(soconCount); //보유 소콘
+        myPageResponseDto.setSogonCnt(sogonCount); //작성 소곤
+        myPageResponseDto.setSogonReplyCnt(commentCount); //댓글 소곤
+
+        return myPageResponseDto;
     }
 
     /**

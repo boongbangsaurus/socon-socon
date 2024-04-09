@@ -11,6 +11,7 @@ import site.soconsocon.auth.domain.dto.request.MemberRegisterRequestDto;
 import site.soconsocon.auth.domain.dto.response.MemberFeignResponse;
 import site.soconsocon.auth.domain.dto.response.MemberLoginResponseDto;
 import site.soconsocon.auth.domain.dto.response.MemberResponseDto;
+import site.soconsocon.auth.domain.dto.response.MyPageResponseDto;
 import site.soconsocon.auth.domain.entity.jpa.Member;
 import site.soconsocon.auth.domain.entity.jpa.RefreshToken;
 import site.soconsocon.auth.exception.MemberException;
@@ -59,8 +60,8 @@ public class MemberController {
     //마이페이지
     @GetMapping("/mypage")
     public ResponseEntity getUserInfo(@RequestHeader("X-Authorization-Id") int memberId){
-        MemberResponseDto memberResponseDto = memberService.getUserInfo(memberId);
-        return ResponseEntity.ok().body(MessageUtils.success(memberResponseDto));
+        MyPageResponseDto myPageResponseDto = memberService.getMyPage(memberId);
+        return ResponseEntity.ok().body(MessageUtils.success(myPageResponseDto));
     }
 
     /**
