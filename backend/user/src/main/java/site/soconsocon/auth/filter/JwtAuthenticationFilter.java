@@ -12,8 +12,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
-import site.soconsocon.auth.repository.MemberRepository1;
-
+import site.soconsocon.auth.repository.MemberJpaRepository;
 import site.soconsocon.auth.security.MemberDetailService;
 import site.soconsocon.auth.util.JwtUtil;
 
@@ -26,7 +25,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private final MemberRepository1 memberRepository;
+    private final MemberJpaRepository memberRepository;
     private final JwtUtil jwtUtil;
     private final MemberDetailService memberDetailService;
 
