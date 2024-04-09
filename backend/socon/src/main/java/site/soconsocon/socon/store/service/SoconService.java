@@ -12,6 +12,7 @@ import site.soconsocon.socon.store.domain.dto.request.ChargeRequest;
 import site.soconsocon.socon.store.domain.dto.request.SoconBookSearchRequest;
 import site.soconsocon.socon.store.domain.dto.response.SoconInfoResponse;
 import site.soconsocon.socon.store.domain.dto.response.SoconListResponse;
+import site.soconsocon.socon.store.domain.dto.response.SoconMypageResponse;
 import site.soconsocon.socon.store.domain.entity.jpa.Issue;
 import site.soconsocon.socon.store.domain.entity.jpa.Item;
 import site.soconsocon.socon.store.domain.entity.jpa.Socon;
@@ -204,15 +205,10 @@ public class SoconService {
     // 보유 소콘, 소곤 개수 조회
     public Object getMyPage(Integer memberId) {
 
-        int soconCount = soconRepository.getMySoconCount(memberId);
-        int sogonCount = sogonRepository.getMySogonCount(memberId);
-        int commentCount = commentRepository.getMyCommentCount(memberId);
-
-        HashMap<String, Object> response = new HashMap<>();
-        response.put("socon", soconCount);
-        response.put("sogon", sogonCount);
-        response.put("comment", commentCount);
-
-        return response;
+        return SoconMypageResponse.builder()
+                .socon(soconRepository.getMySoconCount(memberId))
+                .sogon(sogonRepository.getMySogonCount(memberId))
+                .comment(commentRepository.getMyCommentCount(memberId))
+                .build();
     }
 }
