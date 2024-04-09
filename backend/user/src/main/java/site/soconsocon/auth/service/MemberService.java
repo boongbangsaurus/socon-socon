@@ -19,6 +19,7 @@ import site.soconsocon.auth.exception.MemberException;
 import site.soconsocon.auth.feign.NotificationFeignClient;
 import site.soconsocon.auth.feign.SoconFeignClient;
 import site.soconsocon.auth.feign.domain.dto.feign.MemberRoleRequest;
+import site.soconsocon.auth.feign.domain.dto.feign.MyPageSoconResponse;
 import site.soconsocon.auth.feign.domain.dto.feign.SaveTokenRequest;
 import site.soconsocon.auth.repository.MemberJpaRepository;
 import site.soconsocon.auth.repository.MemberQueryRepository;
@@ -245,16 +246,8 @@ public class MemberService {
                 () -> new MemberException(ErrorCode.USER_NOT_FOUND)
         );
 
-        // 위의 메서드 호출
-        Object response = soconFeignClient.myPage(memberId);
-
-        // HashMap으로 형변환
-        HashMap<String, Object> resultMap = (HashMap<String, Object>) response;
-
-        // 소콘, 소곤, 댓글 갯수 가져오기
-        int soconCount = (int) resultMap.get("socon");
-        int sogonCount = (int) resultMap.get("sogon");
-        int commentCount = (int) resultMap.get("comment");
+        MyPageSoconResponse response = soconFeignClient.myPage(memberId).getBody();
+        log.info("response: {}", response);
 
         MyPageResponseDto myPageResponseDto = new MyPageResponseDto();
 
@@ -266,9 +259,9 @@ public class MemberService {
         myPageResponseDto.setAccount(member.getAccountNo());
         myPageResponseDto.setSoconMoney(member.getSoconMoney());
         myPageResponseDto.setSoconPassword(member.getSoconPassword());
-        myPageResponseDto.setSoconCnt(soconCount); //보유 소콘
-        myPageResponseDto.setSogonCnt(sogonCount); //작성 소곤
-        myPageResponseDto.setSogonReplyCnt(commentCount); //댓글 소곤
+        myPageResponseDto.setSoconCnt(response.getSoconCnt()); //보유 소콘
+        myPageResponseDto.setSogonCnt(response.getSogonCnt()); //작성 소곤
+        myPageResponseDto.setSogonReplyCnt(response.getSogonReplyCnt()); //댓글 소곤
 
         return myPageResponseDto;
     }
