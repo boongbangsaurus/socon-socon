@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:socon/models/user.dart';
 import 'package:socon/services/notifications/firebase_messaging_service.dart';
+import 'package:socon/utils/api/api_utils.dart';
 
 /// [AuthService]
 /// 백과 API 통신하기 위한 Class
@@ -79,5 +80,13 @@ class AuthService {
 
       return null;
     }
+  }
+
+  Future<void> getUserInfo() async {
+    final response = await ApiUtils.getDataWithToken("/api/v1/members/mypage");
+
+    print("사용자 정보 ${jsonDecode(response)}");
+
+    final data = jsonDecode(response);
   }
 }
