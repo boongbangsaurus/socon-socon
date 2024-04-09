@@ -10,13 +10,17 @@ import site.soconsocon.auth.domain.entity.jpa.Member;
 import site.soconsocon.auth.exception.AccountException;
 import site.soconsocon.auth.exception.ErrorCode;
 import site.soconsocon.auth.exception.MemberException;
-import site.soconsocon.auth.repository.MemberRepository1;
+import site.soconsocon.auth.repository.MemberJpaRepository;
+import site.soconsocon.auth.repository.MemberQueryRepository;
 
 @Service
 @RequiredArgsConstructor
 public class AccountService {
 
-    private final MemberRepository1 memberRepository;
+    private final MemberJpaRepository memberRepository;
+
+    private final MemberQueryRepository memberQueryRepository;
+
 
     /**
      * 입금
@@ -26,13 +30,13 @@ public class AccountService {
      */
     @Transactional
     public String deposit(DepositRequestDto depositRequestDto) throws MemberException, AccountException {
-        Member member = memberRepository.findMemberById(depositRequestDto.getMemberId()).orElseThrow(
+        Member member = memberQueryRepository.findMemberById(depositRequestDto.getMemberId()).orElseThrow(
                 () -> new MemberException(ErrorCode.USER_NOT_FOUND)
         );
         int depositMoney = depositRequestDto.getMoney(); //충전할 소콘머니
 
         try {
-            memberRepository.chargeSoconMoney(depositRequestDto.getMemberId(), depositMoney); // 증가
+            memberQueryRepository.chargeSoconMoney(depositRequestDto.getMemberId(), depositMoney); // 증가
             // 입금이 성공했다는 결과를 보냄
             return "소콘머니가 충전되었습니다.";
 
@@ -53,7 +57,7 @@ public class AccountService {
 
     @Transactional
     public String withdraw(WithdrawRequestDto withdrawRequestDto) throws MemberException, AccountException {
-        Member member = memberRepository.findMemberById(withdrawRequestDto.getMemberId()).orElseThrow(
+        Member member = memberQueryRepository.findMemberById(withdrawRequestDto.getMemberId()).orElseThrow(
                 () -> new MemberException(ErrorCode.USER_NOT_FOUND)
         );
         int soconMoney = member.getSoconMoney(); //현재 보유하고 있는 소콘머니
@@ -71,7 +75,7 @@ public class AccountService {
         }
 
         try {
-            memberRepository.withdrawSoconMoney(withdrawRequestDto.getMemberId(), depositMoney); //출금
+            memberQueryRepository.withdrawSoconMoney(withdrawRequestDto.getMemberId(), depositMoney); //출금
             return "소콘머니가 출금되었습니다.";
 
         } catch (Exception e) {
@@ -90,7 +94,7 @@ public class AccountService {
      */
     @Transactional
     public String saveAccountNo(int memberId, AccountNoRequestDto accountNoRequestDto) throws MemberException, AccountException {
-        Member member = memberRepository.findMemberById(memberId).orElseThrow(
+        Member member = memberQueryRepository.findMemberById(memberId).orElseThrow(
                 () -> new MemberException(ErrorCode.USER_NOT_FOUND)
         );
         String accountNo = accountNoRequestDto.getAccountNo(); //계좌번호

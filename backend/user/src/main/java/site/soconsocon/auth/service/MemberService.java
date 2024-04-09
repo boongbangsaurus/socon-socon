@@ -11,7 +11,8 @@ import site.soconsocon.auth.domain.entity.jpa.RefreshToken;
 import site.soconsocon.auth.domain.entity.jpa.UserRole;
 import site.soconsocon.auth.exception.ErrorCode;
 import site.soconsocon.auth.exception.MemberException;
-import site.soconsocon.auth.repository.MemberRepository;
+import site.soconsocon.auth.repository.MemberJpaRepository;
+import site.soconsocon.auth.repository.MemberQueryRepository;
 import site.soconsocon.auth.repository.RefreshTokenRepository;
 import site.soconsocon.auth.security.MemberDetails;
 import site.soconsocon.auth.util.JwtUtil;
@@ -24,7 +25,9 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MemberService {
 
-    private final MemberRepository memberRepository;
+    private final MemberJpaRepository memberRepository;
+
+    private final MemberQueryRepository memberQueryRepository;
 
     private final RefreshTokenRepository refreshTokenRepository;
 
@@ -67,7 +70,7 @@ public class MemberService {
      * @param email
      */
     public boolean dupleEmailCheck(String email) {
-        if (memberRepository.findMemberByEmail(email).isPresent()) {
+        if (memberQueryRepository.findMemberByEmail(email).isPresent()) {
             return false;
         }
         return true;
@@ -80,7 +83,7 @@ public class MemberService {
      * @return
      */
     public boolean dupleNicknameCheck(String nickname) {
-        if (memberRepository.findMemberByNickname(nickname).isPresent()) {
+        if (memberQueryRepository.findMemberByNickname(nickname).isPresent()) {
             return false;
         }
         return true;
@@ -100,7 +103,7 @@ public class MemberService {
         //Redis에 저장된 리프레시 토큰 가져오기
         RefreshToken refreshToken1 = refreshTokenRepository.findRefreshTokenByMemberId(memberId);
         String rt = refreshToken1.getRefreshToken();
-        Optional<Member> result = memberRepository.findMemberById(memberId);
+        Optional<Member> result = memberQueryRepository.findMemberById(memberId);
 
         if (result.isPresent()) {
             Member member = result.get();
@@ -131,7 +134,7 @@ public class MemberService {
 
 
     public MemberResponseDto getUserInfo(int memberId) throws MemberException {
-        Member member = memberRepository.findMemberById(memberId).orElseThrow(
+        Member member = memberQueryRepository.findMemberById(memberId).orElseThrow(
                 () -> new MemberException(ErrorCode.USER_NOT_FOUND)
         );
         MemberResponseDto memberResponseDto = new MemberResponseDto();
@@ -146,14 +149,14 @@ public class MemberService {
     }
 
     public Member getMemberByEmail(String email) throws MemberException {
-        Member member = memberRepository.findMemberByEmail(email).orElseThrow(
+        Member member = memberQueryRepository.findMemberByEmail(email).orElseThrow(
                 () -> new MemberException(ErrorCode.USER_NOT_FOUND)
         );
         return member;
     }
 
     public MemberFeignResponse findMemberByMemberId(int memberId) throws MemberException {
-        Member member = memberRepository.findMemberById(memberId).orElseThrow(
+        Member member = memberQueryRepository.findMemberById(memberId).orElseThrow(
                 () -> new MemberException(ErrorCode.USER_NOT_FOUND)
         );
         MemberFeignResponse memberFeignResponse = new MemberFeignResponse();

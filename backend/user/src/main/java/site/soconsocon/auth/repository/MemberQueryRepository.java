@@ -11,11 +11,10 @@ import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
-public class MemberRepositoryImpl implements MemberRepository{
+public class MemberQueryRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
 
-    @Override
     public Optional<Member> findMemberById(int memberId) {
         return Optional.ofNullable(jpaQueryFactory
                 .selectFrom(member)
@@ -23,7 +22,7 @@ public class MemberRepositoryImpl implements MemberRepository{
                 .fetchOne());
     }
 
-    @Override
+
     public Optional<Member> findMemberByEmail(String email) {
         return Optional.ofNullable(jpaQueryFactory
                 .selectFrom(member)
@@ -31,7 +30,7 @@ public class MemberRepositoryImpl implements MemberRepository{
                 .fetchOne());
     }
 
-    @Override
+
     public Optional<Member> findMemberByNickname(String nickname) {
         return Optional.ofNullable(jpaQueryFactory
                 .selectFrom(member)
@@ -39,7 +38,7 @@ public class MemberRepositoryImpl implements MemberRepository{
                 .fetchOne());
     }
 
-    @Override
+
     public void chargeSoconMoney(int memberId, int money) {
         jpaQueryFactory
                 .update(member)
@@ -48,7 +47,7 @@ public class MemberRepositoryImpl implements MemberRepository{
                 .execute();
     }
 
-    @Override
+
     public void withdrawSoconMoney(int memberId, int money) {
         jpaQueryFactory
                 .update(member)
