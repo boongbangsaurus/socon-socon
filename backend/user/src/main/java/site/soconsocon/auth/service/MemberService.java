@@ -1,26 +1,19 @@
 package site.soconsocon.auth.service;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import site.soconsocon.auth.domain.dto.request.MemberLoginRequestDto;
 import site.soconsocon.auth.domain.dto.request.MemberRegisterRequestDto;
 import site.soconsocon.auth.domain.dto.response.MemberFeignResponse;
-import site.soconsocon.auth.domain.dto.response.MemberLoginResponseDto;
 import site.soconsocon.auth.domain.dto.response.MemberResponseDto;
 import site.soconsocon.auth.domain.entity.jpa.Member;
 import site.soconsocon.auth.domain.entity.jpa.RefreshToken;
 import site.soconsocon.auth.domain.entity.jpa.UserRole;
 import site.soconsocon.auth.exception.ErrorCode;
 import site.soconsocon.auth.exception.MemberException;
-import site.soconsocon.auth.feign.NotificationFeignClient;
-import site.soconsocon.auth.feign.domain.dto.feign.MemberRoleRequest;
-import site.soconsocon.auth.feign.domain.dto.feign.SaveTokenRequest;
-import site.soconsocon.auth.repository.MemberRepository;
+import site.soconsocon.auth.repository.MemberJpaRepository;
+import site.soconsocon.auth.repository.MemberQueryRepository;
 import site.soconsocon.auth.repository.RefreshTokenRepository;
-import site.soconsocon.auth.security.MemberDetailService;
 import site.soconsocon.auth.security.MemberDetails;
 import site.soconsocon.auth.util.JwtUtil;
 
@@ -30,18 +23,15 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class MemberService {
 
-    private final MemberRepository memberRepository;
+    private final MemberJpaRepository memberRepository;
+
+    private final MemberQueryRepository memberQueryRepository;
 
     private final RefreshTokenRepository refreshTokenRepository;
 
     private final PasswordEncoder passwordEncoder;
-
-    private final NotificationFeignClient notificationFeignClient;
-
-    private final MemberDetailService memberDetailService;
 
     private final JwtUtil jwtUtil;
 
@@ -51,7 +41,7 @@ public class MemberService {
      * @param requestDto
      * @return
      */
-    public Member register(MemberRegisterRequestDto requestDto) {
+    public Member register(MemberRegisterRequestDto requestDto) throws MemberException {
         //이메일 중복체크
         if (!dupleEmailCheck(requestDto.getEmail())) {
             throw new MemberException(ErrorCode.DUPLE_EMAIL); //이미 있는 이메일
@@ -71,14 +61,7 @@ public class MemberService {
                 .isAgreed(requestDto.isAgreed())
                 .build();
 
-        Member savedMember = null;
-        try {
-            savedMember = memberRepository.save(member);
-        } catch (RuntimeException e) {
-            throw new MemberException(ErrorCode.ACCOUNT_REGISTER_FAIL);
-        }
-
-        return savedMember;
+        return memberRepository.save(member);
     }
 
     /**
@@ -87,7 +70,7 @@ public class MemberService {
      * @param email
      */
     public boolean dupleEmailCheck(String email) {
-        if (memberRepository.findMemberByEmail(email).isPresent()) {
+        if (memberQueryRepository.findMemberByEmail(email).isPresent()) {
             return false;
         }
         return true;
@@ -100,7 +83,7 @@ public class MemberService {
      * @return
      */
     public boolean dupleNicknameCheck(String nickname) {
-        if (memberRepository.findMemberByNickname(nickname).isPresent()) {
+        if (memberQueryRepository.findMemberByNickname(nickname).isPresent()) {
             return false;
         }
         return true;
@@ -115,12 +98,12 @@ public class MemberService {
      * @return
      * @throws IOException
      */
-    public String createAccessToken(MemberDetails memberDetails, String refreshToken) {
+    public String createAccessToken(MemberDetails memberDetails, String refreshToken) throws IOException {
         int memberId = memberDetails.getMember().getId();
         //Redis에 저장된 리프레시 토큰 가져오기
         RefreshToken refreshToken1 = refreshTokenRepository.findRefreshTokenByMemberId(memberId);
         String rt = refreshToken1.getRefreshToken();
-        Optional<Member> result = memberRepository.findMemberById(memberId);
+        Optional<Member> result = memberQueryRepository.findMemberById(memberId);
 
         if (result.isPresent()) {
             Member member = result.get();
@@ -150,8 +133,8 @@ public class MemberService {
     }
 
 
-    public MemberResponseDto getUserInfo(int memberId) {
-        Member member = memberRepository.findMemberById(memberId).orElseThrow(
+    public MemberResponseDto getUserInfo(int memberId) throws MemberException {
+        Member member = memberQueryRepository.findMemberById(memberId).orElseThrow(
                 () -> new MemberException(ErrorCode.USER_NOT_FOUND)
         );
         MemberResponseDto memberResponseDto = new MemberResponseDto();
@@ -165,15 +148,15 @@ public class MemberService {
         return memberResponseDto;
     }
 
-    public Member getMemberByEmail(String email) {
-        Member member = memberRepository.findMemberByEmail(email).orElseThrow(
+    public Member getMemberByEmail(String email) throws MemberException {
+        Member member = memberQueryRepository.findMemberByEmail(email).orElseThrow(
                 () -> new MemberException(ErrorCode.USER_NOT_FOUND)
         );
         return member;
     }
 
-    public MemberFeignResponse findMemberByMemberId(int memberId) {
-        Member member = memberRepository.findMemberById(memberId).orElseThrow(
+    public MemberFeignResponse findMemberByMemberId(int memberId) throws MemberException {
+        Member member = memberQueryRepository.findMemberById(memberId).orElseThrow(
                 () -> new MemberException(ErrorCode.USER_NOT_FOUND)
         );
         MemberFeignResponse memberFeignResponse = new MemberFeignResponse();
@@ -190,44 +173,10 @@ public class MemberService {
         return memberFeignResponse;
     }
 
-    public MemberLoginResponseDto login(MemberLoginRequestDto loginDto) {
-        String email = loginDto.getEmail();
-        String password = loginDto.getPassword();
-        String fcmToken = loginDto.getFcmToken();
-        log.info(loginDto.toString());
-
-        Member member = getMemberByEmail(email);
-        String memberId = String.valueOf(member.getId());
-
-        MemberLoginResponseDto memberLoginResponseDto = null;
-        // 로그인 요청한 유저로부터 입력된 패스워드 와 디비에 저장된 유저의 암호화된 패스워드가 같은지 확인.(유효한 패스워드인지 여부 확인)
-        if (!passwordEncoder.matches(password, member.getPassword())) {
-            throw new MemberException(ErrorCode.WRONG_PASSWORD); //틀린 비밀번호
-        }
-
-        // 유효한 패스워드가 맞는 경우, 로그인 성공으로 응답.(액세스 토큰을 포함하여 응답값 전달)
-        MemberDetails memberDetails = (MemberDetails) memberDetailService.loadUserByUsername(memberId);
-        String accessToken = jwtUtil.generateToken(memberDetails);
-        String refreshToken = jwtUtil.generateRefreshToken(memberDetails);
-
-        RefreshToken redis = new RefreshToken(member.getId(), refreshToken);
-        refreshTokenRepository.save(redis);
-        memberLoginResponseDto = new MemberLoginResponseDto(accessToken, refreshToken, member.getNickname());
-        try {
-            notificationFeignClient.saveDeviceToken(new SaveTokenRequest(member.getId(), fcmToken, "MOBILE"));
-        } catch (RuntimeException e) {
-            log.warn("디바이스 토큰 저장 실패");
-        }
-        return memberLoginResponseDto;
-    }
-
-    @Transactional
-    public void updateRole(MemberRoleRequest memberRoleRequest) {
-        Member member = memberRepository.findMemberById(memberRoleRequest.getMemberId()).orElseThrow(
-                () -> new MemberException(ErrorCode.USER_NOT_FOUND)
-        );
-        String updateRole = memberRoleRequest.getRole(); //변경된 권한
-        UserRole userRole = UserRole.valueOf(updateRole);
-        member.updateRole(userRole);
-    }
+    /**
+     * 회원 정보 수정
+     */
+//    public void modifyMember(MemberModifyRequestDto requestDto) {
+//        memberRepository.updateMember(requestDto.getName(), requestDto.getNickname(), requestDto.getMemo(), requestDto.getProfileUrl());
+//    }
 }

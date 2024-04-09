@@ -19,7 +19,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.firewall.DefaultHttpFirewall;
 import org.springframework.security.web.firewall.HttpFirewall;
 import site.soconsocon.auth.filter.JwtAuthenticationFilter;
-import site.soconsocon.auth.repository.MemberRepository;
+import site.soconsocon.auth.repository.MemberRepository1;
 import site.soconsocon.auth.security.MemberDetailService;
 import site.soconsocon.auth.util.JwtUtil;
 
@@ -34,7 +34,7 @@ import site.soconsocon.auth.util.JwtUtil;
 public class SecurityConfig {
 
     private final MemberDetailService memberDetailService;
-    private final MemberRepository memberRepository;
+    private final MemberRepository1 memberRepository;
     private final JwtUtil jwtUtil;
 
 
