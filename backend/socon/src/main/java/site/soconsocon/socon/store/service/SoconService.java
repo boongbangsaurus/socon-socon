@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import site.soconsocon.socon.global.domain.ErrorCode;
 import site.soconsocon.socon.global.exception.SoconException;
 import site.soconsocon.socon.sogon.domain.entity.jpa.Sogon;
+import site.soconsocon.socon.sogon.repository.jpa.CommentRepository;
 import site.soconsocon.socon.sogon.repository.jpa.SogonRepository;
 import site.soconsocon.socon.store.domain.dto.request.ChargeRequest;
 import site.soconsocon.socon.store.domain.dto.request.SoconBookSearchRequest;
@@ -31,6 +32,7 @@ public class SoconService {
     private final SoconRepository soconRepository;
     private final FeignServiceClient feignServiceClient;
     private final SogonRepository sogonRepository;
+    private final CommentRepository commentRepository;
 
 
     // 소콘 상세 조회
@@ -63,7 +65,6 @@ public class SoconService {
             Issue issue = socon.getIssue();
             Item item = issue.getItem();
 
-//            LocalDateTime expiredAt = LocalDateTime.parse(socon.getExpiredAt().toString());
             LocalDateTime nowWithMilliseconds = LocalDateTime.now().withNano(0);
 
              if (socon.getExpiredAt().toLocalDate().isEqual(nowWithMilliseconds.toLocalDate()) || socon.getExpiredAt().toLocalTime().isAfter(nowWithMilliseconds.toLocalTime())){
@@ -198,5 +199,20 @@ public class SoconService {
                     .build());
         }
         return soconListResponses;
+    }
+
+    // 보유 소콘, 소곤 개수 조회
+    public Object getMyPage(Integer memberId) {
+
+        int soconCount = soconRepository.getMySoconCount(memberId);
+        int sogonCount = sogonRepository.getMySogonCount(memberId);
+        int commentCount = commentRepository.getMyCommentCount(memberId);
+
+        HashMap<String, Object> response = new HashMap<>();
+        response.put("socon", soconCount);
+        response.put("sogon", sogonCount);
+        response.put("comment", commentCount);
+
+        return response;
     }
 }

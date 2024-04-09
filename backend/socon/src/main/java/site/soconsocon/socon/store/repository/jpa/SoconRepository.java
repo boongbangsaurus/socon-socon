@@ -50,4 +50,6 @@ public interface SoconRepository extends JpaRepository<Socon, Integer> {
     @Query("SELECT COUNT(DISTINCT s.issue.id) FROM SOCON s WHERE s.issue.item.store.id = :storeId AND YEAR(s.purchasedAt) = :year AND MONTH(s.purchasedAt) = :month")
     int countDistinctIssuedIdByStoreId(int storeId, int year, int month);
 
+    @Query("SELECT COUNT(s) FROM SOCON s WHERE s.memberId = :memberId AND s.status='unused'")
+    int getMySoconCount(Integer memberId);
 }

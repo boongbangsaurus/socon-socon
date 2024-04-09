@@ -15,4 +15,7 @@ public interface CommentRepository extends JpaRepository<Comment, Integer> {
     List<Comment> findAllByMemberId(Integer memberId);
 
     Integer countBySogonId(Integer id);
+
+    @Query("SELECT COUNT(*) FROM COMMENT c WHERE c.memberId = :memberId")
+    int getMyCommentCount(Integer memberId);
 }

@@ -49,7 +49,7 @@ public class SogonService {
         // 유효한 소콘인지 체크
         Socon socon = soconRepository.findById(request.getSoconId())
                 .orElseThrow(() -> new StoreException(StoreErrorCode.SOCON_NOT_FOUND));
-        if (!Objects.equals(socon.getStatus(), "unused") || // 사용가능한 소콘이 아닐 경우
+        if (!Objects.equals(socon.getStatus(), SoconStatus.unused) || // 사용가능한 소콘이 아닐 경우
                 socon.getExpiredAt().isBefore(LocalDateTime.now()) // 만료된 소콘일 경우
         ) {
             throw new StoreException(StoreErrorCode.INVALID_SOCON);
@@ -133,7 +133,7 @@ public class SogonService {
         Socon socon = soconRepository.findById(sogon.getSocon().getId())
                 .orElseThrow(() -> new StoreException(StoreErrorCode.SOCON_NOT_FOUND));
 
-        if (!(Objects.equals(socon.getStatus(), "sogon")) ) {
+        if (!(Objects.equals(socon.getStatus(), SoconStatus.sogon)) ) {
             throw new StoreException(StoreErrorCode.INVALID_SOCON);
         }
 
