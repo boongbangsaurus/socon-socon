@@ -84,7 +84,7 @@ class _NearbyInfoScreenState extends State<NearbyInfoScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
 
-                    CheckBoxGroup(),
+                    // CheckBoxGroup(),
                     ImageCard(
                       imgUrl: bannerUrl,
                       width: ResponsiveUtils.getWidthWithPixels(context, 320),
