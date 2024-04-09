@@ -37,7 +37,7 @@ class StoresViewModel extends ChangeNotifier {
     print("검색을 시작해볼게");
 
     try {
-     List<Store>? stores = await _storesService.searchStores();
+      List<Store>? stores = await _storesService.searchStores();
 
       print("[viewModel] $stores");
       return stores;

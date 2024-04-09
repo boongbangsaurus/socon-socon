@@ -91,7 +91,7 @@ class _SoconBookScreenState extends State<SoconBookScreen> {
                         },
                         marginTop: 0,
                         tabHeight:
-                            ResponsiveUtils.getHeightWithPixels(context, 490),
+                            ResponsiveUtils.getHeightWithPixels(context, 460),
                       ),
                     )
                   ],

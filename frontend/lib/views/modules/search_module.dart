@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:socon/utils/fontSizes.dart';
 import 'package:socon/utils/responsive_utils.dart';
-import 'package:socon/viewmodels/stores_view_model.dart';
 import 'package:socon/views/atoms/checkbox.dart';
 import 'package:socon/views/atoms/search_box.dart';
 
@@ -32,8 +31,6 @@ class _SearchModuleState extends State<SearchModule> {
   bool isRoadAddressChecked = false;
   bool isGanadaChecked = true;
   bool isShortestDistanceChecked = false;
-
-  StoresViewModel _storesViewModel = StoresViewModel();
 
   List<Store> handleEnterKey() {
     print('상호명: $isStoreNameChecked');
@@ -127,7 +124,7 @@ class _SearchModuleState extends State<SearchModule> {
                 CheckBoxBtn(
                   Text: "도로명 주소",
                   isChecked: isRoadAddressChecked,
-                    onCheckedChanged: (isChecked) {
+                  onCheckedChanged: (isChecked) {
                     setState(() {
                       isCategoryChecked = false;
                       isStoreNameChecked = false;

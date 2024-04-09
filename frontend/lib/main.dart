@@ -10,7 +10,7 @@ import 'package:socon/viewmodels/myinfo_provider.dart';
 import 'package:socon/viewmodels/mystore_detail_menu_list_view_model.dart%20%20%20%20%20%20%20';
 
 import 'package:socon/viewmodels/sogon_view_model.dart';
-import 'package:socon/viewmodels/stores_view_model.dart';
+import 'package:socon/provider/stores_provider.dart';
 import 'package:socon/views/modules/mystore_menu_management.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
@@ -139,6 +139,8 @@ class _MyAppState extends State<MyApp> {
 
     initPlatformState();
 
+
+    
     // _onStart(); // 잠시 주석 처리
   }
 
@@ -225,6 +227,8 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+
+
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => BossVerificationViewModel()),
@@ -235,7 +239,7 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (context) => StoreRegisterViewModel()),
         ChangeNotifierProvider(create: (context) => SogonViewModel()),
         ChangeNotifierProvider(create: (_) => MySoconViewModel()),
-        ChangeNotifierProvider(create: (_) => StoresViewModel()),
+        ChangeNotifierProvider(create: (_) => StoresProvider()),
         ChangeNotifierProvider(create: (_) => MyInfoProvider()),
       ],
       child: MaterialApp.router(

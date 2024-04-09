@@ -16,7 +16,6 @@ import 'package:socon/views/atoms/image_loader.dart';
 import 'package:socon/models/mystore_lists_model.dart';
 
 class MyStoreLists extends StatefulWidget {
-
   const MyStoreLists({super.key});
 
   @override
@@ -25,43 +24,43 @@ class MyStoreLists extends StatefulWidget {
 
 class _MyStoreListsState extends State<MyStoreLists> {
   final viewModel = MystoreListsViewModel();
+
   @override
   Widget build(BuildContext context) {
     return Column(children: [
-      stores.isNotEmpty ? StoreLists() : NoStoreComment(),
+      stores.isNotEmpty ? const StoreLists() : const NoStoreComment(),
       Container(
-        width: ResponsiveUtils.getWidthPercent(context, 100),
-        margin: EdgeInsets.only(bottom: 10),
-        child: OutlinedButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => RegisterPage()),
-            );
-          },
-          child: Text(
-            '+ 점포 등록',
-            style: TextStyle(color: AppColors.BLACK),
-          ),
-          style: OutlinedButton.styleFrom(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-            side: BorderSide(color: Colors.grey.shade300),
-            padding: EdgeInsets.symmetric(vertical: 20),
-          ).copyWith(
-            overlayColor: MaterialStateProperty.resolveWith<Color?>(
-              (Set<MaterialState> states) {
-                if (states.contains(MaterialState.pressed))
-                  return AppColors.YELLOW;
-                return null; // 기본 상태에서는 변경 없음
+          width: ResponsiveUtils.getWidthPercent(context, 100),
+          margin: EdgeInsets.only(
+              bottom: ResponsiveUtils.getHeightWithPixels(context, 10)),
+          child: OutlinedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => RegisterPage()),
+                );
               },
-            ),
-          )
-        )
-      )
-    ]
-  );
- }
+              child: Text(
+                '+ 점포 등록',
+                style: TextStyle(color: AppColors.BLACK),
+              ),
+              style: OutlinedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
+                side: BorderSide(color: Colors.grey.shade300),
+                padding: EdgeInsets.symmetric(
+                    vertical: ResponsiveUtils.getHeightWithPixels(context, 10)),
+              ).copyWith(
+                overlayColor: MaterialStateProperty.resolveWith<Color?>(
+                  (Set<MaterialState> states) {
+                    if (states.contains(MaterialState.pressed))
+                      return AppColors.YELLOW;
+                    return null; // 기본 상태에서는 변경 없음
+                  },
+                ),
+              )))
+    ]);
+  }
 }
 
 class StoreLists extends StatefulWidget {
@@ -72,7 +71,6 @@ class StoreLists extends StatefulWidget {
 }
 
 class _StoreListsState extends State<StoreLists> {
-
   List<dynamic> myStores = [];
 
   @override
@@ -92,25 +90,21 @@ class _StoreListsState extends State<StoreLists> {
 
   @override
   Widget build(BuildContext context) {
-    print('8888888888888888888888888');
-    print(myStores);
-    print('8888888888888888888888888');
+    print("myStoreList $myStores");
+
     return Expanded(
       child: ListView.builder(
         shrinkWrap: true,
         itemCount: myStores.length,
         itemBuilder: (context, index) {
           final store = myStores[index];
-          // print('testtttttt');
-          // print(store);
-          // print('testtttttt');
+
           return InkWell(
             onTap: () {
-              // Navigator.push(context, MaterialPageRoute(builder: (context) => StoreDetailTopCard(storeId : store.storeId)));
               GoRouter.of(context).go("/myStores/${store['id']}");
             },
             child: Container(
-              margin: EdgeInsets.all(10),
+              margin: const EdgeInsets.all(10),
               decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(10),
@@ -119,7 +113,7 @@ class _StoreListsState extends State<StoreLists> {
                       color: Colors.grey.withOpacity(0.2),
                       spreadRadius: 2,
                       blurRadius: 3,
-                      offset: Offset(1, 2),
+                      offset: const Offset(1, 2),
                     )
                   ]),
               child: Row(
@@ -129,7 +123,7 @@ class _StoreListsState extends State<StoreLists> {
                     child: Container(
                       height: 80,
                       width: 80,
-                      child: ImageLoader(
+                      child: const ImageLoader(
                         // imageUrl: store.image,
                         imageUrl: 'https://cataas.com/cat',
                         borderRadius: 15.0,
@@ -146,7 +140,7 @@ class _StoreListsState extends State<StoreLists> {
                           children: [
                             Text(
                               store['name'],
-                              style: TextStyle(
+                              style: const TextStyle(
                                   fontSize: FontSizes.LARGE,
                                   fontWeight: FontWeight.bold),
                             ),
@@ -160,7 +154,7 @@ class _StoreListsState extends State<StoreLists> {
                       ],
                     ),
                   ),
-                  Icon(Icons.arrow_forward_ios),
+                  const Icon(Icons.arrow_forward_ios),
                 ],
               ),
             ),
@@ -171,16 +165,12 @@ class _StoreListsState extends State<StoreLists> {
   }
 }
 
-
-
-
-
 class NoStoreComment extends StatelessWidget {
   const NoStoreComment({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
+    return const Expanded(
         child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [

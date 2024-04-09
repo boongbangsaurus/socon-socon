@@ -195,7 +195,7 @@ class _MyInfoScreen extends State<MyInfoScreen> {
                                     context, FontSizes.XSMALL),
                             fontWeight: FontWeight.w400,
                           )),
-                      Text("15",
+                      Text("${userData["soconCnt"]}",
                           style: TextStyle(
                             fontSize:
                                 ResponsiveUtils.calculateResponsiveFontSize(
@@ -214,7 +214,7 @@ class _MyInfoScreen extends State<MyInfoScreen> {
                             fontWeight: FontWeight.w400,
                           )),
                       Text(
-                        "1",
+                        "${userData["sogonCnt"]}",
                         style: TextStyle(
                           fontSize: ResponsiveUtils.calculateResponsiveFontSize(
                               context, FontSizes.XSMALL),
@@ -233,7 +233,7 @@ class _MyInfoScreen extends State<MyInfoScreen> {
                             fontWeight: FontWeight.w400,
                           )),
                       Text(
-                        "0",
+                        "${userData["sogonReplyCnt"]}",
                         style: TextStyle(
                           fontSize: ResponsiveUtils.calculateResponsiveFontSize(
                               context, FontSizes.XSMALL),
