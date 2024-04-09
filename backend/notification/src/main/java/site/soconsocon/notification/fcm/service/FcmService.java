@@ -58,6 +58,7 @@ public class FcmService {
 
         try {
             customToken = FirebaseAuth.getInstance().createCustomToken(uid);
+            log.info(customToken);
         } catch (Exception e) {
             throw new FcmException(FcmErrorCode.CREATE_TOKEN_FAIL);
         }

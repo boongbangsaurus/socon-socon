@@ -304,7 +304,7 @@ public class StoreService {
         // 발행 중 소콘 발행 중지
         List<Issue> issues = issueRepository.findActiveIssuesByStoreId(storeId);
         for (Issue issue : issues) {
-            issue.setStatus(IssueStatus.inactive);
+            issue.setStatus(IssueStatus.I);
             issueRepository.save(issue);
             // 발행 된 소콘 중 사용되지 않은 소콘 마감기한 업데이트
             List<Socon> socons = soconRepository.getUnusedSoconByIssueId(issue.getId());
@@ -507,12 +507,7 @@ public class StoreService {
             }
         }
         // 정렬
-        Comparator<SalesAnalysisResponse> priceComparator = new Comparator<SalesAnalysisResponse>() {
-            @Override
-            public int compare(SalesAnalysisResponse response1, SalesAnalysisResponse response2) {
-                return Double.compare(response2.getPrice(), response1.getPrice());
-            }
-        };
+        Comparator<SalesAnalysisResponse> priceComparator = (response1, response2) -> Double.compare(response2.getPrice(), response1.getPrice());
 
         Collections.sort(response, priceComparator);
 
@@ -559,12 +554,7 @@ public class StoreService {
             }
         }
 // 정렬
-            Comparator<IssuedAnalysisListResponse> priceComparator = new Comparator<IssuedAnalysisListResponse>() {
-                @Override
-                public int compare(IssuedAnalysisListResponse response1, IssuedAnalysisListResponse response2) {
-                    return Double.compare(response2.getTotalPrice(), response1.getTotalPrice());
-                }
-            };
+            Comparator<IssuedAnalysisListResponse> priceComparator = (response1, response2) -> Double.compare(response2.getTotalPrice(), response1.getTotalPrice());
 
             Collections.sort(response, priceComparator);
 
