@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:socon/models/store.dart';
 
@@ -42,16 +43,16 @@ class ApiUtils {
     }
   }
 
-  static Future<String> getDataWithToken(String endPoint) async {
+  static Future<Response> getDataWithToken(String endPoint) async {
     await _loadHeaderWithToken(); // 헤더 로드
     final response = await http.get(
       Uri.parse('$baseUrl$endPoint'),
       headers: _customHeader,
     );
     if (response.statusCode == 200) {
-      return response.body;
+      return response;
     } else {
-      throw Exception('통신 실패: ${response.body}');
+      throw Exception('통신 실패: $response');
     }
   }
 

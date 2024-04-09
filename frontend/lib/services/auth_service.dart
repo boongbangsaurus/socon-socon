@@ -82,11 +82,5 @@ class AuthService {
     }
   }
 
-  Future<void> getUserInfo() async {
-    final response = await ApiUtils.getDataWithToken("/api/v1/members/mypage");
 
-    print("사용자 정보 ${jsonDecode(response)}");
-
-    final data = jsonDecode(response);
-  }
 }
