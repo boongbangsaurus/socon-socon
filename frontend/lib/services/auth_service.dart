@@ -11,7 +11,7 @@ import 'package:socon/utils/api/api_utils.dart';
 class AuthService {
   final String baseUrl = 'http://j10c207.p.ssafy.io:8000'; // 통신 url
   FirebaseMessagingService _firebaseMessagingService =
-      FirebaseMessagingService();
+  FirebaseMessagingService();
 
   // 회원가입 요청 api
   Future<bool> signUp(User user) async {
