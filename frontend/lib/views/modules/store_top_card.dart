@@ -65,10 +65,17 @@ class _StoreTopCardState extends State<StoreTopCard> {
               children: [
                 Container(
                   // child: Image.network('https://cataas.com/cat',
-                  child: Image.network(storeInfos['image'] ?? '',
-                      fit: BoxFit.cover,
-                      height: ResponsiveUtils.getHeightWithPixels(context, 160),
-                      width: ResponsiveUtils.getWidthPercent(context, 100)),
+                  // child: Image.network(storeInfos['image'] ?? '',
+                  //     fit: BoxFit.cover,
+                  //     height: ResponsiveUtils.getHeightWithPixels(context, 160),
+                  //     width: ResponsiveUtils.getWidthPercent(context, 100)),
+
+                  // 이미지 firebase 에서 가져오기
+                  child: Image.network(
+                    'https://firebasestorage.googleapis.com/v0/b/socon-socon.appspot.com/o/images%2Fsocon%2Fgimbap.png?alt=media&token=89ee3277-cf77-4e9d-b02e-8eb80996e965',
+                    fit: BoxFit
+                        .cover, // 이미지가 컨테이너를 꽉 채우도록 설정
+                  ),
                 ),
                 shortStoreInfoWithBar(context, storeInfos),
               ],

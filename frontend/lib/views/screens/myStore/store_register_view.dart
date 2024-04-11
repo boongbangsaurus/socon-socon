@@ -50,6 +50,8 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
 
+
+
   @override
   Widget build(BuildContext context) {
     final viewModel =
@@ -248,7 +250,32 @@ class Step2 extends StatefulWidget {
 }
 
 class _Step2State extends State<Step2> {
-  File? userImage;
+  // File? userImage;
+
+  // 이미지 등록
+  final _formKey = GlobalKey<FormState>();
+  final picker = ImagePicker();
+  bool isSelected = false;
+  int selectSocon = 0;
+  List<XFile?> images = []; // 갤러리에서 사진 선택
+  XFile? userImage;
+  String? nickname;
+
+  void getImage(ImageSource source) async {
+    userImage = await picker.pickImage(source: source);
+
+    setState(() {
+      images.add(userImage);
+    });
+  }
+
+  void setImage() async {
+    final userImage = this.userImage;
+    if (userImage != null) {
+      File _file = File(userImage.path);
+      FirebaseStorage.instance.ref('sogon/picker/test_image').putFile(_file);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -397,7 +424,8 @@ class _Step2State extends State<Step2> {
                                   ClipRRect(
                                     borderRadius: BorderRadius.circular(10),
                                     child: Image.file(
-                                      userImage!,
+                                      File(userImage!.path),
+                                      // userImage!,
                                       width: 80,
                                       height: 80,
                                       fit: BoxFit.cover,
@@ -423,30 +451,32 @@ class _Step2State extends State<Step2> {
                               )
                             : IconButton(
                                 onPressed: () async {
-                                  var picker = ImagePicker();
-                                  var image = await picker.pickImage(
-                                      source: ImageSource.gallery);
-                                  if (image != null) {
+                                  // 이미지 가져오기
+                                  getImage(ImageSource.gallery);
+                                  if (userImage != null) {
                                     setState(() {
-                                      userImage = File(image.path); // 이미지 선택
-                                      // viewmodel에 저장
-                                      viewModel.setImage(image.path.toString());
+                                      viewModel.setImage('https://firebasestorage.googleapis.com/v0/b/socon-socon.appspot.com/o/images%2Fsocon%2Fgimbap.png?alt=media&token=89ee3277-cf77-4e9d-b02e-8eb80996e965');
                                     });
-                                      // firebase에 저장
-                                    Uint8List _bytes = await image.readAsBytes();
-                                    FirebaseStorage.instance.ref("images/storeImg").putData(
-                                      _bytes,
-                                      SettableMetadata(
-                                        contentType: "image/jpeg",
-                                      ),
-                                    );
                                   }
 
-                                  // 파이어 베이스 저장
-                                  final now = DateTime.now();
-                                  // FirebaseStorage.instance.ref("test/$_imageName").putFile(file);
-                                  var ref = FirebaseStorage.instance.ref().child('Images/$now.jpg');
-
+                                  // var picker = ImagePicker();
+                                  // var image = await picker.pickImage(
+                                  //     source: ImageSource.gallery);
+                                  // if (image != null) {
+                                  //   setState(() {
+                                  //     userImage = File(image.path); // 이미지 선택
+                                  //     // viewmodel에 저장
+                                  //     viewModel.setImage(image.path.toString());
+                                  //   });
+                                  //     // firebase에 저장
+                                  //   Uint8List _bytes = await image.readAsBytes();
+                                  //   FirebaseStorage.instance.ref("images/storeImg").putData(
+                                  //     _bytes,
+                                  //     SettableMetadata(
+                                  //       contentType: "image/jpeg",
+                                  //     ),
+                                  //   );
+                                  // }
                                 },
                                 icon: Icon(Icons.add),
                                 color: Colors.black,
@@ -813,13 +843,20 @@ class SummaryPage extends StatelessWidget {
                       Column(
                         children: [
                           Container(
-                            // 가게 url 이미지
+                            // 가게 이미지 firebase 에서 가져오기
                             child: Image.network(
-                                viewModel.image.toString(),
-                                fit: BoxFit.cover,
-                                height: 160,
-                                width: ResponsiveUtils.getWidthPercent(context, 100)
+                              'https://firebasestorage.googleapis.com/v0/b/socon-socon.appspot.com/o/images%2Fsocon%2Fgimbap.png?alt=media&token=89ee3277-cf77-4e9d-b02e-8eb80996e965',
+                              fit: BoxFit
+                                  .cover, // 이미지가 컨테이너를 꽉 채우도록 설정
                             ),
+
+                            // 가게 url 이미지
+                            // child: Image.network(
+                            //     viewModel.image.toString(),
+                            //     fit: BoxFit.cover,
+                            //     height: 160,
+                            //     width: ResponsiveUtils.getWidthPercent(context, 100)
+                            // ),
                           ),
 
                         ],

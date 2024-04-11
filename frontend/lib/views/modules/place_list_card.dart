@@ -9,6 +9,7 @@ import 'package:socon/utils/responsive_utils.dart';
 import 'package:socon/views/atoms/icon_loader.dart';
 import 'package:socon/views/atoms/image_loader.dart';
 import 'package:socon/views/atoms/tag_icon.dart';
+import 'package:socon/views/screens/stores/store_detail.dart';
 
 // 상수 정의: imageUrl, borderRadius, 이미지 컨테이너 너비
 // const imageUrl = "https://cataas.com/cat";
@@ -40,8 +41,18 @@ class _PlaceListCardState extends State<PlaceListCard> {
     return GestureDetector(
       onTap: () {
         print("장소리스트 클릭 ${widget.storeInfo.storeId}");
-        GoRouter.of(context).go("/detail/${widget.storeInfo.storeId!}");
+        // GoRouter.of(context).go("/detail/${widget.storeInfo.storeId!}");
+
+        // 디테일 페이지로 이동
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => StoreDetailScreen(storeId: widget.storeInfo.storeId),
+          ),
+        );
+
       },
+
       child: Container(
         margin: EdgeInsets.only(
             bottom: ResponsiveUtils.getHeightWithPixels(

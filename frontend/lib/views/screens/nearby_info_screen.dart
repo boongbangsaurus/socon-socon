@@ -42,6 +42,9 @@ class _NearbyInfoScreenState extends State<NearbyInfoScreen> {
     _preloadImage();
   }
 
+
+  // 'https://firebasestorage.googleapis.com/v0/b/socon-socon.appspot.com/o/images%2Fsocon%2Fgimbap.png?alt=media&token=89ee3277-cf77-4e9d-b02e-8eb80996e965',
+
   static String bannerUrl =
       "https://firebasestorage.googleapis.com/v0/b/socon-socon.appspot.com/o/images%2Fbanner%2Fbanner_maratang.png?alt=media&token=c3ac6662-a3da-49f1-b02b-b7c3db771180";
 

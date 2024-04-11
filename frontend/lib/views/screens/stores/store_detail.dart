@@ -10,6 +10,7 @@ import 'package:socon/utils/responsive_utils.dart';
 import 'package:socon/views/atoms/buttons.dart';
 import 'package:socon/views/modules/mystore_menu_card.dart';
 import 'package:socon/views/modules/socon_storesocon.dart';
+import 'package:socon/views/modules/store_top_card.dart';
 import 'package:socon/views/payments/buy_socon_payment.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert'; // JSON 처리를 위한 패키지
@@ -123,6 +124,7 @@ class _StoreDetailScreenState extends State<StoreDetailScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.WHITE,
+      appBar: AppBar(),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -131,12 +133,17 @@ class _StoreDetailScreenState extends State<StoreDetailScreen> {
             SizedBox( height: 25.0,),
             Text('  할인 소콘', style: TextStyle(fontSize: FontSizes.MEDIUM, fontWeight: FontWeight.bold,) ,),
             SizedBox( height: 10.0,),
+            discountedMenus.isEmpty
+                ? Padding(
+              padding: const EdgeInsets.all(80.0),
+              child: Text('앗, 아직 등록된 소콘이 없습니다'),
+            ) :
             Container(
               width: MediaQuery.of(context).size.width,
               child: GridView.builder(
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
-                itemCount: saleMenuList.length,
+                itemCount: discountedMenus.length,
                 padding: EdgeInsets.symmetric(horizontal: 20),
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2, // 1 개의 행에 보여줄 item 개수
@@ -167,6 +174,11 @@ class _StoreDetailScreenState extends State<StoreDetailScreen> {
             SizedBox( height: 25.0,),
             Text('  전체 소콘', style: TextStyle(fontSize: FontSizes.MEDIUM, fontWeight: FontWeight.bold,) ,),
             SizedBox( height: 10.0,),
+            discountedMenus.isEmpty
+                ? Padding(
+              padding: const EdgeInsets.all(80.0),
+              child: Text('앗, 아직 등록된 소콘이 없습니다'),
+            ) :
             Container(
               width: MediaQuery.of(context).size.width,
               child: GridView.builder(
