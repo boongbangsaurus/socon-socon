@@ -1,11 +1,14 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:socon/models/business_owner.dart';
 import 'package:socon/models/place_params.dart';
+import 'package:socon/models/search_params.dart';
 import 'package:socon/models/store.dart';
 import 'package:socon/views/screens/bossVerification/boss_verification.dart';
+import 'package:socon/views/screens/myStore/search_address.dart';
 
 import '../utils/api/api_utils.dart';
 import '../utils/api/users/fetch_boss_data.dart';
@@ -13,19 +16,21 @@ import 'package:geolocator/geolocator.dart';
 
 class StoresService {
   Future<List<Store>?> searchStores() async {
-    Map<String, dynamic> params = {
-      "content": "",
-      // "lat": 37.1820489,
-      // "lng": 131.7718627,
-      "searchType": "name", //상호명 : name, 카테고리 : category,  도로명 주소 : address
-      "sort": "distance", //최단거리 : distance, 가나다 : name,
-      "isFavoriteSearch": false,
-      "page": 0, //offset,
-      "size": 10, //default
-    };
+    // Store params = Store(
+    //     {
+    //       "content": "",
+    //       // "lat": 37.1820489,
+    //       // "lng": 131.7718627,
+    //       "searchType": "name", //상호명 : name, 카테고리 : category,  도로명 주소 : address
+    //       "sort": "distance", //최단거리 : distance, 가나다 : name,
+    //       "isFavoriteSearch": false,
+    //       "page": 0, //offset,
+    //       "size": 10, //default
+    //     }, storeId: null
+    // );
 
     late double pLat;
-    late double pLong;
+    late double pLng;
 
     // String jsonParams = jsonEncode(params);
     // print(jsonParams);
@@ -35,33 +40,57 @@ class StoresService {
       Position position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.high);
       pLat = position.latitude;
-      pLong = position.longitude;
+      pLng = position.longitude;
 
-      params["lat"] = pLat;
-      params["lng"] = pLong;
-      print("검색 params $params");
-      final List<dynamic> response =
-          await ApiUtils.postDataWithToken('/api/v1/search/detail', params);
+      SearchParams _searchParams = SearchParams(
+          content: "",
+          // lat: pLat,
+          // lng: pLng,
+          lat : 35.205742,
+          lng : 126.811538,
+          searchType: "name",
+          sort: "distance",
+          isFavoriteSearch: false,
+          page: 0,
+          size: 10);
 
-      if (response == null) {
-        print('API 응답이 null입니다.');
-        return null;
-      }else{
-        print(response);
-      }
+      print("검색 params $_searchParams");
+      final response = await ApiUtils.postDataWithToken(
+          '/api/v1/search/detail', _searchParams);
+      print('[service] $response');
+      // List<Store> stores = [];
+      // print(
+      // "바껴주세요 ${List<Map<String, dynamic>>.from(response).map((item) => Store.fromJson(item)).toList()}");
+      // print("[service] $response  ${response.runtimeType}");
 
-      final List<Store> responseData = response.map((item) => Store.fromJson(item)).toList();
-      // final List<Store> responseData = response.map((item) => Store.fromJson(item)).toList();
-      print("[service] response $responseData}");
-      return responseData;
-      // if (responseData.isNotEmpty) {
-      //   return responseData;
-      // } else {
-      //   return [];
-      // }
+      // final Map<String, dynamic> responseData = jsonDecode(response);
+      // final int successCode = responseData['data_header']['success_code'];
+      print("---------------------");
+      // List<Map<String, dynamic>>.from(response).forEach((item) {
+      //   print("item!!! $item --------------------   itemType ${item.runtimeType}");
+      // });
+      List<Store> stores = List<Map<String, dynamic>>.from(response).map((item) {
+        // 'Store.fromJson' 생성자를 사용하여 각 아이템을 'Store' 객체로 변환
+        print(Store.fromJson(item));
 
+
+        return Store.fromJson(item);
+      }).toList();
+
+      print("[service] stores $stores");
+
+      // print("type ________________ ${responseData.runtimeType}");
+      // print(successCode);
+      // print("[service] ${response.runtimeType}");
+      // print("[service] response ${jsonEncode(response)}");
+      // print("[service] ${jsonEncode(response).runtimeType}");
+
+      // response.map<Store>((item) => Store.fromJson(item)).toList();
+      // print("[service] stores $stores");
+
+      return stores;
     } catch (error) {
-      print('검색 실패 $error');
+      print('[service] 검색 실패 $error');
       return null;
       // return false;
     }

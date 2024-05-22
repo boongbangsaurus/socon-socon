@@ -6,6 +6,7 @@ import 'package:background_locator_2/settings/android_settings.dart';
 
 import 'package:socon/viewmodels/menu.dart';
 import 'package:socon/viewmodels/my_socon_view_model.dart';
+import 'package:socon/viewmodels/myinfo_provider.dart';
 import 'package:socon/viewmodels/mystore_detail_menu_list_view_model.dart%20%20%20%20%20%20%20';
 
 import 'package:socon/viewmodels/sogon_view_model.dart';
@@ -138,7 +139,7 @@ class _MyAppState extends State<MyApp> {
 
     initPlatformState();
 
-    _onStart(); // 잠시 주석 처리
+    // _onStart(); // 잠시 주석 처리
   }
 
   @override
@@ -235,6 +236,7 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (context) => SogonViewModel()),
         ChangeNotifierProvider(create: (_) => MySoconViewModel()),
         ChangeNotifierProvider(create: (_) => StoresViewModel()),
+        ChangeNotifierProvider(create: (_) => MyInfoProvider()),
       ],
       child: MaterialApp.router(
         routerConfig: router,

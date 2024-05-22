@@ -7,24 +7,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.security.authentication.AuthenticationManager;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.filter.OncePerRequestFilter;
-import site.soconsocon.auth.domain.entity.jpa.Member;
-import site.soconsocon.auth.exception.JwtException;
-import site.soconsocon.auth.repository.MemberRepository;
-
+import site.soconsocon.auth.repository.MemberJpaRepository;
 import site.soconsocon.auth.security.MemberDetailService;
-import site.soconsocon.auth.security.MemberDetails;
 import site.soconsocon.auth.util.JwtUtil;
-import site.soconsocon.utils.MessageUtils;
 
 import java.io.IOException;
 
@@ -35,7 +25,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private final MemberRepository memberRepository;
+    private final MemberJpaRepository memberRepository;
     private final JwtUtil jwtUtil;
     private final MemberDetailService memberDetailService;
 

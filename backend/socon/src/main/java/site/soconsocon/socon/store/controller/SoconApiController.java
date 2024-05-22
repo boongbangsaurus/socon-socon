@@ -56,5 +56,13 @@ public class SoconApiController {
         return ResponseEntity.ok().body(MessageUtils.success(soconService.searchSocon(request, memberId)));
     }
 
+    // 내 소콘, 소곤 개수 조회
+    @GetMapping(value = "/mypage/{member_id}", produces = "application/json; charset=UTF-8")
+    public ResponseEntity<Object> myPage(
+        @PathVariable("member_id") Integer memberId
+    ){
+        return ResponseEntity.ok().body(MessageUtils.success(soconService.getMyPage(memberId)));
+    }
+
 
 }

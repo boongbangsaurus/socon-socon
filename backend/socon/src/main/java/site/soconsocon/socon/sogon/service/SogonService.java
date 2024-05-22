@@ -19,6 +19,7 @@ import site.soconsocon.socon.sogon.repository.jpa.CommentRepository;
 import site.soconsocon.socon.sogon.repository.jpa.SogonRepository;
 import site.soconsocon.socon.store.domain.entity.feign.Member;
 import site.soconsocon.socon.store.domain.entity.jpa.Socon;
+import site.soconsocon.socon.store.domain.entity.jpa.SoconStatus;
 import site.soconsocon.socon.store.exception.StoreErrorCode;
 import site.soconsocon.socon.store.exception.StoreException;
 import site.soconsocon.socon.store.feign.FeignServiceClient;
@@ -48,7 +49,7 @@ public class SogonService {
         // 유효한 소콘인지 체크
         Socon socon = soconRepository.findById(request.getSoconId())
                 .orElseThrow(() -> new StoreException(StoreErrorCode.SOCON_NOT_FOUND));
-        if (!Objects.equals(socon.getStatus(), "unused") || // 사용가능한 소콘이 아닐 경우
+        if (!Objects.equals(socon.getStatus(), SoconStatus.unused) || // 사용가능한 소콘이 아닐 경우
                 socon.getExpiredAt().isBefore(LocalDateTime.now()) // 만료된 소콘일 경우
         ) {
             throw new StoreException(StoreErrorCode.INVALID_SOCON);
@@ -70,7 +71,7 @@ public class SogonService {
                                         , -0.000001, -0.000002, -0.000003, -0.000004, -0.000005, -0.000006, -0.000007, -0.000008, -0.000009, -0.00001);
         Random ran = new Random();
 
-        socon.setStatus("sogon"); // 소콘의 상태를 "sogon"으로 업데이트
+        socon.setStatus(SoconStatus.sogon); // 소콘의 상태를 "sogon"으로 업데이트
         soconRepository.save(socon);
 
         sogonRepository.save(Sogon.builder()
@@ -132,13 +133,13 @@ public class SogonService {
         Socon socon = soconRepository.findById(sogon.getSocon().getId())
                 .orElseThrow(() -> new StoreException(StoreErrorCode.SOCON_NOT_FOUND));
 
-        if (!(Objects.equals(socon.getStatus(), "sogon")) ) {
+        if (!(Objects.equals(socon.getStatus(), SoconStatus.sogon)) ) {
             throw new StoreException(StoreErrorCode.INVALID_SOCON);
         }
 
         // 소콘 소유권 이전
         socon.setMemberId(comment.getMemberId());
-        socon.setStatus("unused");
+        socon.setStatus(SoconStatus.unused);
         comment.setIsPicked(true);
         sogon.setIsPicked(true);
 

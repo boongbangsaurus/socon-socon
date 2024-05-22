@@ -2,37 +2,43 @@ class Store {
   final int storeId;
   final String name;
   final String imageUrl;
-  final String address;
+  final String? address;
   final String category;
-  final String createdAt;
+  final String? createdAt;
   final bool isLike;
-  final String mainSocon;
-  final int distance;
+  final String? mainSocon;
+  final int? distance;
 
   Store({
     required this.storeId,
     required this.name,
-    this.imageUrl = "https://cataas.com/cat",
-    required this.address,
+    required this.imageUrl,
+    this.address = "",
     required this.category,
-    required this.createdAt,
+    this.createdAt = "",
     required this.isLike,
-    required this.mainSocon,
-    required this.distance,
+    this.mainSocon = "",
+    this.distance = 0,
   });
 
   factory Store.fromJson(Map<String, dynamic> json) {
-    return Store(
-      storeId: json['store_id'],
-      name: json['name'],
-      imageUrl: json['imageUrl'] ?? "https://cataas.com/cat",
-      address: json['address'],
-      category: json['category'],
-      createdAt: json['created_at'],
-      isLike: json['isLike'],
-      mainSocon: json['mainSocon'],
-      distance: json['distance'],
-    );
+    print("JSON 입력: $json");
+    try {
+      return Store(
+        storeId: json['store_id'] as int,
+        name: json['name'] as String,
+        imageUrl: json['image_url'] as String,
+        address: json['address'] as String?,
+        category: json['category'] as String,
+        createdAt: json['created_at'] as String?,
+        isLike: json['is_like'] as bool,
+        mainSocon: json['main_socon'] as String?,
+        distance: json['distance'] as int? ?? 0,
+      );
+    } on FormatException catch (error) {
+      print("형 변환 에러 $error");
+      rethrow;
+    }
   }
 
   @override

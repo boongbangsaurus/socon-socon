@@ -13,7 +13,9 @@ class SearchModule extends StatefulWidget {
 
   final Function(List<Store>) onUpdateStores; // Add onUpdateStores
 
-  SearchModule({required this.type, this.onUpdateStores=_defaultOnUpdateStores }); // Update constructor
+  SearchModule(
+      {required this.type,
+      this.onUpdateStores = _defaultOnUpdateStores}); // Update constructor
 
   static void _defaultOnUpdateStores(List<Store> stores) {
     print("mySocon입니다.");
@@ -24,11 +26,11 @@ class SearchModule extends StatefulWidget {
 }
 
 class _SearchModuleState extends State<SearchModule> {
-  bool isStoreNameChecked = false;
+  bool isStoreNameChecked = true;
   bool isItemNameChecked = false;
   bool isCategoryChecked = false;
   bool isRoadAddressChecked = false;
-  bool isGanadaChecked = false;
+  bool isGanadaChecked = true;
   bool isShortestDistanceChecked = false;
 
   StoresViewModel _storesViewModel = StoresViewModel();
@@ -46,7 +48,7 @@ class _SearchModuleState extends State<SearchModule> {
         storeId: 20,
         name: "오소유",
         imageUrl:
-        "https://firebasestorage.googleapis.com/v0/b/socon-socon.appspot.com/o/images%2Fsocon%2Fsocon2.png?alt=media&token=e7736390-6c7b-4d96-97fa-02e9383ab60c",
+            "https://firebasestorage.googleapis.com/v0/b/socon-socon.appspot.com/o/images%2Fsocon%2Fsocon2.png?alt=media&token=e7736390-6c7b-4d96-97fa-02e9383ab60c",
         address: "광주 광산구 장덕로40번길 13-1 1층",
         category: "음식점",
         createdAt: "2024-03-22",
@@ -103,6 +105,8 @@ class _SearchModuleState extends State<SearchModule> {
                 onCheckedChanged: (isChecked) {
                   setState(() {
                     isStoreNameChecked = isChecked;
+                    isStoreNameChecked = false;
+                    isRoadAddressChecked = false;
                   });
                   print("상호명 $isStoreNameChecked");
                 },
@@ -113,7 +117,9 @@ class _SearchModuleState extends State<SearchModule> {
                   isChecked: isCategoryChecked,
                   onCheckedChanged: (isChecked) {
                     setState(() {
+                      isStoreNameChecked = false;
                       isCategoryChecked = isChecked;
+                      isRoadAddressChecked = false;
                     });
                     print("카테고리 $isCategoryChecked");
                   },
@@ -121,8 +127,10 @@ class _SearchModuleState extends State<SearchModule> {
                 CheckBoxBtn(
                   Text: "도로명 주소",
                   isChecked: isRoadAddressChecked,
-                  onCheckedChanged: (isChecked) {
+                    onCheckedChanged: (isChecked) {
                     setState(() {
+                      isCategoryChecked = false;
+                      isStoreNameChecked = false;
                       isRoadAddressChecked = isChecked;
                     });
                     print("도로명 주소 $isRoadAddressChecked");
@@ -151,6 +159,7 @@ class _SearchModuleState extends State<SearchModule> {
                   onCheckedChanged: (isChecked) {
                     setState(() {
                       isGanadaChecked = isChecked;
+                      isShortestDistanceChecked = false;
                     });
                     print("가나다 $isGanadaChecked");
                   },
@@ -160,6 +169,7 @@ class _SearchModuleState extends State<SearchModule> {
                 isChecked: isShortestDistanceChecked,
                 onCheckedChanged: (isChecked) {
                   setState(() {
+                    isGanadaChecked = false;
                     isShortestDistanceChecked = isChecked;
                   });
                   print("최단거리 $isShortestDistanceChecked");

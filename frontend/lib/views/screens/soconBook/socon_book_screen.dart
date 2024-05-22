@@ -37,7 +37,7 @@ class _SoconBookScreenState extends State<SoconBookScreen> {
 
   Future<Map<String, dynamic>?> _fetchMySoconList() async {
     try {
-      await Future.delayed(Duration(seconds: 2));
+      // await Future.delayed(Duration(seconds: 2));
 
       Map<String, dynamic>? mySoconListData =
           await _mySoconViewModel.getMySoconList();
@@ -59,7 +59,7 @@ class _SoconBookScreenState extends State<SoconBookScreen> {
         future: _fetchMySoconList(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else {
@@ -91,7 +91,7 @@ class _SoconBookScreenState extends State<SoconBookScreen> {
                         },
                         marginTop: 0,
                         tabHeight:
-                            ResponsiveUtils.getHeightWithPixels(context, 400),
+                            ResponsiveUtils.getHeightWithPixels(context, 490),
                       ),
                     )
                   ],

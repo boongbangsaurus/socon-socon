@@ -2,6 +2,7 @@ package site.soconsocon.socon.store.domain.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
+import site.soconsocon.socon.store.domain.entity.jpa.SoconStatus;
 
 import java.time.LocalDateTime;
 
@@ -21,7 +22,7 @@ public class AddMySoconRequest {
     @JsonProperty("used_at")
     private LocalDateTime usedAt; //사용 일시
 
-    private String status; //상태 (unused, sogon, used, expired)
+    private SoconStatus status; //상태 (unused, sogon, used, expired)
 
     @JsonProperty("member_id")
     private int memberId; //회원 번호

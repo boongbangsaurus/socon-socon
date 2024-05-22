@@ -65,91 +65,29 @@
 │   │       │   ├── AndroidManifest.xml
 │   │       │   ├── ic_launcher-playstore.png
 │   │       │   ├── java
-│   │       │   │   └── site
-│   │       │   │       └── boongbang
-│   │       │   │           └── socon
-│   │       │   │               └── MainActivity.java
 │   │       │   ├── kotlin
-│   │       │   │   └── site
-│   │       │   │       └── boongbang
-│   │       │   │           └── frontend
-│   │       │   │               └── MainActivity.kt
 │   │       │   └── res
 │   │       │       ├── drawable
-│   │       │       │   └── launch_background.xml
 │   │       │       ├── drawable-v21
-│   │       │       │   └── launch_background.xml
 │   │       │       ├── mipmap-anydpi-v26
-│   │       │       │   ├── ic_launcher.xml
-│   │       │       │   └── ic_launcher_round.xml
 │   │       │       ├── mipmap-hdpi
-│   │       │       │   ├── ic_launcher.webp
-│   │       │       │   ├── ic_launcher_foreground.webp
-│   │       │       │   └── ic_launcher_round.webp
 │   │       │       ├── mipmap-mdpi
-│   │       │       │   ├── ic_launcher.webp
-│   │       │       │   ├── ic_launcher_foreground.webp
-│   │       │       │   └── ic_launcher_round.webp
 │   │       │       ├── mipmap-xhdpi
-│   │       │       │   ├── ic_launcher.webp
-│   │       │       │   ├── ic_launcher_foreground.webp
-│   │       │       │   └── ic_launcher_round.webp
 │   │       │       ├── mipmap-xxhdpi
-│   │       │       │   ├── ic_launcher.webp
-│   │       │       │   ├── ic_launcher_foreground.webp
-│   │       │       │   └── ic_launcher_round.webp
 │   │       │       ├── mipmap-xxxhdpi
-│   │       │       │   ├── ic_launcher.webp
-│   │       │       │   ├── ic_launcher_foreground.webp
-│   │       │       │   └── ic_launcher_round.webp
 │   │       │       ├── values
-│   │       │       │   ├── colors.xml
-│   │       │       │   ├── ic_launcher_background.xml
-│   │       │       │   └── styles.xml
 │   │       │       └── values-night
-│   │       │           └── styles.xml
 │   │       └── profile
-│   │           └── AndroidManifest.xml
 │   ├── build.gradle
 │   ├── gradle
-│   │   └── wrapper
-│   │       └── gradle-wrapper.properties
 │   ├── gradle.properties
 │   └── settings.gradle
 ├── assets
 │   ├── fonts
 │   │   ├── bagelFatOne
-│   │   │   └── BagelFatOne-Regular.ttf
 │   │   └── pretendard
-│   │       ├── Pretendard-Black.otf
-│   │       ├── Pretendard-Bold.otf
-│   │       ├── Pretendard-ExtraBold.otf
-│   │       ├── Pretendard-ExtraLight.otf
-│   │       ├── Pretendard-Light.otf
-│   │       ├── Pretendard-Medium.otf
-│   │       ├── Pretendard-Regular.otf
-│   │       ├── Pretendard-SemiBold.otf
-│   │       └── Pretendard-Thin.otf
 │   ├── icons
-│   │   ├── arrow_back.svg
-│   │   ├── avatar.svg
-│   │   ├── calendar.svg
-│   │   ├── filter.svg
-│   │   ├── heart_empty.svg
-│   │   ├── heart_fill.svg
-│   │   ├── home.svg
-│   │   ├── minus_btn.svg
-│   │   ├── notifications.svg
-│   │   ├── plus_btn.svg
-│   │   └── search.svg
 │   └── images
-│       ├── backgroundImg_1.JPG
-│       ├── backgroundImg_2.png
-│       ├── bukjeokMarker.png
-│       ├── osou.jpg
-│       ├── sogonMarker.png
-│       ├── sogumbbang.png
-│       └── sugeunMarker.png
 ├── devtools_options.yaml
 ├── frontend.txt
 ├── lib
@@ -188,9 +126,6 @@
 │   │   ├── mystore_detail_menu_list_service.dart
 │   │   ├── mystore_lists_service.dart
 │   │   ├── notifications
-│   │   │   ├── background_location_service.dart
-│   │   │   ├── background_message_handler.dart
-│   │   │   └── firebase_messaging_service.dart
 │   │   ├── payment_service.dart
 │   │   ├── permission_handler.dart
 │   │   ├── qr_publishing_service.dart
@@ -199,17 +134,12 @@
 │   │   └── stores_service.dart
 │   ├── utils
 │   │   ├── api
-│   │   │   ├── api_utils.dart
-│   │   │   └── users
-│   │   │       └── fetch_boss_data.dart
 │   │   ├── colors.dart
 │   │   ├── firebase_utils.dart
 │   │   ├── fontSizes.dart
 │   │   ├── icon_paths.dart
 │   │   ├── icons.dart
 │   │   ├── location
-│   │   │   ├── location_callback_handler.dart
-│   │   │   └── location_service_repository.dart
 │   │   ├── responsive_utils.dart
 │   │   ├── result_msg_type.dart
 │   │   ├── string_utils.dart
@@ -257,8 +187,6 @@
 │       │   ├── add_menu_card.dart
 │       │   ├── app_bar.dart
 │       │   ├── cards
-│       │   │   ├── detail_info_card.dart
-│       │   │   └── publish_socon_card.dart
 │       │   ├── fail_card.dart
 │       │   ├── menu_detail_top_card.dart
 │       │   ├── my_store_analysis.dart
@@ -277,47 +205,22 @@
 │       │   ├── store_top_card.dart
 │       │   └── success_card.dart
 │       ├── payments
-│       │   └── buy_socon_payment.dart
 │       └── screens
 │           ├── bossVerification
-│           │   ├── boss_verification.dart
-│           │   ├── boss_verification_fail_screen.dart
-│           │   └── boss_verification_success_screen.dart
 │           ├── contact
-│           │   ├── contact_fail_screen.dart
-│           │   ├── contact_screen.dart
-│           │   └── contact_sucess_screen.dart
 │           ├── kpostal_screen.dart
 │           ├── myStore
-│           │   ├── product_register_toast.dart
-│           │   ├── publish_socon_screen.dart
-│           │   ├── search_address.dart
-│           │   ├── store_detail_screen.dart
-│           │   ├── store_product_register.dart
-│           │   ├── store_register_success_screen.dart
-│           │   ├── store_register_view.dart
-│           │   └── temp_store_register_view.dart
 │           ├── my_info_screen.dart
 │           ├── my_store_list_screen.dart
 │           ├── nearby_info_screen.dart
 │           ├── payment
-│           │   ├── approval_fail_screen.dart
-│           │   ├── approval_screen.dart
-│           │   └── approval_success_screen.dart
 │           ├── sign_in_screen.dart
 │           ├── sign_up_screen.dart
 │           ├── soconBook
-│           │   ├── socon_book_detail_screen.dart
-│           │   └── socon_book_screen.dart
 │           ├── sogon
-│           │   ├── sogon_detail_screen.dart
-│           │   └── sogon_register_screen.dart
 │           ├── sogon_main_screen.dart
 │           ├── stores
-│           │   ├── buy_menu_screen.dart
-│           │   └── store_detail.dart
 │           └── webView
-│               └── web_view_screen.dart
 ├── linux
 │   └── flutter
 │       ├── generated_plugin_registrant.cc
@@ -354,253 +257,13 @@
 ├── Dockerfile
 ├── build
 │   ├── classes
-│   │   └── java
-│   │       └── main
-│   │           └── site
-│   │               └── soconsocon
-│   │                   └── socon
-│   │                       ├── SoconApplication.class
-│   │                       ├── global
-│   │                       │   ├── GeoUtils.class
-│   │                       │   ├── config
-│   │                       │   │   ├── ESConfig.class
-│   │                       │   │   ├── QueryDslConfig.class
-│   │                       │   │   └── RedisConfig.class
-│   │                       │   ├── domain
-│   │                       │   │   └── ErrorCode.class
-│   │                       │   └── exception
-│   │                       │       ├── GlobalExceptionHandler.class
-│   │                       │       └── SoconException.class
-│   │                       ├── search
-│   │                       │   ├── controller
-│   │                       │   │   └── SearchController.class
-│   │                       │   ├── domain
-│   │                       │   │   ├── document
-│   │                       │   │   │   ├── StoreDocument$StoreDocumentBuilder.class
-│   │                       │   │   │   └── StoreDocument.class
-│   │                       │   │   └── dto
-│   │                       │   │       ├── common
-│   │                       │   │       │   ├── SearchType.class
-│   │                       │   │       │   └── SortType.class
-│   │                       │   │       ├── request
-│   │                       │   │       │   ├── SearchRequest.class
-│   │                       │   │       │   ├── StoreCreateDocument$StoreCreateDocumentBuilder.class
-│   │                       │   │       │   ├── StoreCreateDocument.class
-│   │                       │   │       │   └── StoreNearMe.class
-│   │                       │   │       └── response
-│   │                       │   │           ├── FoundStoreInfo$FoundStoreInfoBuilder.class
-│   │                       │   │           └── FoundStoreInfo.class
-│   │                       │   ├── exception
-│   │                       │   │   ├── SearchErrorCode.class
-│   │                       │   │   └── SearchException.class
-│   │                       │   ├── repository
-│   │                       │   │   └── elasticsearch
-│   │                       │   │       ├── CustomSearchRepository.class
-│   │                       │   │       ├── CustomSearchRepositoryImpl.class
-│   │                       │   │       └── SearchRepository.class
-│   │                       │   └── service
-│   │                       │       └── SearchService.class
-│   │                       ├── sogon
-│   │                       │   ├── controller
-│   │                       │   │   └── SogonController.class
-│   │                       │   ├── domain
-│   │                       │   │   ├── dto
-│   │                       │   │   │   ├── feign
-│   │                       │   │   │   │   ├── FcmMessage$FcmMessageBuilder.class
-│   │                       │   │   │   │   └── FcmMessage.class
-│   │                       │   │   │   ├── request
-│   │                       │   │   │   │   ├── AddCommentRequest.class
-│   │                       │   │   │   │   ├── AddSogonRequest.class
-│   │                       │   │   │   │   └── GetSogonListRequest.class
-│   │                       │   │   │   └── response
-│   │                       │   │   │       ├── CommentListResponse$CommentListResponseBuilder.class
-│   │                       │   │   │       ├── CommentListResponse.class
-│   │                       │   │   │       ├── CommentResponse$CommentResponseBuilder.class
-│   │                       │   │   │       ├── CommentResponse.class
-│   │                       │   │   │       ├── GetSogonListResponse$GetSogonListResponseBuilder.class
-│   │                       │   │   │       ├── GetSogonListResponse.class
-│   │                       │   │   │       ├── SogonListResponse$SogonListResponseBuilder.class
-│   │                       │   │   │       ├── SogonListResponse.class
-│   │                       │   │   │       ├── SogonResponse$SogonResponseBuilder.class
-│   │                       │   │   │       └── SogonResponse.class
-│   │                       │   │   └── entity
-│   │                       │   │       └── jpa
-│   │                       │   │           ├── Comment$CommentBuilder.class
-│   │                       │   │           ├── Comment.class
-│   │                       │   │           ├── QComment.class
-│   │                       │   │           ├── QSogon.class
-│   │                       │   │           ├── Sogon$SogonBuilder.class
-│   │                       │   │           └── Sogon.class
-│   │                       │   ├── exception
-│   │                       │   │   ├── SogonErrorCode.class
-│   │                       │   │   └── SogonException.class
-│   │                       │   ├── feign
-│   │                       │   │   └── NotificationFeignClient.class
-│   │                       │   ├── repository
-│   │                       │   │   └── jpa
-│   │                       │   │       ├── CommentRepository.class
-│   │                       │   │       └── SogonRepository.class
-│   │                       │   └── service
-│   │                       │       └── SogonService.class
-│   │                       └── store
-│   │                           ├── controller
-│   │                           │   ├── IssueApiController.class
-│   │                           │   ├── SoconApiController.class
-│   │                           │   └── StoreApiController.class
-│   │                           ├── domain
-│   │                           │   ├── dto
-│   │                           │   │   ├── request
-│   │                           │   │   │   ├── AddBusinessNumberRequest.class
-│   │                           │   │   │   ├── AddIssueRequest.class
-│   │                           │   │   │   ├── AddItemRequest.class
-│   │                           │   │   │   ├── AddMySoconRequest.class
-│   │                           │   │   │   ├── AddStoreRequest.class
-│   │                           │   │   │   ├── BusinessHourRequest.class
-│   │                           │   │   │   ├── ChargeRequest$ChargeRequestBuilder.class
-│   │                           │   │   │   ├── ChargeRequest.class
-│   │                           │   │   │   ├── IndexRequest$IndexRequestBuilder.class
-│   │                           │   │   │   ├── IndexRequest.class
-│   │                           │   │   │   ├── RoleRequest$RoleRequestBuilder.class
-│   │                           │   │   │   ├── RoleRequest.class
-│   │                           │   │   │   ├── SoconBookSearchRequest$SoconBookSearchRequestBuilder.class
-│   │                           │   │   │   ├── SoconBookSearchRequest.class
-│   │                           │   │   │   ├── StoreAnalysisRequest$StoreAnalysisRequestBuilder.class
-│   │                           │   │   │   ├── StoreAnalysisRequest.class
-│   │                           │   │   │   ├── UpdateClosedPlannedRequest.class
-│   │                           │   │   │   ├── UpdateStoreInfoRequest.class
-│   │                           │   │   │   ├── WeeklyRequest$WeeklyRequestBuilder.class
-│   │                           │   │   │   └── WeeklyRequest.class
-│   │                           │   │   └── response
-│   │                           │   │       ├── BusinessHourResponse$BusinessHourResponseBuilder.class
-│   │                           │   │       ├── BusinessHourResponse.class
-│   │                           │   │       ├── FavoriteStoresListResponse$FavoriteStoresListResponseBuilder.class
-│   │                           │   │       ├── FavoriteStoresListResponse.class
-│   │                           │   │       ├── GetBusinessNumberListResponse$GetBusinessNumberListResponseBuilder.class
-│   │                           │   │       ├── GetBusinessNumberListResponse.class
-│   │                           │   │       ├── IssueInfoResponse$IssueInfoResponseBuilder.class
-│   │                           │   │       ├── IssueInfoResponse.class
-│   │                           │   │       ├── IssueListResponse$IssueListResponseBuilder.class
-│   │                           │   │       ├── IssueListResponse.class
-│   │                           │   │       ├── IssuedAnalysisListResponse$IssuedAnalysisListResponseBuilder.class
-│   │                           │   │       ├── IssuedAnalysisListResponse.class
-│   │                           │   │       ├── ItemListResponse$ItemListResponseBuilder.class
-│   │                           │   │       ├── ItemListResponse.class
-│   │                           │   │       ├── ItemResponse$ItemResponseBuilder.class
-│   │                           │   │       ├── ItemResponse.class
-│   │                           │   │       ├── SalesAnalysisResponse$SalesAnalysisResponseBuilder.class
-│   │                           │   │       ├── SalesAnalysisResponse.class
-│   │                           │   │       ├── SalesListResponse$SalesListResponseBuilder.class
-│   │                           │   │       ├── SalesListResponse.class
-│   │                           │   │       ├── SoconInfoResponse$SoconInfoResponseBuilder.class
-│   │                           │   │       ├── SoconInfoResponse.class
-│   │                           │   │       ├── SoconListResponse$SoconListResponseBuilder.class
-│   │                           │   │       ├── SoconListResponse.class
-│   │                           │   │       ├── StoreAnalysisResponse$StoreAnalysisResponseBuilder.class
-│   │                           │   │       ├── StoreAnalysisResponse.class
-│   │                           │   │       ├── StoreInfoResponse$StoreInfoResponseBuilder.class
-│   │                           │   │       ├── StoreInfoResponse.class
-│   │                           │   │       ├── StoreListResponse$StoreListResponseBuilder.class
-│   │                           │   │       ├── StoreListResponse.class
-│   │                           │   │       ├── WeeklyAnalysisResponse$WeeklyAnalysisResponseBuilder.class
-│   │                           │   │       └── WeeklyAnalysisResponse.class
-│   │                           │   └── entity
-│   │                           │       ├── feign
-│   │                           │       │   ├── Member$MemberBuilder.class
-│   │                           │       │   └── Member.class
-│   │                           │       ├── jpa
-│   │                           │       │   ├── BusinessHour.class
-│   │                           │       │   ├── BusinessRegistration$BusinessRegistrationBuilder.class
-│   │                           │       │   ├── BusinessRegistration.class
-│   │                           │       │   ├── FavStore$FavStoreBuilder.class
-│   │                           │       │   ├── FavStore.class
-│   │                           │       │   ├── Issue$IssueBuilder.class
-│   │                           │       │   ├── Issue.class
-│   │                           │       │   ├── Item$ItemBuilder.class
-│   │                           │       │   ├── Item.class
-│   │                           │       │   ├── QBusinessHour.class
-│   │                           │       │   ├── QBusinessRegistration.class
-│   │                           │       │   ├── QFavStore.class
-│   │                           │       │   ├── QIssue.class
-│   │                           │       │   ├── QItem.class
-│   │                           │       │   ├── QSocon.class
-│   │                           │       │   ├── QStore.class
-│   │                           │       │   ├── Socon$SoconBuilder.class
-│   │                           │       │   ├── Socon.class
-│   │                           │       │   ├── Store$StoreBuilder.class
-│   │                           │       │   └── Store.class
-│   │                           │       └── redis
-│   │                           │           ├── SoconRedis$SoconRedisBuilder.class
-│   │                           │           └── SoconRedis.class
-│   │                           ├── exception
-│   │                           │   ├── StoreErrorCode.class
-│   │                           │   └── StoreException.class
-│   │                           ├── feign
-│   │                           │   └── FeignServiceClient.class
-│   │                           ├── repository
-│   │                           │   ├── jpa
-│   │                           │   │   ├── BusinessHourRepository.class
-│   │                           │   │   ├── BusinessRegistrationRepository.class
-│   │                           │   │   ├── FavStoreRepository.class
-│   │                           │   │   ├── IssueRepository.class
-│   │                           │   │   ├── ItemRepository.class
-│   │                           │   │   ├── SoconRepository.class
-│   │                           │   │   └── StoreRepository.class
-│   │                           │   └── redis
-│   │                           │       └── SoconRedisRepository.class
-│   │                           ├── scheduler
-│   │                           │   └── StoreScheduler.class
-│   │                           └── service
-│   │                               ├── IssueService.class
-│   │                               ├── ItemService.class
-│   │                               ├── SoconRedisService.class
-│   │                               ├── SoconService.class
-│   │                               ├── StoreService$1.class
-│   │                               ├── StoreService$2.class
-│   │                               └── StoreService.class
 │   ├── generated
-│   │   └── sources
-│   │       ├── annotationProcessor
-│   │       │   └── java
-│   │       │       └── main
-│   │       │           └── site
-│   │       │               └── soconsocon
-│   │       │                   └── socon
-│   │       │                       ├── sogon
-│   │       │                       │   └── domain
-│   │       │                       │       └── entity
-│   │       │                       │           └── jpa
-│   │       │                       │               ├── QComment.java
-│   │       │                       │               └── QSogon.java
-│   │       │                       └── store
-│   │       │                           └── domain
-│   │       │                               └── entity
-│   │       │                                   └── jpa
-│   │       │                                       ├── QBusinessHour.java
-│   │       │                                       ├── QBusinessRegistration.java
-│   │       │                                       ├── QFavStore.java
-│   │       │                                       ├── QIssue.java
-│   │       │                                       ├── QItem.java
-│   │       │                                       ├── QSocon.java
-│   │       │                                       └── QStore.java
-│   │       └── headers
-│   │           └── java
-│   │               └── main
 │   ├── resources
-│   │   └── main
-│   │       └── application.yml
 │   └── tmp
-│       └── compileJava
-│           ├── compileTransaction
-│           │   ├── backup-dir
-│           │   └── stash-dir
-│           │       └── CustomSearchRepositoryImpl.class.uniqueId0
-│           └── previous-compilation-data.bin
 ├── build.gradle
 ├── docker-compose.yml
 ├── gradle
 │   └── wrapper
-│       ├── gradle-wrapper.jar
-│       └── gradle-wrapper.properties
 ├── gradle.properties
 ├── gradlew
 ├── gradlew.bat
@@ -615,156 +278,54 @@
     │   │               ├── global
     │   │               │   ├── GeoUtils.java
     │   │               │   ├── config
-    │   │               │   │   ├── ESConfig.java
-    │   │               │   │   ├── QueryDslConfig.java
-    │   │               │   │   └── RedisConfig.java
     │   │               │   ├── domain
-    │   │               │   │   └── ErrorCode.java
     │   │               │   └── exception
-    │   │               │       ├── GlobalExceptionHandler.java
-    │   │               │       └── SoconException.java
     │   │               ├── search
     │   │               │   ├── controller
-    │   │               │   │   └── SearchController.java
     │   │               │   ├── domain
     │   │               │   │   ├── document
-    │   │               │   │   │   └── StoreDocument.java
     │   │               │   │   └── dto
     │   │               │   │       ├── common
-    │   │               │   │       │   ├── SearchType.java
-    │   │               │   │       │   └── SortType.java
     │   │               │   │       ├── request
-    │   │               │   │       │   ├── SearchRequest.java
-    │   │               │   │       │   ├── StoreCreateDocument.java
-    │   │               │   │       │   └── StoreNearMe.java
     │   │               │   │       └── response
-    │   │               │   │           └── FoundStoreInfo.java
     │   │               │   ├── exception
-    │   │               │   │   ├── SearchErrorCode.java
-    │   │               │   │   └── SearchException.java
     │   │               │   ├── repository
     │   │               │   │   └── elasticsearch
-    │   │               │   │       ├── CustomSearchRepository.java
-    │   │               │   │       ├── CustomSearchRepositoryImpl.java
-    │   │               │   │       └── SearchRepository.java
     │   │               │   └── service
-    │   │               │       └── SearchService.java
     │   │               ├── sogon
     │   │               │   ├── controller
-    │   │               │   │   └── SogonController.java
     │   │               │   ├── domain
     │   │               │   │   ├── dto
     │   │               │   │   │   ├── feign
-    │   │               │   │   │   │   └── FcmMessage.java
     │   │               │   │   │   ├── request
-    │   │               │   │   │   │   ├── AddCommentRequest.java
-    │   │               │   │   │   │   ├── AddSogonRequest.java
-    │   │               │   │   │   │   └── GetSogonListRequest.java
     │   │               │   │   │   └── response
-    │   │               │   │   │       ├── CommentListResponse.java
-    │   │               │   │   │       ├── CommentResponse.java
-    │   │               │   │   │       ├── GetSogonListResponse.java
-    │   │               │   │   │       ├── SogonListResponse.java
-    │   │               │   │   │       └── SogonResponse.java
     │   │               │   │   └── entity
     │   │               │   │       └── jpa
-    │   │               │   │           ├── Comment.java
-    │   │               │   │           └── Sogon.java
     │   │               │   ├── exception
-    │   │               │   │   ├── SogonErrorCode.java
-    │   │               │   │   └── SogonException.java
     │   │               │   ├── feign
-    │   │               │   │   └── NotificationFeignClient.java
     │   │               │   ├── repository
     │   │               │   │   └── jpa
-    │   │               │   │       ├── CommentRepository.java
-    │   │               │   │       └── SogonRepository.java
     │   │               │   └── service
-    │   │               │       └── SogonService.java
     │   │               └── store
     │   │                   ├── controller
-    │   │                   │   ├── IssueApiController.java
-    │   │                   │   ├── SoconApiController.java
-    │   │                   │   └── StoreApiController.java
     │   │                   ├── domain
     │   │                   │   ├── dto
     │   │                   │   │   ├── request
-    │   │                   │   │   │   ├── AddBusinessNumberRequest.java
-    │   │                   │   │   │   ├── AddIssueRequest.java
-    │   │                   │   │   │   ├── AddItemRequest.java
-    │   │                   │   │   │   ├── AddMySoconRequest.java
-    │   │                   │   │   │   ├── AddStoreRequest.java
-    │   │                   │   │   │   ├── BusinessHourRequest.java
-    │   │                   │   │   │   ├── ChargeRequest.java
-    │   │                   │   │   │   ├── IndexRequest.java
-    │   │                   │   │   │   ├── RoleRequest.java
-    │   │                   │   │   │   ├── SoconBookSearchRequest.java
-    │   │                   │   │   │   ├── StoreAnalysisRequest.java
-    │   │                   │   │   │   ├── UpdateClosedPlannedRequest.java
-    │   │                   │   │   │   ├── UpdateStoreInfoRequest.java
-    │   │                   │   │   │   └── WeeklyRequest.java
     │   │                   │   │   └── response
-    │   │                   │   │       ├── BusinessHourResponse.java
-    │   │                   │   │       ├── FavoriteStoresListResponse.java
-    │   │                   │   │       ├── GetBusinessNumberListResponse.java
-    │   │                   │   │       ├── IssueInfoResponse.java
-    │   │                   │   │       ├── IssueListResponse.java
-    │   │                   │   │       ├── IssuedAnalysisListResponse.java
-    │   │                   │   │       ├── ItemListResponse.java
-    │   │                   │   │       ├── ItemResponse.java
-    │   │                   │   │       ├── SalesAnalysisResponse.java
-    │   │                   │   │       ├── SalesListResponse.java
-    │   │                   │   │       ├── SoconInfoResponse.java
-    │   │                   │   │       ├── SoconListResponse.java
-    │   │                   │   │       ├── StoreAnalysisResponse.java
-    │   │                   │   │       ├── StoreInfoResponse.java
-    │   │                   │   │       ├── StoreListResponse.java
-    │   │                   │   │       └── WeeklyAnalysisResponse.java
     │   │                   │   └── entity
     │   │                   │       ├── feign
-    │   │                   │       │   └── Member.java
     │   │                   │       ├── jpa
-    │   │                   │       │   ├── BusinessHour.java
-    │   │                   │       │   ├── BusinessRegistration.java
-    │   │                   │       │   ├── FavStore.java
-    │   │                   │       │   ├── Issue.java
-    │   │                   │       │   ├── Item.java
-    │   │                   │       │   ├── Socon.java
-    │   │                   │       │   └── Store.java
     │   │                   │       └── redis
-    │   │                   │           └── SoconRedis.java
     │   │                   ├── exception
-    │   │                   │   ├── StoreErrorCode.java
-    │   │                   │   └── StoreException.java
     │   │                   ├── feign
-    │   │                   │   └── FeignServiceClient.java
     │   │                   ├── repository
     │   │                   │   ├── jpa
-    │   │                   │   │   ├── BusinessHourRepository.java
-    │   │                   │   │   ├── BusinessRegistrationRepository.java
-    │   │                   │   │   ├── FavStoreRepository.java
-    │   │                   │   │   ├── IssueRepository.java
-    │   │                   │   │   ├── ItemRepository.java
-    │   │                   │   │   ├── SoconRepository.java
-    │   │                   │   │   └── StoreRepository.java
     │   │                   │   └── redis
-    │   │                   │       └── SoconRedisRepository.java
     │   │                   ├── scheduler
-    │   │                   │   └── StoreScheduler.java
     │   │                   └── service
-    │   │                       ├── IssueService.java
-    │   │                       ├── ItemService.java
-    │   │                       ├── SoconRedisService.java
-    │   │                       ├── SoconService.java
-    │   │                       └── StoreService.java
     │   └── resources
     │       └── application.yml
     └── test
-        └── java
-            └── site
-                └── soconsocon
-                    └── socon
-                        └── SoconApplicationTests.java
 ```
 
 ## ✔ 협업 환경

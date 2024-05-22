@@ -27,8 +27,9 @@ public class Socon {
     @Column (name="used_at")
     private LocalDateTime usedAt;
 
+    @Enumerated(EnumType.STRING)
     @Column (name="status", nullable = false)
-    private String status;
+    private SoconStatus status;
 
     @Column(name = "member_id", nullable = false)
     private Integer memberId; // 멤버 id

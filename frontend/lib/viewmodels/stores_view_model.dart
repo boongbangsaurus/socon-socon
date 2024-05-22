@@ -18,19 +18,19 @@ class StoresViewModel extends ChangeNotifier {
   //     mainSocon: "소금빵",
   //     distance: 15);
 
-  List<Store> stores = List.generate(10, (index) {
-    return Store(
-      storeId: index, // Using index directly for storeId
-      name: "오소유 ${index + 1}", // Using index to make each name unique
-      imageUrl: "https://cataas.com/cat", // You can modify this as needed
-      address: "광주 광산구 장덕로40번길 13-1 1층", // You can modify this as needed
-      category: "음식점", // You can modify this as needed
-      createdAt: "2024-03-22", // You can modify this as needed
-      isLike: true, // You can modify this as needed
-      mainSocon: "소금빵", // You can modify this as needed
-      distance: 10 + index, // Calculating distance based on index
-    );
-  });
+  // List<Store> stores = List.generate(10, (index) {
+  //   return Store(
+  //     storeId: index, // Using index directly for storeId
+  //     name: "오소유 ${index + 1}", // Using index to make each name unique
+  //     imageUrl: "https://cataas.com/cat", // You can modify this as needed
+  //     address: "광주 광산구 장덕로40번길 13-1 1층", // You can modify this as needed
+  //     category: "음식점", // You can modify this as needed
+  //     createdAt: "2024-03-22", // You can modify this as needed
+  //     isLike: true, // You can modify this as needed
+  //     mainSocon: "소금빵", // You can modify this as needed
+  //     distance: 10 + index, // Calculating distance based on index
+  //   );
+  // });
 
 
   Future<List<Store>?> searchStores() async {
