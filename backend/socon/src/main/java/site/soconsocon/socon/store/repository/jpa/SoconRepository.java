@@ -22,7 +22,7 @@ public interface SoconRepository extends JpaRepository<Socon, Integer> {
 
     @Query("SELECT s FROM SOCON s WHERE s.id = :issueId AND (s.status = 'unused' OR s.status = 'sogon')")
     List<Socon> getUnusedSoconByIssueId(Integer issueId);
-    @Query("SELECT s FROM SOCON s WHERE s.issue.item.store.id = :storeId AND s.status IN ('unused', 'sogon')")
+    @Query("SELECT s FROM SOCON s WHERE s.issue.item.store.id = :storeId AND s.status  = 'unused' OR s.status = 'sogon'")
     List<Socon> getSoconByStoreId(Integer storeId);
 
     @Query("SELECT COUNT(s) FROM SOCON s WHERE s.issue.id = :issueId AND (s.status = 'used') AND YEAR(s.usedAt) = :year AND MONTH(s.usedAt) = :month")
@@ -50,4 +50,6 @@ public interface SoconRepository extends JpaRepository<Socon, Integer> {
     @Query("SELECT COUNT(DISTINCT s.issue.id) FROM SOCON s WHERE s.issue.item.store.id = :storeId AND YEAR(s.purchasedAt) = :year AND MONTH(s.purchasedAt) = :month")
     int countDistinctIssuedIdByStoreId(int storeId, int year, int month);
 
+    @Query("SELECT COUNT(s) FROM SOCON s WHERE s.memberId = :memberId AND s.status='unused'")
+    int getMySoconCount(Integer memberId);
 }

@@ -10,6 +10,7 @@ import org.springframework.data.elasticsearch.core.geo.GeoPoint;
 import org.springframework.data.geo.Distance;
 import org.springframework.data.geo.Point;
 import org.springframework.stereotype.Service;
+import site.soconsocon.socon.global.GeoUtils;
 import site.soconsocon.socon.search.domain.document.StoreDocument;
 import site.soconsocon.socon.search.domain.dto.common.SearchType;
 import site.soconsocon.socon.search.domain.dto.request.SearchRequest;
@@ -21,8 +22,10 @@ import site.soconsocon.socon.search.exception.SearchException;
 import site.soconsocon.socon.search.repository.elasticsearch.SearchRepository;
 import site.soconsocon.socon.store.domain.entity.jpa.FavStore;
 import site.soconsocon.socon.store.domain.entity.jpa.Store;
+import site.soconsocon.socon.store.domain.entity.redis.IssueRedis;
 import site.soconsocon.socon.store.repository.jpa.FavStoreRepository;
 import site.soconsocon.socon.store.repository.jpa.StoreRepository;
+import site.soconsocon.socon.store.repository.redis.IssueRedisRepository;
 import site.soconsocon.socon.store.service.SoconRedisService;
 
 import java.util.*;
@@ -34,6 +37,7 @@ import java.util.stream.Collectors;
 public class SearchService {
     private final SearchRepository searchRepository;
     private final FavStoreRepository favStoreRepository;
+    private final IssueRedisRepository issueRedisRepository;
     public ArrayList<FoundStoreInfo> searchStores(SearchRequest searchRequest, Integer memberId){
         ArrayList<FoundStoreInfo> foundStoreInfoList = new ArrayList<>();
         log.warn(searchRequest.toString());
@@ -79,13 +83,30 @@ public class SearchService {
         // generate FoundStoreInfo DTO
         for (StoreDocument storeDocument:foundStores) {
             boolean isLike = favStoreIdList.contains(storeDocument.getId());
+            List<IssueRedis> issue = null;
+            try {
+                issue = issueRedisRepository.findByStoreId(storeDocument.getId());
+            }catch (RuntimeException e){
+                throw new SearchException(SearchErrorCode.SEARCH_FAIL);
+            }
+            int calculatedDistance = (int) Math.ceil(
+                    GeoUtils.distance(
+                            searchRequest.getLat(),
+                            searchRequest.getLng(),
+                            storeDocument.getLocation().getLat(),
+                            storeDocument.getLocation().getLon()
+                    )
+            );
+
             FoundStoreInfo storeInfo = FoundStoreInfo.builder()
-                    .storeId(storeDocument.getId())
-                    .name(storeDocument.getName())
-                    .imageUrl(storeDocument.getImage())
-                    .address(storeDocument.getAddress())
-                    .category(storeDocument.getCategory())
-                    .isLike(isLike)
+                    .storeId(storeDocument.getId()) // 예를 들어 기본값으로 0 사용
+                    .name(storeDocument.getName() != null ? storeDocument.getName() : "")
+                    .imageUrl(storeDocument.getImage() != null ? storeDocument.getImage() : "")
+                    .address(storeDocument.getAddress() != null ? storeDocument.getAddress() : "")
+                    .category(storeDocument.getCategory() != null ? storeDocument.getCategory() : "")
+                    .isLike(isLike) // Boolean은 null이 가능한 상황에서 기본값이 false인 경우를 다룰 수 있음
+                    .mainSocon(issue != null && !issue.isEmpty() ? issue.get(0).getName() : "")
+                    .distance(calculatedDistance)
                     .build();
             // filter favourites
             if(searchRequest.getIsFavoriteSearch()){

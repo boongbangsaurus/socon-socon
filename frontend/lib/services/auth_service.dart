@@ -4,13 +4,14 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:socon/models/user.dart';
 import 'package:socon/services/notifications/firebase_messaging_service.dart';
+import 'package:socon/utils/api/api_utils.dart';
 
 /// [AuthService]
 /// 백과 API 통신하기 위한 Class
 class AuthService {
   final String baseUrl = 'http://j10c207.p.ssafy.io:8000'; // 통신 url
   FirebaseMessagingService _firebaseMessagingService =
-      FirebaseMessagingService();
+  FirebaseMessagingService();
 
   // 회원가입 요청 api
   Future<bool> signUp(User user) async {
@@ -80,4 +81,6 @@ class AuthService {
       return null;
     }
   }
+
+
 }

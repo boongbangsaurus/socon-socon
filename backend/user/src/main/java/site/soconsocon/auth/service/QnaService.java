@@ -7,7 +7,8 @@ import site.soconsocon.auth.domain.entity.jpa.Member;
 import site.soconsocon.auth.domain.entity.jpa.Qna;
 import site.soconsocon.auth.exception.ErrorCode;
 import site.soconsocon.auth.exception.MemberException;
-import site.soconsocon.auth.repository.MemberRepository;
+import site.soconsocon.auth.repository.MemberJpaRepository;
+import site.soconsocon.auth.repository.MemberQueryRepository;
 import site.soconsocon.auth.repository.QnaRepository;
 
 @Service
@@ -15,10 +16,11 @@ import site.soconsocon.auth.repository.QnaRepository;
 public class QnaService {
 
     private final QnaRepository qnaRepository;
-    private final MemberRepository memberRepository;
+    private final MemberJpaRepository memberRepository;
+    private final MemberQueryRepository memberQueryRepository;
 
     public void saveQna(QnaRegisterRequestDto qnaRegisterRequestDto) throws MemberException {
-        Member member = memberRepository.findMemberById(qnaRegisterRequestDto.getMemberId()).orElseThrow(
+        Member member = memberQueryRepository.findMemberById(qnaRegisterRequestDto.getMemberId()).orElseThrow(
                 () -> new MemberException(ErrorCode.USER_NOT_FOUND)
         );
 

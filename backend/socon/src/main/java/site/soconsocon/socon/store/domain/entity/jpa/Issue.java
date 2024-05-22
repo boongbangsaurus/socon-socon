@@ -57,8 +57,9 @@ public class Issue {
     @Column(name = "created_at", nullable = false)
     private LocalDate createdAt; // 등록 일자
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, columnDefinition = "char default 'A'")
-    private Character status; // 발행 상태. a:active i:inactive c:closed
+    private IssueStatus status; // 발행 상태. a:active i:inactive
 
     @ManyToOne
     @JoinColumn(name = "item_id")

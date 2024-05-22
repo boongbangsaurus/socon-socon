@@ -11,7 +11,7 @@ class MySoconService {
     try {
       final response = await ApiUtils.getDataWithToken('/api/v1/socons/book');
 
-      Map<String, dynamic> data = jsonDecode(response);
+      Map<String, dynamic> data = jsonDecode(response.body);
 
       Map<String, dynamic> dataBody = data['data_body'];
       print("[service] 소콘북 소콘 목록 가져오기 성공 ${dataBody}");
@@ -46,7 +46,7 @@ class MySoconService {
     try {
       final response = await ApiUtils.getDataWithToken('/api/v1/socons/${soconId}');
 
-      Map<String, dynamic> data = jsonDecode(response);
+      Map<String, dynamic> data = jsonDecode(response.body);
 
       Map<String, dynamic> dataBody = data['data_body'];
       print("[service] 소콘 상세 정보 가져오기 성공 ${dataBody}");

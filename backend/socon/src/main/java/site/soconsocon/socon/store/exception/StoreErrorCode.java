@@ -11,6 +11,7 @@ public enum StoreErrorCode implements CustomError {
 
     // 400 BAD REQUEST
     TRANSACTION_FAIL(HttpStatus.BAD_REQUEST, "400 TRANSACTION_FAIL", "트랜잭션에 실패했습니다."),
+    REDIS_TRANSACTION_FAIL(HttpStatus.BAD_REQUEST, "400 REDIS_TRANSACTION_FAIL", "트랜잭션에 실패했습니다."),
     INVALID_SOCON(HttpStatus.BAD_REQUEST, "400 INVALID_SOCON", "사용 불가능한 소콘입니다"),
     INVALID_ISSUE(HttpStatus.BAD_REQUEST, "400 INVALID_ISSUE", "발행 가능 상태가 아닙니다"),
     ALREADY_SAVED_STORE(HttpStatus.BAD_REQUEST, "400 ALREADY_SAVED_STORE", "이미 등록된 가게입니다"),

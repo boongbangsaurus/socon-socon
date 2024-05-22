@@ -5,6 +5,7 @@ class CheckBoxBtn extends StatefulWidget {
   final bool isChecked;
   final double gapX;
   final Function(bool) onCheckedChanged;
+
   CheckBoxBtn({
     super.key,
     required this.Text,
@@ -22,7 +23,7 @@ class _CheckBoxBtnState extends State<CheckBoxBtn> {
 
   @override
   void initState() {
-    // TODO: implement initState
+
     super.initState();
     isChecked = widget.isChecked;
   }
@@ -50,11 +51,12 @@ class _CheckBoxBtnState extends State<CheckBoxBtn> {
             }),
 
             onChanged: (bool? value) {
-              // Update Check State
-              setState(() {
-                isChecked = value ?? false;
-              });
-              widget.onCheckedChanged(isChecked);
+              if (isChecked != value) {
+                setState(() {
+                  isChecked = value ?? false;
+                });
+                widget.onCheckedChanged(isChecked);
+              }
             },
           ),
         ),

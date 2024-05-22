@@ -1,10 +1,7 @@
 package site.soconsocon.notification.fcm.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import site.soconsocon.notification.fcm.domain.dto.request.FcmMessage;
 import site.soconsocon.notification.fcm.domain.dto.request.SaveTokenRequest;
 import site.soconsocon.notification.fcm.domain.entity.DeviceToken;
@@ -45,5 +42,11 @@ public class FcmController {
     public ResponseEntity subscribeByTopic(@RequestBody FcmMessage fcmMessage) {
         fcmService.subscribeMyTokens(fcmMessage.getMemberId(), fcmMessage.getTopicId());
         return ResponseEntity.ok().body(MessageUtils.success());
+    }
+
+    @GetMapping("/authenticate")
+    public ResponseEntity authenticate(@RequestHeader("X-Authorization-Id") int memberId) {
+        String uidToken = fcmService.createCustomToken(String.valueOf(memberId));
+        return ResponseEntity.ok(MessageUtils.success(uidToken));
     }
 }

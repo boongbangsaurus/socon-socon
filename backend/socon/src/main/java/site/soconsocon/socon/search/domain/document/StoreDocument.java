@@ -8,6 +8,8 @@ import org.springframework.data.elasticsearch.annotations.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.core.geo.GeoPoint;
 
+import java.time.LocalDate;
+
 @Getter
 @Setter
 @Document(indexName = "stores")
@@ -33,5 +35,7 @@ public class StoreDocument {
 
     @Field(type = FieldType.Text, analyzer = "nori")
     private String introduction; // 가게 설명
+
+    private LocalDate createdAt;// 등록일
 
 }

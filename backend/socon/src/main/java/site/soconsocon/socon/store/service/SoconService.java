@@ -5,13 +5,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import site.soconsocon.socon.global.domain.ErrorCode;
 import site.soconsocon.socon.global.exception.SoconException;
+import site.soconsocon.socon.sogon.domain.entity.jpa.Sogon;
+import site.soconsocon.socon.sogon.repository.jpa.CommentRepository;
+import site.soconsocon.socon.sogon.repository.jpa.SogonRepository;
 import site.soconsocon.socon.store.domain.dto.request.ChargeRequest;
 import site.soconsocon.socon.store.domain.dto.request.SoconBookSearchRequest;
 import site.soconsocon.socon.store.domain.dto.response.SoconInfoResponse;
 import site.soconsocon.socon.store.domain.dto.response.SoconListResponse;
+import site.soconsocon.socon.store.domain.dto.response.SoconMypageResponse;
 import site.soconsocon.socon.store.domain.entity.jpa.Issue;
 import site.soconsocon.socon.store.domain.entity.jpa.Item;
 import site.soconsocon.socon.store.domain.entity.jpa.Socon;
+import site.soconsocon.socon.store.domain.entity.jpa.SoconStatus;
 import site.soconsocon.socon.store.exception.StoreErrorCode;
 import site.soconsocon.socon.store.exception.StoreException;
 import site.soconsocon.socon.store.feign.FeignServiceClient;
@@ -27,6 +32,8 @@ public class SoconService {
 
     private final SoconRepository soconRepository;
     private final FeignServiceClient feignServiceClient;
+    private final SogonRepository sogonRepository;
+    private final CommentRepository commentRepository;
 
 
     // 소콘 상세 조회
@@ -59,13 +66,13 @@ public class SoconService {
             Issue issue = socon.getIssue();
             Item item = issue.getItem();
 
-            LocalDateTime expiredAt = LocalDateTime.parse(socon.getExpiredAt().toString());
             LocalDateTime nowWithMilliseconds = LocalDateTime.now().withNano(0);
 
-             if (expiredAt.toLocalDate().isEqual(nowWithMilliseconds.toLocalDate()) && expiredAt.toLocalTime().isAfter(nowWithMilliseconds.toLocalTime())){
-                socon.setStatus("expired");
+             if (socon.getExpiredAt().toLocalDate().isEqual(nowWithMilliseconds.toLocalDate()) || socon.getExpiredAt().toLocalTime().isAfter(nowWithMilliseconds.toLocalTime())){
+                socon.setStatus(SoconStatus.expired);
                 soconRepository.save(socon);
             }
+
             else{
                 usableSocons.add(SoconListResponse.builder()
                         .soconId(socon.getId())
@@ -83,14 +90,46 @@ public class SoconService {
             Issue issue = socon.getIssue();
             Item item = issue.getItem();
 
-            unusableSocons.add(SoconListResponse.builder()
-                    .soconId(socon.getId())
-                    .itemName(issue.getName())
-                    .storeName(item.getStore().getName())
-                    .expiredAt(socon.getExpiredAt())
-                    .status(socon.getStatus())
-                    .itemImage(socon.getIssue().getItem().getImage())
-                    .build());
+            // 소곤에 올라가있는 만료 소콘 상태 업데이트
+            if (socon.getStatus().equals(SoconStatus.sogon)) {
+                Sogon sogon = sogonRepository.findBySoconId(socon.getId());
+                LocalDateTime currentTime = LocalDateTime.now();
+
+                if (sogon.getExpiredAt().isBefore(currentTime)) {
+                    // 만료 시간이 현재 시간 이전이면 상태를 "unused"로 업데이트
+                    socon.setStatus(SoconStatus.unused);
+                    soconRepository.save(socon);
+                    usableSocons.add(SoconListResponse.builder()
+                            .soconId(socon.getId())
+                            .itemName(issue.getName())
+                            .storeName(item.getStore().getName())
+                            .expiredAt(socon.getExpiredAt())
+                            .status(socon.getStatus())
+                            .itemImage(socon.getIssue().getItem().getImage())
+                            .build());
+                }
+                else{
+                    unusableSocons.add(SoconListResponse.builder()
+                            .soconId(socon.getId())
+                            .itemName(issue.getName())
+                            .storeName(item.getStore().getName())
+                            .expiredAt(socon.getExpiredAt())
+                            .status(socon.getStatus())
+                            .itemImage(socon.getIssue().getItem().getImage())
+                            .build());
+                }
+            }
+            else{
+                unusableSocons.add(SoconListResponse.builder()
+                        .soconId(socon.getId())
+                        .itemName(issue.getName())
+                        .storeName(item.getStore().getName())
+                        .expiredAt(socon.getExpiredAt())
+                        .status(socon.getStatus())
+                        .itemImage(socon.getIssue().getItem().getImage())
+                        .build());
+            }
+
         }
 
         Map<String, Object> response = new HashMap<>();
@@ -116,11 +155,11 @@ public class SoconService {
         LocalDateTime expiredAt = LocalDateTime.parse(socon.getExpiredAt().toString());
         LocalDateTime nowWithMilliseconds = LocalDateTime.now().withNano(0);
         if (expiredAt.toLocalDate().isEqual(nowWithMilliseconds.toLocalDate()) && expiredAt.toLocalTime().isAfter(nowWithMilliseconds.toLocalTime())){
-            socon.setStatus("expired");
+            socon.setStatus(SoconStatus.expired);
             soconRepository.save(socon);
         }
         if (Objects.equals(socon.getStatus(), "unused")) {
-            socon.setStatus("used");
+            socon.setStatus(SoconStatus.used);
             socon.setUsedAt(LocalDateTime.now());
 
             // 출금 요청
@@ -161,5 +200,15 @@ public class SoconService {
                     .build());
         }
         return soconListResponses;
+    }
+
+    // 보유 소콘, 소곤 개수 조회
+    public Object getMyPage(Integer memberId) {
+
+        return SoconMypageResponse.builder()
+                .socon(soconRepository.getMySoconCount(memberId))
+                .sogon(sogonRepository.getMySogonCount(memberId))
+                .comment(commentRepository.getMyCommentCount(memberId))
+                .build();
     }
 }

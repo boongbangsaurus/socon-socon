@@ -3,6 +3,7 @@ package site.soconsocon.socon.store.domain.dto.response;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.*;
+import site.soconsocon.socon.store.domain.entity.jpa.SoconStatus;
 
 import java.time.LocalDateTime;
 
@@ -18,6 +19,6 @@ public class SoconListResponse {
     private String itemName;
     private String storeName;
     private LocalDateTime expiredAt;
-    private String status;
+    private SoconStatus status;
     private String itemImage;
 }

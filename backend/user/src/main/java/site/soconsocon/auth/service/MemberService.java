@@ -10,21 +10,26 @@ import site.soconsocon.auth.domain.dto.request.MemberRegisterRequestDto;
 import site.soconsocon.auth.domain.dto.response.MemberFeignResponse;
 import site.soconsocon.auth.domain.dto.response.MemberLoginResponseDto;
 import site.soconsocon.auth.domain.dto.response.MemberResponseDto;
+import site.soconsocon.auth.domain.dto.response.MyPageResponseDto;
 import site.soconsocon.auth.domain.entity.jpa.Member;
 import site.soconsocon.auth.domain.entity.jpa.RefreshToken;
 import site.soconsocon.auth.domain.entity.jpa.UserRole;
 import site.soconsocon.auth.exception.ErrorCode;
 import site.soconsocon.auth.exception.MemberException;
 import site.soconsocon.auth.feign.NotificationFeignClient;
+import site.soconsocon.auth.feign.SoconFeignClient;
 import site.soconsocon.auth.feign.domain.dto.feign.MemberRoleRequest;
+import site.soconsocon.auth.feign.domain.dto.feign.MyPageSoconResponse;
 import site.soconsocon.auth.feign.domain.dto.feign.SaveTokenRequest;
-import site.soconsocon.auth.repository.MemberRepository;
+import site.soconsocon.auth.repository.MemberJpaRepository;
+import site.soconsocon.auth.repository.MemberQueryRepository;
 import site.soconsocon.auth.repository.RefreshTokenRepository;
 import site.soconsocon.auth.security.MemberDetailService;
 import site.soconsocon.auth.security.MemberDetails;
 import site.soconsocon.auth.util.JwtUtil;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Optional;
 
 
@@ -33,17 +38,22 @@ import java.util.Optional;
 @Slf4j
 public class MemberService {
 
-    private final MemberRepository memberRepository;
+    private final MemberJpaRepository memberRepository;
+
+    private final MemberQueryRepository memberQueryRepository;
 
     private final RefreshTokenRepository refreshTokenRepository;
 
     private final PasswordEncoder passwordEncoder;
 
+    private final JwtUtil jwtUtil;
+
     private final NotificationFeignClient notificationFeignClient;
+
+    private final SoconFeignClient soconFeignClient;
 
     private final MemberDetailService memberDetailService;
 
-    private final JwtUtil jwtUtil;
 
     /**
      * 회원가입
@@ -70,7 +80,6 @@ public class MemberService {
                 .phoneNumber(requestDto.getPhoneNumber())
                 .isAgreed(requestDto.isAgreed())
                 .build();
-
         Member savedMember = null;
         try {
             savedMember = memberRepository.save(member);
@@ -79,6 +88,7 @@ public class MemberService {
         }
 
         return savedMember;
+
     }
 
     /**
@@ -87,7 +97,7 @@ public class MemberService {
      * @param email
      */
     public boolean dupleEmailCheck(String email) {
-        if (memberRepository.findMemberByEmail(email).isPresent()) {
+        if (memberQueryRepository.findMemberByEmail(email).isPresent()) {
             return false;
         }
         return true;
@@ -100,94 +110,10 @@ public class MemberService {
      * @return
      */
     public boolean dupleNicknameCheck(String nickname) {
-        if (memberRepository.findMemberByNickname(nickname).isPresent()) {
+        if (memberQueryRepository.findMemberByNickname(nickname).isPresent()) {
             return false;
         }
         return true;
-    }
-
-
-    /**
-     * 액세스 토큰 재발급
-     *
-     * @param memberDetails
-     * @param refreshToken
-     * @return
-     * @throws IOException
-     */
-    public String createAccessToken(MemberDetails memberDetails, String refreshToken) {
-        int memberId = memberDetails.getMember().getId();
-        //Redis에 저장된 리프레시 토큰 가져오기
-        RefreshToken refreshToken1 = refreshTokenRepository.findRefreshTokenByMemberId(memberId);
-        String rt = refreshToken1.getRefreshToken();
-        Optional<Member> result = memberRepository.findMemberById(memberId);
-
-        if (result.isPresent()) {
-            Member member = result.get();
-            //request 리프레시 토큰과 Redis에 있는 리프레시 토큰이 같다면
-            if (rt.equals(refreshToken)) {
-                //리프레시 토큰의 유효시간이 남아있다면
-                if (!jwtUtil.isRefreshTokenExpired(String.valueOf(memberId))) {
-                    return jwtUtil.generateToken(memberDetails);
-                }
-            }
-        }
-        return null;
-    }
-
-    /**
-     * 리프레시 토큰 재발급
-     *
-     * @param memberDetails
-     * @return
-     */
-    public String createRefreshToken(MemberDetails memberDetails) {
-        String memberId = memberDetails.getMember().getId().toString();
-        if (!jwtUtil.isRefreshTokenExpired(memberId)) {
-            return jwtUtil.generateRefreshToken(memberDetails);
-        }
-        return null;
-    }
-
-
-    public MemberResponseDto getUserInfo(int memberId) {
-        Member member = memberRepository.findMemberById(memberId).orElseThrow(
-                () -> new MemberException(ErrorCode.USER_NOT_FOUND)
-        );
-        MemberResponseDto memberResponseDto = new MemberResponseDto();
-        memberResponseDto.setEmail(member.getEmail());
-        memberResponseDto.setNickname(member.getNickname());
-        memberResponseDto.setName(member.getName());
-        memberResponseDto.setPhoneNumber(member.getPhoneNumber());
-        memberResponseDto.setSoconMoney(member.getSoconMoney());
-        memberResponseDto.setSoconPassword(member.getSoconPassword());
-
-        return memberResponseDto;
-    }
-
-    public Member getMemberByEmail(String email) {
-        Member member = memberRepository.findMemberByEmail(email).orElseThrow(
-                () -> new MemberException(ErrorCode.USER_NOT_FOUND)
-        );
-        return member;
-    }
-
-    public MemberFeignResponse findMemberByMemberId(int memberId) {
-        Member member = memberRepository.findMemberById(memberId).orElseThrow(
-                () -> new MemberException(ErrorCode.USER_NOT_FOUND)
-        );
-        MemberFeignResponse memberFeignResponse = new MemberFeignResponse();
-        memberFeignResponse.setMemberId(memberId);
-        memberFeignResponse.setEmail(member.getEmail());
-        memberFeignResponse.setNickname(member.getNickname());
-        memberFeignResponse.setName(member.getName());
-        memberFeignResponse.setPhoneNumber(member.getPhoneNumber());
-        memberFeignResponse.setProfileUrl(member.getProfileUrl());
-        memberFeignResponse.setAccount(member.getAccountNo());
-        memberFeignResponse.setSoconMoney(member.getSoconMoney());
-        memberFeignResponse.setSoconPassword(member.getSoconPassword());
-
-        return memberFeignResponse;
     }
 
     public MemberLoginResponseDto login(MemberLoginRequestDto loginDto) {
@@ -223,11 +149,127 @@ public class MemberService {
 
     @Transactional
     public void updateRole(MemberRoleRequest memberRoleRequest) {
-        Member member = memberRepository.findMemberById(memberRoleRequest.getMemberId()).orElseThrow(
+        Member member = memberQueryRepository.findMemberById(memberRoleRequest.getMemberId()).orElseThrow(
                 () -> new MemberException(ErrorCode.USER_NOT_FOUND)
         );
         String updateRole = memberRoleRequest.getRole(); //변경된 권한
         UserRole userRole = UserRole.valueOf(updateRole);
         member.updateRole(userRole);
     }
+
+
+    /**
+     * 액세스 토큰 재발급
+     *
+     * @param memberDetails
+     * @param refreshToken
+     * @return
+     * @throws IOException
+     */
+    public String createAccessToken(MemberDetails memberDetails, String refreshToken) {
+        int memberId = memberDetails.getMember().getId();
+        //Redis에 저장된 리프레시 토큰 가져오기
+        RefreshToken refreshToken1 = refreshTokenRepository.findRefreshTokenByMemberId(memberId);
+        String rt = refreshToken1.getRefreshToken();
+        Optional<Member> result = memberQueryRepository.findMemberById(memberId);
+
+        if (result.isPresent()) {
+            Member member = result.get();
+            //request 리프레시 토큰과 Redis에 있는 리프레시 토큰이 같다면
+            if (rt.equals(refreshToken)) {
+                //리프레시 토큰의 유효시간이 남아있다면
+                if (!jwtUtil.isRefreshTokenExpired(String.valueOf(memberId))) {
+                    return jwtUtil.generateToken(memberDetails);
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 리프레시 토큰 재발급
+     *
+     * @param memberDetails
+     * @return
+     */
+    public String createRefreshToken(MemberDetails memberDetails) {
+        String memberId = memberDetails.getMember().getId().toString();
+        if (!jwtUtil.isRefreshTokenExpired(memberId)) {
+            return jwtUtil.generateRefreshToken(memberDetails);
+        }
+        return null;
+    }
+
+
+    public MemberResponseDto getUserInfo(int memberId) {
+        Member member = memberQueryRepository.findMemberById(memberId).orElseThrow(
+                () -> new MemberException(ErrorCode.USER_NOT_FOUND)
+        );
+        MemberResponseDto memberResponseDto = new MemberResponseDto();
+        memberResponseDto.setEmail(member.getEmail());
+        memberResponseDto.setNickname(member.getNickname());
+        memberResponseDto.setName(member.getName());
+        memberResponseDto.setPhoneNumber(member.getPhoneNumber());
+        memberResponseDto.setSoconMoney(member.getSoconMoney());
+        memberResponseDto.setSoconPassword(member.getSoconPassword());
+
+        return memberResponseDto;
+    }
+
+    public Member getMemberByEmail(String email) {
+        Member member = memberQueryRepository.findMemberByEmail(email).orElseThrow(
+                () -> new MemberException(ErrorCode.USER_NOT_FOUND)
+        );
+        return member;
+    }
+
+    public MemberFeignResponse findMemberByMemberId(int memberId) {
+        Member member = memberQueryRepository.findMemberById(memberId).orElseThrow(
+                () -> new MemberException(ErrorCode.USER_NOT_FOUND)
+        );
+        MemberFeignResponse memberFeignResponse = new MemberFeignResponse();
+        memberFeignResponse.setMemberId(memberId);
+        memberFeignResponse.setEmail(member.getEmail());
+        memberFeignResponse.setNickname(member.getNickname());
+        memberFeignResponse.setName(member.getName());
+        memberFeignResponse.setPhoneNumber(member.getPhoneNumber());
+        memberFeignResponse.setProfileUrl(member.getProfileUrl());
+        memberFeignResponse.setAccount(member.getAccountNo());
+        memberFeignResponse.setSoconMoney(member.getSoconMoney());
+        memberFeignResponse.setSoconPassword(member.getSoconPassword());
+
+        return memberFeignResponse;
+    }
+
+    public MyPageResponseDto getMyPage(int memberId) {
+        Member member = memberQueryRepository.findMemberById(memberId).orElseThrow(
+                () -> new MemberException(ErrorCode.USER_NOT_FOUND)
+        );
+
+        MyPageSoconResponse response = soconFeignClient.myPage(memberId).getBody();
+        log.info("response: {}", response);
+
+        MyPageResponseDto myPageResponseDto = new MyPageResponseDto();
+
+        myPageResponseDto.setEmail(member.getEmail());
+        myPageResponseDto.setNickname(member.getNickname());
+        myPageResponseDto.setName(member.getName());
+        myPageResponseDto.setPhoneNumber(member.getPhoneNumber());
+        myPageResponseDto.setProfileUrl(member.getProfileUrl());
+        myPageResponseDto.setAccount(member.getAccountNo());
+        myPageResponseDto.setSoconMoney(member.getSoconMoney());
+        myPageResponseDto.setSoconPassword(member.getSoconPassword());
+        myPageResponseDto.setSoconCnt(response.getSoconCnt()); //보유 소콘
+        myPageResponseDto.setSogonCnt(response.getSogonCnt()); //작성 소곤
+        myPageResponseDto.setSogonReplyCnt(response.getSogonReplyCnt()); //댓글 소곤
+
+        return myPageResponseDto;
+    }
+
+    /**
+     * 회원 정보 수정
+     */
+//    public void modifyMember(MemberModifyRequestDto requestDto) {
+//        memberRepository.updateMember(requestDto.getName(), requestDto.getNickname(), requestDto.getMemo(), requestDto.getProfileUrl());
+//    }
 }

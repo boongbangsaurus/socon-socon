@@ -8,7 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @ToString
 @Builder
-public class MemberResponseDto {
+public class MyPageResponseDto {
 
     private String email;
 
@@ -25,4 +25,11 @@ public class MemberResponseDto {
     private String profileUrl;
 
     private String account;
+
+    private int soconCnt; //보유 소콘
+
+    private int sogonCnt; //작성 소곤
+
+    private int sogonReplyCnt; //댓글 소곤
+
 }
